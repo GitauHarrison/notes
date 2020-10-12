@@ -2,9 +2,10 @@
 
 It is best to install `git` from the Ubuntu Software repository. This tutorial is based on Ubuntu 20.04. Run the following commands in your terminal following the order below:
 <br>
+
 #### Installation
 
-######Procedure 1:
+###### Procedure 1:
 
 ```python
 $ sudo apt update
