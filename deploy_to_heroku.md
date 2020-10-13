@@ -88,7 +88,7 @@ Database has been created and is available
 Created postgresql-solid-77130 as DATABASE_URL
 Use heroku addons:docs heroku-postgresql to view documentation
 ```
-`DATABASE_URL` environment variable stores the URL for the newly created database, which will be available when the application runs. The application will look for the database URL in that variable.
+`DATABASE_URL` environment variable (as seen in the output above) stores the URL for the newly created database, which will be available when the application runs. The application will look for the database URL in that variable.
 
 To find out the exact URL associated with your database, run this command:
 
@@ -116,7 +116,7 @@ Add-on:                postgresql-solid-77130
 
 #### Logging to `stdout`
 
-Logging allows for the writing of status messages to a file or any other output streams. The log files contain all the informationon which part the code is executed and what problems may have arisen. Learn more on Python logging [here](https://realpython.com/python-logging/)
+Logging allows for the writing of status messages to a file or any other output streams. The log files contain all the information on which part the code is executed and what problems may have arisen. Learn more on Python logging [here](https://realpython.com/python-logging/).
 
 Heroku expects applications to log directly to `stdout`. Every time you want to check your application logs, you can type the command below to see all the details:
 
@@ -166,7 +166,7 @@ This variable is set to `1` and it will be used at runtime.
 
 #### Adding Search functionality in Heroku
 
-Unlike Postgres which is provided by Heroku, a service such as Elasticsearch is provided by third parties that partner with Heroku to provide add-ons. There are a number of search addons you can choose from:
+Unlike Postgres which is provided by Heroku, a service such as Elasticsearch is provided by third parties that partner with Heroku to provide add-ons. There are a number of search addons you can choose from. Find more [addons here](https://elements.heroku.com/addons).
 
 ![Search Providers](images/heroku_search_providers.png)
 
@@ -185,7 +185,7 @@ A connection URL is created for the service in the `SEARCHBOX_SSL_URL` or `SEARC
 
 To make use of these third-party addons and add their functionality to your application, you will need to provide your credit card info even though you are on the free tier. So, add this information to your billing. You will not be charged while you are on the free tier.
 
-In your Heroku dashboard, among your installed addons, click on SearchBox Elasticsearch to find the URL associated with `SEARCHBOX_URL`.
+In your Heroku dashboard, among your installed addons, click on SearchBox Elasticsearch to find the URL associated with `SEARCHBOX_URL` variable.
 
 ![Addon List](images/addon_list.png)
 
@@ -207,6 +207,7 @@ To make searching of keywords in your app, you will need to **create** an index 
 If you are using `SEARCHBOX_SSL_URL`, then you should not have the trouble of indices not being created automatically by the server. 
 
 <br>
+
 #### Updating your Dependancies
 
 Heroku will use the listed dependancies to run your application. Additionally, it will need you to add 2 more dependancies to the `requirements.txt` file.
@@ -236,7 +237,13 @@ $ pip3 install psycopg2
 
 #### The Procfile
 
-Heroku needs to know how to execute your application. For that, you need a `Procfile` which is created in the root directory.
+Heroku needs to know how to execute your application. For that, you need a `Procfile` which is created in the root directory. So, fo ahead and create an empty `Procfile` file:
+
+```python
+$ touch Procfile
+```
+
+Then, update your `Procfile` with this info:
 
 _`Procfile: Application execution`_
 ```python
@@ -256,7 +263,7 @@ In our example, since we are using the `flask` command, we need to add the `FLAS
 $ heroku config:set FLASK_APP=tinker.py
 ```
 
-Our application has other environment variables listed in our `config.py` file. Configure them with Heroku as shown above.
+**Our application has other environment variables listed in our `config.py` file. Configure them with Heroku as shown above.**
 
 #### Deploying Application
 
