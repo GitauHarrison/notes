@@ -61,12 +61,16 @@ $ xclip -sel clip < ~/.ssh/id_rsa.pub
 This copies the content of the _id_rsa.pub_ file to your clipboard. You can substitute the file name to match the exact name in your system.
 
 * Log into your GitHub account. Click on settings as shown in the image below:<br>
+
 ![GitHub Settings](/images/github_settings.png)
 <br>
+
 * Click on _SSH and GPG keys_ from the left menu with _Settings_<br>
+
 ![SSH and GPG keys](/images/ssh_gpa_keys.png)
 <br>
 * Click the green _New SSH key_ or _Add SSH key_ button<br>
+
 ![New SSH key](/images/new_ssh.png)
 <br>
 
