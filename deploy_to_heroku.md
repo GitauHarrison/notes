@@ -314,6 +314,47 @@ If you want to see the log entries for your application, run the command:
 $ heroku logs --tail
 ```
 
+###### Database Error
+
+Chances are that when you try to log into your app or even try to register a new user you will come across an error such as:
+
+```python
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedTable) relation "user" does not exist
+LINE 2: FROM "user"
+[SQL: SELECT "user".id AS user_id, "user".username AS user_username, "user".email AS user_email, "user".password_hash AS user_password_hash, "user".about_me AS user_about_me, "user".last_seen AS user_last_seen
+FROM "user"
+WHERE "user".username = %(username_1)s
+LIMIT %(param_1)s]
+[parameters: {'username_1': 'harry', 'param_1': 1}]
+(Background on this error at: http://sqlalche.me/e/f405)    
+```
+
+This is database error. Your application cannot read your database tables. Check that your Heroku database is tables in it by running the command `heroku pg:info DATABASE`. This will show you the status of your database, something similar to the output below:
+
+```python
+=== DATABASE_URL
+Plan:                  Hobby-dev
+Status:                Available
+Connections:           1/20
+PG Version:            12.4
+Created:               2020-10-13 01:23 UTC
+Data Size:             8.0 MB
+Tables:                0        # <--------------------------------  No tables
+Rows:                  0/10000 (In compliance)
+Fork/Follow:           Unsupported
+Rollback:              Unsupported
+Continuous Protection: Off
+Add-on:                postgresql-crystalline-47645
+```
+
+You can see that from the output, my databse has no tables, yet locally, I may have the database working well. To fix this, we need to update our database to include the tables created in your `models.py` file. In this case, as you can see from our `Procfile`, we will run:
+
+```python
+$ heroku run flask db upgrade # add heroku run
+```
+
+
+
 #### Application Updates
 
 Make changes to your applicatin and save it. You will need to `add` and `commit` them using `git`. Push the changes to Heroku:
