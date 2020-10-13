@@ -329,7 +329,7 @@ LIMIT %(param_1)s]
 (Background on this error at: http://sqlalche.me/e/f405)    
 ```
 
-This is database error. Your application cannot read your database tables. Check that your Heroku database is tables in it by running the command `heroku pg:info DATABASE`. This will show you the status of your database, something similar to the output below:
+This is a database error. Your application cannot read your database tables. Check that your Heroku database has tables in it by running the command `heroku pg:info DATABASE`. This will show you the status of your database, something similar to the output below:
 
 ```python
 === DATABASE_URL
