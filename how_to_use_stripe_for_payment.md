@@ -204,13 +204,117 @@ Add a product name, enter your price and select _One time_, then click on _Save 
 
 #### Get Publishable Key
 
-We will use _Javascript_. We will all a static folder which will hold our `.js` files
+We will use _Javascript_. We will all a static folder which will hold our `.js` files.
 
 ```python
 (stripe-project)$ mkdir app/static && mkdir app/static/js # this will create a js sub-folder in static
-(stripe-project)$ touch app/static/main.js # empty js file
+(stripe-project)$ touch app/static/js/main.js # empty js file
 ```
-`app/static/main.js`
+`app/static/js/main.js`
 ```js
-console.log("Sanity check!")
+console.log("Sanity check!") // this is just a printout
 ```
+
+In your `app/routes.py`, modify the file to now render your `index.html` file. We will use the `index.html` file to display a simple _Purchase_ button:
+
+`app/routes.py`
+```python
+# your previous import
+from flask import render_template
+
+@app.route('/')
+def index():
+    return render_template('index.html', title = 'Home')
+```
+
+Then, update your `index.html` file to contain a _Purchase_ button. You will first create a base template called `base.html` which will carry all the base presentation of your app.
+
+`app/templates/base.html`
+```html
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}
+    {% if title %}
+        Flask-Stripe-Demo_Project | {{ title }}
+    {% else %} 
+        Welcome to Flask-Stripe-Demo_Project
+    {% endif %}
+{% endblock %}
+
+{% block head %}
+    {{super()}}
+    <link rel="icon" type="image/svg" href="{{url_for('static', filename = 'img/study.png')}}">
+{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- This is where your code will go -->
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="https://js.stripe.com/v3/"></script> 
+    <script src="{{ url_for('static', filename = 'js/main.js') }}"></script>
+{% endblock %}
+    
+```
+We have linked our `main.js` file with the base template. Your actual content will go into the `block content` section in the `index.html` file.
+
+`app/templates/index.html`
+```html
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="section">
+    <div class="container">
+      <button class="button is-primary" id="submitBtn">Purchase!</button>
+    </div>
+  </section>
+{% endblock %}
+```
+
+Run the development server:
+
+```python
+(stripe-project)$ flask run
+```
+
+Navigate to _http://localhost:5000_, and open up the JavaScript console (ctrl +shift + I). You should see the _sanity check_:
+
+![Sanity Check](images/sanity_check.png)
+
+Let us add a new route to handle the [AJAX](https://www.w3schools.com/js/js_ajax_intro.asp) request:
+
+`app/routes.py`
+```python
+@app.route("/config")
+def get_publishable_key():
+    stripe_config = {"publicKey": stripe_keys["publishable_key"]}
+    return jsonify(stripe_config)
+```
+
+##### Create an AJAX request
+
+We will use the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) to make an AJAX request to the new route `/config` endpoint.
+
+`app/static/main.js`
+
+```js
+// previous code
+
+// Get Stripe publishable key
+fetch("/config")
+.then((result) => { return result.json(); })
+.then((data) => {
+  // Initialize Stripe.js
+  const stripe = Stripe(data.publicKey);
+});
+```
+
+A reposnse from a `fetch` request is a [ReadableStream](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream). `result.json` returns a promise, which we resolve to a Javascript object such as `data`. We use dot notation to access the `publicKey` in order to obtain the publishable key.
+
+Now, after the page load, a call will be made to `/config`, which will respond with the Stripe publishable key. We'll then use this key to create a new instance of Stripe.js.
