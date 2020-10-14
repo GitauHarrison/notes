@@ -318,3 +318,283 @@ fetch("/config")
 A reposnse from a `fetch` request is a [ReadableStream](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream). `result.json` returns a promise, which we resolve to a Javascript object such as `data`. We use dot notation to access the `publicKey` in order to obtain the publishable key.
 
 Now, after the page load, a call will be made to `/config`, which will respond with the Stripe publishable key. We'll then use this key to create a new instance of Stripe.js.
+
+#### Create Checkout Session
+
+We need to attach an event handler to the button's click event which will send another AJAX request to the server to generate a new Checkout session ID.
+
+`app/routes.py`
+
+```python
+@app.route("/create-checkout-session")
+def create_checkout_session():
+    domain_url = "http://localhost:5000/"
+    stripe.api_key = stripe_keys["secret_key"]
+
+    try:
+        # Create new Checkout Session for the order
+        # Other optional params include:
+        # [billing_address_collection] - to display billing address details on the page
+        # [customer] - if you have an existing Stripe Customer ID
+        # [payment_intent_data] - capture the payment later
+        # [customer_email] - prefill the email input in the form
+        # For full details see https://stripe.com/docs/api/checkout/sessions/create
+
+        # ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
+        checkout_session = stripe.checkout.Session.create(
+            success_url=domain_url + "success?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url=domain_url + "cancelled",
+            payment_method_types=["card"],
+            billing_address_collection = 'required',
+            mode="payment",
+            line_items=[
+                {
+                    "name": "Arduino Board",
+                    "quantity": 1,
+                    "currency": "usd",
+                    "amount": "3900",
+                }
+            ]
+        )
+        return jsonify({"sessionId": checkout_session["id"]})
+    except Exception as e:
+        return jsonify(error=str(e)), 403
+```
+
+* We have defined  a `domain_url` for the redirects
+* Assigned the Stripe key to `stripe.api_key` so that it be sent automatically when we make a request to create a new Checkout Session
+* Created the Checkout Session
+* Sent the ID back in the response
+
+`success_url` and `cancel_url` both use the `domain_url`. The user will be redirected back to those URLs in the event of a successful payment or cancellation, respectively. This will help us redirect the user appropriately.
+
+Let us solve the `result.json` promise:
+
+`app.static/js/main.js`
+
+```js
+console.log("Sanity check!");
+
+// Get Stripe publishable key
+fetch("/config")
+.then((result) => { return result.json(); })
+.then((data) => {
+  // Initialize Stripe.js
+  const stripe = Stripe(data.publicKey);
+
+
+  // Add Event handler
+  document.querySelector("#submitBtn").addEventListener("click", () => {
+    // Get Checkout Session ID
+    fetch("/create-checkout-session")
+    .then((result) => { return result.json(); })
+    .then((data) => {
+      console.log(data);
+      // Redirect to Stripe Checkout
+      return stripe.redirectToCheckout({sessionId: data.sessionId})
+    })
+    .then((res) => {
+      console.log(res);
+    });
+  });
+});
+```
+
+As soon as we resolved the `result.json` promise, we called [redirectToCheckout](https://stripe.com/docs/js/checkout/redirect_to_checkout) method with the Checkout Session ID from the resolved promise.
+
+Navigate to http://localhost:5000. Click the button and you should be redirected to an instance of the Stripe Checkout (a Stripe-hosted page to securely collect payment information) with your Product infomation:
+
+![Stripe Payment Form](images/stripe_payment_form.png)
+
+(My form is slightly modified and branded to have the orange-ish color)
+
+Stripe provides us with several [test card numbers](https://stripe.com/docs/testing#cards). Pick one, depending on your region and fill in the form:
+
+* Provide a valid email address
+* Enter a test card number
+* Provide any expiration date 
+* Provide any three-digit CVC number
+* Provide any name
+* Enter a random postal code and billing address
+
+If all goes well, the payment should be processed. Nothing will happen after a successful process because we have not set a `/success` redirect yet. So, below that is what we will do.
+
+#### Redirecting User Appropriately
+
+We will now add routes for successful payment processing or any cancellation. 
+
+`app/templates/success.html`
+
+```html
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf%}
+
+{% block content %}
+  <section class="section">
+    <div class="container">
+      <p>Your payment succeeded.</p>
+      <p><a href="{{ url_for('index') }}">Back to home page</a></p>
+    </div>
+  </section>
+{% endblock %}
+```
+
+`app/templates/cancel.html`
+
+```html
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf%}
+
+{% block content %}
+  <section class="section">
+    <div class="container">
+      <p>Your payment was cancelled.</p>
+      <p><a href="{{ url_for('index') }}">Back to home page</a></p>
+    </div>
+  </section>
+{% endblock %}
+```
+
+With the addition of these templates, we need to create routes that will handle them:
+
+`app/routes.py`
+
+```python
+@app.route('/success')
+def success():
+return render_template('success.html', title = 'Success')
+
+@app.route('/cancel')
+def success():
+return render_template('cancel.html', title = 'Cancel')
+```
+
+When you submit your payment by clicking on the payment button again from http://localhost:5000, you should be redirected back to  http://localhost:5000/success.
+
+You can confirm that the payment was actually successful by clicking on _Payments_ on your Stripe dashboard:
+
+![Successful Stripe Payment](images/successful_stripe_payment.png)
+
+You can test out `/cancel` by clicking on the back arrow in the Stripe payment form. You should be redirected appropriately.
+
+![Stripe Payment Form](images/stripe_payment_form.png)
+
+#### Configure Payments with Stripe Webhooks
+
+Our app works well at this point, but we still can't programmatically confirm payments and perhaps run some code if a payment was successful. We already redirected the user to the success page after they check out, but we can't rely on that page alone since payment confirmation happens asynchronously.
+
+One of the easiest ways to get notified when the payment goes through is to use a callback called [Stripe webhook](https://stripe.com/docs/webhooks). We'll need to create a simple endpoint in our application, which Stripe will call whenever an event occurs (i.e., when a user buys an Arduino). By using webhooks, we can be absolutely sure the payment went through successfully.
+
+
+> There are two types of events in Stripe and programming in general: Synchronous events, which have an immediate effect and results (e.g., creating a customer), and asynchronous events, which don't have an immediate result (e.g., confirming payments). Because payment confirmation is done asynchronously, the user might get redirected to the success page before their payment is confirmed and before we receive their funds.
+
+We need to do three things in order to use webhooks:
+1. Set up a webhook endpoint
+2. Test the endpoint using the [Stripe CLI](https://stripe.com/docs/stripe-cli)
+3. Register the endpoint with Stripe
+
+###### Endpoint
+
+Whenever a payment goes through successfully, we will print a message.
+
+`app/routes.py`
+
+```python
+from flask import request
+# Your previous code
+
+@app.route("/webhook", methods=["POST"])
+def stripe_webhook():
+    payload = request.get_data(as_text=True)
+    sig_header = request.headers.get("Stripe-Signature")
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, stripe_keys["endpoint_secret"]
+        )
+
+    except ValueError as e:
+        # Invalid payload
+        return "Invalid payload", 400
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        return "Invalid signature", 400
+
+    # Handle the checkout.session.completed event
+    if event["type"] == "checkout.session.completed":
+        print("Payment was successful.")
+        # TODO: you can run some custom code here
+
+    return "Success", 200
+```
+
+`stripe_webhook` function now serves our webhook endpoint. Here, we are only looking for `checkout.session.completed` events which are called whenever a checkout is successful. You can use the same pattern for other [Stripe Events](https://stripe.com/docs/api/events).
+
+###### Test Your Webhook
+
+We will use the Stripe CLI to test our webhook. Run the following command:
+
+```python
+(stripe-project)$ stripe login
+
+# Your output
+our pairing code is: cushy-classy-fast-shiny
+This pairing code verifies your authentication with Stripe.
+Press Enter to open the browser (^C to quit)
+```
+
+Press `Enter` to continue. Allow access from your pop-up Stripe browser tap and return to your terminal. You should see something similar to:
+
+```python
+> Done! The Stripe CLI is configured for Bolder Learner with account id <ACCOUNT_ID>
+
+Please note: this key will expire after 90 days, at which point you'll need to re-authenticate.
+```
+
+We will then start to listen to Stripe events and forward them to our endpoint using the command:
+
+```python
+(stripe-project)$ stripe listen --forward-to localhost:5000/webhook
+```
+
+This will generate a webhook signing secret:
+
+```python
+Ready! Your webhook signing secret is whsec_<your-signing-secret> (^C to quit)
+```
+
+Add the signing secret to your `config.py` file then update your `_init_.py`:
+
+`config.py`
+```python
+class Config(object):
+  # Your previous code
+  STRIPE_ENDPOINT_SECRET='<your-actual-end-point-signing-secret>'
+```
+
+`app/_init_.py`
+```python
+stripe_keys = {
+    "secret_key": app.config["STRIPE_SECRET_KEY"],
+    "publishable_key": app.config["STRIPE_PUBLISHABLE_KEY"],
+    "endpoint_secret": app.config["STRIPE_ENDPOINT_SECRET"], # new
+}
+```
+
+Stripe will now forward events to our endpoint. Once again, test for a successful payment. You should see the message `Payment was successful`
+
+At this point, you can stop the `stripe listen --forward-to localhost:5000/webhook` process.
+
+##### Register Your Endpoint
+
+After deploying your app, you can register your endpoint in the stripe dashboard under _Developer > Webhooks_. Click on the button _Add Enpoint_.
+
+![Register Webhook](images/register_webhook.png)
+
+In production, you'll need to have HTTPS so your connection is secure. You'll probably want to store the domain_url as an environment variable as well. Finally, it's a good idea to confirm that the correct product and price are being used in the `/create-checkout-session` route before creating a Checkout Session:
+
+1. Add each of your products to a database.
+2. Then, when you dynamically create the product page, store the product database ID and price in data attributes within the purchase button.
+3. Update the /create-checkout-session route to only allow POST requests.
+4. Update the JavaScript event listener to grab the product info from the data attributes and send them along with the AJAX POST request to the /create-checkout-session route.
+5. Parse the JSON payload in the route handler and confirm that the product exists and that the price is correct before creating a Checkout Session.
