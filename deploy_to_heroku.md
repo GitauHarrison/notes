@@ -53,7 +53,15 @@ OR
 $ git clone https://github.com/GitauHarrison/work_gossip_chat_app.git
 ```
 
-Whenever you use `https`, you will be required to always enter your _username_ and _password_ to access your resources. `ssh` on the other hand is _password-less_. Learn how to set up your `git` to use `ssh` [here](/github_ssh.md)
+Whenever you use `https`, you will be required to always enter your _username_ and _password_ to access your resources. `ssh` on the other hand is _password-less_. Learn how to set up your `git` to use `ssh` [here](/github_ssh.md).
+
+>Everything should be done within  a virtual environment. In the case where you are cloning a project from GitHub, remember to install the project's dependancies that are found in the `requirements.txt` file. To do so, run the command below:
+
+```python
+$ pip3 install -r requirements.txt
+```
+
+
 
 #### Create a Heroku Application
 
