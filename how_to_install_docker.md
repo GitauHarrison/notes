@@ -103,3 +103,15 @@ Oct 17 04:40:01 harry dockerd[366577]: time="2020-10-17T04:40:01.121317249+03:00
 Oct 17 04:40:01 harry dockerd[366577]: time="2020-10-17T04:40:01.137864732+03:00" level=info >
 Oct 17 04:40:01 harry systemd[1]: Started Docker Application Container Engine.
 ```
+
+To check the Docker version installed, run:
+
+```python
+$ docker --version
+```
+
+Also, for more information on your installed Docker version, run:
+
+```python
+$ docker version
+```
