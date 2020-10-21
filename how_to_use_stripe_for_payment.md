@@ -409,7 +409,7 @@ Navigate to http://localhost:5000. Click the button and you should be redirected
 
 ![Stripe Payment Form](images/stripe_payment_form.png)
 
-(My form is slightly modified and branded to have the orange-ish color)
+_My form is slightly modified and branded to have the orange-ish color. You can achive this through [Brand Setting](https://dashboard.stripe.com/settings/branding)._
 
 Stripe provides us with several [test card numbers](https://stripe.com/docs/testing#cards). Pick one, depending on your region and fill in the form:
 
