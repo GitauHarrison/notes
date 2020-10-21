@@ -291,6 +291,9 @@ Let us add a new route to handle the [AJAX](https://www.w3schools.com/js/js_ajax
 
 `app/routes.py`
 ```python
+from app import stripe_keys
+from flask import jsonify
+
 @app.route("/config")
 def get_publishable_key():
     stripe_config = {"publicKey": stripe_keys["publishable_key"]}
