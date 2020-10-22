@@ -25,7 +25,7 @@ If you are not sure whether you have vagrant or not, run this command on your te
 $ vagrant --version
 ```
 
-** Installing a `VirtualBox`**
+**Installing a `VirtualBox`**
 
 `VirtualBox` is a software utility that allows you to run an operating system inside an operating system. It does this by creating a virtual environment. Since Vagrant creates virtual operating systems, it needs a tool like `VirtualBox` to manage the virtual operating systems.
 
