@@ -644,3 +644,11 @@ And that is it!! You have reCaptcha as part of your application.
 You can update the strength of your reCaptcha in the settings.
 
 ![Strong reCaptcha](images/strong_reCaptcha.png)
+
+##### Update your requirements.txt
+
+With all that work, remember to update your requirements.txt file to include all the dependancies you have used while building this app
+
+```python
+(recaptcha_project) gitau@harry:~/recaptcha_project$ pip3 freeze > requirements.txt
+```
