@@ -107,4 +107,6 @@ class Config:
         os.environ.get('WERKZEUG_RUN_MAIN') is not 'true'
 ```
 
-Now, when you run `flask run` command, you will notice that our tunnel is set up, and we can access our `ngrok` URL as well as the localhost URL.
+Now, when you run `flask run` command, you will notice that our tunnel is set up, and we can access our `ngrok` URL. We can alsoaccess the localhost URL.
+
+![Create Tunnel on StartUp](images/create_tunnel_on_startup.png)
