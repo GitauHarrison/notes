@@ -10,3 +10,5 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 6. [How to download and install vagrant](vagrant_how_to_download_and_install.md)
 7. [How to set up Ubuntu 20.04 to use `virtualenvwrapper`](virtualenvwrapper_setup.md)
 8. [Deployment on Docker containers](how_to_install_docker.md)
+9. [Integrate Google reCaptcha in Flask](recaptcha.md)
+10. [Adding markdown editing to Flask-WTF forms](handling_rich_text.md)
