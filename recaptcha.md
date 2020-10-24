@@ -652,3 +652,6 @@ With all that work, remember to update your requirements.txt file to include all
 ```python
 (recaptcha_project) gitau@harry:~/recaptcha_project$ pip3 freeze > requirements.txt
 ```
+### Next:
+
+* Learn how you can improve your form by allowing markdown editing [here](handling_rich_text.md).
