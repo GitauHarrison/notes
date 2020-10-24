@@ -655,3 +655,4 @@ With all that work, remember to update your requirements.txt file to include all
 ### Next:
 
 * Learn how you can improve your form by allowing markdown editing [here](handling_rich_text.md).
+* Learn how to test your application on localhost from multiple devices [here](localhost_testing.md)
