@@ -139,3 +139,10 @@ The ` | safe` suffix when rendering the HTML body is there to tell Jinja2 not to
 Reload your page and try to post a new comment with markdown syntax:
 
 ![Enabled Markdown Styling](images/enabled_md_styling.png)
+
+##### Update Your Requirements
+
+Run:
+```python
+$ pip3 freeze > requirements.txt
+```
