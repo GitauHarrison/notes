@@ -47,7 +47,7 @@ app/templates/base.html: Include pagedown in template
 ```
 The Javascript files are loaded from a CDN, the files do not need to be hosted by your application.
 
-##### Updating Our Form wwith PageDown Field
+##### Updating Our Form with `PageDownField`
 
 The extesion exports a `PagDownField` which is very similar to and works exactly as `TextAreaField`:
 
@@ -75,13 +75,13 @@ There are two more extensions that we can use to help us achieve this. Go ahead 
 $ pip3 install markdown bleach
 ```
 
-`bleach` allows us to sanitize the resulting HTML to ensure that only a few HTML tags are allowed. 
+_`bleach` allows us to sanitize the resulting HTML to ensure that only a few HTML tags are allowed._
 
 Comment conversion can be done in the `_comments.html` subtemplate, but it is inefficient to do it here as all comments will have to be converted every time they are rendered to a page. We get rid of this repetition by making the coversion when the data is in our database.
 
-The HTML code for the rendered blog post is cached in a new field added to the Post model that the template can access directly. The original Markdown source is also kept in the database in case the post needs to be edited.
+The HTML code for the rendered blog post is cached in a new field added to the Comment model that the template can access directly. The original Markdown source is also kept in the database in case the post needs to be edited.
 
-##### Update the Comments Table
+##### Update the Comment Table
 
 ```python
 class Comment(db.Model):
