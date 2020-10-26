@@ -1,4 +1,4 @@
-# How to Deploy Your App to Heroku
+# How to Deploy Your Flask App to Heroku
 
 ###### Things to know beforehand
 * `git`: Deploying to Heroku is done through `git` version control tool
@@ -13,7 +13,7 @@
 3. Set up `git`
 4. Create a Heroku Application
 5. Deploy Your Application
-6. Deploying Application Updates
+6. Deploy Application Updates
 
 
 #### Create Heroku account
@@ -29,9 +29,7 @@ To install it, run the command below:
 $ sudo snap install --classic heroku
 ```
 
-You can read the full [Heroku CLI documention](https://devcenter.heroku.com/categories/command-line) for more information
-
-Once installed, you need to log in to your account:
+You can read the full [Heroku CLI documention](https://devcenter.heroku.com/categories/command-line) for more information. Once installed, you need to log in to your account:
 
 ```python
 $ heroku login
