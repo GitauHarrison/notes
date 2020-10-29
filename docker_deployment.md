@@ -220,14 +220,89 @@ The Docker Container Registry contains a large variety of container images, for 
 
 ### Adding a MySQL Container
 
+What you will do:
+* Get `MySQL` image from the MySQL public registry
+* Update the _Dockerfile_ to add a `MySQL` client package (`pymysql`)
+* Link server to application
+
 MySQL has public container images available on the Docker registry. MySQL relies on environment variables that need to be passed to `docker run`. These configure passwords, database names etc. We will use the officially maintained image by mySQL team [here](https://hub.docker.com/r/mysql/mysql-server/).
 
 Start MySQL server
 
 ```python
 $ docker run --name mysql -d -e MYSQL_ROOT_PASSWORD=yes -e MYSQL_DATABASE=practice_blog \
- -e MYSQL_USER=practice_blog -e MYSQL_PASSWORD='MzAdB82t^+46cXvE' mysql/mysql-server:5.7
+ -e MYSQL_USER=practice_blog -e MYSQL_PASSWORD=<database-password> mysql/mysql-server:5.7
 
- # Use of \ allows for a rather long command to go the a new line. Do not include it in your command
+# Output
+Unable to find image 'mysql/mysql-server:5.7' locally
+5.7: Pulling from mysql/mysql-server
+03e20c09154c: Pull complete 
+989c25a93b15: Pull complete 
+1fe2b817a6cb: Pull complete 
+0807146aa37b: Pull complete 
+Digest: sha256:96f7f199868eaaf9dd9c3cff47021831f5525047b41b0c6a8bf1187936a3e9d2
+Status: Downloaded newer image for mysql/mysql-server:5.7
+48d838a161eb84ba32f62a46448ecbe741786a9860fe39e58d4926a1ca33014c
+
+ # Use of \ allows for a rather long command to go to a new line. Do not include it in your command
 ```
-On a Docker installed machine, you will get a fully installed MySQL server with a randomly generated root password, a brand new database called `practice_blog`, and a user with the same name that is configured with full permissions to access the database. Enter a proper password as value for the `MySQL_PASSWORD` environment variable.
+On a Docker installed machine, you will get a fully installed MySQL server with a randomly generated root password, a brand new database called `practice_blog`, and a user with the same name that is configured with full permissions to access the database. Enter a proper password as value for the `MySQL_PASSWORD` environment variable. 
+
+>`mysql` in `mysql/mysql-server:5.7` is the _docker registry account used by MySQL_. `mysql-server:5.7` is the image from MySQL.
+
+You should have the MySQL container running. Check:
+```python
+$ docker ps
+
+# Output
+CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS                   PORTS                    NAMES
+48d838a161eb        mysql/mysql-server:5.7   "/entrypoint.sh mysq…"   7 minutes ago       Up 6 minutes (healthy)   3306/tcp, 33060/tcp      mysql
+8b748206500d        practice_blog:latest     "./boot.sh"              2 hours ago         Up 2 hours               0.0.0.0:8000->5000/tcp   practice_blog
+```
+
+With the MySQL server started, we need to add a MySQL client package. We will use `pymysql` and add it to the _Dockerfile_.
+
+Dockerfile: Add MySQL client
+```python
+# previous commands
+RUN practice+_blog/bin/pip3 install gunicorn pymysql
+# previous commands
+```
+With this change to our Dockerfile (or the application itself), the container image needs to be rebuilt:
+
+```python
+$ docker build -t practice_blog:latest .
+```
+We will need to start our `practice_blog` again, this time linking it to the database container so that both can communicate through the network:
+
+```python
+$ docker run --name practice_blog -d -p 8000:5000 --rm -e SECRET_KEY=my-secret-key \
+    -e MAIL_SERVER=smtp.gmail.com -e MAIL_PORT=587 -e MAIL_USE_TLS=true \
+    -e MAIL_USERNAME=<your-gmail-username> -e MAIL_PASSWORD=<your-gmail-password> \
+    --link mysql:dbserver \
+    -e DATABASE_URL=mysql+pymysql://practice_blog:<database-password>@dbserver/practice_blog \
+    practice_blog:latest
+```
+The `--link` option tells Docker to make another container accessible to this one. The argument contains two names separated by a colon. The first part is the name or ID of the container to link. The second part defines the hostname that can be used in this container to refer to the linked one. `dbserver` if a generic name that represents the database server.
+
+With the link to the two containers established, we can set the `DATABASE_URL` environment variable so that SQLAlchemy is directed to use the MySQL database in the other container. The database URL is going to use `dbserver` as the hostname, `practice_blog` as the database name and user, and the password that you selected when you started MySQL.
+
+Sometimes the MySQL container takes a few seconds to be fully running and ready to accept database connects. If you start MySQL container  and then start the application container immediately after, when the `boot.sh` script tries to run `flask db upgrade` it may fail due to the database not being ready to accept connects.
+
+boot.sh: Retry database connection
+```python
+#!/bin/sh
+source practice_blog/bin/activate
+while true; do
+    flask db upgrade
+    if [[ "$?" == "0" ]]; then
+        break
+    fi
+    echo Upgrade command failed, retrying in 5 secs...
+    sleep 5
+done
+flask translate compile
+exec gunicorn -b :5000 --access-logfile - --error-logfile - practice_blog:app
+```
+
+The loop checks the exit code of the `flask db upgrade` command, and if it is non-zero it assumes that something went wrong, so it waits five seconds and then retries.
