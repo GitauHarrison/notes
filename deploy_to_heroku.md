@@ -271,6 +271,19 @@ $ heroku config:set FLASK_APP=tinker.py
 
 **Our application has other environment variables listed in our `config.py` file. Configure them with Heroku as shown above.**
 
+#### How to generate good secret keys
+
+One of the variables you will need to add to heroku is `SECRET_KEY`. Our `SECRET_KEY` value is the message authentication code used to sign the cookies. If the value is known to the public, then someone can spoof a valid signature, which makes our app a lot less secure. The `SECRET_KEY` needs to be known only to the application even if the source code is published online. The solution to this is to generate a random `SECRET_KEY`. 
+
+A _secret key_ should be as random as possible. Your operating system has ways to generate pretty random data based on a cryptographic random generator. Use the following command to quickly generate a value for `Flask.secret_key` (or `SECRET_KEY`):
+
+```python
+(virtual-env)$ python -c 'import os; print(os.urandom(16))'
+
+# Output
+b'_5#y2L"F4Q8z\n\xec]/'
+```
+
 #### Deploying Application
 
 `git push` is used to deploy the application to Heroku's servers, similarly to how you would push changes from your local git repository to GitHub or any other remote server.
