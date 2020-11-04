@@ -296,6 +296,10 @@ $ git commit -a -m 'Make changes for heroku deployment'
 Then, start your deployment:
 
 ```python
+# Add remote repository
+heroku git:remote -a work-gossip-chat-app
+
+# Push to heroku master
 git push heroku master
 
 Enumerating objects: 1170, done.
