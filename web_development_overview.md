@@ -108,3 +108,10 @@ Learn more about `git` and GitHub [here](https://medium.com/@mvthanoshan9/ubuntu
 Phew! Those are a ton! But, take your time. Go over them and you will have a solid base on which to begin your full-stack web development journey.
 
 As soon as you are done with these, I will be glad to see your outcome. Please share your completed front-end static web pages with me in the comments section below. If you have any questions regarding how to get started, feel free to reach out anytime.
+
+### Full Stack Projects Using Python And Flask
+
+These are some of the projects you will learn how to build. By the end of each on of them, you will have a far solid understand and thus you can begin to build your very own.
+
+1. [Personal Blog](personal_blog.md)
+2. [Reat-time Chat Application](realtime_chat_app.md)
