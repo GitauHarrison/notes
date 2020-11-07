@@ -113,7 +113,7 @@ As soon as you are done with these, I will be glad to see your outcome. Please s
 
 ### Full Stack Projects Using Python And Flask
 
-These are some of the projects you will learn how to build. By the end of each on of them, you will have a far solid understand and thus you can begin to build your very own.
+These are some of the projects you will learn how to build. By the end of each one of them, you will have a far solid understanding and thus you can begin to build your very own.
 
 1. [Personal Blog](personal_blog.md)
 2. [Reat-time Chat Application](realtime_chat_app.md)
