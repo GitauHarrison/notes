@@ -24,11 +24,11 @@ There are two broad divisions to web development:
 
 Front-end developement referes to displaying what a user sees when they load a web application. Front-end is made possible using HTML, CSS and JavaScript.
 
-HTML (Hyper Text Markup Language) is the standard markup language fow creating web applications. It is used to descript the **structure** of a web page.
+HTML (Hyper Text Markup Language) is the standard markup language for creating web applications. It is used to describe the **structure** of a web page.
 
 CSS (Cascading Style Sheets) is used to set the rules that specify how we will style a web page. So, it's main function (as you can see from its full name) is to style a web page.
 
-JavaScript is a [scripting language](https://cs.lmu.edu/~ray/notes/scriptinglangs/) which adds functionality and iteractivity to websites. While HTML can create web pages and CSS can customize the pages, they both make static (it won't do anything). And this is where JavaScript comes in. It can listen to user events such as button clicks, key presses or even whenever a user hovers the mouse on an item on a web page, making the page more interactive.
+JavaScript is a [scripting language](https://cs.lmu.edu/~ray/notes/scriptinglangs/) which adds functionality and iteractivity to websites. While HTML can create web pages and CSS can customize the pages, they both make static web applications(they won't do anything). And this is where JavaScript comes in. It can listen to user events such as button clicks, key presses or even whenever a user hovers the mouse on an item on a web page, making the page more interactive.
 
 ##### Back-end Web Development
 
@@ -44,7 +44,7 @@ Back-end scripts can be written in many different programming languages and fram
 
 Among many others. 
 
-My goal in the subsequent sections is to help you learn full-stack web development primarily with Python and Flask. With full-stack I mean you are familiar and very much capable of building both the front-end and the back-end of a web application.
+My goal in the subsequent sections is to help you learn full-stack web development primarily using Python and Flask. With full-stack I mean you are familiar and very much capable of building both the front-end and the back-end of a web application.
 
 ### Getting Started
 
@@ -79,7 +79,7 @@ As soon as you are done with _Learn to Code HTML & CSS_, consider to look at [Le
 
 This type of work is what `git` is meant for. It basically is a content tracker.
 
-As soon as you have completed making every verison of your project, you need to save it somewhere for ease of access and also to allow for sharing with anyone who is interested in taking part in the your project or someone who just want to see what you have been doing. 
+As soon as you have completed making every verison of your project, you need to save it somewhere for ease of access and also to allow for sharing with anyone who is interested in taking part in the your project or someone who just wants to see what you have been doing. 
 
 Real life projects generally have multiple developers working in parallel. So a version control system like Git is needed to ensure there are no code conflicts between the developers.
 
@@ -101,11 +101,13 @@ Learn more about `git` and GitHub [here](https://medium.com/@mvthanoshan9/ubuntu
 ##### Hosting of Static Web Applications
 ![Netlify](images/netlify.png)
 
-[Netlify](https://app.netlify.com/drop) offers a free hosting service which will allow you to host your completed projects. As soon as you are done with a web application, you can drag the root folder to netlify and it will automatically host your application. You will be provided with a custom URL (which you can edit by the way) to share your project.
+[Netlify](https://app.netlify.com/drop) offers a free hosting service which will allow you to host your completed projects. As soon as you are done with a web application, you can drag the root folder to netlify and it will automatically host your application. You will be provided with a custom URL (which you can edit, by the way) to share your project with others.
 
-<hr>
+##### Conclusion
 
-Phew! Those are a ton! But, take your time. Go over them and you will have a solid base on which to begin your full-stack web development journey.
+Phew! Those are a ton! But, take your time. Go over them and you will have a solid base on which to begin your full-stack web development journey. 
+
+Notably, I am recommending a self-teaching approach here. None of the above mentioned items are going to be covered here. You will need to make a personal effort to learn them on your own. 
 
 As soon as you are done with these, I will be glad to see your outcome. Please share your completed front-end static web pages with me in the comments section below. If you have any questions regarding how to get started, feel free to reach out anytime.
 
