@@ -1,3 +1,5 @@
+The completed project used in this article can be referenced [here](https://github.com/GitauHarrison/personal-blog-tutorial-project/commit/5b3f2b4c0348b933f4f07755457efc2fe3218c7a). 
+
 You will learn how to use Python and the Flask web Framework to build a personal blog. For this reason, you need to ensure you have Python installed.
 
 ### Install Python
@@ -180,9 +182,9 @@ Let us add all the other files and sub-folders:
 
 Everything is now created and well set up. Over the other articles, we will use the images, css and js sub-folders, but for now, we will not need them. So, we will disregard them for a while.
 
-The ___init___.py file is going to contain the following code"
+The ___init___.py file is going to contain the following code:
 
-___init__.py: Register your flask extension in the application
+__init__.py: Register your flask extension in the application
 
 ```python
 from flask import Flask
@@ -222,7 +224,7 @@ $ from app import app
 ```
 Again, we see that two `app`s have been used together. The statement above simply imports the `app` variable from the `app` package (this is the folder that contains ___init___.py)
 
-And that is pretty much it! You have just completed making your first Flask web application! To see it work, run this command in your terminal:
+And that is pretty much it! You have just completed making your first Flask web application! To see it work, run these commands in your terminal:
 
 ```python
 $ export FLASK_APP=personal_blog.py # our application is registered here
@@ -241,7 +243,7 @@ http://localhost:5000/
 ```
 ![Hello World](/images/hello_world.png)
 
-You can see from above that the browser is going to request for the two URLs which are mapped to the `home` view function, returning the string `Hello, world!`. If you try to enter any other URL, you will get an error since these are the only two URLs recognized by the application.
+You can see from above that the browser requesting for one of the two URLs which are mapped to the `home` view function, returning the string `Hello, world!`. If you try to enter any other URL, you will get an error since these are the only two URLs recognized by the application.
 
 You have probably noted that the moment you ran `flask run` command, you saw:
 
@@ -258,7 +260,7 @@ You have probably noted that the moment you ran `flask run` command, you saw:
 * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 ```
 
-Every time you need to run your application, you will need to run both of these commands:
+Every time you need to see your application, you will need to run both of these commands:
 
 ```python
 (venv) $ export FLASK_APP=personal_blog.py
@@ -272,7 +274,7 @@ Thankfully, there is a way around it. Starting from Flask 1.0, we are able to re
 (venv) $ pip3 install python-dotenv
 ```
 
-Create a `.flaskenv` file in the application's root directory (personal_blog folder) to to hold all our environment variables:
+Create a `.flaskenv` file in the application's root directory (personal_blog folder) to hold all our environment variables:
 
 ```python
 (venv) $ touch .flaskenv
@@ -282,4 +284,4 @@ Create a `.flaskenv` file in the application's root directory (personal_blog fol
 ```python
 FLASK_APP=practice_blog.py
 ```
-Now, whenever you start your application, all you need to do is run `flask run` command. Doing this is option. If you will prefer to set environment variables manually, it is perfectly okay. Just remember them.
+Now, whenever you start your application, all you need to do is run `flask run` command. Doing this is optional. If you will prefer to set environment variables manually, it is perfectly okay. Just remember them.
