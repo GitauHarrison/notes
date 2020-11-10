@@ -124,6 +124,13 @@ We will use `pip3` to install `flask`:
 $ pip3 install flask
 ```
 
+If you get a soft warning in your terminal informing you that there is an available update, do not panick. All you need to do is read the warning message carefully to understand what it is telling you. Typically, all warning and error messages provide suggestions on what you can do about them. In our case here, all we need to do is run:
+
+```python
+python -m pip install --upgrade pip
+```
+This will make the update and get rid of the warning message. This warning message tends to only come when you install a new virtual environment.
+
 Confirm that your virtual environment has `flask` installed by running your Python interpreter and importing it:
 
 ```python
@@ -138,7 +145,7 @@ If you do not get any error, it means your flask extension was installed well. Y
 $ flask --version # ensure you exited the Python interpreter above by pressing ctrl + Z
 ```
 
-#### Hello World
+#### Hello World Application
 
 The [Flask Documentation](https://flask.palletsprojects.com/en/1.1.x/) is a great resource to help you get started with Python and Flask. Occassionally, you can refer to it to learn more.
 
@@ -153,7 +160,7 @@ Let us go ahead and create a sub directory called _app_:
 ```
 This folder will contain:
 * ___init___.py : it is used to define our app
-* routes.py : it will bear all the view functions that will help redirect us
+* routes.py : it will bear all the view functions and URLs that will help redirect us
 * templates sub-folder : all HTML files will be here
 * static subfolder : it will contain css and js subfolders that will host our styles files and our JS file
 
@@ -192,3 +199,87 @@ The application also imports the `routes` module from the application instance.
 It might be confusing at first that there are two instance of `app`. The `app` variable in `app = Flask(__name__)`  is an instance of the class `Flask` which makes it a member of the `app` package. The second `app` is the _app_ directory name, from which we are importing the `routes` module.
 
 Another strange thing is that `routes` is imported at the bottom rather than at the top of the script. The bottom import is a walkaround to _circular imports_, a common problem with Flask applications.
+
+As earlier mentioned, routes are the different URLs that the application implements. In Flask, Python functions are responsible for handling application routes, hence their name _view functions_. These view functions can be mapped to one or more URLS.
+
+We will create our very first view function as seen below:
+
+routes.py: Home page route
+```python
+from app import app
+
+@app.route('/')
+@app.route('/home')
+def home():
+    return 'Hello, world!'
+```
+The name of our view function is called `home`. It handles two URLs which are associated with it, that is `/` and `/home`. To implement these two URLs, we have utilized the `@app.route` decorator. A decorator is primarily used to associate a URL with a given view function. What this means is that when a web browser requests for either of the two URLs, Flask is going to invoke the `home` function and pass the return value back to the browser as a response.
+
+We then need to import the application instance in the top-level file `personal_blog.py` as seen below:
+
+```python
+$ from app import app
+```
+Again, we see that two `app`s have been used together. The statement above simply imports the `app` variable from the `app` package (this is the folder that contains ___init___.py)
+
+And that is pretty much it! You have just completed making your first Flask web application! To see it work, run this command in your terminal:
+
+```python
+$ export FLASK_APP=personal_blog.py # our application is registered here
+$ flask run # this runs the flask server
+```
+You will see a URL generated in the terminal. The `flask run` command indicates that the server is running on IP address 127.0.0.1, which is always the address of your computer. A simpler name to this IP Address is _localhost_.
+
+Applications deployed to production web servers typically listen on port 443, or sometimes port 80 if they do not implement encryption, whose access (to these ports) require administration rights. But in development, Flask uses the freely available port 5000.
+
+Now, open your browser and enter the following URL in the address bar:
+```python
+http://localhost:5000/
+
+# Alternatively, you can use:
+# http://localhost:5000/home
+```
+![Hello World](/images/hello_world.png)
+
+You can see from above that the browser is going to request for the two URLs which are mapped to the `home` view function, returning the string `Hello, world!`. If you try to enter any other URL, you will get an error since these are the only two URLs recognized by the application.
+
+You have probably noted that the moment you ran `flask run` command, you saw:
+
+```python
+(venv) $ flask run
+
+# Output
+* Tip: There are .env or .flaskenv files present. Do "pip install python-dotenv" to use them.
+* Serving Flask app "personal_blog.py"
+* Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+* Debug mode: off
+* Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+```
+
+Every time you need to run your application, you will need to run both of these commands:
+
+```python
+(venv) $ export FLASK_APP=personal_blog.py
+(venv) $ flask run
+```
+FLASK_APP is an environment variable. If you close your terminal, and re-open it, your Flask application will not remember any environment variable. That means you will have to type in the above commands all over again. And this is not the only environment variable you will use. So, imagine how many you need to remember in order to run your application.
+
+Thankfully, there is a way around it. Starting from Flask 1.0, we are able to register all our environment variables in a file and have it automatically imported when we run `flask run` command. To use this option, as you can see from the output above, we need to install the `python-dotenv` package:
+
+```python
+(venv) $ pip3 install python-dotenv
+```
+
+Create a `.flaskenv` file in the application's root directory (personal_blog folder) to to hold all our environment variables:
+
+```python
+(venv) $ touch .flaskenv
+```
+
+.flaskenv: Add all environement variables
+```python
+FLASK_APP=practice_blog.py
+```
+Now, whenever you start your application, all you need to do is run `flask run` command. Doing this is option. If you will prefer to set environment variables manually, it is perfectly okay. Just remember them.
