@@ -8,7 +8,7 @@ In a broader sense, web development includes all the actions, updates and operat
 
 Examples of web applications are social networking sites such as [FaceBook](https://www.facebook.com/), music listening sites such [Spotify](https://www.spotify.com/), online purchasing sites such as [Amazon](https://www.amazon.com/) among many others. Can you identify some on your own?
 
-![Spotify](images/spotify.png)
+![Spotify](/images/spotify.png)
 
 The process of building a web application is a journey. During this web development series, I will be walking you through on how you can start creating your own web applications all the way through to making them available and accessible to other people.
 
@@ -18,7 +18,7 @@ There are two broad divisions to web development:
 * **Fron-end development**: This is also referred to as the [client-side](https://en.wikipedia.org/wiki/Client_(computing)) development.
 * **Back-end development**: This is also referred to as the [server-side](https://en.wikipedia.org/wiki/Server_(computing)) development.
 
-![Client - Server](images/clients-servers.png)
+![Client - Server](/images/clients-servers.png)
 
 ##### Fron-end Web Development
 
@@ -59,21 +59,21 @@ It is very important that you learn and master the front-end side of building a 
 
 ##### Choose a Text Editor
 
-![VS Code](images/vs_code.png)
+![VS Code](/images/vs_code.png)
 
 A text Editor is the tool you will use to write you code and edit it. There are several available text editors. For the purposes of this tutorial, I will recommed [Visual Studio Code](https://code.visualstudio.com/). You will need to download it and install it depending on the kind of operating system you have. Here is the [download link](https://code.visualstudio.com/download). 
 
 Visual Studio Code also supports extensions which let you add support for various programming languages and also provide debuggers to support your development workflow.
 
 ##### Learn HTML and CSS
-![Shay Howe](images/shay_howe.png)
+![Shay Howe](/images/shay_howe.png)
 
 In this regard, I highly recommend that you look at https://learn.shayhowe.com/. There is a series called _Learn to Code HTML & CSS_. This series will walk you through a very systematic and beautifully structured learning progress as you learn the front-end part of web application. 
 
 As soon as you are done with _Learn to Code HTML & CSS_, consider to look at [Learn to Code AdvancedHTML & CSS](https://learn.shayhowe.com/advanced-html-css/). This takes a deeper look at front-end design and development. 
 
 ##### Learn Git and GitHub
-![GitHub](images/github.png)
+![GitHub](/images/github.png)
 
 `git` is a free, open-source version control software, which basically means that it allows you to track your content. Say you begin to work on a project today. We will call this verision of the project _version1_. Then after one week, you decide to make changes to the very same project, maybe add or delete a few items here and there. This new update become _Version2_ of the project. 
 
@@ -99,7 +99,7 @@ Learn more about `git` and GitHub [here](https://medium.com/@mvthanoshan9/ubuntu
 
 
 ##### Hosting of Static Web Applications
-![Netlify](images/netlify.png)
+![Netlify](/images/netlify.png)
 
 [Netlify](https://app.netlify.com/drop) offers a free hosting service which will allow you to host your completed projects. As soon as you are done with a web application, you can drag the root folder to netlify and it will automatically host your application. You will be provided with a custom URL (which you can edit, by the way) to share your project with others.
 
@@ -115,5 +115,5 @@ As soon as you are done with these, I will be glad to see your outcome. Please s
 
 Below are some of the projects you will learn how to build. By the end of each one of them, you will have a far solid understanding and thus you can begin to build your very own. I recommend that you begin with the first project and follow through in the same order if you are starting out on Python and Flask.
 
-1. [Personal Blog](personal_blog.md)
+1. [Personal Blog](personal_blog/personal_blog.md)
 2. [Reat-time Chat Application](realtime_chat_app.md)
