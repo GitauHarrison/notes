@@ -138,3 +138,57 @@ If you do not get any error, it means your flask extension was installed well. Y
 $ flask --version # ensure you exited the Python interpreter above by pressing ctrl + Z
 ```
 
+#### Hello World
+
+The [Flask Documentation](https://flask.palletsprojects.com/en/1.1.x/) is a great resource to help you get started with Python and Flask. Occassionally, you can refer to it to learn more.
+
+Below, I am going to show you how you will create the structure of your project. Your application will exist as a package, with files and sub-folders in it.
+
+![Project Structure](/images/project_structure.png)
+
+Let us go ahead and create a sub directory called _app_:
+
+```python
+(venv) mkdir app # remember you are in the personal blog project folder already
+```
+This folder will contain:
+* ___init___.py : it is used to define our app
+* routes.py : it will bear all the view functions that will help redirect us
+* templates sub-folder : all HTML files will be here
+* static subfolder : it will contain css and js subfolders that will host our styles files and our JS file
+
+In Python, a sub-directory that includes a ___init___.py file is considered a package, and can be imported. When you import a package, the ___init___.py executes and defines what symbols the package exposes to the outside world.
+
+Let us add all the other files and sub-folders:
+
+```python
+(venv) $ cd app # move into the app folder
+(venv) $ touch routes.py # touch command creates an empty file
+(venv) $ mkdir templates static # I have combined both templates in one command
+(venv) $ touch templates/base.html templates/index.html # this creates two empty files in the templates sub-folder
+(venv) $ mkdir static/css static/images static/js # three sub-folders are created inside the static folder
+(venv) $ touch static/css/styles.css
+(venv) $ touch static/js/main.js
+```
+
+Everything is now created and well set up. Over the other articles, we will use the images, css and js sub-folders, but for now, we will not need them. So, we will disregard them for a while.
+
+The ___init___.py file is going to contain the following code"
+
+___init__.py: Register your flask extension in the application
+
+```python
+from flask import Flask
+
+app = Flask(__name__)
+
+from app import routes
+```
+
+Above, we have created the application object as an instance of the flask package. The `__name__` variable passed to the Flask class is a Python pre-defined variable, which is set to the name of the module in which it is used. Flask uses the location of this module as a starting point when it needs to load certain resources such as template files. 
+
+The application also imports the `routes` module from the application instance.
+
+It might be confusing at first that there are two instance of `app`. The `app` variable in `app = Flask(__name__)`  is an instance of the class `Flask` which makes it a member of the `app` package. The second `app` is the _app_ directory name, from which we are importing the `routes` module.
+
+Another strange thing is that `routes` is imported at the bottom rather than at the top of the script. The bottom import is a walkaround to _circular imports_, a common problem with Flask applications.
