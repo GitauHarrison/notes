@@ -112,3 +112,13 @@ app/templates/home.html: Template inheritence
 ```
 
 The `extends` statement establishes the inheritence link between the two templates. When Jinja2 is asked to render the home page, it will know that it also needs to embed `base.html` file.
+
+Run your Flask application and you should be able to see your home page.
+
+![Template Inheritence In Flask](/images/template_inheritence.png)
+
+With that you can go ahead and create the other templates need to complete our personal blog. For your reference, you will need:
+* About Me template
+* Portfolio template
+* Hire Me template
+* My Interests template
