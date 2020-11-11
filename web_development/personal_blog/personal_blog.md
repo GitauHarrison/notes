@@ -7,7 +7,7 @@ In this series, I am going to guide you on how to create your very own blog! Yes
 For your referrence, below is a list of the articles I have included in this series:
 
 1. [Hello, World!](hello_world.md)
-2. Working with Templates
+2. [Working with Templates](flask_templates.md)
 3. Flask Web Forms
 4. Introduction to Database
 
