@@ -1,3 +1,5 @@
+The completed project used in this article can be referenced [here](https://github.com/GitauHarrison/personal-blog-tutorial-project/commit/5b3f2b4c0348b933f4f07755457efc2fe3218c7a). 
+
 In the previous chapter, you learnt how to display a string on the web browser. During this chapter, I will show you how to work with HTML templates that help create a more elaborate and dynamic web application.
 
 # Understanding Templates
@@ -122,3 +124,12 @@ With that, you can go ahead and create the other templates needed to complete ou
 * Portfolio template
 * Hire Me template
 * My Interests template
+
+If you would like to see the changes you make in the application without the need to exit and restart the flask server every other time, you will need to update your flask environment variables. Add FLASK_ENV and FLASK_DEBUG environment variables in your `.flaskenv` file.
+
+.flaskenv: More environment variables
+```python
+#...
+FLASK_ENV=development # you are working on a development server
+FLASK_DEBUG=True # catching of live updates
+```
