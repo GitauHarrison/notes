@@ -117,7 +117,7 @@ Run your Flask application and you should be able to see your home page.
 
 ![Template Inheritence In Flask](/images/template_inheritence.png)
 
-With that you can go ahead and create the other templates need to complete our personal blog. For your reference, you will need:
+With that, you can go ahead and create the other templates needed to complete our personal blog. For your reference, you will need:
 * About Me template
 * Portfolio template
 * Hire Me template
