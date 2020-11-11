@@ -66,3 +66,49 @@ app/templates/home.html: Conditional statemenst in template
 </html>
 ```
 The templates is slightly  smarter to know when a title has been provided or not. If there is a title in the view function, then it will use it within it's head, otherwise, it will resort to displaying _Welcome to My Personal Blog_.
+
+### Template Inheritance
+
+At this stage of the application, it is very easy to make edits in the templates. However, when the application becomes bigger and bigger, say, to have several templates, then making these edits on each template can become difficult and tiring. Thankfully, Flask allows for template inheritence where we can define a base layout for the entire blog. From this base layout, every other template that we will create will inherit the base styles and features. This makes is easy whenever we want to make changes to our growing application. The second reason to consider template inheritence is so that we can maintain a consistene theme or layout throughout our blog. We want that certain features be present in each template. For example, we would want to maintain our navigation bar and our footer everywhere.
+
+For these reason, we have our `base.html` file in the templates sub-folder. This file will contain our navigation bar and our footer. Notabely, we will move our `<head>` logic from the `home.html` template we implemented earlier to include in the `base.html` template.
+
+app/templates/base.html: Title, Navigation bar and Footer
+```html
+<html>
+    <head>
+        {% if title %}
+            <title>
+                Gitau Harrison | {{ title }}
+            </title> 
+        {% else %}
+            <title>
+                Welcome to my Personal Blog
+            </title> 
+        {% endif %}         
+    </head>
+    <body>
+        <div>
+            Gitau Harrison: <a href="/home">Home</a>
+        </div>
+        {% block content %}
+
+        {% endblock %}
+    </body>
+</html>
+```
+The `block` control statement is used to define where the derived templates can insert themselves. Blocks are to be given unique names which derived templates can reference to provide their own content.
+
+app/templates/home.html: Template inheritence
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Available Updates</h1>
+    <div>
+        <!--Home Page Content Goes Here-->
+    </div>
+{% endblock %}
+```
+
+The `extends` statement establishes the inheritence link between the two templates. When Jinja2 is asked to render the home page, it will know that it also needs to embed `base.html` file.
