@@ -1,4 +1,4 @@
-The completed project used in this article can be referenced [here](https://github.com/GitauHarrison/personal-blog-tutorial-project/commit/5b3f2b4c0348b933f4f07755457efc2fe3218c7a). 
+The completed project used in this article can be referenced [here](https://github.com/GitauHarrison/personal-blog-tutorial-project/commit/b388b9099738c53b44650ef8e99a4364a923964a). 
 
 In the previous chapter, you learnt how to display a string on the web browser. During this chapter, I will show you how to work with HTML templates that help create a more elaborate and dynamic web application.
 
