@@ -42,7 +42,7 @@ def home():
     return render_template('home.html', title = 'Home')
 ```
 
-Flask provides the `render_template` function which allows us to render (or to show) HTML templates. About, we have returned the `home.html` template. Additionally, we have added a title to the function such that the placeholder value we saw previously will change to indicate 'Home'. Jinja2 is responsible of substituting the placeholder value with the actual dynamic content.
+Flask provides the `render_template` function which allows us to render (or to show) HTML templates. Above, we have returned the `home.html` template. Additionally, we have added a title to the function such that the placeholder value we saw previously will change to indicate 'Home'. Jinja2 is responsible for substituting the placeholder value with the actual dynamic content.
 
 We can make the title of our blog a bit more interesting. Jinja2 provides support for control statements to be used in templates. Let us update our home page to include a control statement.
 
@@ -67,13 +67,13 @@ app/templates/home.html: Conditional statemenst in template
     </body>
 </html>
 ```
-The templates is slightly  smarter to know when a title has been provided or not. If there is a title in the view function, then it will use it within it's head, otherwise, it will resort to displaying _Welcome to My Personal Blog_.
+The template is slightly  smarter now to know when a title has been provided or not. If there is a title in the view function, then it will use it within it's head, otherwise, it will resort to displaying _Welcome to My Personal Blog_.
 
 ### Template Inheritance
 
 At this stage of the application, it is very easy to make edits in the templates. However, when the application becomes bigger and bigger, say, to have several templates, then making these edits on each template can become difficult and tiring. Thankfully, Flask allows for template inheritence where we can define a base layout for the entire blog. From this base layout, every other template that we will create will inherit the base styles and features. This makes is easy whenever we want to make changes to our growing application. The second reason to consider template inheritence is so that we can maintain a consistene theme or layout throughout our blog. We want that certain features be present in each template. For example, we would want to maintain our navigation bar and our footer everywhere.
 
-For these reason, we have our `base.html` file in the templates sub-folder. This file will contain our navigation bar and our footer. Notabely, we will move our `<head>` logic from the `home.html` template we implemented earlier to include in the `base.html` template.
+For these reasons, we have our `base.html` file in the templates sub-folder. This file will contain our navigation bar and our footer. Notabely, we will move our `<head>` logic from the `home.html` template we implemented earlier to the `base.html` template.
 
 app/templates/base.html: Title, Navigation bar and Footer
 ```html
@@ -113,7 +113,7 @@ app/templates/home.html: Template inheritence
 {% endblock %}
 ```
 
-The `extends` statement establishes the inheritence link between the two templates. When Jinja2 is asked to render the home page, it will know that it also needs to embed `base.html` file.
+The `extends` statement used above establishes the inheritence link between the two templates. When Jinja2 is asked to render the home page, it will know that it also needs to embed the `base.html` file.
 
 Run your Flask application and you should be able to see your home page.
 
