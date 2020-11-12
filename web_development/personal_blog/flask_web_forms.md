@@ -9,7 +9,13 @@ In the previous chapter, you learnt how to work with flask templates. In this ch
 ```python
 $ pip3 install flask-wtf
 ```
-Previously, we created a `config.py` file in the application's root directory. This file will contain all the configurations we need for our applications. The very first configuration we will need is called the SECRET_KEY. This configuration variable will be used by Flask_WTform to help secure our forms against a nasty attack called [CSRF](https://en.wikipedia.org/wiki/Cross-site_request_forgery) (pronounced as 'sea-surf'). 
+Let us create a `config.py` file in the application's root directory. 
+
+```python
+$ touch config.py
+```
+
+This file will contain all the configurations we need for our applications. The very first configuration we will need is called the SECRET_KEY. This configuration variable will be used by Flask_WTform to help secure our forms against a nasty attack called [CSRF](https://en.wikipedia.org/wiki/Cross-site_request_forgery) (pronounced as 'sea-surf'). 
 
 In our `config.py` file, let us update it to include this new security variable.
 
@@ -47,7 +53,7 @@ Flask_WTF uses classes to represent web forms. A form class basically defines th
 Let us create a `forms.py` file in our app subfolder that we will use to define our form.
 
 ```python
-touch app/forms.py
+$ touch app/forms.py
 ```
 
 app/forms.py: Define the comments form
@@ -66,41 +72,43 @@ Flask extensions conventionally use the format `flask_<extension-name>` during i
 
 The `validators` argument is optional. We have used `DataRequired` to ensure that whenever a user wishes to post a comment, then they have to fill in each field that contain that value. 
 
+One of the validators used is `Email`. What this does is it ensures that the data filled in the email field is a valid email address. Flask cannot validate this on its own. We need to install another extension to use this validation.
+
+```python
+$ pip3 install email-validator
+```
+
 ### Form Template
 
 We have now defined how our form will be. The next step is to render this form in a comments template. 
 
 ```python
-touch app/templates/comments.html
+$ touch app/templates/comments.html
 ```
 app/templates/comments.html: Render Comments form
 
 ```html
-{% extends 'base.html' %}
-
-{% block content %}
-    <h1>Comments</h1>
-    <form action="" method="POST" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}
-            {{ form.username(size=32) }}
-        </p>
-        <p>
-            {{ form.email.label }}
-            {{ form.email(size=32) }}
-        </p>
-        <p>
-            {{ form.comment.label }}
-            {{ form.comment(size=64) }}
-        </p>
-        <p>
-            {{ form.submit() }}
-        </p>
-    </form>
-{% endblock %}
+<h3>Comments</h3>
+<form action="" method="POST" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.username.label }}<br>
+        {{ form.username(size=32) }}
+    </p>
+    <p>
+        {{ form.email.label }}<br>
+        {{ form.email(size=32) }}
+    </p>
+    <p>
+        {{ form.comment.label }}<br>
+        {{ form.comment(size=64) }}
+    </p>
+    <p>
+        {{ form.submit() }}
+    </p>
+</form>
 ```
-Here, you can see that I am reusing the `base` template. The reason for this is so that we can inherit all the features, styles and layout that define our application. You will see me do this all the templates.
+I have intentionally not inherited the `base` template because I will include this `comments.html` file to other templates. To avoid double inheritence problems, it was necessary to not extend the base template. You will see how I will include this template in another template below.
 
 The HTML `<form>` element is used to render web forms. I have used the `action` attribute to tell the browser which URL to submit the form when the submit button is clicked. When the value is set to empty, the URL to be used will be the one in the address bar, the one that rendered the form. 
 
@@ -111,3 +119,87 @@ The `novalidate` tells the web browser not to apply any validation to the form f
 `form.hidden_tag()` is used to protect against CSRF attacks. It generates a hidden field that includes a token that enhance form protection. To protect a web form, all you have to do is to ensure you have the SECRET_KEY configured and the `form.hidden_tag()` used in the form. Flask_WTF does the rest for you.
 
 `{{ form.<field_name>.label }}` is used to display the label of a field while `{{ form.<field_name>(size=32) }}` displays the actual field. 
+
+### View Forms
+
+The last step to render our forms will be to create a view function that will be responsible of displaying the forms. We want our form to be included in each article. So, we will go ahead and create a dummy article and attach the form at the bottom of it. First, let us define our article view function.
+
+app/routes.py: Article view function
+```python
+from flask import render_template
+from app import app
+from app.forms import CommentForm
+
+#...
+@app.route('/flask-webforms')
+def flask_webforms():
+    form = CommentForm()
+    return render_template('flask_webforms.html', title = 'Flask Webforms', form = form)
+```
+
+We do not have this dummy article template. We need to create it so that our view function can render it.
+
+```python
+$ touch app/templates/flask_webforms.html
+```
+
+app/templates/flask_webforms.html: First Article
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Flask Webforms</h1>
+    <p>
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+    </p>
+    <h3>Working with Flask Web Forms</h3>
+    <p>
+        Contrary to popular belief, Lorem Ipsum is not simply random text. 
+        It has roots in a piece of classical Latin literature from 45 BC, 
+        making it over 2000 years old. Richard McClintock, a Latin professor 
+        at Hampden-Sydney College in Virginia, looked up one of the more obscure 
+        Latin words, consectetur, from a Lorem Ipsum passage, and going through 
+        the cites of the word in classical literature, discovered the undoubtable source.
+    </p><hr>
+    {% include 'comments.html' %}
+{% endblock %}
+```
+
+I have used the `{% include '<template.html>' %}` argument to incorporate the comments template in our article template.
+
+With the article template in place, we can make it accessible to visitors of our blog by providing a link in the `base` template.
+
+app/templates/base.html: Link to Article
+```html
+<html>
+    <head>
+        {% if title %}
+            <title>
+                Gitau Harrison | {{ title }}
+            </title> 
+        {% else %}
+            <title>
+                Welcome to my Personal Blog
+            </title> 
+        {% endif %}         
+    </head>
+    <body>
+        <div>
+            Gitau Harrison: <a href="/home">Home</a>
+        </div>
+        <div>
+            <ul>
+                <li><a href="/flask-webforms">Flask Webforms Link<a></li>
+            </ul>
+        </div>
+        {% block content %}
+
+        {% endblock %}
+    </body>
+</html>
+```
+
+At this point, you can run the application. You should be able to see the _Flask Webforms Link_ on your [localhost](http://localhost:5000/). Click on the link to see your article with a comments form included at the bottom. Pretty cool, right?
+
+![Article Form](/images/article_form.png)
