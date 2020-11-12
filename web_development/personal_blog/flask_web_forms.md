@@ -47,7 +47,7 @@ Flask_WTF uses classes to represent web forms. A form class basically defines th
 Let us create a `forms.py` file in our app subfolder that we will use to define our form.
 
 ```python
-mkdir app/forms.py
+touch app/forms.py
 ```
 
 app/forms.py: Define the comments form
@@ -65,3 +65,49 @@ class CommentForm(FlaskForm):
 Flask extensions conventionally use the format `flask_<extension-name>` during imports. Flask_WTF uses `flask_wtf` from which we import `FlaskForm`. All the four fields in our form are imported directly from the Flask-WTF package.
 
 The `validators` argument is optional. We have used `DataRequired` to ensure that whenever a user wishes to post a comment, then they have to fill in each field that contain that value. 
+
+### Form Template
+
+We have now defined how our form will be. The next step is to render this form in a comments template. 
+
+```python
+touch app/templates/comments.html
+```
+app/templates/comments.html: Render Comments form
+
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Comments</h1>
+    <form action="" method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.username.label }}
+            {{ form.username(size=32) }}
+        </p>
+        <p>
+            {{ form.email.label }}
+            {{ form.email(size=32) }}
+        </p>
+        <p>
+            {{ form.comment.label }}
+            {{ form.comment(size=64) }}
+        </p>
+        <p>
+            {{ form.submit() }}
+        </p>
+    </form>
+{% endblock %}
+```
+Here, you can see that I am reusing the `base` template. The reason for this is so that we can inherit all the features, styles and layout that define our application. You will see me do this all the templates.
+
+The HTML `<form>` element is used to render web forms. I have used the `action` attribute to tell the browser which URL to submit the form when the submit button is clicked. When the value is set to empty, the URL to be used will be the one in the address bar, the one that rendered the form. 
+
+The HTTP method I want to use to submit the form data is `POST`. The default HTTP method to send the form is a `GET` request. but using the `POST` method provides for a better user experience such that the form data is submitted in the body of the form. When you use the `GET` method, the form fields are added to the URL, making it cluttered. 
+
+The `novalidate` tells the web browser not to apply any validation to the form fields.This now allows Flask to handle all form validation. 
+
+`form.hidden_tag()` is used to protect against CSRF attacks. It generates a hidden field that includes a token that enhance form protection. To protect a web form, all you have to do is to ensure you have the SECRET_KEY configured and the `form.hidden_tag()` used in the form. Flask_WTF does the rest for you.
+
+`{{ form.<field_name>.label }}` is used to display the label of a field while `{{ form.<field_name>(size=32) }}` displays the actual field. 
