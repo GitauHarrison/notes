@@ -279,3 +279,41 @@ Test the application now, by submitting an empty form to see how `DataRequired` 
 
 ![Flashed Message](/images/flashed_message.png)
 
+### Improve Field Validation
+
+The way our form works to handle invalid user information submitted through our form is by rendering the form to the user again to put in better data. You will agree with me that there is no way a user of our current form will know whether the data they put in is valid or invalid. Our form has now to show this. To improve the user experience at the form, we will add some field validation. 
+
+```html
+<h3>Comments</h3>
+<form action="" method="POST" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.username.label }}<br>
+        {{ form.username(size=32) }}<br>
+        {% for error in form.username.errors %}
+            <span style="color: red;"> {{ error }} </span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.email.label }}<br>
+        {{ form.email(size=32) }}<br>
+        {% for error in form.email.errors %}
+            <span style="color: red;"> {{ error }} </span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.comment.label }}<br>
+        {{ form.comment(size=64) }}<br>
+        {% for error in form.comment.errors %}
+            <span style="color: red;"> {{ error }} </span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.submit() }}
+    </p>
+</form>
+```
+
+The only change I have made to the form is to include `{% for error in form.<fieldname>.errors %}<span style="color: red;"> {{ error }} </span>{% endfor %}`. This will render the error messages added by the validators  in red color. This time round, if you try submit data with the field forms being empty, you will see an error message appear below each field in red color.
+
+![Improved Form Validation](/images/improved_form_validation.png)
