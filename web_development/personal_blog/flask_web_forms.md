@@ -203,3 +203,79 @@ app/templates/base.html: Link to Article
 At this point, you can run the application. You should be able to see the _Flask Webforms Link_ on your [localhost](http://localhost:5000/). Click on the link to see your article with a comments form included at the bottom. Pretty cool, right?
 
 ![Article Form](/images/article_form.png)
+
+### Receive Form Data
+
+If you try to press the _Post_ button, you will see:
+
+![Method Not Allowed](/images/method_not_allowed.png)
+
+This is because our previous view function does only half the job. We need to be able to process the data that has been submitted through our form.
+
+app/routes.py: Receive form data
+```python
+from flask import render_template, redirect, flash
+#...previous imports
+
+#...
+@app.route('/flask-webforms', methods = ['GET', 'POST'])
+def flask_webforms():
+    form = CommentForm()
+    if form.validate_on_submit():
+        flash('{}\'s comment is now live!'.format(form.username.data))
+        return redirect('/flask_webforms')
+    return render_template('flask_webforms.html', title = 'Flask Webforms', form = form)
+```
+
+The first update is the `methods` argument in the decorator route. This tells Flask that the view function accepts both `GET` and `POST` requests, overiding the default, which is to accepts only `GET` requests. `POST` requests are primarily used to submit form data to the server, although `GET` requests can also do the same but it is not recommended.
+
+`form.validate_on_submit()` method is used to handle form processing. When the browser sends a `GET` request, the method will return `False`, and therefore skip the form validation and render only the html page. If the browser returns a `POST` request due to a user clicking on the _Post_ button, the method will gather the user's username and run all validation. If everything is okay, then it will return `True`, flash a message on the screen and redirect the request to the `/flask_webforms` route.
+
+Message flashing is quite popular. A lot of websites implement this. This feature provides the user with useful feedback about the status of their actions. Flashed messages, however, do not applear magically. The application's templates need to render this messages. 
+
+We will add a flashed messages template and include it in our article page.
+
+```python
+$ touch app/templates/flashed_messages.html
+```
+app/templates/flashed_messages.html: Flash messages
+```html
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+```
+`get_flashed_messages()` from flask is used to return all the registered flash messages. We assign all these messages to `messages` using the `with` construct. If messages exist, then we loop through all those registered messages and display each one of them that is available. Once these messages are requested once using `get_flashed_messages()`, then they are removed from the messages list. They will appear only once in the `flash` command.
+
+We will add this flash messages to our article template right before the comments section, such that whenever a successful post is made, the flashed message will appear within the comments section only.
+
+app/templates/flask_webforms.html
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Flask Webforms</h1>
+    <p>
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+    </p>
+    <h3>Working with Flask Web Forms</h3>
+    <p>
+        Contrary to popular belief, Lorem Ipsum is not simply random text. 
+        It has roots in a piece of classical Latin literature from 45 BC, 
+        making it over 2000 years old. Richard McClintock, a Latin professor 
+        at Hampden-Sydney College in Virginia, looked up one of the more obscure 
+        Latin words, consectetur, from a Lorem Ipsum passage, and going through 
+        the cites of the word in classical literature, discovered the undoubtable source.
+    </p><hr>
+    {% include 'flashed_messages.html' %}
+    {% include 'comments.html' %}
+{% endblock %}
+```
+Test the application now, by submitting an empty form to see how `DataRequired` works.
+
+![Flashed Message](/images/flashed_message.png)
+
