@@ -108,11 +108,11 @@ app/templates/comments.html: Render Comments form
     </p>
 </form>
 ```
-I have intentionally not inherited the `base` template because I will include this `comments.html` file to other templates. To avoid double inheritence problems, it was necessary to not extend the base template. You will see how I will include this template in another template below.
+I have intentionally not inherited the `base` template because I will include this `comments.html` file in other templates. To avoid double inheritence problems, it was necessary to not extend the base template. You will see how I will include this template in another template below.
 
 The HTML `<form>` element is used to render web forms. I have used the `action` attribute to tell the browser which URL to submit the form when the submit button is clicked. When the value is set to empty, the URL to be used will be the one in the address bar, the one that rendered the form. 
 
-The HTTP method I want to use to submit the form data is `POST`. The default HTTP method to send the form is a `GET` request. but using the `POST` method provides for a better user experience such that the form data is submitted in the body of the form. When you use the `GET` method, the form fields are added to the URL, making it cluttered. 
+The HTTP method I want to use to submit the form data is `POST`. The default HTTP method to send the form is a `GET` request, but using the `POST` method provides for a better user experience such that the form data is submitted in the body of the form. When you use the `GET` method, the form fields are added to the URL, making it cluttered. 
 
 The `novalidate` tells the web browser not to apply any validation to the form fields.This now allows Flask to handle all form validation. 
 
@@ -122,7 +122,7 @@ The `novalidate` tells the web browser not to apply any validation to the form f
 
 ### View Forms
 
-The last step to render our forms will be to create a view function that will be responsible of displaying the forms. We want our form to be included in each article. So, we will go ahead and create a dummy article and attach the form at the bottom of it. First, let us define our article view function.
+The last step to render our forms will be to create a view function that will be responsible for displaying the forms. We want our form to be included in each article. So, we will go ahead and create a dummy article and attach the form at the bottom of it. First, let us define our article view function.
 
 app/routes.py: Article view function
 ```python
@@ -248,9 +248,9 @@ app/templates/flashed_messages.html: Flash messages
     {% endif %}
 {% endwith %}
 ```
-`get_flashed_messages()` from flask is used to return all the registered flash messages. We assign all these messages to `messages` using the `with` construct. If messages exist, then we loop through all those registered messages and display each one of them that is available. Once these messages are requested once using `get_flashed_messages()`, then they are removed from the messages list. They will appear only once in the `flash` command.
+`get_flashed_messages()` from flask is used to return all the registered flash messages. We assign all these messages to `messages` using the `with` construct. If messages exist, then we loop through all those registered messages and display each one of them that is available. These messages are requested once using `get_flashed_messages()`, then they are removed from the messages list. They will appear only once in the `flash` command.
 
-We will add this flash messages to our article template right before the comments section, such that whenever a successful post is made, the flashed message will appear within the comments section only.
+We will add these flash messages to our article template right before the comments section, such that whenever a successful post is made, the flashed message will appear on top of the comments section only.
 
 app/templates/flask_webforms.html
 ```html
@@ -281,7 +281,7 @@ Test the application now, by submitting an empty form to see how `DataRequired` 
 
 ### Improve Field Validation
 
-The way our form works to handle invalid user information submitted through our form is by rendering the form to the user again to put in better data. You will agree with me that there is no way a user of our current form will know whether the data they put in is valid or invalid. Our form has now to show this. To improve the user experience at the form, we will add some field validation. 
+The way our form works to handle invalid user information submitted through our form is by rendering the form to the user again to put in better data. You will agree with me that there is no way a user of our current form will know whether the data they put in is valid or invalid. Our form has no way to show this. To improve the user experience at the form, we will add some field validation. 
 
 ```html
 <h3>Comments</h3>
@@ -314,15 +314,15 @@ The way our form works to handle invalid user information submitted through our 
 </form>
 ```
 
-The only change I have made to the form is to include `{% for error in form.<fieldname>.errors %}<span style="color: orangered;"> {{ error }} </span>{% endfor %}`. This will render the error messages added by the validators  in orangered color. This time round, if you try submit data with the field forms being empty, you will see an error message appear below each field in orangered color.
+The only change I have made to the form is to include `{% for error in form.<fieldname>.errors %}<span style="color: orangered;"> {{ error }} </span>{% endfor %}`. This will render the error messages added by the validators  in orangered color. This time round, if you try to submit data with the field forms being empty, you will see an error message appear below each field in orangered color.
 
 ![Improved Form Validation](/images/improved_form_validation.png)
 
 ### Writing Better Links
 
-One problem with writing actual links in our code is that if one day you decide you want to change a couple of things then chances are that you will have to go and look for each link wherever it could be and change it. This becomes even more cumbersome when the application becomes bigger. 
+One problem with writing actual links in our code is that if one day we decide to change a couple of things, chances are we will have to go and look for each link wherever it could be and change it. This is cumbersome and it becomes even more cumbersome and error-prone when the application becomes bigger. 
 
-To have better control over these links, we'd rather use their view function name instead or URLs. Flask provides a function called `url_for()` which maps URLs to view functions. For example, `url_for('about_me')` returns the `/about-me` URL. The argument in `url_for()` is the endpoint whose name it the view function name.
+To have better control over these links, we'd rather use their view function name instead of URLs. Flask provides a function called `url_for()` which maps URLs to view functions. For example, `url_for('about_me')` returns the `/about-me` URL. The argument in `url_for()` is the endpoint whose name is the view function name.
 
 From now on, I will be using `url_for` every time I want to generate URLs. Meanwhile, we will change all URLs in our current application.
 
