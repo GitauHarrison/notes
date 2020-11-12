@@ -1,4 +1,4 @@
-The completed project used in this article can be referenced [here](https://github.com/GitauHarrison/personal-blog-tutorial-project/commit/b388b9099738c53b44650ef8e99a4364a923964a).
+The completed project used in this article can be referenced [here](https://github.com/GitauHarrison/personal-blog-tutorial-project/commit/12693f33c3fdfb35258ac9f3e76862fd558a25bc).
 
 In the previous chapter, you learnt how to work with flask templates. In this chapter, I will show you how you can create flask web forms. Web forms are an integral part of a web application. We will use web forms to allow visitors of our blog to post comments on each article.
 
