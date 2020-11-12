@@ -291,21 +291,21 @@ The way our form works to handle invalid user information submitted through our 
         {{ form.username.label }}<br>
         {{ form.username(size=32) }}<br>
         {% for error in form.username.errors %}
-            <span style="color: red;"> {{ error }} </span>
+            <span style="color: orangered;"> {{ error }} </span>
         {% endfor %}
     </p>
     <p>
         {{ form.email.label }}<br>
         {{ form.email(size=32) }}<br>
         {% for error in form.email.errors %}
-            <span style="color: red;"> {{ error }} </span>
+            <span style="color: orangered;"> {{ error }} </span>
         {% endfor %}
     </p>
     <p>
         {{ form.comment.label }}<br>
         {{ form.comment(size=64) }}<br>
         {% for error in form.comment.errors %}
-            <span style="color: red;"> {{ error }} </span>
+            <span style="color: orangered;"> {{ error }} </span>
         {% endfor %}
     </p>
     <p>
@@ -314,6 +314,59 @@ The way our form works to handle invalid user information submitted through our 
 </form>
 ```
 
-The only change I have made to the form is to include `{% for error in form.<fieldname>.errors %}<span style="color: red;"> {{ error }} </span>{% endfor %}`. This will render the error messages added by the validators  in red color. This time round, if you try submit data with the field forms being empty, you will see an error message appear below each field in red color.
+The only change I have made to the form is to include `{% for error in form.<fieldname>.errors %}<span style="color: orangered;"> {{ error }} </span>{% endfor %}`. This will render the error messages added by the validators  in orangered color. This time round, if you try submit data with the field forms being empty, you will see an error message appear below each field in orangered color.
 
 ![Improved Form Validation](/images/improved_form_validation.png)
+
+### Writing Better Links
+
+One problem with writing actual links in our code is that if one day you decide you want to change a couple of things then chances are that you will have to go and look for each link wherever it could be and change it. This becomes even more cumbersome when the application becomes bigger. 
+
+To have better control over these links, we'd rather use their view function name instead or URLs. Flask provides a function called `url_for()` which maps URLs to view functions. For example, `url_for('about_me')` returns the `/about-me` URL. The argument in `url_for()` is the endpoint whose name it the view function name.
+
+From now on, I will be using `url_for` every time I want to generate URLs. Meanwhile, we will change all URLs in our current application.
+
+app/templats/base.html: Use view function name when generating links
+```html
+<html>
+    <head>
+        {% if title %}
+            <title>
+                Gitau Harrison | {{ title }}
+            </title> 
+        {% else %}
+            <title>
+                Welcome to my Personal Blog
+            </title> 
+        {% endif %}         
+    </head>
+    <body>
+        <div>
+            Gitau Harrison: <a href="{{ url_for('home') }}">Home</a>
+        </div>
+        <div>
+            <ul>
+                <li><a href="{{ url_for('flask-webforms') }}">Flask Webforms Link<a></li>
+            </ul>
+        </div>
+        {% block content %}
+
+        {% endblock %}
+    </body>
+</html>
+```
+
+app/routes.py: Use view function names when generating links
+```python
+from flask import render_template, redirect, flash
+#...previous imports
+
+#...
+@app.route('/flask-webforms', methods = ['GET', 'POST'])
+def flask_webforms():
+    form = CommentForm()
+    if form.validate_on_submit():
+        flash('{}\'s comment is now live!'.format(form.username.data))
+        return redirect(url_for('flask_webforms'))
+    return render_template('flask_webforms.html', title = 'Flask Webforms', form = form)
+```
