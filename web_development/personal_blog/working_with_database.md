@@ -131,3 +131,47 @@ Creating directory /home/gitau/software_development/python/flask_tutorial/person
 ```
 
 The _migrations_ subfolder that has been created should be part of your application from now henceforth, and you need to commit it to version control.
+
+### First Migration
+
+Let us now add a `User` table that maps the User model in our database. We will use `flask db migrate` command to automatical generate our table:
+
+```python
+$ flask db migrate -m 'user table'
+
+# Output
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.autogenerate.compare] Detected added table 'user'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_user_comment' on '['comment']'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_user_email' on '['email']'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_user_username' on '['username']'
+  Generating /home/gitau/software_development/python/flask_tutorial/personal_blog_tutorial_project/migrations/versions/e3ed68135fa1_user_table.py ...  done
+```
+
+You will notice two things:
+* `aap.db` has been created
+* `...user_table.py` file in _migrations/versions_ has also been created
+
+The migration script `...user_table.py` is also part of your project and will need to be added to version control. `flask db migrate` does not make any changes to our database, it only generates a migrations script. What we need to do to apply these changes to our database is to run the `flask db upgrade` command:
+
+```python
+$ flask db upgrade
+
+# Output
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> e3ed68135fa1, user table
+```
+SQLite thankfully creates a database for us (the `app.db` file). However, when working with PostgreSQL or MySQL, you will need to create the database in the database server before running `upgrade`.
+
+There is also the `flask db downgrade` command which returns the state of our database to a previous version. We won't use it at this point because we have no need to downgrade anything.
+
+In summary, to create and apply changes to your database, all you need to do is run these commands in order:
+
+```python
+$ flask db init # Only run once
+$ flask db migrate -m '<your new changes>'
+$ flask db upgrade
+```
+
