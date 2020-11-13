@@ -32,8 +32,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config(object):
     #...
-    SQLALCHEMY_DATABAE_URI=os.environ.get('DATABAE_URL') or 'sqlite:///' + os.path.join(basedir, 'app.db')
-    SQLALCHEMY_TRACK_MODIFICATIONS=Flase
+    SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'app.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS=False
 ```
 
 We are taking the location of the database from the environment variable DATABAE_URL. If this does not exist, we provide a safety net where we configure our database called `app.db` int the main directory of our application, which is stored in the variable `basedir`.
@@ -69,7 +69,15 @@ Our database models will be defined by classes. The ORM layer will do the transl
 
 The `Username`, `Email` and `Comment` fields are defined by us. The type of data they hold is `string` (or `VARCHAR` in database jargon). Each of this field has a maximum length defined to optimize on storage space.
 
-Now that we know what we want for our user table, we can code it in our models:
+Now that we know what we want for our user table, we can code it in our `models` module. Since we do not have it yet, let us go ahead and create an empty `models.py` file in our _app_ directory:
+
+```python
+$ touch app/models.py
+```
+
+Add these code below to define our models structure/schema:
+
+app/models.py: User schema
 
 ```python
 from app import db
@@ -81,7 +89,7 @@ class User(db.Model):
     comment = db.Column(db.String(), index=True)
 
     def __repr__(self):
-        return 'User: <>'.format(self.username)
+        return 'User <>'.format(self.username)
 ```
 
 Our `User` class inherites a base class called `db.Model` which is used for all models in Flask-SQLAlchemy. The class defines several field as variables of the instance `db.Column`. 
@@ -92,8 +100,34 @@ The `__repr__` method tells Python how to print the objects of the `User` class.
 $ python3
 >>> from app.models import User
 >>> u = User (username = 'Gitau', email = 'harry@email.com')
->>> u
+>>> u.username
 
 # Output
-<User Gitau>
+'Gitau'
 ```
+
+### Create Migration Repository
+
+[Alembic](https://alembic.sqlalchemy.org/en/latest/), a database migration framework for SQLAlchemy maintains a _migrations repository_ which stores all migrations scripts. Every time our database changes, a migration script needs to be generated to indicate the new schema/structure of the modified model. These scripts are stored in the _migrations repository_. Now that we have our database structure set up, we need to create a migrations script which defines our new User model. `Flask-migrate` helps us to manage all our migrations needs. Run the command below to generate a _migrations_ repository"
+
+```python
+$ flask db init
+
+# Output
+Creating directory /home/gitau/software_development/python/flask_tutorial/personal_blog_tutori
+  al_project/migrations ...  done
+  Creating directory /home/gitau/software_development/python/flask_tutorial/personal_blog_tutori
+  al_project/migrations/versions ...  done
+  Generating /home/gitau/software_development/python/flask_tutorial/personal_blog_tutorial_proje
+  ct/migrations/alembic.ini ...  done
+  Generating /home/gitau/software_development/python/flask_tutorial/personal_blog_tutorial_proje
+  ct/migrations/script.py.mako ...  done
+  Generating /home/gitau/software_development/python/flask_tutorial/personal_blog_tutorial_proje
+  ct/migrations/env.py ...  done
+  Generating /home/gitau/software_development/python/flask_tutorial/personal_blog_tutorial_proje
+  ct/migrations/README ...  done
+  Please edit configuration/connection/logging settings in '/home/gitau/software_development/pyt
+  hon/flask_tutorial/personal_blog_tutorial_project/migrations/alembic.ini' before proceeding.
+```
+
+The _migrations_ subfolder that has been created should be part of your application from now henceforth, and you need to commit it to version control.
