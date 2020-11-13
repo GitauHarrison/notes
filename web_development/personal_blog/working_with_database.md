@@ -59,3 +59,41 @@ from app import routes, models
 
 We have imported our models into the application instance.
 
+### Database Models
+
+Our database models will be defined by classes. The ORM layer will do the translation of our classes into rows in the proper database tables. Let us think about the data we want to add to our database. Our form collects a visitor's _username_, _email_ and _comment_. These are the data we are interested in, and they are the ones that will do into our database. The table below will show how the _User_ table in our database will look like.
+
+![Database Schema](/images/db_schema.png)
+
+`id` field is usually in all models. They are used as primary keys. This field is automatically assigned a unique `id` value. We will use this field in our database.
+
+The `Username`, `Email` and `Comment` fields are defined by us. The type of data they hold is `string` (or `VARCHAR` in database jargon). Each of this field has a maximum length defined to optimize on storage space.
+
+Now that we know what we want for our user table, we can code it in our models:
+
+```python
+from app import db
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True)
+    email = db.Column(db.String(120), index=True)
+    comment = db.Column(db.String(), index=True)
+
+    def __repr__(self):
+        return 'User: <>'.format(self.username)
+```
+
+Our `User` class inherites a base class called `db.Model` which is used for all models in Flask-SQLAlchemy. The class defines several field as variables of the instance `db.Column`. 
+
+The `__repr__` method tells Python how to print the objects of the `User` class. This method is especially useful when we want to debug our code. I will show you  how to use the method in the Python interpreter.
+
+```python
+$ python3
+>>> from app.models import User
+>>> u = User (username = 'Gitau', email = 'harry@email.com')
+>>> u
+
+# Output
+<User Gitau>
+```
