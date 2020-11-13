@@ -1,4 +1,4 @@
-The completed project used in this article can be referenced [here](https://github.com/GitauHarrison/personal-blog-tutorial-project/commit/12693f33c3fdfb35258ac9f3e76862fd558a25bc).
+The completed project used in this article can be referenced [here](https://github.com/GitauHarrison/personal-blog-tutorial-project/commit/3cc77ab6b79c45ad0bb61b1e1abb20990e9aacbe).
 
 In this chapter, I will introduce the important concept of databases. We will use a database to store all user information that we get through our forms. Data in a database is typically persistent and can be retrieved when needed. What I mean is when we close our application and reopen it, we do not have to worry that any user data will be lost. Our database safely stores these data.
 
