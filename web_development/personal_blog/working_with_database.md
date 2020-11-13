@@ -85,8 +85,7 @@ from app import db
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True)
-    email = db.Column(db.String(120), index=True)
-    comment = db.Column(db.String(), index=True)
+    email = db.Column(db.String(120), index=True)    
 
     def __repr__(self):
         return 'User <>'.format(self.username)
@@ -175,3 +174,50 @@ $ flask db migrate -m '<your new changes>'
 $ flask db upgrade
 ```
 
+### Relationships in Database
+
+Visitors to our blog when do one thing: post comments. The way we have set up our database allows one visitor to post multiple comments using the same credentials. Here is the thing: in database scenario, each comment belongs to a specific user. In other words a visitor of our blog who decides to leave a comment owns his or her comment. The most efficient way we can record this scenario is by visualizing two records.
+
+![Database Relationship](/images/db_relationship.png)
+
+Our _Comment Table_ has `id`, `comment`, `timestamp` and `user_id` fields. The `user_id` field links the _Comment Table_ with the _User Table_. It is referred to as a `foreign key`. This key is of type _integer_.
+
+The kind of relationship we are seeing here is _one-to-many relationship_. One user can write many comments. We need to show this relationship in our `models.py` file:
+
+```python
+from app import db
+from datetime import datetime
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True)
+    email = db.Column(db.String(120), index=True)    
+    comments = db.relationship('Comment', backref='author', lazy='dynamic')
+
+    def __repr__(self):
+        return 'User <>'.format(self.username)
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(), index=True)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return 'Body <>'.format(self.body)
+```
+
+The `timestamp` field will be responsible for showing what time a user made a comment. It uses the standard `utcnow` time convention. It is recommended that `utc` be used rather than the local time zone. When you pass a function as a default, SQLAlchemy will set the field to the value of calling that function. Note that I am using `utcnow` and not the result of calling `utcnow()`. I have excluded the `()` because using it will give us the result of that function. We do not want to pass the result of the function to our field, rather we let SQLAlchemy do that using the argument `default`.
+
+As earlier mentioned, `user_id` in _Comment Table_ is a foreign key. To declare it in our model, we use `db.ForeignKey()`, for which SQLAlchemy user lowercase letters. If the word is multi_worded, then the snake_case convention is applied.
+
+We referrence the _Comment Table_ in the _User Table_ using `db.relationship`. The first argument in `db.relationship` is the name of the table we are referrencing, in this case it is the _Comment Table_. It is used conventionally on the 'one' side of the relationship to referrence the 'many' side of the same relationship.
+
+The `backref` will return the user as the `author` of the comment while `lazy` defines how the database query for the relationship will be issued.
+
+With these updates to our database, we need to apply them by running these commands:
+
+```python
+$ flask db migrate -m 'comment table'
+$ flask db upgrage
+```
