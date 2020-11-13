@@ -6,11 +6,11 @@ In this chapter, I will introduce the important concept of databases. We will us
 
 Flask supports a number of databases with no particular preference. It is intentionally unopinionated, which provides us with the freedom to choose whichever database we want to use. Despite the support for databases, Flask does not support them natively.
 
-Databases can be group into two broad categries: _relational databases_ and those that are not relational. Those that do not follow any relational model are called _NoSQL_, meaning they do not implement the relational query language [SQL](https://en.wikipedia.org/wiki/SQL). For applications that have structured data such as a list of users, or blog posts, relational databases are much better and more recommended. NoSQL databases do much better with data that is less structured. For this reason, we will learn how to implement relational databases for our blog.
+Databases can be grouped into two broad categries: _relational databases_ and those that are not relational. Those that do not follow any relational model are called _NoSQL_, meaning they do not implement the relational query language [SQL](https://en.wikipedia.org/wiki/SQL). For applications that have structured data such as a list of users, or blog comments, relational databases are much better and more recommended. NoSQL databases do much better with data that is less structured. For this reason, we will learn how to implement relational databases for our blog.
 
-We will use [SQLAlchemy](https://www.sqlalchemy.org/). It is an [Object Relational Mapper](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping) where classes can be mapped to a database to develop a clean database schema. SQLAlchemy supports a number of popular database engines, including MySQL, PostrgeSQL and SLQLite. This is super convinient because as you develop your application, you can use a serverless database such as SQLite and upon production, you can easily switch to a more robust database engine such as Postgre without haveing to change your application. 
+We will use [SQLAlchemy](https://www.sqlalchemy.org/). It is an [Object Relational Mapper](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping) where classes can be mapped to a database to develop a clean database schema. SQLAlchemy supports a number of popular database engines, including MySQL, PostrgeSQL and SLQLite. This is super convinient because as you develop your application, you can use a serverless database such as SQLite and upon production, you can easily switch to a more robust database engine such as Postgre without having to change your application. 
 
-Flask has a couple of extensions that help us work with databases. In this chapter, I will introduce two to you:
+Flask has a couple of extensions that will help us work with databases. In this chapter, I will introduce two to you:
 
 * [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/)
 * [Flask-migrate](https://flask-migrate.readthedocs.io/en/latest/)
@@ -20,7 +20,7 @@ When a database is created, it will not stay empty. Data will fill it. This mean
 Let us go ahead and install both extensions in our virtual environment:
 
 ```python
-$ pip3 install flask-sqlachemy
+$ pip3 install flask-sqlalchemy
 $ pip3 install flask-migrate
 ```
 
@@ -36,11 +36,11 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS=False
 ```
 
-We are taking the location of the database from the environment variable DATABAE_URL. If this does not exist, we provide a safety net where we configure our database called `app.db` int the main directory of our application, which is stored in the variable `basedir`.
+We are taking the location of the database from the environment variable DATABASE_URL. If this does not exist, we provide a safety net where we configure our database called `app.db` in the main directory of our application, which is stored in the variable `basedir`.
 
-Every time a change is made to the database, we will get a signal to our application. We do not need this signals every time we make changes to our database for now. So, I have set `SQLALCHEMY_TRACK_MODIFICATIONS` to `Flase`.
+Every time a change is made to the database, we will get a signal to our application. We do not need this signals every time we make changes to our database for now. So, I have set `SQLALCHEMY_TRACK_MODIFICATIONS` to `False`.
 
-As done earlier, we need to register our database to the application instance.
+As done in the previous chapter, we need to register our database in the application instance.
 
 app/__init__.py: Initialize database in application
 ```python
@@ -57,17 +57,17 @@ migrate = Migrate(app, db)
 from app import routes, models
 ```
 
-We have imported our models into the application instance.
+We have imported our `models` into the application instance.
 
 ### Database Models
 
-Our database models will be defined by classes. The ORM layer will do the translation of our classes into rows in the proper database tables. Let us think about the data we want to add to our database. Our form collects a visitor's _username_, _email_ and _comment_. These are the data we are interested in, and they are the ones that will do into our database. The table below will show how the _User_ table in our database will look like.
+Our database models will be defined by classes. The ORM layer will do the translation of our classes into rows in the proper database tables. Let us think about the data we want to add to our database. Our form collects a visitor's _username_, _email_ and _comment_. These are the data we are interested in, and they are the ones that will go into our database. The table below will show how the _User_ table in our database will look like.
 
 ![Database Schema](/images/db_schema.png)
 
-`id` field is usually in all models. They are used as primary keys. This field is automatically assigned a unique `id` value. We will use this field in our database.
+`id` field is usually in all models. It is used as a primary key. This field is automatically assigned a unique `id` value.
 
-The `Username`, `Email` and `Comment` fields are defined by us. The type of data they hold is `string` (or `VARCHAR` in database jargon). Each of this field has a maximum length defined to optimize on storage space.
+The `Username` and `Email` fields are defined by us. The type of data they hold is `string` (or `VARCHAR` in database jargon). Each of this field has a maximum length defined to optimize on storage space.
 
 Now that we know what we want for our user table, we can code it in our `models` module. Since we do not have it yet, let us go ahead and create an empty `models.py` file in our _app_ directory:
 
@@ -75,7 +75,7 @@ Now that we know what we want for our user table, we can code it in our `models`
 $ touch app/models.py
 ```
 
-Add these code below to define our models structure/schema:
+Add this code below to define our models structure/schema:
 
 app/models.py: User schema
 
@@ -91,7 +91,7 @@ class User(db.Model):
         return 'User <>'.format(self.username)
 ```
 
-Our `User` class inherites a base class called `db.Model` which is used for all models in Flask-SQLAlchemy. The class defines several field as variables of the instance `db.Column`. 
+Our `User` class inherites a base class called `db.Model` which is used for all models in Flask-SQLAlchemy. The class defines several fields as variables of the instance `db.Column`. 
 
 The `__repr__` method tells Python how to print the objects of the `User` class. This method is especially useful when we want to debug our code. I will show you  how to use the method in the Python interpreter.
 
@@ -104,10 +104,11 @@ $ python3
 # Output
 'Gitau'
 ```
+Our output is as a result of `__repr__` returning it as we had defied it above.
 
 ### Create Migration Repository
 
-[Alembic](https://alembic.sqlalchemy.org/en/latest/), a database migration framework for SQLAlchemy maintains a _migrations repository_ which stores all migrations scripts. Every time our database changes, a migration script needs to be generated to indicate the new schema/structure of the modified model. These scripts are stored in the _migrations repository_. Now that we have our database structure set up, we need to create a migrations script which defines our new User model. `Flask-migrate` helps us to manage all our migrations needs. Run the command below to generate a _migrations_ repository"
+[Alembic](https://alembic.sqlalchemy.org/en/latest/), a database migration framework for SQLAlchemy, maintains a _migrations repository_ which stores all migrations scripts. Every time our database changes, a migration script needs to be generated to indicate the new schema/structure of the modified model. These new scripts are stored in the aforementioned _migrations repository_. Now that we have our database structure set up, we need to create a migrations script which defines our new User model. `Flask-migrate` helps us to manage all our migrations needs. Run the command below to generate a _migrations_ repository:
 
 ```python
 $ flask db init
@@ -129,11 +130,11 @@ Creating directory /home/gitau/software_development/python/flask_tutorial/person
   hon/flask_tutorial/personal_blog_tutorial_project/migrations/alembic.ini' before proceeding.
 ```
 
-The _migrations_ subfolder that has been created should be part of your application from now henceforth, and you need to commit it to version control.
+Check your roote folder. The _migrations_ subfolder that has been created should be part of your application from now henceforth, and you need to commit it to version control.
 
 ### First Migration
 
-Let us now add a `User` table that maps the User model in our database. We will use `flask db migrate` command to automatical generate our table:
+Let us now add a `User` table that maps the User model in our database. We will use `flask db migrate` command to automatically generate our table:
 
 ```python
 $ flask db migrate -m 'user table'
@@ -149,7 +150,7 @@ INFO  [alembic.autogenerate.compare] Detected added index 'ix_user_username' on 
 ```
 
 You will notice two things:
-* `aap.db` has been created
+* `app.db` has been created
 * `...user_table.py` file in _migrations/versions_ has also been created
 
 The migration script `...user_table.py` is also part of your project and will need to be added to version control. `flask db migrate` does not make any changes to our database, it only generates a migrations script. What we need to do to apply these changes to our database is to run the `flask db upgrade` command:
@@ -176,13 +177,15 @@ $ flask db upgrade
 
 ### Relationships in Database
 
-Visitors to our blog when do one thing: post comments. The way we have set up our database allows one visitor to post multiple comments using the same credentials. Here is the thing: in database scenario, each comment belongs to a specific user. In other words a visitor of our blog who decides to leave a comment owns his or her comment. The most efficient way we can record this scenario is by visualizing two records.
+Visitors to our blog will do one thing: post comments. The way we have set up our database allows for one visitor to post multiple comments using the same credentials. I mean, a user called 'Harry' can use the username 'Harry' and his email 'harry@email.com' to post several comments without running the risk of our application rejecting his subsequent comments. 
+
+Here is the thing: in our database scenario, each comment belongs to a specific user. In other words a visitor of our blog who decides to leave a comment owns his or her comment. The most efficient way we can record this scenario is by visualizing two records.
 
 ![Database Relationship](/images/db_relationship.png)
 
 Our _Comment Table_ has `id`, `comment`, `timestamp` and `user_id` fields. The `user_id` field links the _Comment Table_ with the _User Table_. It is referred to as a `foreign key`. This key is of type _integer_.
 
-The kind of relationship we are seeing here is _one-to-many relationship_. One user can write many comments. We need to show this relationship in our `models.py` file:
+The kind of relationship we are seeing here is a _one-to-many relationship_. One user can write many comments. We need to show this relationship in our `models.py` file:
 
 ```python
 from app import db
@@ -207,9 +210,11 @@ class Comment(db.Model):
         return 'Body <>'.format(self.body)
 ```
 
-The `timestamp` field will be responsible for showing what time a user made a comment. It uses the standard `utcnow` time convention. It is recommended that `utc` be used rather than the local time zone. When you pass a function as a default, SQLAlchemy will set the field to the value of calling that function. Note that I am using `utcnow` and not the result of calling `utcnow()`. I have excluded the `()` because using it will give us the result of that function. We do not want to pass the result of the function to our field, rather we let SQLAlchemy do that using the argument `default`.
+The `timestamp` field will be responsible for showing what time a user made a comment. It uses the standard `utcnow` time convention. It is recommended that `utc` be used rather than the local time zone. Imagine visitors of your blog reside in different timezones. To manage each visitor's timezone in our application can be a hectic task. Instead, we resort to using the conventional `utc` which is a standard time conversion.
 
-As earlier mentioned, `user_id` in _Comment Table_ is a foreign key. To declare it in our model, we use `db.ForeignKey()`, for which SQLAlchemy user lowercase letters. If the word is multi_worded, then the snake_case convention is applied.
+When you pass a function as a default, SQLAlchemy will set the field to the value of calling that function. Note that I am using `utcnow` and not the result of calling `utcnow()`. I have excluded the `()` because using it will give us the result of that function. We do not want to pass the result of the function to our field, rather we let SQLAlchemy do that using the argument `default`.
+
+As earlier mentioned, `user_id` in _Comment Table_ is a foreign key. To declare it in our _Comment_ model, we use `db.ForeignKey()`, for which SQLAlchemy user lowercase letters. If the word is multi_worded, then the snake_case convention is applied.
 
 We referrence the _Comment Table_ in the _User Table_ using `db.relationship`. The first argument in `db.relationship` is the name of the table we are referrencing, in this case it is the _Comment Table_. It is used conventionally on the 'one' side of the relationship to referrence the 'many' side of the same relationship.
 
@@ -331,7 +336,7 @@ Traceback (most recent call last):
 NameError: name 'app' is not defined
 >>>
 ```
-This is when we start our Python interpreter the normal way.
+This is when we start our Python interpreter the normal way. We get an error that app is not defined in our application. Is that true? Definitely no! 
 
 ```python
 $ flask shell
@@ -345,7 +350,7 @@ Instance: /home/gitau/software_development/python/flask_tutorial/personal_blog_t
 # Output
 <Flask 'app'>
 ```
-The interpreter pre-imports app in the context of our application. Very  convinient, right?
+This time round, the interpreter pre-imports _app_ in the context of our application. We have no error. Very  convinient, right?
 
 We can configure the shell context to preimport whatever else we want. This is done in the `personal_blog.py` file.
 
