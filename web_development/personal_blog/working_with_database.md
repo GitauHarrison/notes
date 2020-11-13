@@ -221,3 +221,88 @@ With these updates to our database, we need to apply them by running these comma
 $ flask db migrate -m 'comment table'
 $ flask db upgrage
 ```
+### Testing
+
+At this point, we have our database set up. But it is empty. To test it's functionality, we need to input some data. In this section, you will learn how to work with the database itself and the data it contains. Make sure you are in the interactive shell.
+
+```python
+$ python3
+
+>>> from app import db
+>>> from app.models import User, Comment
+```
+
+Let us add a user:
+
+```python
+>>> u =  User(username = 'gitau', email = 'gitau@email.com')
+>>> db.session.add(u)
+>>> db.session.commit()
+```
+
+Changes to a database are done is sessions. You can accululate multiple changes and then commit them to the database once. If at one point you get an error, you can do `db.session.rollback()` to abort the session and remove any changes from the  session. 
+
+Let us add another user:
+
+```python
+>>> u =  User(username = 'harry', email = 'harry@email.com')
+>>> db.session.add(u)
+>>> db.session.commit()
+```
+
+We can query our database to return all users:
+
+```python
+>>> users = User.query.all()
+>>> for u in users:
+...    print(u.id, u.username)
+
+# Output
+1 gitau
+2 harry
+```
+
+If you know the `id` of a user, you can retrieve that use as seen below:
+
+```python
+>>> u = User.query.get(1)
+>>> u.username
+
+# Output
+'gitau'
+>>> u.email
+# Output
+'gitau@email.com'
+```
+
+Adding a user comment is similar to adding the user:
+
+```python
+>>> c = Comment(body = 'this is a comment', author = u)
+>>> db.session.add(c)
+>>> db.session.commit()
+```
+
+To retrieve all comments, all we need to do is to query the _Comment Table_:
+```python
+>>> comments = Comment.query.all()
+>>> for c in comments:
+...     print(c.id, c.author.username, c.body)
+...
+# Output
+1 gitau this is a comment
+```
+
+That was fun! Let us restore our database to a clean slate now:
+
+```python
+>>> users = User.query.all()
+>>> for u in users:
+...     db.session.delete(u)
+...
+>>> comments = Comment.query.all()
+>>> for c in comments:
+...     db.session.delete(c)
+...
+>>> db.session.commit()
+```
