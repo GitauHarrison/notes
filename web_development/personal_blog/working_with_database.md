@@ -306,3 +306,68 @@ That was fun! Let us restore our database to a clean slate now:
 ...
 >>> db.session.commit()
 ```
+
+### What is Shell Context
+
+Above, we have had to manually run our imports. Probably you have noticed that whenever you exit the Python interpreter, you had to start all over again. Your session is discarded and not remembered every time you restart your shell prompt. This is what we had to do all the time:
+
+```python
+$ python3
+
+>>> from app import db
+>>> from app.models import User, Comment
+```
+
+Thankfully, flask offers a solution to this rather tedious task. The `flask` command offers `flask shell` whose sole purpose is to start a Python interpreter in the context of our application. Check this out:
+
+```python
+$ python3
+
+>>> app
+
+# Output
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'app' is not defined
+>>>
+```
+This is when we start our Python interpreter the normal way.
+
+```python
+$ flask shell
+
+Python 3.8.5 (default, Jul 28 2020, 12:59:40) 
+[GCC 9.3.0] on linux
+App: app [development]
+Instance: /home/gitau/software_development/python/flask_tutorial/personal_blog_tutorial_project/instance
+>>>app
+
+# Output
+<Flask 'app'>
+```
+The interpreter pre-imports app in the context of our application. Very  convinient, right?
+
+We can configure the shell context to preimport whatever else we want. This is done in the `personal_blog.py` file.
+
+personal_blog.py: Configure the shell context
+
+```python
+from app import app, db
+from app.models import User, Comment
+
+@app.shell_context_processor
+def make_shell_context():
+  return { 'db': db, 'User': User, 'Comment': Comment }
+```
+Now, when `flask shell` command runs, it will invoke the `make_shell_context()` function and register the items returned by it in the shell session. Let us test `flask shell` out:
+
+```python
+$ flask shell
+
+>>> db
+# Output
+<SQLAlchemy engine=sqlite:////home/gitau/software_development/python/flask_tutorial/personal_blog_tutorial_project/app.db>
+>>> Comment
+# Output
+<class 'app.models.Comment'>
+```
