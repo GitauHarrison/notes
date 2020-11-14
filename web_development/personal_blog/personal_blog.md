@@ -16,7 +16,7 @@ For your referrence, below is a list of the articles I have included in this ser
 
 This blog will contains 5 parts:
 
-1. A simple Home Page containing all the articles
+1. A simple Home Page containing all our articles
 2. An About Me page which shades light on who the author of the articles is
 3. A Portfolio page that shows all the projects you have been involved in
 4. A Hire Me Page which allows you to sell your services to interested persons

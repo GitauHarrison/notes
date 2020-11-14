@@ -59,9 +59,9 @@ app/templates/_user_comments.html: Display User comments
         </tr>
 </table>
 ```
-I have named this template using the `_` just to help us know what template is a sub-template. A sub-template will included in another template. In a previous chapter, we created a template called `flashed_messages.html`. Let us rename it to `_flashed_messages.html`. Make user to also rename its inclusion in `flask_webforms.html`.
+I have named this template using the `_` just to help us know what template is a sub-template. A sub-template will be included in another template. In [chapter 3](flask_web_forms.md), we created a template called `flashed_messages.html`. Let us rename it to `_flashed_messages.html`. Make sure to also rename its inclusion in `flask_webforms.html`.
 
-We will include this sub-template in our articles. Our current article file is  `flask_webforms.html`. Let us add user comments:
+We will include these sub-template in our articles. Our current article file is  `flask_webforms.html`. Let us add user comments:
 
 app/templates/flask_webforms.html: Add user comments
 ```html
@@ -86,8 +86,8 @@ app/templates/flask_webforms.html: Add user comments
 
     <!-- User Comments Come Before the Form -->
     {% for post in posts %}
-            {% include '_comments.html' %}
-        {% endfor %}
+        {% include '_comments.html' %}
+    {% endfor %}
         <!-- End of User Comments -->
 
     {% include 'comments.html' %}
@@ -95,7 +95,7 @@ app/templates/flask_webforms.html: Add user comments
 {% endblock %}
 ```
 
-We have used the `for` loop to get all the available comments. 
+We have used the `for` loop to get all the available comments from `posts` variable. I will discuss this variable in a minute below. 
 
 ### Query the Database for Comments
 
@@ -119,9 +119,10 @@ def flask_webforms():
     posts = Comment.query.order_by(Comment.timestamp.desc())
     return render_template('flask_webforms.html', title = 'Flask Webforms', form = form, posts = posts)
 ```
-The function `validate_on_submit()` checks the validity of user data. If all is valid, our two models (User and Comment models) are updated. You can recall from the database chapter that `db.session.add()` adds a user session to the database and the changes are applied by `db.session.commit()`. A message will be flashed to the use telling him or her that the process was successful and that their comment is now live.
+The function `validate_on_submit()` checks the validity of user data. If all is valid, our two models (User and Comment models) are updated with new user data. You can recall from [chapter 4](working_with_database.md) that `db.session.add()` adds a user session to the database and the changes are applied by `db.session.commit()`. A message will be flashed to the user telling him or her that the process was successful and that their comment is now live.
 
 `posts` variable is used to store the result of us querying the Comment Table. The results are to be returned in the order of the the time they were posted. SQLAlhchemy uses `order_by()` function to achieve this. For our case, we want the order to be descending.
 
-Try posting several comments in your arcticle form. You should be able to see the comments displayed.
+Try posting several comments from your article form. You should be able to see the comments displayed.
+
 ![User Comments](/images/user_comments.png)
