@@ -6,7 +6,7 @@ This chapter will focus on how we will go about creating a simple profile for ou
 
 ### User Avatar
 
-We will use [Gravatar](https://en.gravatar.com/) service to provide images for all our users. It is very simple to implement this service. To request an image for a given user, the URL format _https://www.gravatar.com/avatar/<hash>_, where `<hash>` is the md5 hash user email address.
+We will use [Gravatar](https://en.gravatar.com/) service to provide images for all our users. It is very simple to implement this service. To request an image for a given user, the URL format _https://www.gravatar.com/avatar/<_hash_>_, where `<hash>` is the md5 hash user email address.
 
 ```python
 >>> from hashlib improt md5
