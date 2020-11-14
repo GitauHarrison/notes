@@ -91,8 +91,37 @@ app/templates/flask_webforms.html: Add user comments
         <!-- End of User Comments -->
 
     {% include 'comments.html' %}
-    
+
 {% endblock %}
 ```
 
 We have used the `for` loop to get all the available comments. 
+
+### Query the Database for Comments
+
+We need to update our `flask_webforms` view function to allow for the display of user comments.
+
+app/routes.py: Update view function
+```python
+from app.models import User, Comment
+from app import db
+
+def flask_webforms():
+    form = CommentForm()
+    if form.validate_on_submit():
+        user = User(username = form.username.data, email = form.email.data)
+        post = Comment(body = form.comment.data, author = user)
+        db.session.add(user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your comment is now live!')
+        return redirect(url_for('flask_webforms'))
+    posts = Comment.query.order_by(Comment.timestamp.desc())
+    return render_template('flask_webforms.html', title = 'Flask Webforms', form = form, posts = posts)
+```
+The function `validate_on_submit()` checks the validity of user data. If all is valid, our two models (User and Comment models) are updated. You can recall from the database chapter that `db.session.add()` adds a user session to the database and the changes are applied by `db.session.commit()`. A message will be flashed to the use telling him or her that the process was successful and that their comment is now live.
+
+`posts` variable is used to store the result of us querying the Comment Table. The results are to be returned in the order of the the time they were posted. SQLAlhchemy uses `order_by()` function to achieve this. For our case, we want the order to be descending.
+
+Try posting several comments in your arcticle form. You should be able to see the comments displayed.
+![User Comments](/images/user_comments.png)
