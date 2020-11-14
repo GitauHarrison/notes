@@ -6,11 +6,11 @@ In this series, I am going to guide you on how to create your very own blog! Yes
 
 For your referrence, below is a list of the articles I have included in this series:
 
-[Chapter 1: Hello, World!](hello_world.md)
-[Chapter 2: Working with Templates](flask_templates.md)
-[Chapter 3: Flask Web Forms](flask_web_forms.md)
-[Chapter 4: Introduction to Database](working_with_database.md)
-[Chapter 5: User Comments](display_user_comments.md)
+* [Chapter 1: Hello, World!](hello_world.md)
+* [Chapter 2: Working with Templates](flask_templates.md)
+* [Chapter 3: Flask Web Forms](flask_web_forms.md)
+* [Chapter 4: Introduction to Database](working_with_database.md)
+* [Chapter 5: User Comments](display_user_comments.md)
 
 ### Overview
 
