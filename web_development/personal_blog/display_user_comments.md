@@ -1,4 +1,4 @@
-The completed project used in this article can be referenced [here](https://github.com/GitauHarrison/personal-blog-tutorial-project/commit/3cc77ab6b79c45ad0bb61b1e1abb20990e9aacbe).
+The completed project used in this article can be referenced [here](https://github.com/GitauHarrison/personal-blog-tutorial-project/commit/0f32d10287e51e85ad519c1a4cff8b84dd0b6cda).
 
 This chapter will focus on how we will go about creating a simple profile for our blog users. You have probably noticed that whenever a user posts a comment, his or her comment has an avatar and the user's username. These credentials are displayed alongside the actual user comment.
 
