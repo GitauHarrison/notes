@@ -16,7 +16,7 @@ For your referrence, below is a list of the articles I have included in this ser
 
 ### Overview
 
-This blog will contains 5 parts:
+This blog will contain 5 parts:
 
 1. A simple Home Page containing all our articles
 2. An About Me page which shades light on who the author of the articles is

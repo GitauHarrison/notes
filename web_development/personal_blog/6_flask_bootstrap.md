@@ -27,7 +27,7 @@ h1{
 ```
 Above, we have had to identify what element we want to style, then added whatever styles we desire. As simple as this is, when you build larger applications, this can get a lot more complicated.
 
-Like I said earlier, Boostrap provides premade CSS classes with custom styles. See its implementation below:
+Like I said earlier, Boostrap provides pre-made CSS classes with custom styles. See its implementation below:
 
 ```html
 <html>
@@ -46,7 +46,7 @@ Like I said earlier, Boostrap provides premade CSS classes with custom styles. S
     </body>
 </html>
 ```
-The text `Welcome to My Blog` will be centered without the need of us writing our own styles for it. Bootstrap like most other frameworks provide JavaScript add-ons for things that cannot be done strictly with HTML and CSS.
+The text `Welcome to My Blog` will be centered without the need of us writing our own styles for it. Bootstrap, like most other frameworks, also provide JavaScript add-ons for things that cannot be done strictly with HTML and CSS.
 
 Using Bootstrap has several advantages:
 *  Cross-browser similarities
@@ -114,6 +114,7 @@ app/templates/base.html
                 <li><a href=" {{ url_for('portfolio') }} ">Portfolio</a></li>          
                 <li><a href=" {{ url_for('hire_me') }} ">Hire Me</a></li>            
                 <li><a href=" {{ url_for('my_interests') }} ">My Interests</a></li> 
+                <li><a href=" {{ url_for('flask_webforms') }} ">Flask Webforms</a></li> 
             </ul>                       
         </div>
     </div>
@@ -153,7 +154,9 @@ app/templates/base.html
 ```
 ![Flask-Bootstrap Used](/images/flask_boostrap_template.png)
 
-I literally used one of Boostrap's [nav bars](https://getbootstrap.com/docs/4.5/components/navs/) as my own.  Everything is self explanatory, but one thing I want to point out are these two blocks: `content` and `app_content`. The `content` block is a top-level Flask-Bootstrap container. It hosts the `app_content` block and the `footer` block. The `app_content` block is my own custom-made block where other templates will define their own content. With these definitions, I have to rename all my other templates to use `app_content`.
+I literally used one of Boostrap's [nav bars](https://getbootstrap.com/docs/4.5/components/navs/) as my own.  Everything should be self-explanatory.However, one thing I want to point out are these two blocks: `content` and `app_content`. The `content` block is a top-level Flask-Bootstrap container. It hosts the `app_content` block and the `footer` block. The `app_content` block is my own custom-made block where other templates will define their own content. 
+
+With these definitions, I have to rename all my other templates to use `app_content`.
 
 app/templates/flask_webforms.html: Add `app_content` block
 ```html
@@ -165,10 +168,10 @@ app/templates/flask_webforms.html: Add `app_content` block
 {% endblock %}
 ```
 
-You need to do the same for all the other templates we had.
+You need to do the same for all the other templates.
 
 ### Rendering Bootstrap Forms
-Flask excells at rendering forms. If you recall, we had to create each field one by one and even add our own validation styles. Flask-Bootstrap comes with a macro that accepts Flak-WTF form object as an argument and renders it using Boostrap styles.
+Flask excells at rendering forms. If you recall, we had to create each field one by one and even added our own validation styles. Flask-Bootstrap comes with a macro that accepts Flask-WTF form object as an argument and renders it using Boostrap styles.
 
 app/templates/flask_webforms.html: Render Booststrap forms
 ```html
@@ -206,7 +209,7 @@ app/templates/_user_comments.html: Improved User Comments
 
 ### Rendering Flash Messages
 
-We can also improve the way our flash messages look like. From [bootstrap alerts](https://getbootstrap.com/docs/4.0/components/alerts/), we can update our `_user_comments.html` sub-template to include one of these alerts:
+We can also improve the way our flash messages look like. From [bootstrap alerts](https://getbootstrap.com/docs/4.0/components/alerts/), we can update our `_user_comments.html` sub-template to include one of the alert styles:
 
 app/templates/_user_comments.html
 ```html
@@ -227,7 +230,7 @@ app/templates/_user_comments.html
 
 The facelift is quite impressive now. There is one more thing that we need to improve. That footer! I want the footer to be at the very bottom of our page. Currently, the footer comes right where our page content ends. What I want is when the page content does not fill the entire viewport (this is the screen size), then it should go to the very bottom of the view port. If the content is far taller than the viewport, then, the footer should be seen at the end of the taller content.
 
-Footer beneath the content, even when the content is taller than hte viewport.
+Footer beneath the content, even when the content is taller than the viewport.
 
 ![Taller Content with Footer](/images/taller_content.png)
 
@@ -235,7 +238,7 @@ Footer at the bottom of the page, leaving space between it and short content.
 
 ![Short Content with Footer](/images/short_content.png)
 
-To achieve this, I will create my own styles in a `styles.css`. Let us create this file inside the css folder:
+To achieve this, I will create my own styles in a `styles.css` file. Let us create this file inside the css folder:
 
 ```python
 $ touch app/static/css/styles.css
@@ -305,8 +308,8 @@ body::after {
     /* height: 150px; */
 }
 ```
-The most important thing to note here is the `position` of the parent element and the footer. The parent element (in our case they are `html` and `body`) should be set to fill the entire viewport by specifying the minimum height as `100vh` and its position to `relative`. The footer, on the otherhand, should be set to an `absolute` position. Ensure that you add `margin: 0;` to take it to the bottom.
+The most important thing to note here is the `position` of the parent element and the footer. The parent element (in our case they are `html` and `body`) should be set to fill the entire viewport by specifying the minimum height as `100vh` and their position to `relative`. The footer, on the otherhand, should be set to an `absolute` position. Ensure that you add `margin: 0;` to the footer to take it to the bottom.
 
-To ensure that these styles are applied in all viewport sizes, I use media queries. For now, I am only applying footer and body styles. You can add more if you want.
+To ensure that these styles are applied in all viewport sizes, I use media queries. For now, I am only interested in the footer and body styles. You can add more if you want.
 
-Before I end this chapter, I will add a link in _My Interests_ page which will redirect us to the  URL associated with the `flask_webforms` view function. I will then remove the link in our base template. If I want to access _Flask Web Forms_ page, I will do so through the _My Interests Page_.
+Before I end this chapter, I will modify the structure of our application a bit. I will add a link in _My Interests_ page which will redirect us to the  URL associated with the `flask_webforms` view function. I will then remove this link in our base template. If I want to access _Flask Web Forms_ page, I will do so through the _My Interests Page_.

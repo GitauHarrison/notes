@@ -6,7 +6,7 @@ This chapter will focus on how we will go about creating a simple profile for ou
 
 ### User Avatar
 
-We will use [Gravatar](https://en.gravatar.com/) service to provide images for all our users. It is very simple to implement this service. To request an image for a given user, the URL format _https://www.gravatar.com/avatar/<_hash_>_, where `<hash>` is the md5 hash for a user's email address.
+We will use [Gravatar](https://en.gravatar.com/) service to provide images for all our users. It is very simple to implement this service. To request an image for a given user, the URL format _https://www.gravatar.com/avatar/<_hash_>_ is used, where `<hash>` is the md5 hash for a user's email address.
 
 ```python
 >>> from hashlib improt md5
@@ -15,7 +15,7 @@ We will use [Gravatar](https://en.gravatar.com/) service to provide images for a
 # Output
 'https://www.gravatar.com/avatar/3f4360b2a748228ba4f745a3ebd428dc'
 ```
-The returned image has a default size of 80X80 pixels. This size can, however, be changed by adding an `s` argument tothe URL's query string. This is what I mean:
+The returned image has a default size of 80X80 pixels. This size can, however, be changed by adding an `s` argument to the URL's query string. This is what I mean:
 _https://www.gravatar.com/avatar/3f4360b2a748228ba4f745a3ebd428dc?s=78_.
 
 You can further customize the URL to include another type of image for your avatar. [Gravatar](https://en.gravatar.com/site/implement/images/) has these images:
@@ -28,7 +28,7 @@ You can further customize the URL to include another type of image for your avat
 * robohash: a generated robot with different colors, faces, etc
 * blank: a transparent PNG image (border added to HTML below for demonstration purposes)
 
-We can add an image of choice, say, the identicon, by passing the `d` argument to our query string. These are for users who do not have an avatar registered with the service.
+We can add an image of choice, say, the identicon, by passing the `d` argument to our query string. These options above are for users who do not have an avatar registered with the service.
 
 Some sites can block the Gravatar service due to tracking concerns. So, if you do not see any image, maybe it is because of an extension that blocks the service.
 
@@ -44,7 +44,7 @@ class User(UserMixin, db.Model):
         return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
 ```
 
-To generate an md5 hash, we convert a user's email to lower case. md5 support in Python is in bytes and not strings, hence we encode the string as bytes before passing it on the hash function. Learn more from their [documentation](https://en.gravatar.com/site/implement/images).
+To generate an md5 hash, we convert a user's email to lower case. md5 support in Python is in bytes and not strings, hence we encode the string as bytes before passing it on to the hash function. Learn more from their [documentation](https://en.gravatar.com/site/implement/images).
 
 ### Display User Avatar
 
@@ -59,9 +59,9 @@ app/templates/_user_comments.html: Display User comments
         </tr>
 </table>
 ```
-I have named this template using the `_` just to help us know what template is a sub-template. A sub-template will be included in another template. In [chapter 3](flask_web_forms.md), we created a template called `flashed_messages.html`. Let us rename it to `_flashed_messages.html`. Make sure to also rename its inclusion in `flask_webforms.html`.
+I have named this template using the `_` just to help us differentiate a "normal" template from a sub-template. A sub-template will be included in a "normal" template. In [chapter 3](flask_web_forms.md), we created a template called `flashed_messages.html`. Let us rename it to `_flashed_messages.html`. Make sure to also rename its inclusion in `flask_webforms.html`.
 
-We will include these sub-template in our articles. Our current article file is  `flask_webforms.html`. Let us add user comments:
+We will include these sub-templates in our articles. Our current article file is  `flask_webforms.html`. Let us add user comments in this template:
 
 app/templates/flask_webforms.html: Add user comments
 ```html

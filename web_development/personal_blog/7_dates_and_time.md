@@ -1,10 +1,10 @@
-The completed project used in this article can be referenced [here](https://github.com/GitauHarrison/personal-blog-tutorial-project/commit/0f32d10287e51e85ad519c1a4cff8b84dd0b6cda).
+The completed project used in this article can be referenced [here](https://github.com/GitauHarrison/personal-blog-tutorial-project/commit/6e45f97e64050331d70c1fe1b489981497e1297b).
 
-Our _Comment_ model has a `timestamp` field. in [chapter 5](5_display_user_comments.md), we saw how we can display a user's `username` and comment `body`. What we need to do now is display the time a comment was made in a user post. 
+Our _Comment_ model has a `timestamp` field. In [chapter 5](5_display_user_comments.md), we saw how we can display a user's `username` and comment `body`. What we need to do now is display the time a comment was made in a user post. 
 
 ### Understanding Dates and Time in Python
 
-Python has a [datetime](https://docs.python.org/3/library/datetime.html#module-datetime) module which supplies classes for manipulating dates and times. We will work with a few examples to understand how `datetime` works. Run your Python interpreter by typing `python3` in your terminal.
+Python has a [datetime](https://docs.python.org/3/library/datetime.html#module-datetime) module which supplies classes for manipulating dates and times. We will work with a few examples to understand how `datetime` works. To get started, activate your interpreter by typing `python3` in your terminal.
 
 ```python
 >>> import datetime
@@ -93,7 +93,7 @@ t3 =  26 days, 7:38:36
 ```
 We have created two `timedelta` objects and printed their difference. For more authoritative information on the Python `datetime` module, check the [python documentation](https://docs.python.org/3/library/datetime.html).
 
-At this point, you are fairly familiar with how to use time and date in Python. But there is one more thing I would like to discuss: time zones. We know that their is an obvious possibility that the visitors of our blog may be living in different time zones. We want our blog to be able to generate consistent timestamps despite of the fact that users of our blog live in different time zones. 
+At this point, you are fairly familiar with how to use time and date in Python. But there is one more thing I would like to discuss: time zones. We know that their is an obvious possibility that the visitors of our blog may be living in different time zones. We want our blog to be able to generate consistent timestamps regardless of the fact that users of our blog may be living in different time zones. 
 
 To understand the effect of timezone, I will show you how we are affected by it below:
 
@@ -146,13 +146,13 @@ app/templates/base.html: Add moment.js in base template
 {% endblock %}
 ```
 
-Flask-Bootstrap expects that `scripts` block since it is the place where all JavaScript imports are to be included. The special thing with this block unlike the rest is we need to use `super()`. `super()` helps to preserver the content from the base template, without which all your base content definitions will be lost.
+Flask-Bootstrap expects us to use the `scripts` block since it is the place where all JavaScript imports are to be included. The special thing with this block unlike the rest is we need to use `super()`. `super()` helps to preserve the content in the base template, without which all your base content definitions will be lost.
 
 ##### Using Moment.js
 
 Moment.js uses the ISO 8601 format to render timestamps, The format is as follows:
 
-`{{ year }}-{{ month }}-{{ day }}T{{ hour }}:{{ minute }}:{{ second }}{{ timezone }}` The last part will always be a  `Z` which represents the UTC timezone I want to work with in ISO 8601 format.
+`{{ year }}-{{ month }}-{{ day }}T{{ hour }}:{{ minute }}:{{ second }}{{ timezone }}` The last part will always be a  `Z` which represents the UTC timezone that I want to work with in ISO 8601 format.
 
 Moment.js has multiple methods for different rendering options:
 ```python
@@ -190,3 +190,26 @@ app/templates/_user_comments.html: Render timestamp
 Below, you can see how the comments timestamp looks like when rendered with Flask-Moment and moment.js
 
 ![Comment Timestamp](/images/comments_timestamp.png)
+
+Impresssive, right! To make it stand out a bit, I can style both the username and the timestamp as seen below:
+
+app/templates/_user_comments.html: Improved Comment Styles
+```html
+<table class="table table-hover">
+    <tr valign="top">
+        <td width="70px">
+            <img src="{{ post.author.avatar(36) }}">
+        </td>
+        <td>
+            <span style="color: #482ff7">
+                {{ post.author.username }} 
+            </span>
+                said 
+                <span style=" font-size: 10px;">
+                    {{ moment(post.timestamp).fromNow() }}
+                </span>:<br>
+            {{ post.body }}</td>
+    </tr>
+</table>
+```
+![Styled Comments](/images/styled_comments.png)
