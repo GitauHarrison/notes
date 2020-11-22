@@ -213,3 +213,77 @@ Regardless of timezones, any user who runs the code above will get the same outp
 
 While standardizing timestamps to UTC makes a lot of sense from the server's point of view, this creates a usability problem for users. I am in Nairobi and the current time here is `06:25:15`. However, UTC returns `03:27:03`. This means that I have to do the calculation of my actual time. Every visitor of our blog will have to do the same. Below, i will address this challenge while still maintaining a standardized time in our server.
 
+##### Moment.js
+[Moment.js](https://momentjs.com/) is an open source Javascript library that helps in formating time and date. I am going to use this to help solve the issue with user time. To use it in our flask application, we will need to install the Flask extension associated with it:
+
+```python
+# Remember to activate your virtual environment when installing packages
+$ pip3 install flask-moment
+```
+We need to register this extension in our application
+
+app/__init__.py: Register flask-moment instance
+```python
+# ...
+from flask_moment import Moment
+
+app = Flask(__name__)
+# ...
+moment = Moment(app)
+```
+
+Moment.js is a Javascript library, and to use it, we need to add this script to our template so as to make it available. Thankfully, Flask-Moment makes it easier to do this, by exposing `moment.include_moment()` function that generates the `<script>` tag.
+
+app/templates/base.html: Add moment.js in base template
+```python
+# ...
+{% block scripts %}
+    {{ super }}
+    {{ moment.include_moment() }}
+{% endblock %}
+```
+
+Flask-Bootstrap expects that `scripts` block since it is the place where all JavaScript imports are to be included. The special thing with this block unlike the rest is we need to use `super()`. `super()` helps to preserver the content from the base template, without which all your base content definitions will be lost.
+
+##### Using Moment.js
+
+Moment.js uses the ISO 8601 format to render timestamps, The format is as follows:
+
+`{{ year }}-{{ month }}-{{ day }}T{{ hour }}:{{ minute }}:{{ second }}{{ timezone }}` The last part will always be a  `Z` which represents the UTC timezone I want to work with in ISO 8601 format.
+
+Moment.js has multiple methods for different rendering options:
+```python
+moment('2020-11-22T10:10:10Z').format('L')
+# Output
+"11/22/2020"
+
+moment('2020-11-22T10:10:10Z').format('LL')
+# Output
+"November 22, 2020"
+
+moment('2020-11-22T10:10:10Z').format('dddd')
+# Output
+"Sunday"
+
+moment('2020-11-22T10:10:10Z').calendar('dddd')
+# Output
+"Today at 10:10 AM"
+```
+Learn more about the different rendering options of Moment.js [here](https://momentjs.com/).
+
+We will include a properly formated timestamp next to a user's name when posting a comment.
+
+app/templates/_user_comments.html: Render timestamp
+```html
+<table>
+    <tr valign="top">
+        <td><img src="{{ post.author.avatar(36) }}"></td>
+        <td>{{ post.author.username }} said {{ moment(post.timestamp).fromNow() }}:<br>
+            {{ post.body }}</td>
+    </tr>
+</table>
+```
+
+Below, you can see how the comments timestamp looks like when rendered with Flask-Moment and moment.js
+
+![Comment Timestamp](/images/comments_timestamp.png)
