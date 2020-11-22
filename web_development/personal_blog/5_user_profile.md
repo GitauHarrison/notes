@@ -92,6 +92,26 @@ The `for` loop goes over all the available data in our database. `posts` is a va
 
 If you recall from [chapter 4](4_working_with_database.md), we created a relationship between the _User_ model and the _Comment_ model. Every time a comment is posted, it will be referrenced to the user who is stored in our database. With each loop, the variable `post` stores new data. We use this `post` variable to get a user's `username` `avatar` and `body` of the comment from the database. 
 
+Let us update our `flask_webforms` view function to generate these comments.
+
+app/routes.py: Query db for comments
+```python
+@app.route('/flask-webforms', methods = ['GET', 'POST'])
+def flask_webforms():
+    form = CommentForm()
+    if form.validate_on_submit():
+        user = User(username = form.username.data, email = form.email.data)
+        post = Comment(body = form.comment.data, author = user)
+        db.session.add(user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your comment is now live!')
+        return redirect(url_for('flask_webforms'))
+    posts = Comment.query.order_by(Comment.timestamp.desc())
+    return render_template('flask_webforms.html', title = 'Flask Webforms', form = form, posts = posts)
+```
+`posts` variable has been used to query the _Comment_ model and return the results in a descending order. `desc()` function has been used to order how we want to display these user comments.
+
 So now, if you visit the URL mapped to the `flask_webforms` view function and post several comments, you will see formated user comments as seen below:
 
 ![User Comments Displayed](/images/user_comments_displayed.png)
