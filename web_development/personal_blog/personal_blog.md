@@ -10,7 +10,9 @@ For your referrence, below is a list of the articles I have included in this ser
 * [Chapter 2: Working with Templates](flask_templates.md)
 * [Chapter 3: Flask Web Forms](flask_web_forms.md)
 * [Chapter 4: Introduction to Database](working_with_database.md)
-* [Chapter 5: User Comments](display_user_comments.md)
+* [Chapter 5: User Comments](5_display_user_comments.md)
+* [Chapter 6: Improved User Interface](flask_bootstrap.md)
+* [Chapter 7: Working with Dates and Time](7_dates_and_time.md)
 
 ### Overview
 
