@@ -13,3 +13,4 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 9. [Integrate Google reCaptcha in Flask](recaptcha.md)
 10. [Adding markdown editing to Flask-WTF forms](handling_rich_text.md)
 11. [Setting Up Ngrok](localhost_testing.md)
+12. [Install Elasticsearch](elasticsearch_installation.md)
