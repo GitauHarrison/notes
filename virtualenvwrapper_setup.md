@@ -71,26 +71,19 @@ Add these rows:
 
 ```python
 #Virtualenvwrapper settings:
-export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
 export WORKON_HOME=$HOME/.virtualenvs
-export VIRTUALENVWRAPPER_VIRTUALENV=/home/gitau/.local/bin/virtualenv
-source ~/.local/bin/virtualenvwrapper.sh
-```
-Here, we have created variables to hold the path to our Python3 and virtual environment. 
-
-Note that you should replace the line
-```python
-export VIRTUALENVWRAPPER_VIRTUALENV=/home/gitau/.local/bin/virtualenv
-```
-with your computer name:
-
-```python
-export VIRTUALENVWRAPPER_VIRTUALENV=/home/<your-computer-name>/.local/bin/virtualenv
+VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+. /usr/local/bin/virtualenvwrapper.sh
 ```
 
 ###### Save and Quit
 
-Type `:wq` and press `Enter` This will allow you to save your changes and quit the editor. Close your terminal and reopen it.
+Press __esc__ and type `:wq` then press `Enter` This will allow you to save your changes and quit the editor. Close your terminal and reopen it.
+
+Now you need to reload the _bashrc_ script. There are two ways to do it:
+
+1. Close and reopen the terminal
+2. Execute this command in the terminal: `source ~/.bashrc`
 
 You have completed setting up your virtual environment. 
 
