@@ -39,8 +39,9 @@ Other useful dependancies can be:
 This article covers:
 
 1. Accepting file uploads
-2. Securing uploaded files
-3. Consuming uploaded files
+2. File Submissions in Flask
+3. Securing uploaded files
+4. Consuming uploaded files
 
 **NOTE: The assumption is you have a basic understanding of how to create forms manually, as I will not be reviewing manual creation of files, but rather focus on how to render forms that are styled using `flask-bootstrap`.**
 
@@ -218,3 +219,35 @@ You should be able to see this:
 
 ![Accepting File Uploads](/images/accepting_file_uploads.png)
 Browse the compelete code [here](https://github.com/GitauHarrison/handling-file-uploads-in-flask/commit/40a9928c1c978b7fcf878cb33dd3a0b9874a77f0).
+
+### 2. File Submissions in Flask
+
+Form fileds in `Flask` are generally accessed used using `request.form` dictionary. For file fields, `request.files` is used.
+
+We need to update the `index()` function in `routes.py` to access and save files as seen below:
+
+`routes.py: submit a file`
+
+```python
+from app import app
+from flask import render_template, url_for, request, redirect
+from app.forms import UploadForm
+
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+def index():
+    form = UploadForm()
+    if request.method == 'POST':
+        uploaded_file = request.files['file']
+        if uploaded_file.filename != '':
+            uploaded_file.save(uploaded_file.filename)
+        return redirect(url_for('index'))
+    return render_template('index.html', title='Home', form=form)
+
+```
+We want to send our form only when the method used is `POST`. We store a file object in the variable called `uploaded_file` which uses `request.files` dictionary to access the data in the `FileField`. If that file object is not empty, then we call the `save()` function to store that data in a local disk in the application's top-level directory. After each submission, we display the home page by redirecting the URL to the `index()` function.
+
+Reload your page and choose a file by clicking the _Choose File_ button. Hit the _Submit_ button and you will notice that a file has been saved in you top-level directory.
+
+Browse the file submission code [here]().
