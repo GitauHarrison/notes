@@ -14,3 +14,5 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 10. [Adding markdown editing to Flask-WTF forms](handling_rich_text.md)
 11. [Setting Up Ngrok](localhost_testing.md)
 12. [Install Elasticsearch](elasticsearch_installation.md)
+13. [How to install and configure `git`](install_git.md)
+14. [Handling file upload in flask](file_upload_in_flask.md)
