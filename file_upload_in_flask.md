@@ -6,12 +6,19 @@ Most web application allow for file uploads. In this article, I will show you ho
 
 ![App structure](/images/file_upload_structure.png)
 
+Create the application's structure as shown above using the `mkdir` and `touch` commands in your terminal. For example:
+
+```python
+$ mkdir my_new_project # this creates an empty directory in the current working directory
+$ touch my_new_file # this creates an empty file in the current working directory
+```
+
 ### Useful dependancies
 
 Make sure to be working in a virtual environment before you begin the project. Create and activate your virtual environment as follows:
 
 ```python
-$ mkvirtualenv venv #I am using virtualenvwrapper
+$ mkvirtualenv venv # I am using virtualenvwrapper
 ```
 Learn how to set up and use virtual environment wrapper [here](virtualenvwrapper_setup.md).
 
@@ -39,11 +46,11 @@ Other useful dependancies can be:
 This article covers:
 
 1. Accepting file uploads
-2. File Submissions in Flask
+2. File Submission in Flask
 3. Securing uploaded files
 4. Consuming uploaded files
 
-**NOTE: The assumption is you have a basic understanding of how to create forms manually, as I will not be reviewing manual creation of files, but rather focus on how to render forms that are styled using `flask-bootstrap`.**
+**NOTE: The assumption is you have a basic understanding of how to create forms manually, as I will not be reviewing manual creation of forms, but rather focus on how to render forms that are styled using `flask-bootstrap`.**
 
 ### 1. Acccepting File Uploads
 
@@ -250,4 +257,180 @@ We want to send our form only when the method used is `POST`. We store a file ob
 
 Reload your page and choose a file by clicking the _Choose File_ button. Hit the _Submit_ button and you will notice that a file has been saved in you top-level directory.
 
-Browse the file submission code [here]().
+Browse the file submission code [here](https://github.com/GitauHarrison/handling-file-uploads-in-flask/commit/3fb49d3f3c46aba655cee2aed76252da4223fefd).
+
+### 3. File Upload Security
+
+A rule of thumb when building web application is that data submitted by clients should never be trusted. Hence, the need for strict form validation. This data could maliciously be intended to crash the server by because the file is too large that the disk space in the server is completely filled, or the file is named in a manner that it tricks the server into rewriting system configuration files.
+
+Basic steps we can take to protect our application would be:
+
+* Limiting the size of files uploaded to the application's server
+* Validating the names of the uploaded files
+* Scanning the file content before submission
+
+#### Limit File Size
+
+Flask provides an option to limit the file size a client can upload. In `config.py`, we can add this configuration:
+
+```python
+MAX_CONTENT_LENGTH = 1024 * 1024 # equal to 1 MB
+```
+If you try to upload a file larger than 1 MB, the application will now refuse it. The server will return a `413` Request Entity Too Large error because the data value transmitted exceeds the capacity limit.
+
+#### Validating Filenames
+
+We can implement very simple form validation to check that the file extension used by clients are accepted by the application. `flask-wtf` provides validators such as `FileAllowed` and `FileRequired` when creating forms. Look at the example below:
+
+```python
+file = FileField('File', validators=[FileRequired()])
+```
+
+For our appliaction, we will list all allowed extension in the `config.py` file as seen below:
+
+```python
+UPLOAD_EXTENSIONS = ['.jpg', '.png', '.gif']
+```
+
+These are the current configurations:
+
+`config.py: Securing file uploads`
+```python
+import os
+
+
+class Config(object):
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
+    MAX_CONTENT_LENGTH = 1024 * 1024
+    UPLOAD_EXTENSIONS = ['.jpg', '.png', '.gif']
+
+```
+
+Let us implement this configiration in our `index()` method in `routes.py`:
+
+```python
+from app import app
+from flask import render_template, url_for, request, redirect, abort
+from app.forms import UploadForm
+import os
+
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+def index():
+    form = UploadForm()
+    if request.method == 'POST':
+        # start of update
+        uploaded_file = request.files['file']
+        filename = uploaded_file.filename
+        if filename != '':
+            file_ext = os.path.splitext(filename)[1]
+            if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+                abort(400)
+                # end of update
+            uploaded_file.save(uploaded_file.filename)
+        return redirect(url_for('index'))
+    return render_template('index.html', title='Home', form=form)
+
+```
+
+Files whose extensions are not configured will return a `400` Bad Request error when a client tries to upload them. The application checks for the file in the `FileField` and extracts the extension. If the file extension does not exist in the application configuration, flask aborts the upload are returns the 400 error.
+
+Another way to secure files based on their names would be to use Werkzeug's [secure_filename](https://werkzeug.palletsprojects.com/en/1.0.x/utils/#werkzeug.utils.secure_filename) function. No matter how complicated or malicious a filename is, `secure_filename()` reduces it to a flat filename.
+
+`routes.py: using secure_filename function`
+
+```python
+from app import app
+from flask import render_template, url_for, request, redirect, abort
+from app.forms import UploadForm
+import os
+from werkzeug.utils import secure_filename # <--------- new update
+
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+def index():
+    form = UploadForm()
+    if request.method == 'POST':
+        uploaded_file = request.files['file']
+        filename = secure_filename(uploaded_file.filename)  # <--------- new update
+        if filename != '':
+            file_ext = os.path.splitext(filename)[1]
+            if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+                abort(400)
+            uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))  # <--------- new update
+        return redirect(url_for('index'))
+    return render_template('index.html', title='Home', form=form)
+
+```
+Every time a new upload is made, we now want the files to be organized and stored in one location within the top-level directory when the `save()` method is called. Go ahead and create an `uploads` directory in the application's root directory. Then update your configration to allow for storage in the newly created folder, as follows:
+
+`config.py: path to uploads folder`
+
+```python
+import os
+
+
+class Config(object):
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
+    MAX_CONTENT_LENGTH = 1024 * 1024
+    UPLOAD_EXTENSIONS = ['.jpg', '.png', '.gif']
+    UPLOAD_PATH = 'uploads'  # < ------- new update
+
+```
+
+#### Validate File Content
+
+Say your application allows only for __image files__ to be uploaded. It is possible to first check the content of the uploaded file before accepting it.
+
+Python provides the [imghdr](https://docs.python.org/3/library/imghdr.html) package to validate that the file's header is actually an image file.
+
+`routes.py: validate file content`
+
+```python
+from app import app
+from flask import render_template, url_for, request, redirect, abort
+from app.forms import UploadForm
+import os
+import imghdr
+from werkzeug.utils import secure_filename
+
+
+# new update
+def validate_image(stream):
+    header = stream.read(512)
+    stream.seek(0)
+    format = imghdr.what(None, header)
+    if not format:
+        return None
+    return '.' + (format if format != 'jpeg' else 'jpg')
+
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+def index():
+    form = UploadForm()
+    if request.method == 'POST':
+        uploaded_file = request.files['file']
+        filename = secure_filename(uploaded_file.filename)
+        if filename != '':
+            file_ext = os.path.splitext(filename)[1]
+            # updated
+            if file_ext not in app.config['UPLOAD_EXTENSIONS'] or \
+                    file_ext != validate_image(uploaded_file.stream):
+                # end of update
+                abort(400)
+            uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))  # <--------- new update
+        return redirect(url_for('index'))
+    return render_template('index.html', title='Home', form=form)
+
+```
+
+`validate_image()` function reads 512 bytes of data when a file is first uploaded, and quickly resets the pointer to 0 before the file is saved. 512 bytes is sufficient data to identify an image.
+
+`imghdr.what()` function looks at the data stored in memory if the first argument is `None`, and then passed that data to the second argument. This function will primarily return the _image format_. If an unknown format is detected (the function supports a variety of image formats such as `jpeg`, `gif` etc), it returns a `None` value. 
+
+If an image format is detected, the function will return the format. However, to make good use of the returned file format, we'd rather have our application return the file extension. We add `.` for all image formats except `jpeg`, which normally uses `jpg`.
+
+Browse the complete code for securing files [here](https://github.com/GitauHarrison/handling-file-uploads-in-flask/commit/e27bcfb72514c1c6185acdbb1c5449d7ab752d63).
