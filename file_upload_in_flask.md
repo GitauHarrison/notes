@@ -434,3 +434,168 @@ def index():
 If an image format is detected, the function will return the format. However, to make good use of the returned file format, we'd rather have our application return the file extension. We add `.` for all image formats except `jpeg`, which normally uses `jpg`.
 
 Browse the complete code for securing files [here](https://github.com/GitauHarrison/handling-file-uploads-in-flask/commit/e27bcfb72514c1c6185acdbb1c5449d7ab752d63).
+
+### Consuming Uploaded files
+
+To be able to make use of the uploaded files, we need to access the _uploads_ folder, which is currently located at the top-level directory. Normally, all static files are organized in a static sub-folder inside the _app_ folder.
+
+One advantage we will have working with the uploads folder outside the static sub-folder is that we can create a route specifically used to access the folder contents. Being able to work with a route directly allows for the use of `@login_required` to help protect the contents inside the folder.
+
+Let us go ahead an update our `routes.py` file to access the uploads folder content:
+
+`routes.py: access folder content`
+
+```python
+from flask import send_from_directory
+
+
+@app.routes('/uploads/<filename>')
+def upload(filename):
+    return send_from_directory(app.config['UPLOAD_PATH'], filename)
+
+```
+
+Additionally, we need to send the file contents to our `index()` function  for rendering.
+
+`routes.py: render content from uploads directory`
+
+```python
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+def index():
+    form = UploadForm()
+    files = os.listdir(app.config['UPLOAD_PATH'])  # <------- new
+    if request.method == 'POST':
+        uploaded_file = request.files['file']
+        filename = secure_filename(uploaded_file.filename)
+        if filename != '':
+            file_ext = os.path.splitext(filename)[1]
+            if file_ext not in app.config['UPLOAD_EXTENSIONS'] or \
+                    file_ext != validate_image(uploaded_file.stream):
+                abort(400)
+            uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+        return redirect(url_for('index'))
+    return render_template('index.html', title='Home', form=form, files=files)
+```
+
+To display the loaded files, we need to loop through all available content in the _uploads_ folder.
+
+`index.html: display content in uploads folder`
+
+```html
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <div class="row">
+        <div class="col-sm-12 col-md-4 col-lg-2">
+            <!-- empty -->
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-8">
+            {{ wtf.quick_form(form) }}             
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-2">
+             <!-- empty -->
+        </div>        
+    </div><hr>
+
+    <!-- display content in uploads folder -->
+    <div class="row">
+        <div class="col-sm-12 col-md-4 col-lg-2">
+            {% for file in files %}
+                <img src="{{ url_for('upload', filename=file) }}" style="width: 64px;">
+            {% endfor %}
+        </div>
+    </div>
+    <!-- end of display -->
+   
+{% endblock %}
+```
+
+When you reload your page, you should be able to see tumbnails of the images from your _uploads_ directory.
+
+### The Miracle of Dropzone.js
+
+[dropzone.js](https://www.dropzonejs.com/) is a popular upload client. So far, we have been using default browser widget to do the uploading. This JS client has the ability to show upload progress when uploading file, a useful feedback especially when uploading large files.
+
+To incorporate it in our flask form, we first need to load dropzone CSS and Javascript from a CDN in our `base.html` file:
+
+`base.html: load dropzone CSS and JS`
+
+```html
+<!-- Load CSS, place after head block -->
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.css">
+{% endblock %}
+<!-- End CSS -->
+
+<!-- JS block is placed at the bottom -->
+{% block scripts %}
+    {{ super() }}    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
+{% endblock %}
+<!-- End JS -->
+
+```
+Then update `forms.py` file to render the `dropzone` class as a keyword argument to the `FileField`:
+
+```python
+class UploadForm(FlaskForm):
+    file = FileField('Upload File', render_kw={"class": "dropzone"})
+```
+
+This is what you get:
+
+![Dropzone.js](/images/unattractive_dropzone_js.png)
+
+To get rid of the browser widget, we will resort to manually creating our form without using `flask-bootstrap` as shown below:
+
+`index.html: manually create form`
+
+```html
+<div class="row">       
+        <div class="col-sm-12 col-md-4 col-lg-8">
+            <!-- {{ wtf.quick_form(form) }} -->
+            <form action="{{ url_for('index') }}" class="dropzone" method="POST" enctype="multipart/form-data" novalidate>
+                {{ form.hidden_tag() }}                        
+            </form>
+        </div>            
+    </div><hr>
+```
+Note that the action attribute has been set to load from the `index()`  method URL. 
+
+The enctype attribute in the `<form>` element is normally not included with forms that don't have files. This attribute defines how the browser should format the data before it is submitted to the server. 
+
+`multipart/form-data` is a format that is required when at least one of the fields in the form is a file field.
+
+With that, you can now drag and drop files into the form and it will automatically be downloaded to the _uploads_ folder, with indicators for both progression and status of the final upload(whether successful or not).
+
+One thing you will not is that when the uploaded file fails either of our application's configurations setting, dropzone does make an effort to display a message. This message, however, is not easily readable.
+
+![Dropzone Error Message](/images/dropzone_error_msg.png)
+
+The 413 File too Large error message is generated by Flask when the payload exceeds the capacity limit. We can overide the default error message be creating our own custom error message.
+
+`errors.py: create custom error message`
+
+```python
+from app import app
+
+
+@app.errorhandler(413)
+def file_too_large(error):
+    return 'File is too large', 413
+
+```
+
+What about when the file upload process fails the other configurations other than too large a file? We need to update our `index()` function to accomodate this.
+
+```python
+if file_ext not in app.config['UPLOAD_EXTENSIONS'] or \
+                    file_ext != validate_image(uploaded_file.stream):
+                return 'Invalid image', 400
+```
+That's it! Your flask application can now safely consume file uploads.
+
+You can browse [the completed projet on GitHub](https://github.com/GitauHarrison/handling-file-uploads-in-flask).
