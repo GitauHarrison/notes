@@ -1,6 +1,6 @@
 # Build A Simple WhatsApp Chatbot Using Flask and Twilio
 
-A chatbot is a computer program designed to simulate conversation through voice commands or text chats (or both) with human users, especially over the internet. The level of intelligence among chatbots vary intensely, some (like the one used here) are very basic, while others can be very sophisticated by employing machine learning algorithms and artificial intelligence in order to attain near human-level conversation.
+A chatbot is a computer program designed to simulate conversation through voice commands or text chats (or both) with human users, especially over the internet. The level of intelligence among chatbots vary immensely, some (like the one used here) are very basic, while others can be very sophisticated by employing machine learning algorithms and artificial intelligence in order to attain near human-level conversation.
 
 ## Requirements
 
@@ -11,7 +11,7 @@ These components will be needed for this tutorial:
 - A smartphone with an active number and WhatsApp installed.
 - Ngrok for localhost testing.
 
-**NOTE:** This project assumes you have a basic understanding of flask and a few dependencies. A reference to all components used will be provided in the conlusion.
+**NOTE:** This project assumes you have a basic understanding of flask and a few dependencies. A reference to all components used will be provided in the conclusion of this article.
 
 ## Twilio for WhatsApp
 
@@ -27,9 +27,9 @@ This page provides you with a `join-` code, which is followed by a randomly gene
 
 Send a WhatsApp message with the given code to the number assigned to your account in order to enable WhatsApp sandbox for your smartphone. Immediately after, you will receiver a response from Twilio indicating that your mobile number is connected to the sandbox. You can now send and receive messages!
 
-## Create Your Application
+## Creating An Application
 
-These are the steps we will follow to build our chatbot:
+These are the steps we will follow to create our chatbot:
 
 1. Create application structure
 2. Create and activate your virtual environment
@@ -47,7 +47,7 @@ Go ahead and create your project structure using the `mkdir` and `touch` command
 
 #### 2. Create and Activate Virtual Environment
 
-To ensure that we do not clutter our Operating System, create and activate your virtual environment:
+To ensure that we do not clutter our Operating System, we will create and activate a virtual environment:
 
 ```python
 $ mkvirtualenv whatsapp_chatbot
@@ -77,7 +77,7 @@ For the purposes of demonstration, I have kept this application very simple. All
 
 #### 4. Build Application
 
-Let us create our application:
+Let us now build our application:
 
 `__init__.py: create application instance`
 
@@ -139,8 +139,25 @@ The logic employed simply checks where the words 'cat' and 'quote' are in a mess
 
 APIs from [Quotable](https://github.com/lukePeavey/quotable) and [Cat as a Service](https://cataas.com/) are used to generate random quotes in json format and random pictures respectively.
 
+Before we can run this application, we need to update `bot.py` file as follows:
+
+```python
+from app import app
+```
+
 #### 5. Test Application
 
+Envrionment variables are run before our application. Every time we fire up our server, these varibles need to be run first. So, what environment variales are these?
+
+`.flaskenv: All environment variable go here`
+```
+FLASK_APP=bot.py
+FLASK_ENV=development
+FLASK_DEBUG=True
+
+```
+
+We will store all our environment variables in `.flaskenv` file.
 
 Given that we have built this application following the principle of _separation of concerns_, we can run our application on the terminal:
 
@@ -157,10 +174,10 @@ Given that we have built this application following the principle of _separation
  * Debugger is active!
 ```
 
-This application is running our `localhost`. In order to test it, we will use `ngrok` to provide us with a temporary URL that redirects to our local post 5000. Let us update our application to run `ngrok` every time we fire up our server.
+This application is running on `localhost`. In order to test it, we will use `ngrok` to provide us with a temporary URL that redirects to our local port 5000. Let us update our application to run `ngrok` every time we fire up our server.
 
 
-`.flaskenv: All environment variable go here`
+`.flaskenv: Add ngrok to environment variables`
 ```
 FLASK_APP=bot.py
 FLASK_ENV=development
@@ -168,8 +185,7 @@ FLASK_DEBUG=True
 
 START_NGROK=1
 ```
-
-Envrionment varibles are run before our application. Every time we fire up our server, these varibles will run first.
+Ngrok needs to be run every time the server is fired up.
 
 `config.py: Configure ngrok`
 
@@ -208,7 +224,7 @@ if app.config.get("ENV") == "development" and app.config["START_NGROK"]:
 from app import routes
 ```
 
-`ngrok.connect(5000)` is used to connect us to the locall port 500. We then check whether that configuration is set in the `config.py` file. If it is set, then we call the `start_ngrok()` function. A ngork tunnel will be displayed in the terminal every time our application is running. 
+`ngrok.connect(5000)` is used to connect us to the local port 500. We then check whether that configuration is set in the `config.py` file. If it is set, then we call the `start_ngrok()` function. A ngork tunnel will be displayed in the terminal every time the application is running. 
 
 ```python
 # This is how the terminal output will look like:
