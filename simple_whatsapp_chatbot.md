@@ -11,7 +11,7 @@ These components will be needed for this tutorial:
 - A smartphone with an active number and WhatsApp installed.
 - Ngrok for localhost testing.
 
-**NOTE:** This project assumes you have a basic understanding of flask and a few dependencies. A reference to all components used will be provided in the conclusion of this article.
+**NOTE:** This project assumes you have a basic understanding of flask and a few dependencies. A reference to all components used will be provided in the conclusion section of this article.
 
 ## Twilio for WhatsApp
 
@@ -64,12 +64,12 @@ It is now recommended to install the dependancies needed for this project inside
 * requests
 * twilio
 * python-dotenv
-* ngrok
+* pyngrok
 
 To install all of them at once, run:
 
 ```python
-(whatsapp_chatbot)$ pip3 install flask requests twilio python-dotenv ngrok
+(whatsapp_chatbot)$ pip3 install flask requests twilio python-dotenv pyngrok
 ```
 
 For the purposes of demonstration, I have kept this application very simple. All the chatbot does is to determine if two select words come in the conversation. Whenever a user's message includes the word 'quote', the chatbot will respond by giving a random quote. If the user's sentence includes the word 'cat', then an image of cat will be the response from the chatbot. What do you think will happen when a user sends a message that has both words?
@@ -111,7 +111,7 @@ def bot():
         r = requests.get('https://api.quotable.io/random')
         if r.status_code == 200:
             data = r.json()
-            quote = f'{data["content"] - {data["author"]}}'
+            quote = f'{data["content"]} ({data["author"]})'
         else:
             quote = 'I could not retrieve a quote at this time, sorry.'
         msg.body(quote)
@@ -147,7 +147,16 @@ from app import app
 
 #### 5. Test Application
 
-Envrionment variables are run before our application. Every time we fire up our server, these varibles need to be run first. So, what environment variales are these?
+Envrionment variables are run before our application. Every time we fire up our server, these variables need to be run first. So, what environment variables are these?
+
+```python
+FLASK_APP=<value>
+FLASK_ENV=<value>
+FLASK_DEBUG=<value>
+
+```
+
+We will store all our environment variables in `.flaskenv` file.
 
 `.flaskenv: All environment variable go here`
 ```
@@ -156,8 +165,6 @@ FLASK_ENV=development
 FLASK_DEBUG=True
 
 ```
-
-We will store all our environment variables in `.flaskenv` file.
 
 Given that we have built this application following the principle of _separation of concerns_, we can run our application on the terminal:
 
@@ -214,7 +221,7 @@ app.config.from_object(Config)
 def start_ngrok():
     from pyngrok import ngrok
 
-    url = ngrok.connect(500)
+    url = ngrok.connect(5000)
     print('* Tunnel: ', url)
 
 
@@ -224,7 +231,7 @@ if app.config.get("ENV") == "development" and app.config["START_NGROK"]:
 from app import routes
 ```
 
-`ngrok.connect(5000)` is used to connect us to the local port 500. We then check whether that configuration is set in the `config.py` file. If it is set, then we call the `start_ngrok()` function. A ngork tunnel will be displayed in the terminal every time the application is running. 
+`ngrok.connect(5000)` is used to connect us to the local port 5000. We then check whether that configuration is set in the `config.py` file. If it is set, then we call the `start_ngrok()` function. A ngork tunnel will be displayed in the terminal every time the application is running. 
 
 ```python
 # This is how the terminal output will look like:
@@ -237,8 +244,8 @@ from app import routes
  * Debugger is active!
  * Debugger PIN: 199-894-753
 t=2021-03-09T15:17:57+0300 lvl=warn msg="can't bind default web address, trying alternatives" obj=web addr=127.0.0.1:4040
-* Tunnel:  NgrokTunnel: "http://16d8304e3f61.ngrok.io" -> "http://localhost:500"
-* Tunnel:  NgrokTunnel: "http://b9d852fc5172.ngrok.io" -> "http://localhost:500"
+* Tunnel:  NgrokTunnel: "http://16d8304e3f61.ngrok.io" -> "http://localhost:5000"
+* Tunnel:  NgrokTunnel: "http://b9d852fc5172.ngrok.io" -> "http://localhost:5000"
 ```
 
 I am using a free tier package from `ngrok`. Every time I make changes to the application, a new URL will be generated.
