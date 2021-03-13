@@ -17,7 +17,49 @@ Once you have an account with Twilio:
 * Create your project API Key by clicking on the Red Plus(+) button. You will be provided with API Key SID and API Key Secret. 
 * Click 'Create API Key' button to save.
 
-![New API Key](images/new_api_key.png)
-
 Note that when you save your keys, the API Secret Key will never be shown again. Make sure to save it somewhere else safe because you will need to use it.
 
+![New API Key](images/new_api_key.png)
+
+### Project Dependencies
+
+Before we can working with any python package for this project, it is recommended that you install them within an activated virtual environment. Run the command below in your terminal:
+
+```python
+$ mkvirtualenv video_app # I am using a virtualenvwrapper
+
+# Output
+(video_app)$
+```
+
+Virtual environments help us isolate our machine's Operating System from those needed by the many projects we may build. Install the following dependencies in your virtual environment:
+
+* flask
+* twilio
+* python-dotenv
+* pyngrok
+* flask-bootstrap
+* flask_wtf
+
+Run:
+
+```python
+(video_app)$ pip3 install flask pyngrok twilio python-dotenv flask-bootstrap flask-wtf 
+```
+
+### Project Structure
+
+Use the terminal commands `mkdir` and `touch` to create the project structure below. for example:
+
+```python
+(video_app)$ mkdir video_app # this create an empty directory
+(video_app)$ touch video_app/config.py # this creates an empty config file in video_app directory
+```
+
+![Project Struture](images/video_structure.png)
+
+To begin with, we will save all the application's dependencies in `requirements.txt` as follows:
+
+```python
+(video_app)$ pip3 freeze > requirements.txt
+```
