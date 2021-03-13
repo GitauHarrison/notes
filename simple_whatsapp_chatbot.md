@@ -7,7 +7,7 @@ A chatbot is a computer program designed to simulate conversation through voice 
 These components will be needed for this tutorial:
 - Python 3.6 or newer. For y'all on Linux or Ubuntu 20.04, Python comes in the box. If your Operating System does not have Python installed, go to python.org to download a favourable installer.
 - [Flask](https://flask.palletsprojects.com/en/1.1.x/) web framework
-- Twilio Account. Get [one for free](http://www.twilio.com/referral/7fB3Je) now.
+- Twilio Account. Get [one for free](www.twilio.com/referral/WNPWrR) now.
 - A smartphone with an active number and WhatsApp installed.
 - Ngrok for localhost testing.
 
