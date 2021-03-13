@@ -17,4 +17,4 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 13. [How to install and configure `git`](install_git.md)
 14. [Handling file upload in flask](file_upload_in_flask.md)
 15. [Build a simple WhatsApp chatbot using Flask and Twilio](simple_whatsapp_chatbot.md)
-16. [Video Call Application](video_call_app.md)
+16. [Build a video call application using Flask and Twilio](video_call_app.md)
