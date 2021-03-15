@@ -2,7 +2,7 @@
 
 ### Table of Contents
 
-In this series, I am going to guide you on how to create your very own blog! Yes, by the end of this tutorial, you will have a personal blog very much similar to this one up and running. If you so wish, you can use your new understanding to further customize it to make it more personal.
+In this series, I am going to guide you on how to create your very own blog! Yes, by the end of this tutorial, you will have a personal blog very much similar to [this one](https://gitauharrison-blog.herokuapp.com/home) up and running. If you so wish, you can use your new understanding to further customize the project to make it more personal.
 
 For your referrence, below is a list of the articles I have included in this series:
 
@@ -16,7 +16,7 @@ For your referrence, below is a list of the articles I have included in this ser
 
 ### Overview
 
-This blog will contain 5 parts:
+This blog will contain 5 pages:
 
 1. A simple Home Page containing all our articles
 2. An About Me page which shades light on who the author of the articles is
