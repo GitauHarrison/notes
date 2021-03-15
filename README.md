@@ -21,6 +21,6 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 
 I also make a note of some of the cool projects I have built or I have been involved in. You can find these projects below. Some may be in progess while others may be completed:
 
-1. [How to build a Personal Blog application using flask](personal_blog.md)
+1. [How to build a Personal Blog application using flask](web_development/personal_blog/personal_blog.md)
 
 Find out what projects I have up and running [here](https://gitauharrison-blog.herokuapp.com/web-development).
