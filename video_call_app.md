@@ -5,7 +5,7 @@ The Covid-19 pandemic has forced many businesses to close shop and ask their emp
 ### Project Requirements
 
 There are a number of things we need in order to build our project:
-* A Twilio account. Create a [free Twilio account](www.twilio.com/referral/WNPWrR) now.
+* A Twilio account. Create a [free Twilio account](https://www.twilio.com/try-twilio?promo=WNPWrR) now.
 * A web browser compatible with the Twilio Programmable Video JavaScript library. Check your browser among [this list](https://www.twilio.com/docs/video/javascript).
 * Python 3.6 and above.
 * This project makes use of `Ngrok`. Ngrok provides public URLs that redirect to the application. If you do not know what it is or how to use it, refer to the reference section at the end of this article.
@@ -23,7 +23,7 @@ Note that when you save your keys, the API Secret Key will never be shown again.
 
 ### Project Dependencies
 
-Before we can working with any python package for this project, it is recommended that you install them within an activated virtual environment. Run the command below in your terminal:
+Before we can begin working with any python package for this project, it is recommended that you install them within an activated virtual environment. Run the command below in your terminal to create and activate one:
 
 ```python
 $ mkvirtualenv video_app # I am using a virtualenvwrapper
@@ -49,7 +49,7 @@ Run:
 
 ### Project Structure
 
-Use the terminal commands `mkdir` and `touch` to create the project structure below. for example:
+Use the terminal commands `mkdir` and `touch` to create the project structure below. For example:
 
 ```python
 (video_app)$ mkdir video_app # this create an empty directory
