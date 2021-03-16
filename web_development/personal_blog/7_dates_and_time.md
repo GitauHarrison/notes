@@ -62,8 +62,8 @@ Let us now see how we can get the time object.
 # Output
 >>> t =  00:00:00
 
-q = time(6, 7, 30)
-print('q = ', q)
+>>> q = time(6, 7, 30)
+>>> print('q = ', q)
 # Output
 q =  06:07:30
 ```
@@ -152,7 +152,11 @@ Flask-Bootstrap expects us to use the `scripts` block since it is the place wher
 
 Moment.js uses the ISO 8601 format to render timestamps, The format is as follows:
 
-`{{ year }}-{{ month }}-{{ day }}T{{ hour }}:{{ minute }}:{{ second }}{{ timezone }}` The last part will always be a  `Z` which represents the UTC timezone that I want to work with in ISO 8601 format.
+```python
+{{ year }}-{{ month }}-{{ day }}T{{ hour }}:{{ minute }}:{{ second }}{{ timezone }}
+```
+
+The last part will always be a  `Z` which represents the UTC timezone that I want to work with in ISO 8601 format.
 
 Moment.js has multiple methods for different rendering options:
 ```python

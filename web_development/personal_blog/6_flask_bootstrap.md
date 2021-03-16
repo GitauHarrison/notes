@@ -154,7 +154,7 @@ app/templates/base.html
 ```
 ![Flask-Bootstrap Used](/images/flask_boostrap_template.png)
 
-I literally used one of Boostrap's [nav bars](https://getbootstrap.com/docs/4.5/components/navs/) as my own.  Everything should be self-explanatory.However, one thing I want to point out are these two blocks: `content` and `app_content`. The `content` block is a top-level Flask-Bootstrap container. It hosts the `app_content` block and the `footer` block. The `app_content` block is my own custom-made block where other templates will define their own content. 
+I literally used one of Boostrap's [nav bars](https://getbootstrap.com/docs/4.5/components/navs/) as my own.  Everything should be self-explanatory. However, one thing I want to point out are these two blocks: `content` and `app_content`. The `content` block is a top-level Flask-Bootstrap container. It hosts the `app_content` block and the `footer` block. The `app_content` block is my own custom-made block where other templates will define their own content.
 
 With these definitions, I have to rename all my other templates to use `app_content`.
 
