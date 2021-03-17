@@ -18,6 +18,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 14. [Build a simple WhatsApp chatbot using Flask and Twilio](simple_whatsapp_chatbot.md)
 15. [Build a video call application using Flask and Twilio](video_call_app.md)
 16. [Deploy flask app in docker containers](docker_deployment.md)
+17. [2FA in flask](2fa_flask.md)
 
 I also make a note of some of the cool projects I have built or I have been involved in. You can find these projects below. Some may be in progess while others may be completed:
 
