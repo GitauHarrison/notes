@@ -870,6 +870,68 @@ The 2fa Team
 
 A text version of the email template.
 
+#### Error Handling
+
+Currently, the _home_ route is accessed through `/home`. What happens when you try to access the _home_ route through `/home/`? Obviously, this will throw a 404 error because we do not have a page like that. Instead of our application displaying a rather scary and possibly too revealing an error message, we can catch it and redirect a user to an existing page. We need to update our _errors_ module to handle these eventualities.
+
+`errors.py: Handle Errors`
+
+```python
+from app import app, db
+from flask import render_template
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('500.html'), 500
+```
+
+You probably have already noticed that we imported the _errors_ module at the botton of `__init__.py` file.
+
+`404.html: Page Not Found`
+
+```html
+{% extends 'base.html' %}
+
+{% block app_content %}
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
+        <h1>Page not Found</h1>
+        <p>
+            The requested page cannot be found. Click <a href="{{ url_for('home') }}">here</a> to return to the home page.
+        </p>
+    </div>
+{% endblock %}
+```
+
+If a requested page is not found, this page will be displayed.
+
+`500.html: Internal Error`
+
+```html
+{% extends 'base.html' %}
+
+{% block app_content %}
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
+        <h1>An unexpected internal error</h1>
+        <p>
+            An unexpected internal error has occurred. The administrator has been notified. Sorry for the inconvinience.
+        </p>
+        <p>
+            Click <a href="{{ url_for('home') }}">here</a> to return to the home page.
+        </p>
+    </div>
+{% endblock %}
+```
+In case there is an error with the server, then this template will be displayed.
+
+These error templates provide a polite message with a safe redirect link to the home page.
+
 #### Creating Migration Repository
 
 We will use SQLite database due to its convinience working with small applications. Flask-migrate becomes very handy at this stage.
