@@ -182,15 +182,15 @@ from app import routes, models, errors
 
 ```
 
-I have created an instance of the flask application. Additionally, I have instantiated dependencies we have installed in the previous section. 
+I have created an instance of the flask application. Additionally, I have instantiated dependencies we installed in the previous section. 
 
-`ngrok` is a tool that will provide us with free public URLs that redirect to our service. This will be especially useful when we want to test our application running on `localhost` on other devices, say a smartphone or another computer. For security reasons, our computers are configured with firewalls, and are therefore inaccessible. If our application is running locally, then we need to find a way to by-pass this. This is where `ngork` excels at. What I have done here is I have set up ngork to run as soon as we fire up our flask server.
+`ngrok` is a tool that will provide us with free public URLs that redirect to our service. This will be especially useful when we want to test our application, which is currently running on `localhost`, on other devices, say a smartphone or another computer. For security reasons, our computers are configured with firewalls, and are therefore inaccessible. If our application is running locally, then we need to find a way to by-pass this. This is where `ngork` excels at. What I have done here is I have set up `ngrok` to run as soon as we fire up our flask server.
 
-Our other modules are imported at the botton of the application instance to avoid importing circular dependencies.
+Our other modules are imported at the botton of the application instance to avoid the issue of circular dependencies.
 
 #### Application Configuration
 
-Let us now configure our application. From the application instance section, you have seen `app.config["START_NGROK"]`. All of the configurations needed to run our applications are found in the `config.py` file. 
+From the application instance section above, you have seen `app.config["START_NGROK"]`. Here, we are referring to the data of `START_NGROK` variable which is found in the config file. All of the configurations needed to run our applications will be found in the `config.py` file. 
 
 `config.py: Add Application Configurations`
 ```python
@@ -223,11 +223,11 @@ class Config(object):
     ADMINS = os.environ.get('ADMINS')
 
 ```
-Our configurations are set up as secret environment variables. The `os.environ` is used to fetch our environment variables. This method of obtaining environment variables is extremely safe as the actual values of the environment variables are preserved, especially from version control.
+Our configurations are set up as secret environment variables. The `os.environ` is used to fetch our environment variables. This method of obtaining environment variables is extremely safe since the actual values of the environment variables are preserved, especially from version control.
 
-We uses Python's `dotenv` package to load our enviroment variables.
+We use Python's `dotenv` package to load our enviroment variables.
 
-`.env` file is used to store our actual environment variables. The `.`(dot) preceding the file means that it is hidden. If you try to run the command `ls` in your root directory you will notice that the files starting with the `.` do not show up. However, to list every file, including the hidden files, you can run `ls -a`.
+`.env` file is used to store our actual environment variables. The `.`(dot) preceding the file name means that it is hidden. If you try to run the command `ls` in your root directory you will notice that the files starting with the `.` do not show up. However, to list every file, including the hidden files, you can run `ls -a`.
 
 Let us update `.env` file with our secret configurations:
 
@@ -242,7 +242,7 @@ MAIL_PASSWORD='<password-to-the-email-above>'
 ADMINS=['<another-email-address-that-will-be-used-as-admin>']
 ```
 
-This file should never be commited to version control because it contains sensitive data such as passwords and other secret keys. To provide guidance to people who would like to clone your project, the `.env.template` (a text-based file) is used as a guide, where no values are put.
+This file should never be commited to version control because it contains sensitive data such as passwords and other secret keys. To provide guidance to people who would like to clone your project,say from [GitHub](https://github.com), the `.env.template` (a text-based file) is used as a guide, where no values are put.
 
 `.env.template: Show .env template`
 
@@ -278,7 +278,7 @@ Our application is in development so we have set our flask environment to develo
 
 #### Working with Database
 
-This application involves adding and loading a user from a database. we will now set up a database table called `User` to handle a user's data/
+This application involves adding and loading a user from a database. we will now set up a database table called `User` to handle a user's data.
 
 `models.py: Create database model`
 
@@ -312,9 +312,9 @@ def load_user(id):
 
 ```
 
-Our database contains five entries. These will be filled using a web form, seen in sections below. As I had mentioned earlier it is safe practice to store a user's password as a hash rather than the actual password. Above, I am using `generate_password_hash` and `check_password_hash` from [Werkzeug](http://werkzeug.pocoo.org/) to handle all the hashing needs of the application.
+Our database contains five entries. These will be populated using a web form, seen in sections below. As I had mentioned earlier, it is safe practice to store a user's password as a hash rather than the actual password. Above, I am using `generate_password_hash` and `check_password_hash` from [Werkzeug](http://werkzeug.pocoo.org/) to handle all the hashing needs of the application.
 
-Look at his example run from a Python interpreter:
+Look at this example run from a Python interpreter:
 
 ```python
 >>> from werkzeug.security import generate_password_hash
@@ -357,7 +357,7 @@ Other forms we will need include the _Password Request_, _Password Reset_ and _L
 `forms.py: Capture User Input`
 
 ```python
-from flask_wtf import FlaskForm, RecaptchaField
+from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import Email, DataRequired, EqualTo, ValidationError
 from app.models import User
@@ -560,7 +560,7 @@ def send_password_reset_email(user):
 
 ```
 
-When the _ResetPasswordRequest_ form is validated (seen from the routes module), the user is searched for in the database using the email they provided in the form. 
+When the _ResetPasswordRequest_ form is validated (seen in the _routes_ module), the user is searched for in the database using the email they provided in the form. 
 
 ![Request Password Reset Form](images/2fa_flask/request_password_reset.png)
 
@@ -574,7 +574,6 @@ The password reset links will have a secure token in them. To generate these tok
 # Previous imports
 from time import time
 import jwt
-from app import app
 
 class User(UserMixin, db.Model):
     # ...
@@ -618,7 +617,8 @@ These are the files' content:
 <!-- Head Section -->
 {% block head %}
     {{ super() }}
-    <link rel="icon" type="image/png" href="{{url_for('static', filename = 'images/auth.png')}}">
+    <!-- Add your own image -->
+    <link rel="icon" type="image/png" href="{{url_for('static', filename = 'images/<choice-image.ext>')}}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
 {% endblock %}
@@ -655,7 +655,7 @@ These are the files' content:
 </nav>
 {% endblock %}
 
-<!-- Blog Content Goes Here -->
+<!-- Main Content Goes Here -->
 {% block content %}
     <div class="container">
         {% with messages = get_flashed_messages() %}
@@ -673,7 +673,7 @@ These are the files' content:
 {% endblock %}
 
 ```
-If the user is anonymous, a link to log into the application. If the user is authenticated, a logout link is shown.
+If the user is anonymous, a link to log into the application is provided in the navbar. If the user is authenticated, a logout link is shown.
 
 `login.html: Login Page`
 
@@ -709,7 +709,7 @@ If the user is anonymous, a link to log into the application. If the user is aut
 {% endblock %}
 ```
 
-The login page contains links to the _Register_ page as well as _Request Password Reset_ form.
+The _Login_ page contains links to the _Register_ and _Request Password Reset_ forms.
 
 `register.html: Captures User's Data`
 
@@ -775,6 +775,8 @@ If registration is successful, the user will be redirected to the home page of t
                 <!-- Empty div -->
             </div>
         </div>
+
+        <!-- Add your own image -->
         <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
             <img class="img-fluid" style="max-width: 100%; height: auto;" src="{{ url_for('static', filename='images/<your-demo-image.png>') }}">
         </div>           
@@ -938,8 +940,7 @@ import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
 
-if app.config.get("ENV") == "development" and app.config["START_NGROK"]:
-    start_ngrok()
+# Previous code
 
 if not app.debug and not app.testing:
     if app.config['MAIL_SERVER']:
@@ -979,15 +980,15 @@ if not app.debug and not app.testing:
 # previous imports
 ```
 
-These error templates provide a polite message with a safe redirect link to the home page.
+These error templates provide a polite message with a gently redirect link to the home page.
 
 #### Creating Migration Repository
 
 We will use SQLite database due to its convinience working with small applications. Flask-migrate becomes very handy at this stage.
 
-We have created a database structure (or schema) for our application. To apply these changes, we need to create a migration script which will be stored in the _migrations_ sub-directory.
+We have created a database structure (or schema) for our application already. To apply these changes, we need to create a migration script which will be stored in the _migrations_ sub-directory.
 
-We will follow this order to apply any change we make to our schema:
+We will follow this order to apply any changes we make to our schema:
 
 1. `flask db init`
 2. `flask db migrate -m 'name-your-migration-script'`
@@ -1006,7 +1007,7 @@ Creating directory /home/me/project_foldermigrations ... done
   Please edit configuration/connection/logging settings in
   '/home/me/project_folder/migrations/alembic.ini' before proceeding.
 ```
-This command creates a migrations directory which contains a versions subdirectory.
+This command creates a _migrations_ directory which contains a _versions_ sub-directory.
 
 ```python
 (totp)$ flask db migrate -m 'user table'
@@ -1019,7 +1020,7 @@ INFO  [alembic.autogenerate.compare] Detected added index 'ix_user_email' on '['
 INFO  [alembic.autogenerate.compare] Detected added index 'ix_user_username' on '['username']'
   Generating /home/me/project_folder/migrations/versions/e517276bb1c2_users_table.py ... done
 ```
-This command creates a `user` table which maps to the schema of the database model.
+This command creates a `user table` which maps to the schema of the database model.
 
 ```python
 (totp)$ flask db upgrade
@@ -1181,7 +1182,7 @@ The page includes a reference the the QRcode image, but the url to this image is
 {% endblock %}
 ```
 
-The image is dynamically generated using `url_for` function from flask. This is because the QRCode image needs to be generated specifically for each user so a flask route is invoked to do the work.
+The image is dynamically generated using `url_for` function from `flask`. This is because the QRCode image needs to be generated specifically for each user so a flask route is invoked to do the work.
 
 `route.py: Return image data`
 
@@ -1218,7 +1219,7 @@ Rather than return a template as is the case with all other routes, the `qrcode`
 
 If the user is valid, we remove it from the session because once the user has requested for the QR Code, we make sure that this image cannot be requested again. This means that if the user fails to scan the QR code in this occassion, then the account will become inaccessible.
 
-The information stored in the QR codes is the TOTP data. This is what the TOTP smartphones expect. `pyqrcode` simply renders the TOTP URL as an SVG image, saved in a `StringIO` stream in memory.
+The information stored in the QR codes is the URL that contains TOTP data. This is what the TOTP smartphones expect. `pyqrcode` simply renders the TOTP URL as an SVG image, saved in a `StringIO` stream in memory.
 
 We ensure that the browser does not cache the page by including some headers.
 
@@ -1266,6 +1267,8 @@ That's it! You now have a mandatory two-factor authentication set up in your fla
 
 Heroku is a free Platform-as-a-Service which you can use to deploy your application. I have previously covered [how to deploy an app to Heroku](deploy_to_heroku.md) in another article. The method is exactly the same, with a few modifications to suite this app's features.
 
+Note that before you can commit any changes to a `git` repository, it is necessary that you do not commit files which contain sensitive data. In our case, we have `.env` file. `git` provides a file called `.gitignore` to which we can add any files that we wish to exclude from version control. Find out [here](https://github.com/github/gitignore) what files you can ignore from version control. Ensure `.env` file is added to `.gitignore` before adding and commiting your application files.
+
 In summary, this is what you will need to do to deploy your app to Heroku:
 
 1. Login to heroku on your terminal (`$ heroku login`)
@@ -1279,3 +1282,8 @@ In summary, this is what you will need to do to deploy your app to Heroku:
 9. Commit your changes (`$ git commit -m '<your-commit-message>'`)
 10. A remote Heroku repository (`$ heroku git:remote -a <your-heroku-app-name>`)
 11. Push to Heroku (`$ git push heroku master`)
+
+
+### Optional Two-factor Authentication in Flask
+
+Want to see how to implement optional two-factor authentication in a flask app? Read more [here](twilio_verify_2fa.md)
