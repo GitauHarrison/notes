@@ -737,7 +737,50 @@ The login page contains links to the _Register_ page as well as _Request Passwor
 {% endblock %}
 ```
 
-If registration is successful, the user will be redirected to the home page to continue into the app.
+If registration is successful, the user will be redirected to the home page of the app.
+
+
+`home.html: Display home page`
+
+```html
+{% extends 'base.html' %}
+
+{% block app_content %}
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
+                <!-- title -->
+                <h1>Time-based OTP</h1>
+            </div>
+            <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 ">
+                <!-- Empty div -->
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 ">
+                <p>
+                    To successfully test this application, you will need to do the following:
+                    <ul>
+                        <li>Have a Smartphone</li>
+                        <li>Have access to PlayStore or App Store </li>
+                    </ul>
+                </p>
+                <p>
+                    You can choose either of these applications to help with the QR Code scanning:
+                    <ul>
+                        <li><a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en_US&gl=US">Google Authenticator</a></li>
+                        <li><a href="https://play.google.com/store/apps/details?id=org.fedorahosted.freeotp&hl=en_US&gl=US">Free OTP</a></li>
+                    </ul>
+                    Or any other you may like!
+                </p>
+            </div>
+            <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 ">
+                <!-- Empty div -->
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
+            <img class="img-fluid" style="max-width: 100%; height: auto;" src="{{ url_for('static', filename='images/<your-demo-image.png>') }}">
+        </div>           
+{% endblock %}
+```
+Provide for password resetting as seen below:
 
 `reset_password_request.html: User can request for a password reset`
 
@@ -762,7 +805,7 @@ If registration is successful, the user will be redirected to the home page to c
     </div>
 {% endblock %}
 ```
-A registration email used is needed to send a password reset email. If this user exists, the email is sent, otherwise, no email is sent.
+A user's registration email is needed to send a _password reset_ email. If this user exists, the email is sent, otherwise, no email is sent.
 
 `reset_password.html: Form to set new password`
 
@@ -825,7 +868,7 @@ Sincerely,
 The 2fa Team
 ```
 
-A text version of the email template
+A text version of the email template.
 
 #### Creating Migration Repository
 
