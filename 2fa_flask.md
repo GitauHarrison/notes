@@ -1150,3 +1150,21 @@ def login():
 We have added `user.verify_totp()` to check tokens using the `onetimepass` package.
 
 That's it! You now have a mandatory two-factor authentication set up in your flask application.
+
+### Deployment
+
+Heroku is a free Platform-as-a-Service which you can use to deploy your application. I have previously covered [how to deploy an app to Heroku](deploy_to_heroku.md) in another article. The method is exactly the same, with a few modifications to suite this app's features.
+
+In summary, this is what you will need to do to deploy your app to Heroku:
+
+1. Login to heroku on your terminal (`$ heroku login`)
+2. Ensure your application is in a git repository (`$ git remote -v`)
+3. Create a Heroku application (`$ heroku apps:create totp-app`)
+4. Create Postgres database (`$ heroku addons:add heroku-postgresql:hobby-dev`)
+5. Login errors to STDOUT
+6. Set environment variables in Heroku (`$ heroku config:set LOG_TO_STDOUT=1 # Add the others`)
+7. Install `gunicorn` and `psycopg2` (`$ pip3 install gunicorn psycopg2`)
+8. Add `Procfile` to root directory and update it (`$ touch Procfile`)
+9. Commit your changes (`$ git commit -m '<your-commit-message>'`)
+10. A remote Heroku repository (`$ heroku git:remote -a <your-heroku-app-name>`)
+11. Push to Heroku (`$ git push heroku master`)
