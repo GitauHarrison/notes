@@ -9,9 +9,9 @@ Two-factor authentication is basically a method that requires a user of an appli
 1. Regular password
 2. One-time token
 
-In the event that the user's account is compromised, then an attacker will find it a bit hard to access the user's token, which is different every time, say withing 30 minute intervals.
+In the event that the user's account is compromised, then an attacker will find it a bit hard to access the user's token, which is different every time, say within 30 minute intervals.
 
-The application requires all users to use two-factor authentication.
+This application requires all users to use two-factor authentication.
 
 ### Project Requirements
 
@@ -30,7 +30,7 @@ You are not limited to these two. You can use any other if you like. Why these a
 
 If you would like to test this project out, consider checking the [hosted application](https://simple-2fa.herokuapp.com/) or [test it locally](https://github.com/GitauHarrison/how-to-implement-time-based-two-factor-auth-in-flask).
 
-To make the project a bit more complete, I have added features such as _password resets_ and _email verification_, though they have nothing to do with what we want to do in this article.
+To make the project a bit more complete, I have added features such as _password resets_ and _email verification_, though they have nothing to do with what we will do in this article.
 
 
 ### Generall Rules About Passwords
@@ -79,7 +79,7 @@ project_folder
 
 ```
 
-You can create theis structure using the `mkdir` and `touch` terminal commands:
+You can create this structure using the `mkdir` and `touch` terminal commands:
 
 ```python
 $ mkdir project_folder # creates an empty directory called project_folder
@@ -98,7 +98,7 @@ Make it a `git` repository by running:
 $ git init
 ```
 
-We will use `git` to host our application in both GitHub and Heroku. If you have not set up `git` in your computer, learn how to do that [here](install_git.md). `git` allows you to work with both of GitHub's `ssh` and `http`. Find out what they are and how to use it [here](github_ssh.md).
+We will use `git` to host our application in both GitHub and Heroku. If you have not set up `git` in your computer, learn how to do that [here](install_git.md). `git` allows you to work with both of GitHub's `ssh` and `http`. Find out what they are and how to use them [here](github_ssh.md).
 
 ### Activate Virtual Environment
 
@@ -348,7 +348,7 @@ True
 
 #### Web Forms
 
-The user registers for an account by providing their names, username and password.
+A user registers for an account by providing their names, username and password.
 
 ![Register](images/2fa_flask/register.png)
 
@@ -517,7 +517,7 @@ def reset_password(token):
 
 Every time a user is authenticated, they are redirected to the home page. Otherwise, the application checks and verifies the information from the database before issueing appropriate redirects.
 
-At this point, we need to complete setting up email support for our applicaiton. Our _route_ module has imported functions from the _email_ module which does not exist yet.
+At this point, we need to complete setting up email support for our applicaiton. Our _route_ module has imported functions from the _email_ module such as `send_password_reset_email` which does not exist yet.
 
 #### Email Support
 
@@ -603,7 +603,7 @@ Note how we are using flask's `render_template` to return the `html` files that 
 These are the files' content:
 
 `base.html: Base template`
-```python
+```html
 {% extends 'bootstrap/base.html' %}
 
 <!-- Title Section -->
@@ -677,7 +677,7 @@ If the user is anonymous, a link to log into the application. If the user is aut
 
 `login.html: Login Page`
 
-```python
+```html
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
@@ -713,7 +713,7 @@ The login page contains links to the _Register_ page as well as _Request Passwor
 
 `register.html: Captures User's Data`
 
-```python
+```html
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
@@ -741,7 +741,7 @@ If registration is successful, the user will be redirected to the home page to c
 
 `reset_password_request.html: User can request for a password reset`
 
-```python
+```html
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
@@ -766,7 +766,7 @@ A registration email used is needed to send a password reset email. If this user
 
 `reset_password.html: Form to set new password`
 
-```python
+```html
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
@@ -792,7 +792,7 @@ This new password will be added to the database to be used by the user in subseq
 
 `emails/reset_password.html: Email template`
 
-```python
+```html
 <p>Dear {{ user.username }},</p>
 <p>
     To reset your password
@@ -811,7 +811,7 @@ This is how the email sent to the user will look like.
 
 `emails/reset_password.txt: Email template`
 
-```python
+```txt
 Dear {{ user.username }},
 
 To reset your password click on the following link:
@@ -827,7 +827,60 @@ The 2fa Team
 
 A text version of the email template
 
-#### Testing the Application
+#### Creating Migration Repository
+
+We will use SQLite database due to its convinience working with small applications. Flask-migrate becomes very handy at this stage.
+
+We have created a database structure (or schema) for our application. To apply these changes, we need to create a migration script which will be stored in the _migrations_ sub-directory.
+
+We will follow this order to apply any change we make to our schema:
+
+1. `flask db init`
+2. `flask db migrate -m 'name-your-migration-script'`
+3. `flask db upgrade`
+
+```python
+(totp)$ flask db init 
+
+# Output
+Creating directory /home/me/project_foldermigrations ... done
+  Creating directory /home/me/project_folder/migrations/versions ... done
+  Generating /home/me/project_folder/migrations/alembic.ini ... done
+  Generating /home/me/project_folder/migrations/env.py ... done
+  Generating /home/me/project_folder/migrations/README ... done
+  Generating /home/me/project_folder/migrations/script.py.mako ... done
+  Please edit configuration/connection/logging settings in
+  '/home/me/project_folder/migrations/alembic.ini' before proceeding.
+```
+This command creates a migrations directory which contains a versions subdirectory.
+
+```python
+(totp)$ flask db migrate -m 'user table'
+
+# Output
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.autogenerate.compare] Detected added table 'user'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_user_email' on '['email']'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_user_username' on '['username']'
+  Generating /home/me/project_folder/migrations/versions/e517276bb1c2_users_table.py ... done
+```
+This command creates a `user` table which maps to the schema of the database model.
+
+```python
+(totp)$ flask db upgrade
+
+# Output
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> e517276bb1c2, users table
+```
+
+This command applys the changes we have made. `flask db upgrade` does not make any changes to the database.
+
+_Every time we make changes to our database schema, we will be following the order of these commands to apply those changes._
+
+#### Run the Application
 
 With the application setup complete (we have not yet added two-factor authentication), we can test its functionality. On your terminal, run:
 
@@ -835,5 +888,222 @@ With the application setup complete (we have not yet added two-factor authentica
 (totp)$ flask run
 ```
 
-You should be able to access localhost on http://127.0.0.1:5000/. Click this link or paste it a new tab to see the output.
+You should be able to access localhost on http://127.0.0.1:5000/. Click this link or paste it on a new browser tab to see the output.
 
+### Two Factor Authentication
+
+I will use [`onetimepass`](https://github.com/tadeck/onetimepass/) package. There are other packages that implement TOTP algorithms. A simple search on [pypi](https://pypi.python.org/pypi?%3Aaction=search&term=totp&submit=search) will reveal them.
+
+#### Update the User Model
+
+We will need to add a new field called `otp_secret` to our User model. This field will store the shared secret that the TOTP algorithm uses as input.
+
+`models.py: Add token`
+
+```python
+import os
+import base64
+import onetimepass
+
+class User(UserMixin, db.Model):
+    # previous code
+    otp_secret = db.Column(db.String(16))
+
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+        if self.otp_secret is None:
+            # generate a random secret
+            self.otp_secret = base64.b32encode(os.urandom(10)).decode('utf-8')
+
+    # previous
+
+    def get_totp_uri(self):
+        return 'otpauth://totp/2FA-Demo:{0}?secret={1}&issuer=2FA-Demo' \
+            .format(self.username, self.otp_secret)
+
+    def verify_totp(self, token):
+        return onetimepass.valid_totp(token, self.otp_secret)
+```
+
+The `otp_secret` is encoded as a [base32](http://en.wikipedia.org/wiki/Base32) string, which makes it a printable string with 16 characters. 
+
+The `get_totp_uri()` function returns an authentication URI. The secret token is shared with the smartphone through this URI. The URI is rendered as a QRCode which you will need to scan with your phone.
+
+This is how that URI looks like:
+
+```python
+otpauth://<protocol>/<service-name>:<user-account>?secret=<shared-secret>&issuer=<service-name>
+```
+
+* `<protocol>`: can be `totp`
+* `<service-name>`: is the name of the service or application that  a user is authenticating to
+* `<user-account>`: anything that identifies the user account. It can be the user's username or email address
+
+* `<shared-secret>`: the code used to seed the token generator algorithm
+* `<issuer>`: normally set to the service name
+
+The `verify_totp()` function takes a token as input, and validates using the support provided by the onetimepass package.
+
+Since we have made some changes to the database schema, we need to generate and apply a new migration script. Run the commands below in their order:
+
+```python
+(totp)$ flask db migrate -m 'add totp field'
+(totp)$ flask db upgrade
+```
+
+#### Authentication Logic
+
+An application can implement two-factor authentication in two ways:
+1. Making it optional
+2. Making it mandatory
+
+When two-factor authentication is optional, the application can provide a use with a link to either enable or disable this feature. Other applications can make two-factor authentication part of the user registration process, such that before the user is successfully registered, then they have to set up two-factor authentication. Subsequent access to the account will always require additional one-time passwords.
+
+We will make use of the mandatory two-factor authentication by incorporating it right after a user has registered.
+
+![QRCode](images/2fa_flask/qrcode.png)
+
+Upon registration, the user is redirected to another route before being sent to the _Login_ page.
+
+`routes.py: 2fa Redirect`
+
+```python
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    # ...
+    form = RegisterForm()
+    if form.validate_on_submit():
+        # ...
+
+        # redirect to the two-factor auth page, passing username in session
+        session['username'] = user.username
+        return redirect(url_for('two_factor_setup'))
+    return render_template('register.html', form=form)
+```
+
+Before being redirected, the user's `username` is passed in the session so the QRCode knows what user is registering.
+
+`routes.py: Set Up 2fa`
+
+```python
+@app.route('/twofactor')
+def two_factor_setup():
+    if 'username' not in session:
+        return redirect(url_for('index'))
+    user = User.query.filter_by(username=session['username']).first()
+    if user is None:
+        return redirect(url_for('index'))
+    # since this page contains the sensitive qrcode, make sure the browser
+    # does not cache it
+    return render_template('two-factor-setup.html'), 200, {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'}
+```
+
+The `two_factor_setup` validates whether there is a username in the user's session. If it exists, all it does is to render a two-factor setup page. The page tells the browser not to do any caching so as to prevent an attacker from getting access to the QR code which has time-based tokens .
+
+#### Display the QRCode Page
+
+The page includes a reference the the QRcode image, but the url to this image is not the usual image link. 
+
+`two-factor-setup.html: Display QR code image`
+
+```html
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
+            <h1>2fa Authentication SetUp</h1>
+            <p>You are almost done! Please start FreeOTP on your smartphone and scan the following QR Code with it:</p>
+            <p>
+                <img id="qrcode" src="{{ url_for('qrcode') }}">
+            </p>
+            <a href="{{ url_for('login') }}"><button type="button" class="btn btn-light">Login</button></a>
+        </div>
+    </div>    
+{% endblock %}
+```
+
+The image is dynamically generated using `url_for` function from flask. This is because the QRCode image needs to be generated specifically for each user so a flask route is invoked to do the work.
+
+`route.py: Return image data`
+
+```python
+# Previous imports
+from flask import abort
+from io import BytesIO
+import pyqrcode
+
+@app.route('/qrcode')
+def qrcode():
+    if 'username' not in session:
+        abort(404)
+    user = User.query.filter_by(username=session['username']).first()
+    if user is None:
+        abort(404)
+
+    # remove username from session for added security
+    del session['username']
+
+    # render qrcode from FreeOTP
+    url = pyqrcode.create(user.get_totp_uri())
+    stream = BytesIO()
+    url.svg(stream, scale=5)
+    return stream.getvalue(), 200, {
+        'Content-Type': 'image/svg+xml',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+    }
+```
+
+Rather than return a template as is the case with all other routes, the `qrcode` route returns an image data. Again, we check whether the `username` is in the session. If any of those validations fail, then we return a 404 error. 
+
+If the user is valid, we remove it from the session because once the user has requested for the QR Code, we make sure that this image cannot be requested again. This means that if the user fails to scan the QR code in this occassion, then the account will become inaccessible.
+
+The information stored in the QR codes is the TOTP data. This is what the TOTP smartphones expect. `pyqrcode` simply renders the TOTP URL as an SVG image, saved in a `StringIO` stream in memory.
+
+We ensure that the browser does not cache the page by including some headers.
+
+#### Login Token
+
+We now need to include a token field in our _Login_ page.
+
+`forms.py: Token field in Login page`
+
+```python
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    token = StringField('Token', validators=[DataRequired()])
+    remember_me = BooleanField('Remember Me')
+    submit = SubmitField('Login')
+```
+
+When this _Login_ data is submitted, we need to modify our `login()` function to allow for an additional validation check:
+
+`routes.py: Tokekn authentication`
+
+```python
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    # ...
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data) or \
+                not user.verify_totp(form.token.data):
+            flash('Invalid username, password or token.')
+            return redirect(url_for('login'))
+
+        # log user in
+        # ...
+    return render_template('login.html', form=form)
+```
+
+We have added `user.verify_totp()` to check tokens using the `onetimepass` package.
+
+That's it! You now have a mandatory two-factor authentication set up in your flask application.
