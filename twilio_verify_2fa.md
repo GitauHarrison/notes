@@ -77,6 +77,9 @@ project_folder
                         |------- reset_password.html
                         |------- user.html
                         |------- verify_2fa.html
+                        |------- edit_profile.html
+                        |------- enable_2fa.html
+                        |------- disable_2fa.html
                         |------- email/
                                    |----- reset_password.html
                                    |----- reset_password.txt
@@ -90,7 +93,7 @@ $ mkdir project_folder # creates an empty directory called project_folder
 $ touch project_folder/config.py # creates an empty config.py file inside project_folder
 ```
 
-Once you have completed this project structure, move into _project_folder_:
+Once you have completed creating this project structure, move into _project_folder_:
 
 ```python
 $ cd project_folder
@@ -118,7 +121,6 @@ This application will use these dependencies:
 * [python-dotenv](https://pypi.org/project/python-dotenv/)
 * [pyjwt](https://pyjwt.readthedocs.io/en/stable/)
 * [pyngrok](https://pypi.org/project/pyngrok/)
-* [pyqrcode](https://pypi.org/project/PyQRCode/)
 * [email-validator](https://pypi.org/project/email-validator/)
 
 To install all of them at once, run:
