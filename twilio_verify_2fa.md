@@ -1,6 +1,6 @@
 # Two-factor Authentication Using Twilio Verify in Flask
 
-There are a couple of ways to use two-factor authentication in a flask application. In a [previous article](2fa_flask.md), I showed how you can enable mandatory two-factor authentication where users of an app have to key in a time-based one-time password that is sent to TOTP app. In this article, we will make two-factor authentication optional. Whenever a user enables this feature, an sms with entry code will be sent to their phone. They will use that code to authenticate themselves.
+There are a couple of ways to use two-factor authentication in a flask application. In [another article](2fa_flask.md), I showed how you can enable mandatory two-factor authentication where users of an app have to key in a time-based one-time password that is sent to a TOTP app in their smartphone. In this article, we will make two-factor authentication optional. Whenever a user enables this feature, a code will be sent to their phone through sms. They will use that code to authenticate themselves.
 
 [Twilio Verify](https://www.twilio.com/verify) is a service that allows your application to send verification codes to users of your application through SMS or phone call.
 
@@ -18,7 +18,30 @@ Kindly note that you will need these before you proceed:
 * A Twilio account. Create a [free account](https://www.twilio.com/try-twilio?promo=WNPWrR) now.
 * Python 3.5+
 
+### Service Setup
+
+Once you have an account, 
+* Navigate to [Twilio Console](https://www.twilio.com/console). 
+* From the far-left menu bar, click "All Products and Services"
+* Find and click on [Verify](https://www.twilio.com/console/verify/services)
+* Create a new service by clicking on the blue button
+
+![Create Service](images/twilio_verify/create_service.png)
+
+* Give it a friendly name and click "Create"
+* You will be given a _Service ID_
+
+![Service ID](images/twilio_verify/service_id.png)
+
+I have shown you the _Service ID_. However, this should be secret. I am not worried about it because I will discard it in no time.
+
+* Besides the _Service ID_, you will also need your _Twilio Account SID_ and _Auth Token_ which are found in the [Twilio Console](https://www.twilio.com/console).
+
+Copy all these somewhere because you will need them for your project.
+
 ### Flask App with User Login
+
+This project assumes you know a bit about Flask and Python. If you are new, you will need to start [here](personal_blog.md).
 
 #### Project Structure
 
@@ -67,7 +90,7 @@ $ mkdir project_folder # creates an empty directory called project_folder
 $ touch project_folder/config.py # creates an empty config.py file inside project_folder
 ```
 
-Once you have completed this project structure, move into project_folder:
+Once you have completed this project structure, move into _project_folder_:
 
 ```python
 $ cd project_folder
@@ -75,7 +98,7 @@ $ cd project_folder
 
 #### Create Virtual Environment
 
-Virtual environments allow you to isolate your project requirements from that of the Operating System. You need to create an activate it:
+Virtual environments allow you to isolate the project requirements from that of your Operating System. You need to create and activate it:
 
 ```python
 $ mkvirtualenv twilio_verify 
@@ -104,7 +127,7 @@ To install all of them at once, run:
 (twilio_verify)$ pip3 install flask flask-sqlalchemy flask-bootstrap # Add all the other dependencies within this same line
 ```
 
-To work with Twilio Verify, you will also need to install it:
+To work with Twilio Verify, you will also need to install the Twilio Helper Library for Python:
 
 ```python
 (twilio_verify)$ pip3 install "twilio>=6.17.0"
