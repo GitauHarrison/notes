@@ -911,3 +911,36 @@ Add a link to update profile in the `user.html` template:
 
 ![Edit Profile](images/twilio_verify/edit_profile.png)
 
+### Integrate Twilio Verify
+
+Implementation of Twilio Verify works in two steps:
+
+1. Verification code is sent to your phone
+2. That code is verified by the application
+
+
+#### Send Verification Code
+
+Hopefully you have your _Twilio Account SID_, _Twilio Auth Token_ and _Service SID_. To demonstrate how the Twilio Verify API works, we will run the commads below in our Python shell:
+
+```python
+>>> from twilio.rest import Client
+>>> client = Client('<your_Twilio_Account_SID>', '<your_Twilio_Auth_Token>')
+>>> verify = client.verify.services('<your_Twilio_Verify_Service_SID>')
+>>> verify.verifications.create(to='<your_active_phone_number>', channel='sms')
+```
+
+Check your phone. You should receive an text message notification.
+
+#### Verify Code Received
+
+This is done on the flask application with another call into the Twilio Verify API.
+
+```python
+>>> result = verify.verification_checks.create(to='<your_phone_number>', code='123456')
+>>> result.status
+'pending'
+>>> result = verify.verification_checks.create(to='<your_phone_number>', code='507296')
+>>> result.status
+'approved'
+```
