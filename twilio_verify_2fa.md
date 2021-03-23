@@ -141,7 +141,7 @@ From your root directory (project_folder), update your `requirements.txt` to con
 (twilio_verify)$ pip3 freeze > requirements.txt
 ```
 
-#### Build Project
+#### Build Initial Project
 
 Let us make sure that the structure shown at the beginning of the article works by building a minimalist application:
 
@@ -200,6 +200,8 @@ You should see this:
 
 ![Test](images/twilio_verify/test.png)
 
+#### Database Configuration
+
 Our application will allow new users to register and current users to login. Let us implement this now. This information will be hosted by our SQLite database. 
 
 `config.py: Database configuration`
@@ -241,7 +243,7 @@ migrate = Migrate(app, db)
 ```python
 from app import db
 
-class User(object):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -299,3 +301,229 @@ INFO  [alembic.runtime.migration] Running upgrade  -> 9d3452db7add, user table
 ```
 
 These are the steps will will follow every time we want to make changes to our database.
+
+#### User Login
+
+User login will involve finding an existing user in the database and retrieving that information. Flask provides `flask-login` which is responsible for handling all user login needs. 
+
+Right of the back, it is not recommended to store a user's password in the database. Rather, a long representation of itself which is hard to guess is often used. This is called password hashing. [Werkzeug](http://werkzeug.pocoo.org/) provides `generate_password_hash` and `check_password_hash` to handle password hashing.
+
+We will update our models to accommodate this feature.
+
+`models.py: Password hashing`
+
+```python
+# ...
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+
+def User(UserMixin, db.Model):
+    # ...
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+```
+
+Keywords such as `is_authenticated`, `is_active`, `is_anonymous`, `get_d` are normally used to work with a user's login session. To implement them, we need to import the _mixin_ class from `flask-login` and pass it to our `User` model. Thereafter, we add password hashing.
+
+However, `flask-login` knows nothing about a user. We need to help it know which user has connected to the application by configuring a user loader function that can be called to load a user using a user's given ID.
+
+`models.py: User loader`
+
+```python
+# ...
+from app import login
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+```
+
+To complete the login view function, we will create a route called `/login`
+
+`routes.py: User login`
+
+```python
+# ...
+from flask_login import login_user, current_user
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('login'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('home')
+        return redirect(next_page)
+    return render_template('login.html'
+                           title='Login',
+                           form=form
+                           )
+```
+
+We need to create the `LoginForm`
+
+```python
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+
+
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Login')
+
+```
+
+Here is the login template. We will use `flask-bootstrap` to quickly create one.
+
+`login.html: Login template`
+
+```html
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+    {% app_content %}
+        <div class="row">
+            <div class="col-md-4">
+                <h1>Register</h1>
+            </div>
+            <div class="col-md-4">
+                {{ wtf.quick_form(form) }}
+            </div>
+        </div>
+    {% endblock %}
+
+{% endblock %}
+```
+
+We are importing the base template using the keyword `extends` but it does not exist yet. Let us update it below:
+
+`base.html: Base template`
+
+```html
+{% extends 'bootstrap/base.html' %}
+
+<!-- Title Section -->
+{% block title %}
+    {% if title %}
+        2fa | {{ title }}
+    {% else %}
+        Flask Auth
+    {% endif %}
+{% endblock %}
+
+<!-- Head Section -->
+{% block head %}
+    {{ super() }}
+    <!-- Add your own image -->
+    <link rel="icon" type="image/png" href="{{url_for('static', filename = 'images/<choice-image.ext>')}}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+{% endblock %}
+
+<!-- Link Styles -->
+{% block styles %}
+    {{ super() }}
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename = 'css/styles.css') }}">
+{% endblock %}
+
+<!-- Navbar Section -->
+{% block navbar %}
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ url_for('home') }}">Twilio Verify</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">            
+            <ul class="nav navbar-nav navbar-right">  
+                {% if current_user.is_anonymous %}
+                    <li><a href=" {{ url_for('login') }} ">Login</a></li>
+                {% else %}                                      
+                <li><a href=" {{ url_for('logout') }} ">Logout</a></li>
+                {% endif %}
+            </ul>                       
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+<!-- Main Content Goes Here -->
+{% block content %}
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning" role="alert"> {{ message }} </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block app_content %}
+        
+        {% endblock %}
+    </div>
+{% endblock %}
+```
+
+To log a user out, we will create a separate route:
+
+`route.py: Log out a user`
+
+```python
+# ...
+from flask_login import logout_user
+
+
+@app.route('/logout')
+def logout():
+    logout_user(user)
+    return redirect(url_for('home'))
+```
+
+To require users to login in order to access the home page, we will use `@login_required` decorator. But first, we need our application to know what view function handles logins.
+
+`__init__.py: Register login required view function`
+
+```python
+# ...
+from flask_login import LoginManager()
+
+login = LoginManager(app)
+login.login_view = 'login'
+
+```
+
+Pass the `@login_required` decorator to the home page.
+
+`routes.py: Require login to access home page`
+
+```python
+from flask_login import login_required
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])
+@login_required
+def home():
+    return render_template('home.html',
+                           title='Home',
+                           )
+```
