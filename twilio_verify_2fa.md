@@ -1004,3 +1004,65 @@ TWILIO_AUTH_TOKEN=
 TWILIO_VERIFY_SERVICE_ID=
 ```
 
+#### Access Twilio Verify API
+
+We will handle the access to Twilio Verify API in a separate module called `twilio_verify_api.py` in the _app_ folder. Let us create this module:
+
+```python
+# make sure you are in the right working directory
+
+(twilio_verify)$ touch twilio_verify_api.py
+```
+
+This module will:
+
+* Verify the client trying to access the API
+* Request for a verification token
+* Verify the requested token
+
+`twilio_verify_api.py: Access Twilio Verify API`
+
+```python
+from app import app
+from twilio.rest import Client, TwilioException
+
+
+def _get_twilio_verify_client():
+    return Client(
+        app.config['TWILIO_ACCOUNT_SID'],
+        app.config['TWILIO_AUTH_TOKEN']).verify.services(
+            app.config['TWILIO_VERIFY_SERVICE_ID'])
+
+
+def request_verification_token(phone):
+    verify = _get_twilio_verify_client()
+    try:
+        verify.verifications.create(to=phone, channel='sms')
+    except TwilioException:
+        verify.verifications.create(to=phone, channel='call')
+
+
+def check_verification_token(phone, token):
+    verify = _get_twilio_verify_client()
+    try:
+        result = verify.verification_checks.create(to=phone, code=token)
+    except TwilioException:
+        return False
+    return result.status == 'approved'
+
+```
+
+`_get_twilio_verify_client()` function checks for the client based on the Twilio credentials used earlier and returns a `verify` object. Using this object, we use `verifications.create(to=phone, channel='sms')` to attempt seninding a verification code via sms. If this fails, we make a phone call instead. `check_verification_token()` function uses the `verify` object to check the verification token sent to the phone and returns `True` if the token is valid or `False` if it is invalid.
+
+
+Make sure to import this module in the application package:
+
+`__init__.py: Import Twilio Verify module`
+
+```python
+# ...
+
+from app import twilio_verify_api
+
+```
+
