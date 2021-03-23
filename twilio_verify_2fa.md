@@ -944,3 +944,63 @@ This is done on the flask application with another call into the Twilio Verify A
 >>> result.status
 'approved'
 ```
+
+#### Add Twilio Credentials
+
+We will add the three Twilio credentials to our configuration file
+
+`config.py: Twilio configurations`
+
+```python
+# ...
+
+
+class Config(object):
+    # ...
+    TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
+    TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_ACCOUNT_TOKEN')
+    TWILIO_VERIFY_SERVICE_ID = os.environ.get('TWILIO_VERIFY_SERVICE_ID')
+
+```
+
+These keys are imported from environment variables. They are also private and should not be committed to version control. For this reason, we will add the actual keys to `.env` file which is located in the top-level directory.
+
+`.env: Add actual values to our credetials`
+
+```python
+TWILIO_ACCOUNT_SID='your_twilio_account_sid'
+TWILIO_AUTH_TOKEN='your_twilio_auth_token'
+TWILIO_VERIFY_SERVICE_ID='your_twilio_verify_service_sid'
+```
+
+To load these environment variables, we will use `python-dotenv` package which imports environment variables from `.env` file.
+
+`config.py: Load environment variables`
+
+```python
+# ...
+from dotenv import load_dotenv
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(basedir, '.env')
+
+
+class Config(object):
+    # ...
+
+```
+
+To ignore these sensitive files from version control, we need to update our `.gitignore` file in the top-level directory by explicitly adding files we want ignored. Check what files to ignore [here](https://github.com/github/gitignore/blob/master/Python.gitignore).
+
+If another person tried to clone this project repository, say from [GitHub](https://github.com), they will not get the `.env` file. We can provide a template of our `.env` file to help guide future users:
+
+`.env-template: Environment variables template`
+
+```python
+# Exclude the actual values
+
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_VERIFY_SERVICE_ID=
+```
+
