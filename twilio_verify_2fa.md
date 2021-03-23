@@ -658,3 +658,256 @@ After a successful registration and login, a user will be redirected to the home
 ```
 
 ![Home Page](images/twilio_verify/home.png)
+
+### User Profile Page
+
+![User Profile](images/twilio_verify/better_user_profile.png)
+
+First thing, we will provide a link to a user's profile once they are logged in.
+
+`base.html: Profile page link`
+
+```html
+<!---Previous code-->
+            <ul class="nav navbar-nav navbar-right">  
+                {% if current_user.is_anonymous %}
+                    <li><a href=" {{ url_for('login') }} ">Login</a></li>
+                {% else %}
+                    <li><a href=" {{ url_for('user', username=current_user.username) }} ">Profile</a></li>
+                    <li><a href=" {{ url_for('logout') }} ">Logout</a></li>
+                {% endif %}
+            </ul>
+<!---Previous code-->
+```
+
+To make the profile page more interesting, we will add:
+
+* Last seen time
+* About Me 
+* User Avatar
+
+#### User Avatar
+
+We will use the [Gravatar](http://gravatar.com/) service to provide user images. It is actually simple to use. To request an image for a given user, an email is required. 
+
+```python
+# Gravatar format
+
+https://www.gravatar.com/avatar/<hash>
+
+# hash is the md5 hash of a user's email address
+```
+
+Example on a Python shell:
+
+```python
+>>> from hashlib import md5
+>>> 'https://www.gravatar.com/avatar/' + md5(b'harry@email.com').hexdigest()
+'https://www.gravatar.com/avatar/3f4360b2a748228ba4f745a3ebd428dc'
+```
+If you follow that link, you will see a default gravatar image:
+
+![Default Gravatar Image](images/twilio_verify/default_gravatar.png)
+
+ Learn more from the [gravatar documentation](https://gravatar.com/site/implement/images).
+
+Since we want to add a custom avatar to an existing user, we will update our `User` model to accommodate this.
+
+`models.py: Add user avatar`
+
+```python
+# ...
+from hashlib import md5
+
+class User(UserMixin, db.Model):
+    # ...
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, size)
+```
+
+Update the user template:
+
+`user.html`
+
+```html
+{% extends "base.html" %}
+
+{% block content %}
+    <table>
+        <tr valign="top">
+            <td><img src="{{ user.avatar(128) }}"></td>
+            <td><h1>User: {{ user.username }}</h1></td>
+        </tr>
+    </table>
+    <hr>
+{% endblock %}
+
+```
+
+Create a view function that maps the `user/<username>` route.
+
+`routes.py: Map user profile view function`
+
+```python
+# ...
+
+
+@app.route('/user/<username>')
+def user(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    return render_template('user.html',
+                           title='Profile'
+                           )
+
+```
+
+#### Last Seen and About Me
+
+Let's extend out database to support this new feature:
+
+`models.py: Add new fields`
+
+```python
+# ...
+from flask import datetime
+
+
+class User(UserMixin, db.Model):
+    # ...
+    about_me = db.Column(db.String(140))
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+```
+
+Since we have made changes to our database, we need to apply them:
+
+```python
+(twilio_verify)$ flask db migrate -m 'date and about me fields in user model'
+(twilio_verify)$ flask db upgrade
+```
+
+We can now reflect those changes in our `user.html` template:
+
+`user.html: More interesting profile`
+
+```html
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <table class="table table-hover">
+            <tr valign="top">
+                <td width="70px">
+                    <img src="{{ user.avatar(128) }}">
+                </td>
+                <td>
+                    <h1>User: {{ user.username }}</h1>
+                    {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
+                    {% if user.last_seen %}<p>Last seen on: {{ user.last_seen }}</p>{% endif %}
+                </td>
+            </tr>
+        </table>
+        <hr>
+    </div>
+</div>    
+{% endblock %}
+```
+
+However, when you try reloading your profile page, nothing will show because we have not recorded the last time a user was seen nor edit the `about_me` content (it is currently empty).
+
+`routes.py: Records user's last seen time`
+
+```python
+# ...
+from datetime import datetime
+
+
+@app.before_request
+def before_request():
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.utcnow()
+        db.session.commit()
+
+```
+
+Editing the `about_me` section will involve the use of a form. We need to create one.
+
+`form.html: Edit about me`
+
+```python
+# ...
+from wtforms import TextAreaField
+from wtforms.validators import Length
+
+class EditProfileForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    about_me = TextAreaField('About me', validators=[Length(min=0, max=140)])
+    submit = SubmitField('Submit')
+
+```
+
+Display edit form:
+
+`edit_profile.html: Display edit profile form`
+
+```python
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <div class="row">
+        <div class="col-md-4">
+            <h1>Edit Profile</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+{% endblock %}
+```
+
+Add a view function that binds everything together:
+
+`routes.py: Edit profile view function`
+
+```python
+# ...
+from app.forms import EditProfileForm
+
+
+@app.route('edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    form = EditProfileForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.about_me = form.about_me.data
+        db.session.commit()
+        flash('Your profile has been updated')
+        return redirect(url_for('user', username=current_user.username))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.about_me.data = current_user.about_me
+    return render_template('edit_profile.html',
+                           title='Edit Profile',
+                           form=form
+                           )
+
+```
+
+Add a link to update profile in the `user.html` template:
+
+`user.html: Add edit link`
+
+```python
+{% if user == current_user %}
+    <p><a href="{{ url_for('edit_profile') }}">Edit Profile</a></p>
+{% endif %}
+```
+
+![Edit Profile](images/twilio_verify/edit_profile.png)
+
