@@ -380,14 +380,14 @@ We need to create the `LoginForm`
 
 ```python
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember Me')
     submit = SubmitField('Login')
 
 ```
@@ -640,3 +640,21 @@ The register template will look like this:
 
 ```
 ![Register](images/twilio_verify/register.png)
+
+After a successful registration and login, a user will be redirected to the home page. This is how the home page will look like:
+
+`home.html: Display home page`
+
+```html
+{% extends 'base.html' %}
+
+{% block app_content %}
+    <div class="row">
+        <div class="col-md-4">
+            <h1>Welcome home</h1>
+        </div>
+    </div>
+{% endblock %}
+```
+
+![Home Page](images/twilio_verify/home.png)
