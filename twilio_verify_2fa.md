@@ -1109,3 +1109,36 @@ INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
 INFO  [alembic.runtime.migration] Running upgrade 50b197ac3799 -> 49f34ca11d82, Add phone number field
 ```
 
+### Links to Enable/Disable Two-factor Authentication
+
+We can display the option to enable or disable two factor authentication on the user's _profile_ page.
+
+`user.html: Links to enable/disable 2fa`
+
+```html
+{# app/templates/user.html #}
+{% extends "base.html" %}
+
+{% block app_content %}
+    <table class="table table-hover">
+        <tr>
+            <td width="256px"><img src="{{ user.avatar(256) }}"></td>
+            <td>
+                ...
+                ...
+                {% if not user.two_factor_enabled() %}
+                    <p>
+                        <a href="#">Enable two-factor authentication</a>
+                    </p>
+                {% else %}
+                    <p>
+                        <a href="#">Disable two-factor authentication</a>
+                    </p>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+```
+
+![2fa Link](images/twilio_verify/2fa_link.png)
+
