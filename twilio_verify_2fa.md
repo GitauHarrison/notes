@@ -234,7 +234,7 @@ migrate = Migrate(app, db)
 
 # ...
 ```
-`flask-sqlalchemy` an extension that provides a Flask-friendly wrapper to the popular [SQLAlchemy](http://www.sqlalchemy.org/) package. This package is an ORM which allows application to manage a database using high-level entities such as classes, objects and methods instead of tables and SQL.
+`flask-sqlalchemy` is an extension that provides a Flask-friendly wrapper to the popular [SQLAlchemy](http://www.sqlalchemy.org/) package. This package is an ORM which allows applications to manage a database using high-level entities such as classes, objects and methods instead of tables and SQL.
 
 `flask-migrate` will allow us to make changes to our database by handling migratrion.
 
@@ -260,7 +260,7 @@ With the database schema and configuration set up, let us apply those changes:
 
 # Output
 
-Creating directory /home/harry/software_development/python/practice_projects/verify_twilio/migrations ...  done
+Creating directory /home/harry/verify_twilio/migrations ...  done
   Creating directory /home/verify_twilio/migrations/versions ...  done
   Generating /home/harry/verify_twilio/migrations/script.py.mako ...  done
   Generating /home/harry/verify_twilio/migrations/alembic.ini ...  done
@@ -270,7 +270,7 @@ Creating directory /home/harry/software_development/python/practice_projects/ver
   '/home/harry/verify_twilio/migrations/alembic.ini' before proceeding.
 ```
 
-A _migratitons_ repository has been created in the top-level directory. In it, there is a _versions_ sub-folder which will soon hold all the changes we apply to our database.
+A _migratitons_ repository will be created in the top-level directory. In it, there is a _versions_ sub-folder which will soon hold all the changes we make to our database.
 
 ```python
 (twilio_verify)$ flask db migrate -m 'user table'
@@ -300,7 +300,7 @@ INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
 INFO  [alembic.runtime.migration] Running upgrade  -> 9d3452db7add, user table
 ```
 
-These are the steps will will follow every time we want to make changes to our database.
+These are the steps we will follow every time we want to make changes to our database.
 
 #### User Login
 
@@ -329,7 +329,7 @@ class User(UserMixin, db.Model):
 
 Keywords such as `is_authenticated`, `is_active`, `is_anonymous`, `get_d` are normally used to work with a user's login session. To implement them, we need to import the _mixin_ class from `flask-login` and pass it to our `User` model. Thereafter, we add password hashing.
 
-However, `flask-login` knows nothing about a user. We need to help it know which user has connected to the application by configuring a user loader function that can be called to load a user using a user's given ID.
+However, `flask-login` knows nothing about a user. We need to help it know which user has been connected to the application by configuring a user loader function that can be called to load a user using a user's given ID.
 
 `models.py: User loader`
 
@@ -344,7 +344,7 @@ def load_user(id):
 
 ```
 
-To complete the login view function, we will create a route called `/login`
+To complete the login view function, we will create a route called `/login`.
 
 `routes.py: User login`
 
@@ -392,7 +392,7 @@ class LoginForm(FlaskForm):
 
 ```
 
-Flask expects that we set a `SECRET_KEY` which will be used to protect our web forms against a nast attack called  [CSRF](https://en.wikipedia.org/wiki/Cross-site_request_forgery). This should be done in the config file.
+Flask expects that we set a `SECRET_KEY` which will be used to protect our web forms against a nasty attack called  [CSRF](https://en.wikipedia.org/wiki/Cross-site_request_forgery). This should be done in the config file.
 
 `config.py: Set SECRET_KEY`
 
@@ -554,11 +554,11 @@ def home():
                            title='Home',
                            )
 ```
-![Login](images/twilio_verify/login.png)
+![Login](images/twilio_verify/login_required.png)
 
 #### User Registration
  
-Next, we well create a route that handles, user registration:
+Next, we well create a route that handles user registration:
 
 `routes.py: User registration`
 
@@ -587,7 +587,7 @@ def register():
 
 ```
 
-Here is the registration form.
+Here is the registration form:
 
 `forms.py: Create registration form`
 
