@@ -527,3 +527,81 @@ def home():
                            title='Home',
                            )
 ```
+
+#### User Registration
+ 
+Next, we well create a route that handles, user registration:
+
+`routes.py: User registration`
+
+```python
+# ...
+from flask import render_template, redirect, url_for, flash
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form = RegisterForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('You have successfully registerd. Login to continue')
+        return redirect(url_for('login'))
+    return render_template('register.html', 
+                           title='Register',
+                           form=form
+                           )
+
+```
+
+Here is the registration form.
+
+`forms.py: Create registration form`
+
+```python
+# ...
+
+
+class RegisterForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Register')
+
+    def validate_username(self, username):
+        user = User.query.filter_by(usernameusername.data).first()
+        if user is not None:
+            raise ValidationError('Please use a different username')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is not None:
+            raise ValidationError('Please use a different email address')
+
+```
+
+The register template will look like this:
+
+`register.html: Display registration template`
+
+```html
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+    {% app_content %}
+        <div class="row">
+            <div class="col-md-4">
+                <h1>Register</h1>
+            </div>
+            <div class="col-md-4">
+                {{ wtf.quick_form(form) }}
+            </div>
+        </div>
+    {% endblock %}
+
+{% endblock %}
+```
