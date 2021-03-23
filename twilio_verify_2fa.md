@@ -140,3 +140,63 @@ From your root directory (project_folder), update your `requirements.txt` to con
 ```python
 (twilio_verify)$ pip3 freeze > requirements.txt
 ```
+
+#### Build Project
+
+Let us make sure that we the structure shown at the beginning of the article works by building a minimalist application:
+
+`__init__.py: Create application instance`
+```python
+from flask import Flask
+
+app = Flask(__name__)
+
+from app import routes, models, errors
+```
+
+We have created an instance of our flask application
+
+`routes.py: Handle app routeing`
+
+```python
+from app import app
+
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])
+def home():
+    return 'This is a test!'
+
+```
+
+The application should eventually display "This is a test".
+
+`app.py: Create entry point to the applicaiton`
+
+```python
+from app import app
+
+```
+
+Flask expects this file at the top-level directory.
+
+`.flaskenv: Flask Environment Variables`
+
+```python
+FLASK_APP=app.py
+FLASK_ENV=development
+FLASK_DEBUG=True
+```
+
+Flask will use these variables to fire up our server. It will be a development server with Flask's hot auto-reload enabled.
+
+We can now fire up our Flask server from the terminal:
+
+```
+(twilio_verify)$ flask run
+```
+
+You should see this:
+
+![Test](images/twilio_verify/test.png)
+
