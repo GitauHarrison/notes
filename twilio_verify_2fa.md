@@ -317,7 +317,7 @@ We will update our models to accommodate this feature.
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-def User(UserMixin, db.Model):
+class User(UserMixin, db.Model):
     # ...
 
     def set_password(self, password):
@@ -337,9 +337,11 @@ However, `flask-login` knows nothing about a user. We need to help it know which
 # ...
 from app import login
 
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
 ```
 
 To complete the login view function, we will create a route called `/login`
@@ -348,7 +350,10 @@ To complete the login view function, we will create a route called `/login`
 
 ```python
 # ...
+from flask import render_template, redirect, url_for, flash, request
+from werkzeug.urls import url_parse
 from flask_login import login_user, current_user
+from app.forms import LoginForm
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -365,7 +370,7 @@ def login():
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('home')
         return redirect(next_page)
-    return render_template('login.html'
+    return render_template('login.html',
                            title='Login',
                            form=form
                            )
@@ -387,6 +392,18 @@ class LoginForm(FlaskForm):
 
 ```
 
+Flask expects that we set a `SECRET_KEY` which will be used to protect our web forms against a nast attack called  [CSRF](https://en.wikipedia.org/wiki/Cross-site_request_forgery). This should be done in the config file.
+
+`config.py: Set SECRET_KEY`
+
+```python
+# ...
+
+class Config(object):
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'extremely-difficult-to-guess'
+    # ...
+```
+
 Here is the login template. We will use `flask-bootstrap` to quickly create one.
 
 `login.html: Login template`
@@ -395,18 +412,25 @@ Here is the login template. We will use `flask-bootstrap` to quickly create one.
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
-    {% app_content %}
-        <div class="row">
-            <div class="col-md-4">
-                <h1>Register</h1>
-            </div>
-            <div class="col-md-4">
-                {{ wtf.quick_form(form) }}
-            </div>
+{% block app_content %}
+    <div class="row">
+        <div class="col-md-4">
+            <h1>Login</h1>
         </div>
-    {% endblock %}
-
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <p>New Here? <a href="{{ url_for('register') }}">Register Here</a></p>
+            <p>Forgot Password? <a href="#">Reset Here</a></p>
+        </div>
+    </div>
 {% endblock %}
+
 ```
 
 We are importing the base template using the keyword `extends` but it does not exist yet. Let us update it below:
@@ -495,8 +519,9 @@ from flask_login import logout_user
 
 @app.route('/logout')
 def logout():
-    logout_user(user)
+    logout_user()
     return redirect(url_for('home'))
+
 ```
 
 To require users to login in order to access the home page, we will use `@login_required` decorator. But first, we need our application to know what view function handles logins.
@@ -505,10 +530,12 @@ To require users to login in order to access the home page, we will use `@login_
 
 ```python
 # ...
-from flask_login import LoginManager()
+from flask_login import LoginManager
+from flask_botstrap import Bootstrap
 
 login = LoginManager(app)
 login.login_view = 'login'
+bootstrap = Bootstrap(app)
 
 ```
 
@@ -527,6 +554,7 @@ def home():
                            title='Home',
                            )
 ```
+![Login](images/twilio_verify/login.png)
 
 #### User Registration
  
@@ -536,7 +564,9 @@ Next, we well create a route that handles, user registration:
 
 ```python
 # ...
-from flask import render_template, redirect, url_for, flash
+from app import db
+from app.forms import RegisterForm
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -563,17 +593,20 @@ Here is the registration form.
 
 ```python
 # ...
+from app.models import User
 
 
 class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    confirm_password = PasswordField('Confirm Password',
+                                     validators=[DataRequired(),
+                                                 EqualTo('password')])
     submit = SubmitField('Register')
 
     def validate_username(self, username):
-        user = User.query.filter_by(usernameusername.data).first()
+        user = User.query.filter_by(username=username.data).first()
         if user is not None:
             raise ValidationError('Please use a different username')
 
@@ -592,16 +625,18 @@ The register template will look like this:
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
-    {% app_content %}
-        <div class="row">
-            <div class="col-md-4">
-                <h1>Register</h1>
-            </div>
-            <div class="col-md-4">
-                {{ wtf.quick_form(form) }}
-            </div>
+{% block app_content %}
+    <div class="row">
+        <div class="col-md-4">
+            <h1>Register</h1>
         </div>
-    {% endblock %}
-
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
 {% endblock %}
+
 ```
+![Register](images/twilio_verify/register.png)
