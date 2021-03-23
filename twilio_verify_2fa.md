@@ -1066,3 +1066,46 @@ from app import twilio_verify_api
 
 ```
 
+#### Add Phone Number To User Database
+
+Since we will be sending verification codes to a user's phone number, it needs to be stored in the database so that the tokens can be sent out every time they log in.
+
+`config.py: Add user phone number`
+
+```python
+# ...
+
+
+class User(UserMixin, PaginatedAPIMixin, db.Model):
+    # ...
+    verification_phone = db.Column(db.String(16))
+
+    def two_factor_enabled(self):
+        return self.verification_phone is not None
+
+```
+
+The `two_factor_enabled` helper method checks whether the `verification_phone` attribute exists or not.
+
+We need to apply this change to our database by running the commands:
+
+```python
+(twilio_verify)$ flask db migrate -m 'Add phone number field'
+
+# Output
+
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.autogenerate.compare] Detected added column 'user.verification_phone'
+  Generating /home/verify_twilio/migrations/versions/49f34ca11d82_add_phone_number_field.py ...  done
+```
+
+```python
+(twilio_verify)$ flask db upgrade
+
+# Output
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade 50b197ac3799 -> 49f34ca11d82, Add phone number field
+```
+
