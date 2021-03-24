@@ -1468,7 +1468,7 @@ That's it!
 
 ### Additional Concepts
 
-This application has both _email_ and _error_ modules. So far, we have not handled any of them. You can try and implement them in the application.
+This application has both _email_ and _error_ modules. So far, we have not handled any of them. You can try to implement them in the application.
 
-* If a user forgets their account's password, a _Reset Password_ link is provided
+* If a user forgets their account's password, a _Reset Password_ link is provided in the _Login_ page
 * If a non-existent page is requested from the server, the application should show a nicer looking error page with redirection to the home page rather than the scary and possibly too-revealing flask debug error page.
