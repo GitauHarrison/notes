@@ -1142,3 +1142,244 @@ We can display the option to enable or disable two factor authentication on the 
 
 ![2fa Link](images/twilio_verify/2fa_link.png)
 
+#### Route to Handle Two-factor Authentication
+
+To access this feature from their profile, a user has to provide their phone number. We will therefore need a form to recieve a user's phone number.
+
+We use the [`phonenumbers`](https://pypi.org/project/phonenumbers/) package to validate the phone number given by the user. Install it to in your application and update `requirements.txt`.
+
+```python
+(twilio_verify)$ pip3 install phonenumbers
+(twilio_verify)$ pip3 freeze > requirements.txt
+```
+
+The main object that the library deals with is a `PhoneNumber` object. You can create this from a string representing a phone number using the `parse` function, but you also need to specify the country that the phone number is being dialled from (unless the number is in _E.164_ format, which is globally unique).
+
+
+`forms.py: Provide phone number`
+
+```python
+# ...
+import phonenumbers
+
+
+class Enable2faForm(FlaskForm):
+    verification_phone = StringField('Phone', validators=[DataRequired()])
+    submit = SubmitField('Enalble 2fa')
+
+    def validate_verification_number(self, verification_phone):
+        try:
+            p = phonenumbers.parse(verification_phone.data)
+            if not phonenumbers.is_valid_number(p):
+                raise ValueError
+        except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
+            raise ValidationError('Invalid phone number')
+ 
+```
+
+When the user clicks on the _enable two-factor authentication_ link, they will be redirected to this form. Only after this initial verification is complete will their account be updated to use two-factor authentication.
+
+`routes.py: Update account with 2fa`
+
+```python
+# ...
+from app.forms import Enable2faForm
+
+
+@app.route('/enable_2fa', methods=['GET', 'POST'])
+@login_required
+def enable_2fa():
+    form = Enable2faForm()
+    if form.validate_on_submit():
+        session['phone'] = form.verification_phone.data
+        request_verification_token(session['phone'])
+        return redirect(url_for('verify_2fa'))
+    return render_template('enable_2fa.html',
+                           form=form,
+                           title='Enable 2fa'
+                           )
+
+```
+
+Display the phone form
+
+`enable_2fa.html: Dispaly phone verification phone`
+
+```html
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <div class="row">
+        <div class="col-md-4">
+            <h1>Enable Two-factor Authentication</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+```
+
+![Enable 2fa form](images/twilio_verify/enable_2fa_form.png)
+
+To improve usability of the phonenumber form, considering that the users might be from different regions around the globe where different phone number formats are used, we will use the [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) JavaScript library.
+
+`base.html: Add Javascript code for phone number input`
+
+```html
+<!--Add intl tel input package CSS-->
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/css/intlTelInput.css">
+{% endblock %}
+
+
+<!--scripts block goes to the bottom-->
+{% block scripts %}
+    {{ super() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/js/intlTelInput-jquery.min.js"></script>
+    <script>
+        $("#verification_phone").css({position: 'absolute', top: '-9999px', left: '-9999px'});
+        $("#verification_phone").parent().append('<div><input type="tel" id="_verification_phone"></div>');
+        $("#_verification_phone").intlTelInput({
+            separateDialCode: true,
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/js/utils.js",
+        });
+        $("#_verification_phone").intlTelInput("setNumber", $('#verification_phone').val());
+        $('#_verification_phone').blur(function() {
+            $('#verification_phone').val($('#_verification_phone').intlTelInput("getNumber"));
+        });
+    </script>
+{% endblock %}
+```
+
+![Improved Phone Form UI](images/twilio_verify/better_phone_form.png)
+
+Country codes are shown; the phone number placeholder information is also displayed to help guide the user when they provide their phone numbers.
+
+#### Expand Login Logic
+
+The login logic needs to be expanded to accomodate users with two-factor authentication enabled. 
+
+`routes.py: Consider 2fa logic when loggin in`
+
+```python
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('login'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('home')
+        if user.two_factor_enabled():
+            request_verification_token(user.verification_phone)
+            session['username'] = user.username
+            session['phone'] = user.verification_phone
+            return redirect(url_for('verify_2fa',
+                                    next=next_page,
+                                    remember='1' if form.remember_me.data else '0'
+                                    )
+                            )
+        login_user(user, remember=form.remember_me.data)
+        return redirect(next_page)
+    return render_template('login.html',
+                           title='Login',
+                           form=form
+                           )
+```
+
+We have postponed the login attempt to cater for users who have two-factor authentication enabled. For those users, they will be redirected to the `verify_2fa` view function as soon as they receive their verification tokens.
+
+The “remember me” flag from the login form and the "next page" are added to the redirect URL as query string arguments, while the username and phone number for the user are stored in the user session to protect them against tampering.
+
+#### Token Verification Route
+
+The user needs to provide the token sent to their phone. This token will be captured by the application through a token verification form.
+
+`forms.py: Confirm token form`
+
+```python
+# ...
+
+
+class Confirm2faForm(FlaskForm):
+    token = StringField('Token')
+    submit = SubmitField('Verify')
+
+```
+
+Dispaly this form to the user to make it accessible
+
+`verify_2fa.html: Display token verification form`
+
+```html
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <div class="row">
+        <div class="col-md-4">
+            <h1>Enter Token Received</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+```
+
+Once the token submission is made, `verify_2fa` function will handle it.
+
+`routes.py: Verify token`
+
+```python
+# ...
+from app.forms import Confirm2faForm
+
+
+@app.route('/verify_2fa', methods['GET', 'POST'])
+def verify_2fa():
+    form = Confirm2faForm()
+    if form.validate_on_submit():
+        phone = session['phone']
+        if check_verification_token(phone, form.token.data):
+            del session['phone']
+            if current_user.is_authenticated:
+                current_user.verification_phone = phone
+                db.session.commit()
+                flash('You have enabled two-factor authentication')
+            else:
+                username = session['username']
+                del session['username']
+                user = User.query.filter_by(username=username).first()
+                next_page = request.args.get('next')
+                remember = request.args.get('remember', '0') == '1'
+                login_user(user, remember=remember)
+                return redirect(next_page)
+        form.token.errors.append('Invalid token')
+    return render_template('verify_2fa.html',
+                           form=form,
+                           title='Verify Token'
+                           )
+
+```
+
+When a user requests for two-factor authentication, the phone number will be added to the database. In case of a normal login attempt, this route must log the user into the system, by invoking `login_user()` function using the data previously stored in the user session and the query string.
+
+We have determined two states of a user:
+
+* The current user is logged in and is trying to request for two-factor authentication
+* The user is not logged in and is trying to log in
