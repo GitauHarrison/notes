@@ -1243,9 +1243,9 @@ Display the phone form
 
 ![Enable 2fa form](images/twilio_verify/enable_2fa_form.png)
 
-To improve usability of the phonenumber form, considering that the users might be from different regions around the globe where different phone number formats are used, we will use the [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) JavaScript library.
+To improve usability of the phone number form, considering that the users might be from different regions around the globe where different phone number formats are used, we will use the [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) JavaScript library.
 
-`base.html: Add Javascript code for phone number input`
+`base.html: Add Javascript code to handle international numbers`
 
 ```html
 <!--Add intl tel input package CSS-->
@@ -1464,3 +1464,11 @@ We can now display this form to the user
 ```
 
 That's it!
+
+
+### Additional Concepts
+
+This application has both _email_ and _error_ modules. So far, we have not handled any of them. You can try and implement them in the application.
+
+* If a user forgets their account's password, a _Reset Password_ link is provided
+* If a non-existent page is requested from the server, the application should show a nicer looking error page with redirection to the home page rather than the scary and possibly too-revealing flask debug error page.
