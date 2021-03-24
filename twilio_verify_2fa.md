@@ -1383,3 +1383,67 @@ We have determined two states of a user:
 
 * The current user is logged in and is trying to request for two-factor authentication
 * The user is not logged in and is trying to log in
+
+#### Disable Two-factor Authentication
+
+In the user's profile page, once two-factor authentication is enabled, the _disable two-factor authentication_ link is displayed. When this link is clicked, a disable two-factor authentication button is displayed. We need to create this button form.
+
+`forms.py: Disable button`
+
+```python
+# ...
+
+
+class Disable2faForm(FlaskForm):
+    submit = SubmitField('Disable 2fa')
+
+```
+
+The view function that handles this action is `disable_2fa`.
+
+`routes.py: Disable 2fa logic`
+
+```python
+# ...
+from app.forms import Disable2faForm
+
+
+@app.route('/disable_2fa', methods=['GET', 'POST'])
+@login_required
+def disable_2fa():
+    form = Disable2faForm()
+    if form.validate_on_submit():
+        current_user.verification_phone = None
+        db.session.commit()
+        flash('You have disabled two-factor authentication')
+        return redirect('user', username=current_user.username)
+    return render_template('disable_2fa.html',
+                           form=form,
+                           title='Disable 2fa'
+                           )
+```
+
+We can now display this form to the user
+
+`disable.html: Display Disable 2fa button`
+
+```html
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <div class="row">
+        <div class="col-md-4">
+            <h1>Disable Two-factor Authentication</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+```
+
+That's it!
