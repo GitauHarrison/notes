@@ -1144,16 +1144,33 @@ We can display the option to enable or disable two factor authentication on the 
 
 #### Route to Handle Two-factor Authentication
 
-To access this feature from their profile, a user has to provide their phone number. We will therefore need a form to recieve a user's phone number.
-
-We use the [`phonenumbers`](https://pypi.org/project/phonenumbers/) package to validate the phone number given by the user. Install it to in your application and update `requirements.txt`.
+To access this feature from their profile, a user has to provide their phone number. We will therefore need a form to recieve a user's phone number. We will use the [`phonenumbers`](https://pypi.org/project/phonenumbers/) package to validate the phone number given by the user. Install it in your application and update `requirements.txt`.
 
 ```python
 (twilio_verify)$ pip3 install phonenumbers
 (twilio_verify)$ pip3 freeze > requirements.txt
 ```
 
-The main object that the library deals with is a `PhoneNumber` object. You can create this from a string representing a phone number using the `parse` function, but you also need to specify the country that the phone number is being dialled from (unless the number is in _E.164_ format, which is globally unique).
+The main object that the library deals with is a `PhoneNumber` object. 
+
+```python
+# E164 format
+
+>>> import phonenumbers
+>>> kenya = phonenumbers.parse("+254720227267", 'KEN')
+>>> print(kenya)
+Country Code: 254 National Number: 720227267
+
+# Invalid Country Code
+>>> kenya = phonenumbers.parse("0720227267", 'KEN')
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+  File "/home/harry/.virtualenvs/test_verify/lib/python3.8/site-packages/phonenumbers/phonenumberutil.py", line 2850, in parse
+    raise NumberParseException(NumberParseException.INVALID_COUNTRY_CODE,
+phonenumbers.phonenumberutil.NumberParseException: (0) Missing or invalid default region.
+```
+
+You can create this from a string representing a phone number using the `parse` function, but you also need to specify the country that the phone number is being dialled from (unless the number is in _E.164_ format, which is globally unique).
 
 
 `forms.py: Provide phone number`
