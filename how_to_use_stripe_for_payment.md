@@ -430,7 +430,6 @@ We will now add routes for successful payment processing or any cancellation.
 
 ```html
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf%}
 
 {% block content %}
   <section class="section">
@@ -446,7 +445,6 @@ We will now add routes for successful payment processing or any cancellation.
 
 ```html
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf%}
 
 {% block content %}
   <section class="section">
@@ -465,11 +463,11 @@ With the addition of these templates, we need to create routes that will handle 
 ```python
 @app.route('/success')
 def success():
-return render_template('success.html', title = 'Success')
+    return render_template('success.html', title = 'Success')
 
 @app.route('/cancel')
-def success():
-return render_template('cancel.html', title = 'Cancel')
+def cancelled():
+    return render_template('cancel.html', title = 'Cancel')
 ```
 
 When you submit your payment by clicking on the payment button again from http://localhost:5000, you should be redirected back to  http://localhost:5000/success.
@@ -535,7 +533,14 @@ def stripe_webhook():
 
 ###### Test Your Webhook
 
-We will use the Stripe CLI to test our webhook. Run the following command:
+We will use the Stripe CLI to test our webhook. First, install the Stripe CLI:
+
+* Download the latest `linux` tar.gz file release from  https://github.com/stripe/stripe-cli/releases/latest
+* Unzip the downloaded file
+* Run the executable `./stripe`
+
+
+Login to stripe via the command line:
 
 ```python
 (stripe-project)$ stripe login
