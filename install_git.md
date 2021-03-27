@@ -48,4 +48,4 @@ $ git config --list
 ```
 This step confirms all the changes you just made in the `git` configuration file. If at any point you want to edit your changes, run `$ git config`
 
-**Read more on `git` in their [documention](https://git-scm.com/)**
+**Read more on `git` in their [documentation](https://git-scm.com/)**
