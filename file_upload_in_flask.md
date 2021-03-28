@@ -10,7 +10,7 @@ Create the application's structure as shown above using the `mkdir` and `touch` 
 
 ```python
 $ mkdir my_new_project # this creates an empty directory in the current working directory
-$ touch my_new_file # this creates an empty file in the current working directory
+$ touch my_new_project/my_new_file # this creates an empty file in the new directory
 ```
 
 ### Useful dependancies
