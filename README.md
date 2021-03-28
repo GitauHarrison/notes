@@ -26,4 +26,6 @@ I also make a note of some of the cool projects I have built or I have been invo
 
 1. [How to build a Personal Blog application using flask](web_development/personal_blog/personal_blog.md)
 
+![Personal Blog](images/personal_blog.gif)
+
 Find out what projects I have up and running [here](https://gitauharrison-blog.herokuapp.com/web-development).
