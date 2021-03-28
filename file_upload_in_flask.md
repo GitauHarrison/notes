@@ -38,7 +38,7 @@ Other useful dependancies can be:
 
 ```python
 (venv)$ pip3 install flask-bootstrap # cross-site responsiveness
-(venv)$ pip3 install python-dotenv # load flask server quickly
+(venv)$ pip3 install python-dotenv # load flask environment variables
 ```
 
 #### What We Will Do
