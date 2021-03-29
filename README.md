@@ -21,6 +21,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 17. [Simple 2FA in flask](two_factor_authentication/2fa_flask.md)
 18. [Enable/disable 2fa in flask using Twilio Verify API](two_factor_authentication/twilio_verify_2fa.md)
 19. [Push Notication 2fa in flask using Python](two_factor_authentication/twilio_authy.md)
+20. [How to send emails from your flask app using Twilio SendGrid](twilio_sendgrid.md)
 
 I also make a note of some of the cool projects I have built or I have been involved in. You can find these projects below. Some may be in progess while others may be completed:
 
