@@ -279,10 +279,18 @@ Note the lines beginning with 'Forwarding'. These show the public URLs that `ngr
 * Copy the `ngrok` URL and paste it in the box that says 'WHEN A MESSAGE COMES IN'. Remember to append `/bot` since our chatbot is exposed through this endpoint. 
 * Make sure to set the request method to `HTTP POST`
 * Scroll down and click the 'Save' button
+* From _Try It Out/_[Try Whatsapp](https://www.twilio.com/console/sms/whatsapp/learn), you will see a code assigned to you. This code begins with the word `join-`. You will need to use this code to start sending and receiving messages.
 
 ![Public Chatbot URL](images/chatbot_msg_url.png)
 
 You can now start sending messages to the chatbot from the smartphone you connected to the sandbox.
+
+### How to setup your phone to start sending and receiving messages
+
+* Add the phone number +1 415 523 8886  to your contact list.
+* Send the code `join-<code>` to the number above. If you have WhatsApp installed, you can [click here](http://wa.me/+14155238886?text=join%20who-smoke).
+
+You can invite your friends to your Sandbox. Ask them to send a WhatsApp Message to the number above with the code shown.
 
 ## References
 
