@@ -23,6 +23,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 19. [Push Notication 2fa in flask using Python](two_factor_authentication/twilio_authy.md)
 20. [How to send emails from your flask app using Twilio SendGrid](twilio_sendgrid.md)
 21. [Third party authentication in Flask](two_factor_authentication/third_party_auth.md)
+22. [Live Traffic WhatsApp chatbot](live_traffic_whatsapp_chatbot.md)
 
 I also make a note of some of the cool projects I have built or I have been involved in. You can find these projects below. Some may be in progess while others may be completed:
 
