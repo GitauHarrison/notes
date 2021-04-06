@@ -2,7 +2,7 @@
 
 The Covid-19 pandemic has forced many businesses to close shop and ask their employees to work from home. Almost everyone was forced into remote work. The use of video calling applications (such as Zoom and Google Meet among others) rose as more and more people began embracing this new norm. In this article, I will show you how to build similar video calling applications that offer satisfactory levels and quality of features.
 
-### Project Requirements
+## Project Requirements
 
 There are a number of things we need in order to build our project:
 * A Twilio account. Create a [free Twilio account](https://www.twilio.com/try-twilio?promo=WNPWrR) now.
@@ -21,7 +21,7 @@ Note that when you save your keys, the API Secret Key will never be shown again.
 
 ![New API Key](images/new_api_key.png)
 
-### Project Dependencies
+## Project Dependencies
 
 Before we can begin working with any python package for this project, it is recommended that you install them within an activated virtual environment. Run the command below in your terminal to create and activate one:
 
@@ -47,7 +47,7 @@ Run:
 (video_app)$ pip3 install flask pyngrok twilio python-dotenv flask-bootstrap flask-wtf 
 ```
 
-### Project Structure
+## Project Structure
 
 Use the terminal commands `mkdir` and `touch` to create the project structure below. For example:
 
@@ -63,3 +63,5 @@ To begin with, we will save all the application's dependencies in `requirements.
 ```python
 (video_app)$ pip3 freeze > requirements.txt
 ```
+
+## Page Layout
