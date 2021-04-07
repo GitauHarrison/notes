@@ -25,9 +25,10 @@ Note that when you save your keys, the API Secret Key will never be shown again.
 
 ![Actual Video API Key](images/video_app/actual_video_api_keys.png)
 
+Typically, these keys should be kept secret. I not worried showing you these keys because soon I will generate another pair.
+
 ![Twilio Account SID](images/video_app/twilio_account_SID.png)
 
-Typically, these keys should be kept secret. I not worried showing you these keys because soon I will generate another pair.
 
 * Additionally, you will need your _Account SID_ from the [Twilio console](https://twilio.com/console)
 
@@ -198,7 +199,7 @@ The `home.html` page will inherit base styles and layout from `base.html` as see
 
 Flask's `url_for` has been used to help generate the correct URL for `styles.css` and `app.js` files. We also need the official release of the _twilio-video.js_ library. All these files are added to the base template and are inherited by the home template using the keyword `extends`.
 
-We will update the styles of our application in `styles.css` as seen below:
+We will update the style of our application in `styles.css` as seen below:
 
 ```css
 .video_container {
@@ -277,7 +278,7 @@ if app.config['START_NGROK']:
 from app import routes
 
 ```
-We have create an instance of `flask-bootstrap` which we installed earlier. We are also setting our application to download and run `ngrok`, a service that provides free public URLs to help access our application which is currently running on [localhost](http://127.0.0.1:5000/) from another device. Everytime we start th flask server, `ngrok` will also start and generate useful URLSs for us.
+We have created an instance of `flask-bootstrap` which we installed earlier. We are also setting our application to download and run `ngrok`, a service that provides free public URLs to help access our application, which is currently running on [localhost](http://127.0.0.1:5000/), from another device. Everytime we start th flask server, `ngrok` will also start and generate useful URLs for us.
 
 We have imported configurations to our flask instance but it does not exist yet. Let us define our application's configurations. 
 
@@ -305,7 +306,7 @@ Let us update `.env` file we created ealier to hold these secret keys.
 
 `.env: Secret application configurations`
 ```python
-TWILIO_ACCOUNT_SID='pass-your-account-sid'
+TWILIO_ACCOUNT_SID='add-your-account-sid'
 TWILIO_API_KEY_SID='add-your-api-key-sid'
 TWILIO_API_KEY_SECRET='add-your-api-secret'
 ```
@@ -320,7 +321,7 @@ TWILIO_API_KEY_SID=
 TWILIO_API_KEY_SECRET=
 ```
 
-Our application instance imports the routes module. We need to update it to render the home page.
+Our application instance imports the routes module. We need to update this module to render the home page.
 
 `app/routes.py`
 ```python
@@ -355,11 +356,11 @@ START_NGROK=1
 We are on a development server, and it is okay to enable Flask's auto-reload feature that is quite useful when debugging. Now, we can start the flask server from the terminal"
 
 ```python
-(venv)$ flask run
+(video_app)$ flask run
 ```
 
 This what we have at the moment:
 
 ![Initial Look of Video App](images/video_app/initial_app_look.png)
 
-# Display Video Feed
+## Display Video Feed
