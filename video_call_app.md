@@ -1,5 +1,7 @@
 # Build a Video Conference Application Using Flask and Twilio
 
+![Ona Ana Full Screen Share](images/video_app/full_screen.gif)
+
 The Covid-19 pandemic has forced many businesses to close shop and ask their employees to work from home. Almost everyone was forced into remote work. The use of video calling applications (such as Zoom and Google Meet among others) rose as more and more people began embracing this new norm. In this article, I will show you how to build similar video calling applications that offer satisfactory levels and quality of features.
 
 ## Project Requirements
@@ -17,9 +19,19 @@ Once you have an account with Twilio:
 * Create your project API Key by clicking on the Red Plus(+) button. You will be provided with API Key SID and API Key Secret. 
 * Click 'Create API Key' button to save.
 
-Note that when you save your keys, the API Secret Key will never be shown again. Make sure to save it somewhere else safe because you will need to use it.
+![New API Key](images/video_app/new_api_key.png)
 
-![New API Key](images/new_api_key.png)
+Note that when you save your keys, the API Secret Key will never be shown again. Make sure to save it somewhere else safe because you will need to use it. This is what you will get:
+
+![Actual Video API Key](images/video_app/actual_video_api_keys.png)
+
+![Twilio Account SID](images/video_app/twilio_account_SID.png)
+
+Typically, these keys should be kept secret. I not worried showing you these keys because soon I will generate another pair.
+
+* Additionally, you will need your _Account SID_ from the [Twilio console](https://twilio.com/console)
+
+* Make sure you save these keys somewhere safe. We will need them later in the application.
 
 ## Project Dependencies
 
@@ -56,7 +68,7 @@ Use the terminal commands `mkdir` and `touch` to create the project structure be
 (video_app)$ touch video_app/config.py # this creates an empty config file in video_app directory
 ```
 
-![Project Struture](images/video_structure.png)
+![Project Struture](images/video_app/video_structure.png)
 
 To begin with, we will save all the application's dependencies in `requirements.txt` as follows:
 
@@ -65,3 +77,289 @@ To begin with, we will save all the application's dependencies in `requirements.
 ```
 
 ## Page Layout
+
+The `home.html` page will inherit base styles and layout from `base.html` as seen below:
+
+```html
+<!--base.html-->
+
+{% extends 'bootstrap/base.html' %}
+
+<!-- Head image goes here -->
+{% block head %}
+    {{ super() }}
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    
+    <!-- Head image -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename = 'img/video-call.png') }}">
+{% endblock %}
+
+<!-- Title Section -->
+{% block title %}
+    {% if title %}
+        Ona Ana | {{ title }}
+    {% else %}
+        Sample Video Call App
+    {% endif %}
+{% endblock %}
+
+<!-- Import styles -->
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/styles.css') }}">
+{% endblock %}
+
+
+<!-- Navbar Section -->
+{% block navbar %}
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Ona Ana</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">                                   
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+<!-- Blog Content Goes Here -->
+{% block content %}
+    <div class="container">
+        {% block app_content %}
+        
+        {% endblock %}
+    </div>
+{% endblock %}
+
+<!-- Scripts Section -->
+{% block scripts %}
+    {{ super() }}
+    
+    <!-- Twilio JS -->
+    <script src="//media.twiliocdn.com/sdk/js/video/releases/2.3.0/twilio-video.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script type="text/javascript" src=" {{ url_for('static', filename='js/app.js') }} "></script>
+{% endblock %}
+
+
+
+
+<!-- home.html -->
+
+{% extends 'base.html' %}
+
+{% block app_content %}
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1>Ona Ana Video Conferencing App</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 my_form">
+            <!-- Join/Leave Actions -->
+            <form class="form-inline">
+                <div class="form-group">
+                    <label class="mb-2 mr-sm-2" for="username">Username: </label>
+                    <input class="form-control mb2 mr-sm-2" type="text" name="username" id="username">                    
+                </div>
+                <button class="btn" id="join_leave">Join Call</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Participants Count -->
+            <p id="count">You need to join the call</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Video Feed -->
+            <div id="video_container" class="video_container">
+                <div id="local" class="participant"><div></div><div>Me</div></div>
+                <!-- More participants will be added dynamicly -->
+            </div>
+        </div>
+    </div>
+     
+{% endblock %}
+```
+
+Flask's `url_for` has been used to help generate the correct URL for `styles.css` and `app.js` files. We also need the official release of the _twilio-video.js_ library. All these files are added to the base template and are inherited by the home template using the keyword `extends`.
+
+We will update the styles of our application in `styles.css` as seen below:
+
+```css
+.video_container {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    text-align: center;
+    
+}
+.participant {
+    margin-bottom: 5px;
+    margin-right: 5px;
+}
+.participant div:first-child {
+    width: 320px;
+    height: 250px;
+    background-color: #ddd;
+    border: 1px solid black;
+}
+.participant video {
+    width: 100%;
+    height: 100%;
+}
+
+
+/* Optional General Styling */
+.title, .my_form, #count{
+    text-align: center;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+.btn{
+    border: 1px solid #F2F2F2;
+    color: black;
+}
+h1{
+    font-size: 50px;
+}
+body{
+    font-family: 'Roboto', sans-serif;
+
+}
+```
+
+Flask-bootstrap makes use of the class `container`. So that we do not overide the default styles associated with this class, I have created a new class called `video_container`. This way, there is no conflict. If you have noted, this is the same class I have passed to the video feed `div` in the home template.
+
+`.participant div:first-child` class applies to all first child elements of `div`s that have the class `participant`. We are limiting the size of the video to 320 by 250 pixels. To make this video noticable, we pass a background color to it and also define a border around it.
+
+## Starting the Flask Server
+
+With the templates in place, we need to complete the application so that we can started the flask server. Let us create an application instance and create object of the packages we have imported.
+
+`app/__init__.py: Create application instance`
+```python
+from flask import Flask
+from flask_bootstrap import Bootstrap
+from config import Config
+
+app = Flask(__name__)
+app.config.from_object(Config)
+
+bootstrap = Bootstrap(app)
+
+
+def start_ngrok():
+    from pyngrok import ngrok
+
+    url = ngrok.connect(5000)
+    print('*Tunnel: ', url)
+
+
+if app.config['START_NGROK']:
+    start_ngrok()
+
+from app import routes
+
+```
+We have create an instance of `flask-bootstrap` which we installed earlier. We are also setting our application to download and run `ngrok`, a service that provides free public URLs to help access our application which is currently running on [localhost](http://127.0.0.1:5000/) from another device. Everytime we start th flask server, `ngrok` will also start and generate useful URLSs for us.
+
+We have imported configurations to our flask instance but it does not exist yet. Let us define our application's configurations. 
+
+`config.py: Load environment variables`
+```python
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+class Config(object):
+    START_NGROK = os.environ.get('START_NGROK') is not None
+    SECRET_KEY = os.environ.get("SECRET_KEY") or 'you-will-never-guess'
+
+    TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
+    TWILIO_API_KEY_SID = os.environ.get("TWILIO_API_KEY_SID")
+    TWILIO_API_KEY_SECRET = os.environ.get("TWILIO_API_KEY_SECRET")
+
+```
+
+Remember at the beginning of this article we saved some keys that we promised to use. `python-dotenv` package will be used to load these keys from environent variables. 
+
+Let us update `.env` file we created ealier to hold these secret keys.
+
+`.env: Secret application configurations`
+```python
+TWILIO_ACCOUNT_SID='pass-your-account-sid'
+TWILIO_API_KEY_SID='add-your-api-key-sid'
+TWILIO_API_KEY_SECRET='add-your-api-secret'
+```
+
+It is good practice to use `os.environ.get()` method to load these keys rather than passing them directly to variables in the `config.py` file. These keys should not be committed to version control. To guide users who might be interested in our project from a version control site like GitHub, we will update the `.env-template` file to show what keys they will need before running this application.
+
+
+`.env-template: Show needed configurations`
+```python
+TWILIO_ACCOUNT_SID=
+TWILIO_API_KEY_SID=
+TWILIO_API_KEY_SECRET=
+```
+
+Our application instance imports the routes module. We need to update it to render the home page.
+
+`app/routes.py`
+```python
+from app import app
+from flask import render_template
+
+
+@app.route('/')
+@app.route('/home')
+def home():
+    return render_template('home.html', title='Home')
+
+```
+
+Flask will need to know the application's entry point. So, in `app.py`, we will add this code:
+
+`app.py: Application entry point`
+```python
+from app import app
+```
+
+Just before we start the flask server, let us pass Flask's environment variables:
+
+`.flaskenv: Pass Flask's environment variables`
+```python
+FLASK_APP=app.py
+FLASK_ENV=development
+FLASK_DEBUG=True
+START_NGROK=1
+```
+
+We are on a development server, and it is okay to enable Flask's auto-reload feature that is quite useful when debugging. Now, we can start the flask server from the terminal"
+
+```python
+(venv)$ flask run
+```
+
+This what we have at the moment:
+
+![Initial Look of Video App](images/video_app/initial_app_look.png)
+
+# Display Video Feed
