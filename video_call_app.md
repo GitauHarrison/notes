@@ -4,6 +4,11 @@
 
 The Covid-19 pandemic has forced many businesses to close shop and ask their employees to work from home. Almost everyone was forced into remote work. The use of video calling applications (such as Zoom and Google Meet among others) rose as more and more people began embracing this new norm. In this article, I will show you how to build similar video calling applications that offer satisfactory levels and quality of features.
 
+## Testing
+
+If you would like to test this project out, consider checking the [hosted application](https://ona-ana-video-app.herokuapp.com/) or [you can test it locally](https://github.com/GitauHarrison/video-conferencing-app-using-flask-and-twilio). This applicatin has a lot more features added to it. However, this article begins from the basics of setting up a video call application from scratch until a user can join the video call. At [the very end](#going-further), I will share with you links to other articles showing how to add specific features to your application. I recommend that you look them up to learn more.
+
+
 ## Project Requirements
 
 There are a number of things we need in order to build our project:
@@ -655,3 +660,15 @@ Connections                   ttl     opn     rt1     rt5     p50     p90
 Note the lines beginning with 'Forwarding'. These show the public URLs that ngrok uses to redirect requests into our service. We will make use of the `https//:` URL.
 
 Copy the `https//:` url to another device, say your smartphone or another computer. You should be able to access the application. Click the 'Join Call' button to test it out.
+
+## Going Further
+
+To make the project a bit more complete, I have added more features such as:
+
+* [Screen Share]()
+* [In-built chat conversation]()
+* [Mute/Unmute]()
+* [Dominant Speaker Detection]()
+* [How to add presentation mode]()
+* [Improved User Authentication]()
+* [Emoji Overlay]()
