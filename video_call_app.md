@@ -480,3 +480,71 @@ We begin by defining a few global varibles which are used to access elements in 
 Just before the conncetion is successful, we rename the button to 'Connecting' and effectively disable it during this process. Once connected, we enable the button to make it active one more time. We also rename it to 'Leave call'. If the connection fails, we provide a fallback using the `catch` function.
 
 In the case where a user is already connected, we disconnect him by calling the function `disconnect` and renaming the button to 'Join call'.
+
+## Connect to A Video Room
+
+Here is where we define the `connect` function is seen the click event `connectButtonHandler`. Two sequential operations have to take place before a successful connection:
+
+* Request an access token by calling the we server
+* Calling the Twilio Video Library with the token received to make the connection
+
+`app/js/app.js: Connecting to a video room`
+
+```js
+function connect(username) {
+    let promise = new Promise((resolve, reject) => {
+        // get token from the back end
+        fetch('/login', {
+            method: 'POST',
+            body: JSON.stringify({'username': username})
+        }).then(res => res.json()).then(data => {
+            // join the video call
+            return Twilio.Video.connect(data.token);
+        }).then(_room => {
+            room = _room;
+            room.participants.forEach(participantConnected);
+            room.on('participantConnected', participantConnected);
+            room.on('participantDisconnected', participantDisconnected);
+            connected = true;
+            updateParticipantCount();
+            resolve();
+        }).catch(() => {
+            reject();
+        });
+    });
+    return promise;
+};
+```
+
+A [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) constructor is returned when the `connect` function is called, which is controlled by the `resolve()` and the `reject()` functions. A call to `resolve()` triggers a success callback whereas `reject()` does the same for the error callback.
+
+This is how the `connect()` function is structured:
+
+```js
+connect() { promise = { fetch(/*token*/).then(/*join video call*/).then(/*enter room*/).catch(/*error*/); }; return promise; };
+```
+
+Two steps create a connection logic. 
+
+* First, the `fetch()` function is used to send a request to the `login` route and return a promise. After a successful call, we decode the JSON payload into the `data` variable and then call `connect()` from the Twilio video library by passing the newly acquired token.
+* Secondly, if the `fetch()` fails, we call `reject()`on our promise.
+
+Once we are connected and in a video call room, we need to arrange the `container` part of the page to reflect this. We have passed `_room` argument to represent the the global `room` variable, therefore making it available to the rest of the application.
+
+We find out and list the participants already connected to the room, encapsulated in `participantConnected` function. There are two events that are likely to happen inside a video call room:
+
+* Another participant can join the call
+* A participant can disconnect from the room
+
+We, therefore make calls to the `participantConnected` and `participantDisconnected` functions to handle these events. The final action would be to count the number of participants and update the `<p>` element based on the length of `room.participants` array. 
+
+```js
+function updateParticipantCount() {
+    if (!connected)
+        count.innerHTML = 'Disconnected';
+    else
+        count.innerHTML = (room.participants.size + 1) + 'participants online';
+};
+```
+
+The total length of `room.participants` includes ourselves. 
