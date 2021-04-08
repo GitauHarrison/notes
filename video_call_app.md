@@ -426,3 +426,51 @@ Basically, we are getting the user's identity in a JSON payload. We check that t
 
 An application can work with more than one video room and decide which video room a user can enter.
 
+## Connect/Disconnect Using the Form Button
+
+What does the 'Join Call' button really do?
+* It can be used to connect a user to the video call
+* It can also be used to disconnect a user from the video call
+
+Let us see how such an event can be handled in JavaScript;
+
+`app/js/app.js: Button Event Handler`
+```js
+let connected = false;
+let room;
+const usernameInput = document.getElementById('username');
+const button = document.getElementById('join_leave');
+const container = document.getElementById('video_container')
+const count = document.getElementById('count');
+
+function addLocalVideo() { /* no changes */ }
+
+function connectButtonHandler(event) {
+    event.preventDefault();
+    if (!connected) {
+        let username = usernameInput.value;
+        if (!username) {
+            alert('Enter your name before connecting');
+            return;
+        }
+        button.disabled = true;
+        button.innerHTML = 'Connecting...';
+        connect(username).then(() => {
+            button.innerHTML = 'Leave call';
+            button.disabled = false;
+        }).catch(() => {
+            alert('Connection failed. Is the backend running?');
+            button.innerHTML = 'Join call';
+            button.disabled = false;    
+        });
+    }
+    else {
+        disconnect();
+        button.innerHTML = 'Join call';
+        connected = false;
+    }
+};
+
+addLocalVideo();
+button.addEventListener('click', connectButtonHandler);
+```
