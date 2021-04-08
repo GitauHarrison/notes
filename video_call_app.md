@@ -385,3 +385,44 @@ You should be able to see your own video feed after calling the `addLocalVideo` 
 ![Own Video Feed](images/video_app/own_video_feed.png)
 
 The video gets attached to the first `div` whose parent has the ID `local`. We have set this `div` to be empty (if you look carefully at the home template). This is because the video feed will be attached here.
+
+
+## Generate Access Token
+
+The fact that you have built an application which can access a user's camera and microphone raises the issue of security. Thankfully, Twilio takes security seriously. Before any user can join the call, we need our application to verify that the user is allowed and the application must generate an access token for them. This is done in the Python server. The `.env` secrets will be required.
+
+`app/routes.py: Generate access token`
+
+```python
+from twilio.jwt.access_token import AccessToken
+from twilio.jwt.access_token.grants import VideoGrant
+from flask import request, abort
+
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.get_json(force=True).get('username')
+    if not username:
+        abort(401)
+    token = AccessToken(
+        app.config['TWILIO_ACCOUNT_SID'],
+        app.config['TWILIO_API_KEY_SID'],
+        app.config['TWILIO_API_KEY_SECRET'],
+        identity=username
+    )
+    token.add_grant(VideoGrant(room='My Room'))
+    return {'token': token.to_jwt().decode()}
+
+```
+
+Our current form of authentication will only involve the use of `username`, but more robust applications will require better user authentication. 
+
+Basically, we are getting the user's identity in a JSON payload. We check that the `username` is not empty, otherwise we abort and return a [`401 Unauthorized`](https://httpstatuses.com/401) error. The `AccessToken` helper class is used to generate the token before attaching a video grant to a room called `My Room`. Read more from the [Twilio Programmable Video JavaScript SDK documentation](https://www.twilio.com/docs/video/javascript-getting-started). The token is returned as a JSON payload in this format:
+
+```python
+{
+    'token': 'token-will-go-here'
+}
+```
+
+An application can work with more than one video room and decide which video room a user can enter.
+
