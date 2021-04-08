@@ -16,7 +16,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 12. [Install Elasticsearch](elasticsearch_installation.md)
 13. [Handling file upload in flask](file_upload_in_flask.md)
 14. [Build a simple WhatsApp chatbot using Flask and Twilio](simple_whatsapp_chatbot.md)
-15. [Build a video call application using Flask and Twilio](video_call_app.md)
+15. [Build a video call application using Flask and Twilio](video_call_app/simple_video_call_app.md)
 16. [Deploy flask app in docker containers](docker_deployment.md)
 17. [Simple 2FA in flask](two_factor_authentication/2fa_flask.md)
 18. [Enable/disable 2fa in flask using Twilio Verify API](two_factor_authentication/twilio_verify_2fa.md)
