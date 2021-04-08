@@ -608,3 +608,50 @@ This will create a dynamic HTML structure such as this:
 
 After creating the HTML structure, we now attach the video and audio tracks tot he `tracksDiv` element. We follow the guidance shown in the [library's documentation](https://media.twiliocdn.com/sdk/js/video/releases/2.3.0/docs/) to attach looped tracks to which we are subscribed. The auxillary `trackSubscribed()` function handles the actual track attachment. 
 
+## Disconnect From the Chat Room
+
+If a user can `connect()` to a video call room, then they can possible `disconnect()`. We can achieve this by removing the child elements of `video_container` except our own local video stream.
+
+```js
+function disconnect() {
+    room.disconnect();
+    while (container.lastChild.id != 'local')
+        container.removeChild(container.lastChild);
+    button.innerHTML = 'Join call';
+    connected = false;
+    updateParticipantCount();
+};
+```
+
+We remove all the children of the `video_container` element starting from the last up until we come to `local` div, which was non-dynamically created.
+
+## Start Your Flask Server
+
+Run the command `flask run` in your terminal and you should be able to access your localhost. You can connect to your application from another device using `ngrok`. You have probably noticed something such as `* Tunnel URL: NgrokTunnel: "http://4209c9af6d43.ngrok.io" -> "http://localhost:5000"` in your terminal as soon as your flask server stated. This is a free public URL that `ngrok` provides to allow for access to your video service. 
+
+Most web browsers do not allow `http//:` when working with video calls. Therefore we need to generate a secure public URL that redirects to the application.
+
+Open a new terminal window (consider using [byobu](https://www.byobu.org/)) and run `ngrok`:
+
+```python
+(video_app)$ ngrok http 5000
+
+# Output
+
+ngrok by @inconshreveable                                                  (Ctrl+C to quit)
+                                                                                           
+Session Status                online                                                       
+Session Expires               1 hour, 59 minutes                                           
+Version                       2.3.35                                                       
+Region                        United States (us)                                           
+Web Interface                 http://127.0.0.1:4041                                        
+Forwarding                    http://13c58a13e6c2.ngrok.io -> http://localhost:5000        
+Forwarding                    https://13c58a13e6c2.ngrok.io -> http://localhost:5000       
+                                                                                           
+Connections                   ttl     opn     rt1     rt5     p50     p90                  
+                              0       0       0.00    0.00    0.00    0.00
+```
+
+Note the lines beginning with 'Forwarding'. These show the public URLs that ngrok uses to redirect requests into our service. We will make use of the `https//:` URL.
+
+Copy the `https//:` url to another device, say your smartphone or another computer. You should be able to access the application. Click the 'Join Call' button to test it out.
