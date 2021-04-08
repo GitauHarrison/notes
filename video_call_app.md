@@ -25,14 +25,14 @@ Note that when you save your keys, the API Secret Key will never be shown again.
 
 ![Actual Video API Key](images/video_app/actual_video_api_keys.png)
 
-Typically, these keys should be kept secret. I not worried showing you these keys because soon I will generate another pair.
+Typically, these keys should be kept secret. I not worried showing you these keys because soon I will generate another pair. 
+
+* Additionally, you will need your _Account SID_ from the [Twilio console](https://twilio.com/console)
 
 ![Twilio Account SID](images/video_app/twilio_account_SID.png)
 
 
-* Additionally, you will need your _Account SID_ from the [Twilio console](https://twilio.com/console)
-
-* Make sure you save these keys somewhere safe. We will need them later in the application.
+Make sure you save these keys somewhere safe. We will need them later in the application.
 
 ## Project Dependencies
 
@@ -359,8 +359,29 @@ We are on a development server, and it is okay to enable Flask's auto-reload fea
 (video_app)$ flask run
 ```
 
-This what we have at the moment:
+This is what we have at the moment:
 
 ![Initial Look of Video App](images/video_app/initial_app_look.png)
 
 ## Display Video Feed
+
+First, let us display our own video feed. We will add this to the first child of the div that has class `local`.
+
+`js/app.js: Display own video feed`
+
+```js
+function addLocalVideo() {
+    Twilio.Video.createLocalVideoTrack().then(track => {
+        let video = document.getElementById('local').firstChild;
+        video.appendChild(track.attach());
+    });
+};
+
+addLocalVideo();
+```
+
+You should be able to see your own video feed after calling the `addLocalVideo` function.
+
+![Own Video Feed](images/video_app/own_video_feed.png)
+
+The video gets attached to the first `div` whose parent has the ID `local`. We have set this `div` to be empty (if you look carefully at the home template). This is because the video feed will be attached here.
