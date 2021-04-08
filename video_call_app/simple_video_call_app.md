@@ -665,10 +665,10 @@ Copy the `https//:` url to another device, say your smartphone or another comput
 
 To make the project a bit more complete, I have added more features such as:
 
-* [Screen Share](video_call_app/screen_share.md)
-* [In-built chat conversation](video_call_app/video_chat_conversation.md)
-* [Mute/Unmute](video_call_app/video_mute_unmute.md)
-* [Dominant Speaker Detection](video_call_app/dominant_speaker_detection.md)
-* [How to add presentation mode](video_call_app/video_presentation_mode.md)
-* [Improved User Authentication](video_call_app/video_2fa_impelementation.md)
-* [Emoji Overlay](video_call_app/video_emoji_overlay.md)
+* [Screen Share](/video_call_app/screen_share.md)
+* [In-built chat conversation](/video_call_app/video_chat_conversation.md)
+* [Mute/Unmute](/video_call_app/video_mute_unmute.md)
+* [Dominant Speaker Detection](/video_call_app/dominant_speaker_detection.md)
+* [How to add presentation mode](/video_call_app/video_presentation_mode.md)
+* [Improved User Authentication](/video_call_app/video_2fa_impelementation.md)
+* [Emoji Overlay](/video_call_app/video_emoji_overlay.md)
