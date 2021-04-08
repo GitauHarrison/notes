@@ -474,3 +474,9 @@ function connectButtonHandler(event) {
 addLocalVideo();
 button.addEventListener('click', connectButtonHandler);
 ```
+
+We begin by defining a few global varibles which are used to access elements in our home page. For the button, we will work with `button`. If a user is not connected, we get their useranme and store it in the variable `username`. We will pass this variable to the `connect` function. We make sure that the `username` variable is not empty before initiating a connection. 
+
+Just before the conncetion is successful, we rename the button to 'Connecting' and effectively disable it during this process. Once connected, we enable the button to make it active one more time. We also rename it to 'Leave call'. If the connection fails, we provide a fallback using the `catch` function.
+
+In the case where a user is already connected, we disconnect him by calling the function `disconnect` and renaming the button to 'Join call'.
