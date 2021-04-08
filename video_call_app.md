@@ -526,10 +526,10 @@ connect() { promise = { fetch(/*token*/).then(/*join video call*/).then(/*enter 
 
 Two steps create a connection logic. 
 
-* First, the `fetch()` function is used to send a request to the `login` route and return a promise. After a successful call, we decode the JSON payload into the `data` variable and then call `connect()` from the Twilio video library by passing the newly acquired token.
+* First, the `fetch()` function is used to send a request to the `/login` route and return a promise. After a successful call, we decode the JSON payload into the `data` variable and then call `connect()` from the Twilio video library by passing the newly acquired token.
 * Secondly, if the `fetch()` fails, we call `reject()`on our promise.
 
-Once we are connected and in a video call room, we need to arrange the `container` part of the page to reflect this. We have passed `_room` argument to represent the the global `room` variable, therefore making it available to the rest of the application.
+Once we are connected and in a video call room, we need to arrange the `video_container` part of the page to reflect this. We have passed `_room` argument to represent the the global `room` variable, therefore making it available to the rest of the application.
 
 We find out and list the participants already connected to the room, encapsulated in `participantConnected` function. There are two events that are likely to happen inside a video call room:
 
@@ -548,3 +548,63 @@ function updateParticipantCount() {
 ```
 
 The total length of `room.participants` includes ourselves. 
+
+## Connecting and Disconnecting Participants
+
+The function `participantConnect` has been used to connect a user to a video call room. So what exactly happens?
+
+Technically, this function creates a new `div` inside the `video_container` element just like the `local` element.
+
+```js
+function participantConnected(participant) {
+    let participantDiv = document.createElement('div');
+    participantDiv.setAttribute('id', participant.sid);
+    participantDiv.setAttribute('class', 'participant');
+
+    let tracksDiv = document.createElement('div');
+    participantDiv.appendChild(tracksDiv);
+
+    let labelDiv = document.createElement('div');
+    labelDiv.innerHTML = participant.identity;
+    participantDiv.appendChild(labelDiv);
+
+    container.appendChild(participantDiv);
+
+    participant.tracks.forEach(publication => {
+        if (publication.isSubscribed)
+            trackSubscribed(tracksDiv, publication.track);
+    });
+    participant.on('trackSubscribed', track => trackSubscribed(tracksDiv, track));
+    participant.on('trackUnsubscribed', trackUnsubscribed);
+
+    updateParticipantCount();
+};
+
+function participantDisconnected(participant) {
+    document.getElementById(participant.sid).remove();
+    updateParticipantCount();
+};
+
+function trackSubscribed(div, track) {
+    div.appendChild(track.attach());
+};
+
+function trackUnsubscribed(track) {
+    track.detach().forEach(element => element.remove());
+};
+
+```
+
+This will create a dynamic HTML structure such as this:
+
+```html
+<div id="{{ participant.sid }}" class="participant">
+    <div></div>  <!-- video and audio tracks will be attached to this div -->
+    <div>{{ participant.name }}</div>
+</div>
+```
+
+`participantConnected()` function gets a [`participant`](https://media.twiliocdn.com/sdk/js/video/releases/2.3.0/docs/Participant.html#toc0__anchor) object from the Twilio video library. As a result, we are able to obtain `participant.id` and `participant.identity` objects which are unique session identifiers and name. The `identity` was used in the Python token generation function in our routes module.
+
+After creating the HTML structure, we now attach the video and audio tracks tot he `tracksDiv` element. We follow the guidance shown in the [library's documentation](https://media.twiliocdn.com/sdk/js/video/releases/2.3.0/docs/) to attach looped tracks to which we are subscribed. The auxillary `trackSubscribed()` function handles the actual track attachment. 
+
