@@ -21,7 +21,7 @@ You can easily develop and test your application using the Twilio [WhatsApp Sand
 - Click on 'Try It Out', and finally,
 - Click on [Try WhatsApp](https://www.twilio.com/console/sms/whatsapp/learn). 
 
-![Configure Your Smartphone with Twilio WhatsApp](images/configure_whatsapp.png)
+![Configure Your Smartphone with Twilio WhatsApp](/images/whatsapp_chatbot/configure_whatsapp.png)
 
 This page provides you with a `join-` code, which is followed by a randomly generated two-word phrase.
 
@@ -40,7 +40,7 @@ These are the steps we will follow to create our chatbot:
 #### 1. Create Application Structure
 Our project will use a very simple structure:
 
-![WhatsApp chatbot structure](images/chatbot_structure.png)
+![WhatsApp chatbot structure](/images/whatsapp_chatbot/chatbot_structure.png)
 
 Go ahead and create your project structure using the `mkdir` and `touch` commands in your terminal to create folders and empty files respectively.
 
@@ -281,7 +281,7 @@ Note the lines beginning with 'Forwarding'. These show the public URLs that `ngr
 * Scroll down and click the 'Save' button
 * From _Try It Out/_[Try Whatsapp](https://www.twilio.com/console/sms/whatsapp/learn), you will see a code assigned to you. This code begins with the word `join-`. You will need to use this code to start sending and receiving messages.
 
-![Public Chatbot URL](images/chatbot_msg_url.png)
+![Public Chatbot URL](/images/whatsapp_chatbot/chatbot_msg_url.png)
 
 You can now start sending messages to the chatbot from the smartphone you connected to the sandbox.
 

@@ -15,7 +15,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 11. [Setting Up Ngrok](localhost_testing.md)
 12. [Install Elasticsearch](elasticsearch_installation.md)
 13. [Handling file upload in flask](file_upload_in_flask.md)
-14. [Build a simple WhatsApp chatbot using Flask and Twilio](simple_whatsapp_chatbot.md)
+14. [Build a simple WhatsApp chatbot using Flask and Twilio](whatsapp_chatbots/simple_whatsapp_chatbot.md)
 15. [Build a video call application using Flask and Twilio](video_call_app/simple_video_call_app.md)
 16. [Deploy flask app in docker containers](docker_deployment.md)
 17. [Simple 2FA in flask](two_factor_authentication/2fa_flask.md)
@@ -23,7 +23,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 19. [Push Notication 2fa in flask using Python](two_factor_authentication/twilio_authy.md)
 20. [How to send emails from your flask app using Twilio SendGrid](twilio_sendgrid.md)
 21. [Third party authentication in Flask](two_factor_authentication/third_party_auth.md)
-22. [Live Traffic WhatsApp chatbot](live_traffic_whatsapp_chatbot.md)
+22. [Live Traffic WhatsApp chatbot](/whatsapp_chatbots/live_traffic_whatsapp_chatbot.md)
 
 I also make a note of some of the cool projects I have built or I have been involved in. You can find these projects below. Some may be in progess while others may be completed:
 
