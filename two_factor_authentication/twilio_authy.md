@@ -26,3 +26,77 @@ To understand how a project can add optional two-factor authentication using pus
 * A _Disable_ button will be shown to initiate the disabling process.
 * He is redirected to the _Profile_ page after disabling 2fa
 
+## Implementing Push 2FA
+
+Now that we understand we can create the project, let us start implementing two-factor authentication.
+
+### Project Structure
+
+We are going to create an application that shows only how to implement two-factor authentication. We will begin by creating a simple structure for our application.
+
+```
+twilio_authy_project
+  | ---- config.py
+  | ---- my_authy_app.py
+  | ---- requirements.txt
+  | ---- .gitignore
+  | ---- .flaskenv
+  | ---- .env
+  | ---- .env-template
+  | ---- app/
+          | --- __init__.py
+          | --- email.py
+          | --- models.py
+          | --- auth/
+                | --- __init__.py
+                | --- authy.py
+                | --- email.py
+                | --- forms.py
+                | --- routes.py
+         | --- errors/
+                | --- __init__.py
+                | --- handlers.py
+         | --- main/
+                | --- __init__.py
+                | --- forms.py
+                | --- routes.py
+         | --- static/
+                | --- css/
+                       | --- styles.css
+         | --- templates/
+                | --- base.html
+                | --- home.html
+                | --- edit_profile.html
+                | --- user.html
+                | --- auth/
+                       | --- check_2fa.html
+                       | --- disable_2fa.html
+                       | --- enable_2fa.html
+                       | --- enable_2fa_qr.html
+                       | --- login.html
+                       | --- register.html
+                       | --- reset_password_request.html
+                       | --- reset_password.html
+                | --- email/
+                       | --- reset_password.html
+                       | --- reset_password.txt
+                | --- errors/
+                       | --- 404.html
+                       | --- 500.html
+```                
+Use the commands `mkdir` and `touch` in your terminal to create this structure:
+
+```python
+# Create the project's directory
+$ mkdir twilio_authy_project 
+
+# Create the config file inside the project's folder
+$ touch twilio_authy_project/config.py
+
+# Complete the structure above
+```
+
+The assumption is that you have a basic understanding of Python and Flask. If not, consider this reference links as you build this project:
+
+* New? [Start here](https://github.com/GitauHarrison/notes/blob/master/web_development/personal_blog/personal_blog.md).
+* If you would like to use `virtualenvwrapper` to manage your workflow, use [this guide](https://github.com/GitauHarrison/notes/blob/master/virtualenvwrapper_setup.md) to set up your machine. Otherwise, manually create and activate your virtual environments.
