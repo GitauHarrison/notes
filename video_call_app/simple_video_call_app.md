@@ -358,7 +358,7 @@ FLASK_DEBUG=True
 START_NGROK=1
 ```
 
-We are on a development server, and it is okay to enable Flask's auto-reload feature that is quite useful when debugging. Now, we can start the flask server from the terminal"
+We are on a development server, and it is okay to enable Flask's auto-reload feature that is quite useful when debugging. Now, we can start the flask server from the terminal:
 
 ```python
 (video_app)$ flask run
