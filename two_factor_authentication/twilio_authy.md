@@ -100,3 +100,44 @@ The assumption is that you have a basic understanding of Python and Flask. If no
 
 * New? [Start here](https://github.com/GitauHarrison/notes/blob/master/web_development/personal_blog/personal_blog.md).
 * If you would like to use `virtualenvwrapper` to manage your workflow, use [this guide](https://github.com/GitauHarrison/notes/blob/master/virtualenvwrapper_setup.md) to set up your machine. Otherwise, manually create and activate your virtual environments.
+
+### Project Dependencies
+
+This project will require several dependencies. These are:
+
+* flask (framework)
+* Twilio Authy API (2fa)
+* flask-wtf (web forms)
+* flask-bootstrap (styling)
+* flask-login (user sessions)
+* flask-sqlalchemy (database)
+* flask-migrate (database management)
+* flask-moment (pretty time display)
+* pyjwt (token generation)
+* pyngrok (localhost testing)
+* email-validator 
+* qrcode
+
+Ensure you install these dependencies in an activate virtual environment. I will create one called 'authy' using `mkvirtualenv` command from [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/):
+
+```python
+$ mkvirtualenv authy # created and activated at the same time
+```
+
+First, let us include the [Authy client for Python](https://pypi.org/project/authy/):
+
+```python
+(authy)$ pip3 install "authy>=2.2.5"
+```
+
+The client library for Python must be version 2.2.5 or higher. From the application design, you have noticed that we use a QR Code image. So the application needs to generate tokens and QR Code. We will use `pyjwt` and `qrcode` packages.
+
+```python
+(authy)$ pip3 install pyjwt qrcode
+```
+
+Finally, we need to install all the other packages:
+
+```python
+(authy)$ pip3 install flask flask-sqlalchemy # and the rest
+```
