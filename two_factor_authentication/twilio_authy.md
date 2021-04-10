@@ -30,6 +30,15 @@ To understand how a project can add optional two-factor authentication using pus
 
 Now that we understand we can create the project, let us start implementing two-factor authentication.
 
+Let us configure the Authy service:
+
+* If you do not have an account, [create a free one](www.twilio.com/referral/WNPWrR) now. It is free with no hidden expectations. You will only need to provide your phone number for authentication
+* From [Twilio Console](https://www.twilio.com/console), click "All Products and Services"
+* Find and click [Authy](https://www.twilio.com/console/authy/applications)
+* Click the blue button to create an application
+* Provide a FRIENDLY NAME
+![Provide friendly name](/images/twilio_authy/authy_app_name.png)
+
 ### Project Structure
 
 We are going to create an application that shows only how to implement two-factor authentication. We will begin by creating a simple structure for our application.
@@ -141,3 +150,11 @@ Finally, we need to install all the other packages:
 ```python
 (authy)$ pip3 install flask flask-sqlalchemy # and the rest
 ```
+
+### Project Requirements
+
+Ensure that you have:
+
+* A smartphone
+* [Twilio Authy](https://authy.com/) app downloaded and installed in your phone
+
