@@ -158,3 +158,80 @@ Ensure that you have:
 * A smartphone
 * [Twilio Authy](https://authy.com/) app downloaded and installed in your phone
 
+### How to Generate Registration QR Code
+
+QR Codes are graphical encodings of a short text, typically a URL that connects your application to the authentication app. Authy app expects QR Codes with this URL:
+
+```python
+authy//:account?token={JWT}
+```
+
+Where the `token` has the following payload:
+
+```python
+{
+    'iss': '{authy_app_name}',
+    'iat': {issue date},
+    'exp': {expiration date},
+    'context': {
+        'custom_user_id': '{custom_user_id}',
+        'authy_app_id': '{app_authy_id}'
+    }
+}
+```
+* `iss` (issuer): must be the Authy application name you defined in the [Twilio console](https://www.twilio.com/console/authy/applications)
+* `iat` (issued at) and `exp` (expiration) are integers
+* `customer_user_id` identifies the user of our application, typically the primary key assigned to a user in the database
+* `authy_app_id` must be set to the identifier assigned by Authy to our application. To find this identifier, click on your Authy app name and find [Settings](https://www.twilio.com/console/authy/applications/388832/settings). 
+
+![Authy App ID](/images/twilio_authy/authy_app_id.png)
+
+* `authy_app_id` is APPLICATION ID
+
+We will use the details in the "Properties" section of the Authy app we have created to generate a `token`. 
+
+`app/auth/authy.py: Generate a registration JWT for a user`
+
+```python
+import time
+import jwt
+from flask import current_app
+
+
+def get_authy_registration_jwt(user_id, expires_in=5*60):
+       now = time.time()
+       payload = {
+              'iss': current_app.config['AUTHY_APP_NAME'],
+              'iat': now,
+              'exp': now + expires_in,
+              'context': {
+                     'custom_user_id': str(user.id),
+                     'authy_app_id': current_app.config['AUTHY_APP_ID']
+              },
+
+       }
+       return jwt.encode('payload',
+                         currrent_app.config['AUTHY_PRODUCTION_API_KEY'])
+```
+
+We have a JWT. We need to generate the QR Code for Authy using the [`qrcode`](https://github.com/lincolnloop/python-qrcode) package:
+
+`app/auth/authy.py: Generate QR Code`
+
+```python
+from io import BytesIO
+import qrcode
+import qrcode.image.svg
+
+
+def get_authy_qrcode(jwt):
+       qr = qrcode.make('authy://account?token=' + jwt,
+       image_factory=qrcode.image.svg.SvgImage)
+       stream = BytesIO()
+       qr.save(stream)
+       return stream.getvalue()
+```
+
+`get_authy_qrcode()` function generates a URL in the format expected by the Authy app. JWT is passed as an argument and it creates a QR Code.
+
+SVG image format is used to save the QR Code, which is written to a byte stream and the stream contents returned.
