@@ -302,3 +302,37 @@ Otherwise, it will return:
 ```
 
 We will use this identifier to refer to the user when we want to interact with the Authy service. Any other status in addition to the two above indicates that an error has occurred.
+
+## Send Push Notification to the User
+
+If a registered user has enabled two-factor notification, we need to send a push notification to the user's phone whenever they try to log into their account.
+
+`app/auth/authy.py: Send push notification to a user`
+
+```python
+def send_push_authentication(user):
+       authy_api = AuthyApiClient(current_app.config['AUTHY_PRODUCTION_API_KEY'])
+       resp = authy_api.one_touch.send_request(
+           user.authy_id,
+           'Login requested for Authy Push Demo',
+           details = {
+               'Username': user.username,
+               'IP Address': request.remote_addr,
+           },
+           seconds_to_expire=120
+       )
+       if not resp.ok():
+              return None
+       return resp.get_uuid()
+
+```
+
+`authy_api.one_touch.send_request()` function initiates the push notification.
+
+* `authy_id` is the identifier that is used to report back to the application when the user has registered fort two-factor authentication
+* `details`, a dictionary, helps the user to identify the login attempts that are legitimate. This information will be shown in the Authy app.
+* `seconds_to_expire` sets the number of seconds Authy will wait for the user to repsonds to this notifiation.
+
+A universally unique identifier (UUID) is returned which the Authy service assigns to the push request.
+
+Other prameters can be seen in their [documentation](https://www.twilio.com/docs/authy/api/push-authentications#create-an-approval-request).
