@@ -26,7 +26,7 @@ To understand how a project can add optional two-factor authentication using pus
 * A _Disable_ button will be shown to initiate the disabling process.
 * He is redirected to the _Profile_ page after disabling 2fa
 
-## Implementing Push 2FA
+## Configure Authy Service
 
 Now that we understand we can create the project, let us start implementing two-factor authentication.
 
@@ -39,7 +39,7 @@ Let us configure the Authy service:
 * Provide a FRIENDLY NAME
 ![Provide friendly name](/images/twilio_authy/authy_app_name.png)
 
-### Project Structure
+## Project Structure
 
 We are going to create an application that shows only how to implement two-factor authentication. We will begin by creating a simple structure for our application.
 
@@ -110,7 +110,7 @@ The assumption is that you have a basic understanding of Python and Flask. If no
 * New? [Start here](https://github.com/GitauHarrison/notes/blob/master/web_development/personal_blog/personal_blog.md).
 * If you would like to use `virtualenvwrapper` to manage your workflow, use [this guide](https://github.com/GitauHarrison/notes/blob/master/virtualenvwrapper_setup.md) to set up your machine. Otherwise, manually create and activate your virtual environments.
 
-### Project Dependencies
+## Project Dependencies
 
 This project will require several dependencies. These are:
 
@@ -151,14 +151,14 @@ Finally, we need to install all the other packages:
 (authy)$ pip3 install flask flask-sqlalchemy # and the rest
 ```
 
-### Project Requirements
+## Project Requirements
 
 Ensure that you have:
 
 * A smartphone
 * [Twilio Authy](https://authy.com/) app downloaded and installed in your phone
 
-### How to Generate Registration QR Code
+## How to Generate Registration QR Code
 
 QR Codes are graphical encodings of a short text, typically a URL that connects your application to the authentication app. Authy app expects QR Codes with this URL:
 
@@ -205,7 +205,7 @@ def get_authy_registration_jwt(user_id, expires_in=5*60):
               'iat': now,
               'exp': now + expires_in,
               'context': {
-                     'custom_user_id': str(user.id),
+                     'custom_user_id': str(user_id),
                      'authy_app_id': current_app.config['AUTHY_APP_ID']
               },
 
@@ -235,3 +235,70 @@ def get_authy_qrcode(jwt):
 `get_authy_qrcode()` function generates a URL in the format expected by the Authy app. JWT is passed as an argument and it creates a QR Code.
 
 SVG image format is used to save the QR Code, which is written to a byte stream and the stream contents returned.
+
+## Scan the QR Code
+
+The application needs to know whether a user has scanned the QR Code. There are two ways that can be used to check whether the QR Code has been scanned
+
+* Webhooks
+* Polling
+
+We will make use of polling in this article. Even though this method is less efficient, it has the advantage of allowing the application to run from the localhost without the need to set up a domain and a secure SSL.
+
+`app/templates/enable_2fa_qr.html: Polling implementation`
+
+```python
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+    <!-- Polling implementation -->
+    <script>
+        function check_registration() {
+            $.ajax("{{ url_for('auth.enable_2fa_poll') }}").done(function(data) {
+                if (data == 'pending') {
+                    setTimeout(check_registration, 5000);
+                }
+                else {
+                    window.location = "{{ url_for('main.user', username=current_user.username) }}";
+                }
+            });
+        }
+        setTimeout(check_registration, 5000);
+    </script>
+{% endblock %}
+```
+This piece of code is added on the template where the QR Code image is displayed. A request is sent to the route `enable_2fa_poll` by the function `check_registration()`. We have set the polling timeout to be 5 seconds after the page loads. In the case where the QR Code has not been scanned, the response status is going to be "pending". The application will keep polling after every 5 seconds untill the QR Code has been scanned, in which case we redirect the user to his profile page.
+
+## Checking a User's Registration Status
+
+We will create a new function that will handle this.
+
+`app/auth/authy.py: Check registraion status`
+
+```python
+from authy.api import AuthyApiClient
+
+def get_registration_status(user_id):
+    authy_api = AuthyApiClient(current_app.config['AUTHY_PRODUCTION_API_KEY'])
+    resp = authy_api.users.registration_status(user_id)
+    if not resp.ok():
+       return {'status': 'pending'}
+    return resp.content['registration']
+
+```
+
+We pass the `user_id` to the function `get_registration_status()`, which is similar to the JWT identifier discussed earlier, and the application will know that the user id is assigned to this user. 
+
+An unscanned registration status will return:
+
+```python
+{'status': 'pending'}
+```
+
+Otherwise, it will return:
+
+```python
+{'status': 'completed', 'authy_id': <int_value>}
+```
+
+We will use this identifier to refer to the user when we want to interact with the Authy service. Any other status in addition to the two above indicates that an error has occurred.
