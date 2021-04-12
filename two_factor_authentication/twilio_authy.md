@@ -335,4 +335,22 @@ def send_push_authentication(user):
 
 A universally unique identifier (UUID) is returned which the Authy service assigns to the push request.
 
-Other prameters can be seen in their [documentation](https://www.twilio.com/docs/authy/api/push-authentications#create-an-approval-request).
+Other prameters can be seen in [Twilio Authy documentation](https://www.twilio.com/docs/authy/api/push-authentications#create-an-approval-request).
+
+## Waiting for User o Authorize Login Request
+
+A simple check that the backend can execute can be integrated into the polling cycle:
+
+`app/auth/aythy.py: Authorize login request`
+
+```python
+def check_push_notification(uuid):
+    authy_api = AuthyApiClient(current_app.config['AUTHY_PRODUCTION_API_KEY'])
+    resp = authy_api.one_touch.get_approval_status(uuid)
+    if not resp.ok():
+       return 'error'
+    return resp.content['approval_request']['status]
+
+```
+
+The returned status will remain "pending" untill the user taps either "Approve" or "Deny" buttons, at which point it will change to "Approved" or "Denied" respectively. If the time set out for this request elapses, then the status will change to "expired".
