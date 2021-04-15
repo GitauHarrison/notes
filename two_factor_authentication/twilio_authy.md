@@ -16,11 +16,11 @@ Both methods above require a user's active participation in the authentication p
 To understand how a project can add optional two-factor authentication using push notification, let us look at [this elaborate design](https://www.figma.com/proto/yup5WjYWXFWS2z2Yrwj84d/Twilio-2fa-Push-Notifcation?node-id=1%3A323&scaling=min-zoom&page-id=0%3A1). 
 
 * A new user registers for an account.
-* He navigate to the profile page where the find a link to enable 2fa.
+* He navigate to the profile page where he finds a link to enable 2fa.
 * Clicking this link in the profile page navigates him to a button that he can finally click to enable 2fa. This might logically sound repetitive but it gives the user a chance to decide whether they really want to enable 2fa.
 * Clicking the "Enable 2fa" button presents a QR Code page that they need to scan using Twilio Authy app to finally enable 2fa.
 * He is redirected to the _Profile_ page where the link now becomes _Disable two-factor authentication_.
-* When he logs out at this stage, he will be required to press either "Approve" or "Deny" in the next attempt to access their account.
+* When he logs out at this stage, he will be required to press either "Approve" or "Deny" in the Authy app in the next attempt to access their account.
 * An approved status response logs the user back to his account.
 * He can choose to disable 2fa by clicking the _Disable two-factor authentication_ link in the _Profile_ page.
 * A _Disable_ button will be shown to initiate the disabling process.
@@ -337,7 +337,7 @@ A universally unique identifier (UUID) is returned which the Authy service assig
 
 Other prameters can be seen in [Twilio Authy documentation](https://www.twilio.com/docs/authy/api/push-authentications#create-an-approval-request).
 
-## Waiting for User o Authorize Login Request
+## Waiting for User to Authorize Login Request
 
 A simple check that the backend can execute can be integrated into the polling cycle:
 
@@ -353,4 +353,4 @@ def check_push_notification(uuid):
 
 ```
 
-The returned status will remain "pending" untill the user taps either "Approve" or "Deny" buttons, at which point it will change to "Approved" or "Denied" respectively. If the time set out for this request elapses, then the status will change to "expired".
+The returned status will remain "pending" until the user taps either "Approve" or "Deny" buttons, at which point it will change to "Approved" or "Denied" respectively. If the time set out for this request elapses, then the status will change to "expired".
