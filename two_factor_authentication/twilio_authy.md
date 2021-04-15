@@ -41,7 +41,7 @@ Let us configure the Authy service:
 
 ## Project Structure
 
-We are going to create an application that shows only how to implement two-factor authentication. We will begin by creating a simple structure for our application.
+We are going to create an application that shows only how to implement two-factor authentication. We will begin by creating a simple structure of our application.
 
 ```
 twilio_authy_project
@@ -105,7 +105,7 @@ $ touch twilio_authy_project/config.py
 # Complete the structure above
 ```
 
-The assumption is that you have a basic understanding of Python and Flask. If not, consider this reference links as you build this project:
+The assumption is that you have a basic understanding of Python and Flask. If not, consider these reference links as you build this project:
 
 * New? [Start here](https://github.com/GitauHarrison/notes/blob/master/web_development/personal_blog/personal_blog.md).
 * If you would like to use `virtualenvwrapper` to manage your workflow, use [this guide](https://github.com/GitauHarrison/notes/blob/master/virtualenvwrapper_setup.md) to set up your machine. Otherwise, manually create and activate your virtual environments.
@@ -127,7 +127,7 @@ This project will require several dependencies. These are:
 * email-validator 
 * qrcode
 
-Ensure you install these dependencies in an activate virtual environment. I will create one called 'authy' using `mkvirtualenv` command from [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/):
+Ensure you install these dependencies in an activated virtual environment. I will create one called 'authy' using `mkvirtualenv` command from [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/):
 
 ```python
 $ mkvirtualenv authy # created and activated at the same time
