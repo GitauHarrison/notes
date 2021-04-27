@@ -1378,6 +1378,7 @@ def verify_2fa():
                 current_user.verification_phone = phone
                 db.session.commit()
                 flash('You have enabled two-factor authentication')
+                return redirect(url_for('user', username=current_user.username))
             else:
                 username = session['username']
                 del session['username']
