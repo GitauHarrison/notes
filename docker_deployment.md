@@ -10,7 +10,7 @@ While Docker isn't the only container platform, it is by far the most popular. T
 
 To work with Docker CE, you first have to install it on your system. There are installers for Windows, Mac OS X and several Linux distributions available at the [Docker website](https://www.docker.com/community-edition). If you are working on a Microsoft Windows system, it is important to note that Docker CE requires Hyper-V. The installer will enable this for you if necessary, but keep in mind that enabling Hyper-V prevents other virtualization technologies such as VirtualBox from working. 
 
-### Install Docker CE
+## Install Docker CE
 Learn how to install `docker` [here](how_to_install_docker.md).
 
 ## Build a Container Image
@@ -23,51 +23,58 @@ The command that creates scripted container images is `docker build`. This comma
 
 Dockerfile: Script installer
 ```python
-FROM python:3.8-apline
+FROM python:alpine
 
-RUN adduser -D practice_blog
+RUN adduser -D table # Without the -D option, you will encounter pasword unchanged error
 
-WORKDIR /home/python/flask_tutorial/practice_blog
+WORKDIR /home/software_development/python/current_projects/beautiful_flask_tables
 
 COPY requirements.txt requirements.txt
-RUN python3 -m venv practice_blog
-# Upgrade pip below
-RUN practice_blog/bin/python3 -m pip install --upgrade pip
-RUN practice_blog/bin/pip3 install requirements.txt
-RUN practice_blog/bin/pip3 gunicorn
+
+RUN python -m venv beautiful_flask_tables
+
+RUN beautiful_flask_tables/bin/python -m pip install --upgrade pip
+
+RUN \
+    apk update && \
+    apk add build-base && \ # Fixes installation issues due to greenlet
+    apk add postgresql-dev gcc python3-dev musl-dev && \ # Dependencies for psycopg2
+    beautiful_flask_tables/bin/pip3 install -r requirements.txt && \
+    beautiful_flask_tables/bin/pip3 install gunicorn
 
 COPY app app
 COPY migrations migrations
-COPY blog.py config.py boot.sh ./
+COPY create_fake_users.py create_facke_users.py
+COPY table.py config.py boot.sh ./
 RUN chmod +x boot.sh
 
-ENV FLASK_APP blog.py
+ENV FLASK_APP table.py
 
-RUN chown -R practice_blog:practice_blog ./
-USER practice_blog
+RUN chown -R table:table ./
+USER table
 
 EXPOSE 5000
 ENTRYPOINT ["./boot.sh"]
 ```
-Each line in the `Dockerfile` is a command. The `FROM` command specifies the base container image on which the new image will be built. The idea is that you start from an existing image, and or change some things, and you end up with a derived image. Images are referenced by a _name_ and a _tag_, separated by a _colon_. The tag is used as a versioning mechanism, allowing an image to provide more than one variant. Above, the image used is `python`, which is the official Docker image for Python. The tags for this image allow you to specifiy the interprter versioin and the base operating system. The `3.8-alpine` tag selects a Python 3.8 interpreter installed on Alpine Linux. The Alpine Linux distribution is often used instead of the more popular ones such as Ubuntu because of its small size. You can see what tags are available for the Python image in the [Python Image Reposistory](https://hub.docker.com/_/python?tab=tags).
+Each line in the `Dockerfile` is a command. The `FROM` command specifies the base container image on which the new image will be built. The whole idea is that you start from an existing base container image, add or change some things, and you end up with a derived image. Images are referenced by a _name_ and a _tag_, separated by a _colon_. The tag is used as a versioning mechanism, allowing an image to provide more than one variant. Above, the image used is `python`, the official Docker image for Python. The tags for this image allow you to specifiy the interprter version and the base operating system. The `alpine` tag is from Alpine Linux. You can be more specific with the kind of tag you want to use. Say, `3.8-alpine` tag selects a Python 3.8 interpreter installed on Alpine Linux. The Alpine Linux distribution is often used instead of the more popular ones such as Ubuntu because of its small size. You can see what tags are available for the Python image in the [Python Image Reposistory](https://hub.docker.com/_/python?tab=tags).
 
-The `RUN` command executes an arbitrary command in the context of the container. This would be similar to you typing the command in a shell prompt. The `adduser -D practice_blog` command creates a new user named `practice_blog`. Most container images have `root` as the default user, but it is not a good practice to run an application as `root`, so we need to create our own user.
+The `RUN` command executes an arbitrary command in the context of the container, similar to you typing the command in a shell prompt. The `adduser -D table` command creates a new user named `table`. Most container images have `root` as the default user. It is never a good practice to run an application as `root`, so we need to create our own user.
 
-The `WORKDIR` command sets a default directory where the application is going to be installed. When I created the `practice_blog` user above, a home directory was created, so now I'm we are making that directory the default. The new default directory is going to apply to any remaining commands in the `Dockerfile`, and also later when the container is executed.
+The `WORKDIR` command sets a default directory where the application is going to be installed. When I created the `table` user above, a home directory path was created, so now I'm we are making that directory the default. The new default directory is going to apply to any remaining commands in the `Dockerfile`, and also later when the container is executed.
 
-The `COPY` command transfers files from your machine the container file system. This command takes two or more arguments, the _source_ and the _destination_ files or directories. The source files must be relative to the directory where the Dockerfile is located. The destination can be an absolute path, or a path relative to the directory set in a previous `WORKDIR` command. Above, we are copying the `requirements.txt` file to the `practice_blog` user's home directory path in the container file system.
+The `COPY` command transfers files from your machine the container file system. This command takes two or more arguments, the _source_ and the _destination_ files or directories. The source files must be relative to the directory where the Dockerfile is located. The destination can be an absolute path, or a path relative to the directory set in a previous `WORKDIR` command. Above, we are copying the `requirements.txt` file to the `table` user's home directory path in the container file system.
 
-With `requirements.txt` in the container file system, we can create a virtual environment using `RUN` command. Above, I have created a virtual environment called `practice_blog` in which I install all the requirements needed for our application. It is also possible to explictly install packages in your container. In our example, we are installing `gunicorn` which we are going to use as a web server. Altenatively, you can have `gunicorn` added to the `requirements.txt` file.
+With `requirements.txt` in the container file system, we can create a virtual environment using `RUN` command. Above, I have created a virtual environment called `beautiful_flask_tables` in which I install all the requirements needed for our application. It is also possible to explictly install packages in your container. In our example, we are installing `gunicorn` which we are going to use as a web server. Altenatively, you can have `gunicorn` added to the `requirements.txt` file.
 
-The `COPY` commands that follow install the application to the container, by copying the `app` package, the `migration` repository with the database migrations and the top-level files `blog.py` and `config.py`. Additionally, We are also copying a new file `boot.sh`.
+The `COPY` commands that follow install the application to the container, by copying the `app` package, the `migrations` repository with the database migrations and the top-level files `table.py` and `config.py`. Additionally, We are also copying a new file `boot.sh` (top-level file).
 
 The `RUN chmod` command ensures that this `boot.sh`  file is set as an executable file. If you are in a Unix based file system and your source file is already marked as executable, then the copied file will also have the executable bit set. I added an explicit set because on Windows it is harder to set executable bits. If you are working on Mac OS X or Linux you probably don't need this statement, but it does not hurt to have it anyway.
 
 The `ENV` command sets an environment variable inside the container. We need to set `FLASK_APP` which is required to use the `flask` command.
 
-The `RUN chown` command sets the owner of all the directories and files that were stored in _/home/python/flask_tutorial/practice_blog_ as the new `practice_blog` user. Even though we created the this user near the top level of the Dockerfile, the default user for all the commands remain the `root` user. So, all the files need to be switched to the `practice_blog` user so that this user can work with them when the container is started.
+The `RUN chown` command sets the owner of all the directories and files that were stored in _/home/software_development/python/current_projects/beautiful_flask_tables_ as the new `table` user. Even though we created the this user near the top level of the Dockerfile, the default user for all the commands remain the `root` user. So, all the files need to be switched to the `table` user so that this user can work with them when the container is started.
 
-The `USER` command in the next line makes the new `practice_blog` user the default for any subsequent instructions, and also for when the container is started.
+The `USER` command in the next line makes the new `table` user the default for any subsequent instructions, and also for when the container is started.
 
 The `EXPOSE` command configures the port that the container will be using for its server. This is necessary so that Docker can configure the network in the container appropriately. We have chosen the standard flask port `5000`, but this can be any port.
 
@@ -76,12 +83,11 @@ The `ENTRYPOINT` command defines the default command that should be executed whe
 boot.sh: Docker container start up script
 ```python
 #!/bin/sh
-source practice_blog/bin/activate
+source beautiful_flask_tables/bin/activate
 flask db upgrade
-flask translate compile
-exec gunicorn -b :5000 --access-logfile - --error-logfile - practice_blog:app
+exec gunicorn -b :5000 --access-logfile - --error-logfile - table:app
 ```
-Above, we activate the virtual environment, upgrade the database through the database migration framework, compile the language translations, and finally run the server with `gunicorn`.
+Above, we activate the virtual environment, upgrade the database through the database migration framework, and finally run the server with `gunicorn`.
 
 In a shell script, `exec` triggers the process running the script to be replaced with the command given, instead of starting it as a new process. This is important because Docker associates the life of the container to the first process that runs on it. In cases like this one where the start up process is not the main process of the container, we need to make sure that the main process takes the place of that first process to ensure that the container is not terminated by Docker.
 
@@ -89,7 +95,7 @@ In Docker, anything that container writes to `stdout` or `stderr` will be captur
 
 With the Dockerfile created, now we can build a container image:
 ```python
-$ docker build -t practice_blog:latest .
+$ docker build -t table:latest . # Don't forget the . (dot)
 ```
 
 The `-t` argument in `docker build` command sets the name and tag for the new image. The `.` indicates the base directory where the container is to be built. This is the directory where the _Dockerfile_ is located. The build process is going to evaluate all the commands in the Dockerfile and create the image, which will be stored on our own machine.
@@ -101,8 +107,8 @@ $ docker images
 
 # Output
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-practice_blog       latest              39fa5cda1776        10 seconds ago      206MB
-python              3.8-alpine          8744555ae7bb        6 days ago          42.3MB
+table               latest            39fa5cda1776        10 seconds ago        206MB
+python              alpine            8744555ae7bb        6 days ago            42.3MB
 ```
 The listing will include your image as well as the base image on which it was built. **Any time you make changes to the application, you can update the container image by running the command again**.
 
@@ -111,7 +117,7 @@ The listing will include your image as well as the base image on which it was bu
 With the image already created, we can run the container version of the application using `docker run` command, which usually takes a large number of arguments.
 
 ```python
-$ docker run --name practice_blog -d -p 8000:5000 --rm practice_blog:latest
+$ docker run --name table -d -p 8000:5000 --rm table:latest
 
 # Output
 581ac718128eab9b58fe883ce114dba44f74bf2d937d8b5de45dec2f7567531e
@@ -128,9 +134,15 @@ $ docker ps
 
 # Output
 CONTAINER ID        IMAGE                  COMMAND             CREATED             STATUS              PORTS                    NAMES
-08b68c8afe5f        practice_blog:latest   "./boot.sh"         23 seconds ago      Up 22 seconds       0.0.0.0:8000->5000/tcp   practice_blog
+08b68c8afe5f        table:latest         "./boot.sh"         23 seconds ago      Up 22 seconds       0.0.0.0:8000->5000/tcp     table
 ```
 You can use a more useful variant such as `docker ps -a` instead of `docker ps` if you do not see any output. Note that the CONTAINER ID is shortened compared to what was generated by `docker run` command. 
+
+> If you do not see any containers running, remember that initially we used the `--rm` option to delete the container once it was terminated. It is an option. You can remove it when running the container.
+
+> Note that `alpine` does not use `bash` for its executable file. Instead, it uses `sh` which is a shell. This is because `alpine` is a minimal Linux distribution that does not have a bash shell. If you are using a Linux distribution that has a bash shell, you can use `bash` instead of `sh`. See this [solution](https://stackoverflow.com/questions/51508150/standard-init-linux-go190-exec-user-process-caused-no-such-file-or-directory) for more information.
+
+> Every time you come across an error you are not sure about, always run the logs to see what is happening. In this case, you can use `docker logs -f <container_ID>` (obviously having removed the `--rm` option when building your image) to see the logs of the container.
 
 If you want to stop a running container, use `docker stop <CONTAINER ID>` command:
 
@@ -140,7 +152,7 @@ $ sudo docker stop 08b68c8afe5f
 # Output
 08b68c8afe5f
 ```
-##### Deleting Images and Containers
+## Delete Images and Containers
 
 To delete a container, use `docker rm <CONTAINER ID>`:
 
@@ -173,11 +185,11 @@ Multiple images can be deleted as follows:
 ```python
 $ docker rmi $(docker images -a -q)
 ```
-##### Docker Cleaning Tools
+## Docker Cleaning Tools
 
 As you work with Docker, it’s also easy to accumulate an excessive number of unused images, containers, and data volumes that clutter the output and consume disk space. Docker gives you all the tools you need to clean up your system from the command line. 
 
-###### Purge all Unused or Dangling Images, Containers, Volumes, and Networks
+### Purge all Unused or Dangling Images, Containers, Volumes, and Networks
 Images, containers and other volume data not successfully built or created to completion are defined as _dangling_. You can use a single command to lean up any resources — images, containers, volumes, and networks — that are dangling (not associated with a container):
 
 ```python
@@ -188,7 +200,7 @@ To additionally remove any stopped containers and all unused images (not just da
 $ docker system prune -a
 ```
 
-### Realistic Web Application
+## Realistic Web Application
 
 An application normally has a number of configurations that are sourced from environment variables. For example, the Flask secret key, database URL and email server options are all imported from environment variables.
 
@@ -198,27 +210,25 @@ So, build time environment variables can be useful, but there is also a need to 
 
 Setting email configuration in Docker container
 ```python
-$ docker run --name practice_blog -d -p 8000:5000 --rm -e SECRET_KEY=my-secret-key \
+$ docker run --name table -d -p 8000:5000 --rm -e SECRET_KEY=my-secret-key \
     -e MAIL_SERVER=smtp.gmail.com -e MAIL_PORT=587 -e MAIL_USE_TLS=true \
     -e MAIL_USERNAME=<your-gmail-username> -e MAIL_PASSWORD=<your-gmail-password> \
-    microblog:latest
+    table:latest
 ```
 
-### Using Third-Party "Containerized" Services
+## Using Third-Party "Containerized" Services
 
 Assuming you have SQLite as your database of choise, what we know is that the application saves all its data on a file on disk on the local machine. What do you think is going to happen when the to the SQLite file when you stop and delete the container? The file is going to disappear!
 
 The file system in a container is _ephemeral_, meaning that it goes away when the container goes away. You can write data to the file system, and the data is going to be there if the container needs to read it, but if for any reason you need to recycle your container and replace it with a new one any data that the application saved to disk is going to be lost forever.
 
-A good design is to make the container application _stateless_. If you have a container that has application code and no data, you can throw it away and replace it with a new one without any problem, the container becomes truly disposable, which is great in terms of simplifying the deployment of upgrades.
-
-But this means that the data must be put somewhere outside of the application container. This is where the Docker Registry comes into play.
+A good design would be to make the container application _stateless_. If you have a container that has application code and no data, you can throw it away and replace it with a new one without any problem. This container becomes truly disposable, which is great in terms of simplifying the deployment of upgrades. But this means that the data must be put somewhere outside of the application container. This is where the _Docker Registry_ comes into play.
 
 > The Registry is a stateless, highly scalable server side application that stores and lets you distribute Docker images. By putting images in a registry, you can store static and immutable application bits, including all of their dependencies, at a framework level. You then can version and deploy images in multiple environments and thus provide a consistent deployment unit.
 
-The Docker Container Registry contains a large variety of container images, for example the `python` container image discussed above. Docker maintains images for many other languages, databases and other services in the Docker registry. Companies and regular users alike can publish our own container images.
+The Docker Container Registry contains a large variety of container images, for example the `python` container image we have looked at already. Docker maintains images for many other languages, databases and other services in the Docker registry. Companies and regular users alike can publish our own container images.
 
-### Adding a MySQL Container
+## Adding a MySQL Container
 
 What you will do:
 * Get `MySQL` image from the MySQL public registry
@@ -230,8 +240,8 @@ MySQL has public container images available on the Docker registry. MySQL relies
 Start MySQL server
 
 ```python
-$ docker run --name mysql -d -e MYSQL_ROOT_PASSWORD=yes -e MYSQL_DATABASE=practice_blog \
- -e MYSQL_USER=practice_blog -e MYSQL_PASSWORD=<database-password> mysql/mysql-server:5.7
+$ docker run --name mysql -d -e MYSQL_ROOT_PASSWORD=yes -e MYSQL_DATABASE=table \
+ -e MYSQL_USER=table -e MYSQL_PASSWORD=<database-password> mysql/mysql-server:latest
 
 # Output
 Unable to find image 'mysql/mysql-server:5.7' locally
@@ -246,53 +256,58 @@ Status: Downloaded newer image for mysql/mysql-server:5.7
 
  # Use of \ allows for a rather long command to go to a new line. Do not include it in your command
 ```
-On a Docker installed machine, you will get a fully installed MySQL server with a randomly generated root password, a brand new database called `practice_blog`, and a user with the same name that is configured with full permissions to access the database. Enter a proper password as value for the `MySQL_PASSWORD` environment variable. 
+On a Docker installed machine, you will get a fully installed MySQL server with a randomly generated root password, a brand new database called `table`, and a user with the same name that is configured with full permissions to access the database. Enter a proper password as value for the `MySQL_PASSWORD` environment variable. 
 
->`mysql` in `mysql/mysql-server:5.7` is the _docker registry account used by MySQL_. `mysql-server:5.7` is the image from MySQL.
+>`mysql` in `mysql/mysql-server:latest` is the _docker registry account used by MySQL_. `mysql-server:latest` is the image from MySQL.
 
 You should have the MySQL container running. Check:
 ```python
 $ docker ps
 
 # Output
-CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS                   PORTS                    NAMES
-48d838a161eb        mysql/mysql-server:5.7   "/entrypoint.sh mysq…"   7 minutes ago       Up 6 minutes (healthy)   3306/tcp, 33060/tcp      mysql
-8b748206500d        practice_blog:latest     "./boot.sh"              2 hours ago         Up 2 hours               0.0.0.0:8000->5000/tcp   practice_blog
+CONTAINER ID   IMAGE                       COMMAND                  CREATED          STATUS                    PORTS                                       NAMES
+5c7baceab352   table:latest                "./boot.sh"              3 seconds ago    Up 2 seconds              0.0.0.0:8000->5000/tcp, :::8000->5000/tcp   table
+1572ace01e37   mysql/mysql-server:latest   "/entrypoint.sh mysq…"   37 minutes ago   Up 37 minutes (healthy)   3306/tcp, 33060-33061/tcp                   mysql
 ```
 
-With the MySQL server started, we need to add a MySQL client package. We will use `pymysql` and add it to the _Dockerfile_.
+With the MySQL server started, we need to add a MySQL client package. We will use `pymysql`. We will also need to add the `cryptography` package that MYSQL uses for authentication against the MySQL server.
 
 Dockerfile: Add MySQL client
 ```python
 # previous commands
-RUN practice+_blog/bin/pip3 install gunicorn pymysql
+RUN \
+    apk add libffi-dev && \ # this is required for the MySQL client
+    beautiful_flask_tables/bin/pip3 install gunicorn pymysql cryptography
 # previous commands
 ```
 With this change to our Dockerfile (or the application itself), the container image needs to be rebuilt:
 
 ```python
-$ docker build -t practice_blog:latest .
+$ docker build -t table:latest .
 ```
-We will need to start our `practice_blog` again, this time linking it to the database container so that both can communicate through the network:
+
+### Start the container
+
+We will need to start our `table` again, this time linking it to the database container so that both can communicate through the network:
 
 ```python
-$ docker run --name practice_blog -d -p 8000:5000 --rm -e SECRET_KEY=my-secret-key \
+$ docker run --name table -d -p 8000:5000 --rm -e SECRET_KEY=my-secret-key \
     -e MAIL_SERVER=smtp.gmail.com -e MAIL_PORT=587 -e MAIL_USE_TLS=true \
     -e MAIL_USERNAME=<your-gmail-username> -e MAIL_PASSWORD=<your-gmail-password> \
     --link mysql:dbserver \
-    -e DATABASE_URL=mysql+pymysql://practice_blog:<database-password>@dbserver/practice_blog \
-    practice_blog:latest
+    -e DATABASE_URL=mysql+pymysql://table:<database-password>@dbserver/table \
+    table:latest
 ```
 The `--link` option tells Docker to make another container accessible to this one. The argument contains two names separated by a colon. The first part is the name or ID of the container to link. The second part defines the hostname that can be used in this container to refer to the linked one. `dbserver` if a generic name that represents the database server.
 
-With the link to the two containers established, we can set the `DATABASE_URL` environment variable so that SQLAlchemy is directed to use the MySQL database in the other container. The database URL is going to use `dbserver` as the hostname, `practice_blog` as the database name and user, and the password that you selected when you started MySQL.
+With the link to the two containers established, we can set the `DATABASE_URL` environment variable so that SQLAlchemy is directed to use the MySQL database in the other container. The database URL is going to use `dbserver` as the hostname, `table` as the database name and user, and the password that you selected when you started MySQL.
 
 Sometimes the MySQL container takes a few seconds to be fully running and ready to accept database connects. If you start MySQL container  and then start the application container immediately after, when the `boot.sh` script tries to run `flask db upgrade` it may fail due to the database not being ready to accept connects.
 
 boot.sh: Retry database connection
 ```python
 #!/bin/sh
-source practice_blog/bin/activate
+source beautiful_flask_tables/bin/activate
 while true; do
     flask db upgrade
     if [[ "$?" == "0" ]]; then
@@ -302,7 +317,7 @@ while true; do
     sleep 5
 done
 flask translate compile
-exec gunicorn -b :5000 --access-logfile - --error-logfile - practice_blog:app
+exec gunicorn -b :5000 --access-logfile - --error-logfile - table:app
 ```
 
 The loop checks the exit code of the `flask db upgrade` command, and if it is non-zero it assumes that something went wrong, so it waits five seconds and then retries.
