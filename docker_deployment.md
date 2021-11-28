@@ -27,7 +27,7 @@ Dockerfile: Script installer
 ```python
 FROM python:alpine
 
-RUN adduser -D table # Without the -D option, you will encounter pasword unchanged error
+RUN adduser -D table # Without the -D option, you will encounter password unchanged error
 
 WORKDIR /home/software_development/python/current_projects/beautiful_flask_tables
 
@@ -46,7 +46,7 @@ RUN \
 
 COPY app app
 COPY migrations migrations
-COPY create_fake_users.py create_facke_users.py
+COPY create_fake_users.py create_fake_users.py
 COPY table.py config.py boot.sh ./
 RUN chmod +x boot.sh
 
