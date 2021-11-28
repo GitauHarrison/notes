@@ -321,3 +321,20 @@ exec gunicorn -b :5000 --access-logfile - --error-logfile - table:app
 ```
 
 The loop checks the exit code of the `flask db upgrade` command, and if it is non-zero it assumes that something went wrong, so it waits five seconds and then retries.
+
+## Share Your Docker Application
+
+The application is up and running on Docker, using two containers (where MySQL comes from a publicly available third-party image). We can make this application available to others by _pushing_ it to the Docker registry from where anybody can obtain the image.
+
+* [Click here](https://hub.docker.com) to create an account with Docker. Pick a username that you like.
+* Run the command `sudo docker login` in your terminal. Provide your account username and password.
+* Rename your image to include your account (remember the MySQL image?) as seen below:
+```python
+$ sudo docker tag table:latest <your docker registry account>/table:latest
+```
+* Publish you image to the Docker registry using the `docker push` command:
+```python
+$ sudo docker push <your docker registry account>/table:latest
+```
+
+Your image should be now publicly available. Feel free to document how to install it and run from the Docker registry. Check this [MySQL example](https://hub.docker.com/_/mysql).
