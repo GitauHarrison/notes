@@ -15,6 +15,8 @@ Learn how to install `docker` [here](how_to_install_docker.md).
 
 ## Build a Container Image
 
+I am of the assumption that you already have a flask application built. I will show you how to build a container image from that flask application. For the purposes of demonstration, I will use my [beautiful flask tables](https://github.com/GitauHarrison/beautiful-flask-tables) project.
+
 The first step in creating a container for our app is to _build an **image**_ for it. A container image is a template that is used to create a container. It contains a complete representation of the container file system, along with various settings pertaining to networking, start up options, etc.
 
 I will show you how to generate a container through a script. 
