@@ -2,6 +2,11 @@
 
 Tables are a simple way to display data in a web application. Making tables in flask templates is relatively easy. However, it becomes a bit more complicated when you want to add basic table features such as sorting, pagination and searching. These features are particularly useful when the tables contain a lot of data. In this article, I will show you how to create an interactive table. We will look at several example tables to really appreciate table interactivity.
 
+Example table 1: [Bootstrap Table](#bootstrap-table)
+Example table 2: [Basic Table](#basic-table)
+Example table 3: [Ajax Table](#ajax-table)
+Example table 4: [Serverside Table](#serverside-table)
+
 ## Basic Flask Application
 
 Things we will do:
@@ -28,7 +33,7 @@ tables_project
             | --- __init__.py
             | --- templates/
                     | --- base.html
-                    | --- bootstrap.html
+                    | --- bootstrap-table.html
 ```
 You can use the commands `mkdir` and `touch` to create the directory structure. For example, to create the _tables_projects_ folder, you will run the following command:
 
@@ -199,9 +204,9 @@ This base template defines the structure of all our pages. The `navbar` block is
 
 ### Template Inheritance
 
-We have an empty `bootstrap.html` file within our templates sub-folder. This template will inherit all the content from the base template. We will use the `extends` tag to do so. Thereafter, we will use the `block` tag to define the content of the page, which will be our table.
+We have an empty `bootstrap-table.html` file within our templates sub-folder. This template will inherit all the content from the base template. We will use the `extends` tag to do so. Thereafter, we will use the `block` tag to define the content of the page, which will be our table.
 
-`bootstrap.html: Display the table`
+`bootstrap-table.html: Display the table`
 ```html
 {% extends 'base.html' %}
 
@@ -236,7 +241,7 @@ We have an empty `bootstrap.html` file within our templates sub-folder. This tem
 
 ### Displaying the Table
 
-Within our `routes` module, we will retrieve the users from the database (which we will create and update in a section below) and display them in a table as seen in the `bootstrap.html` template.
+Within our `routes` module, we will retrieve the users from the database (which we will create and update in a section below) and display them in a table as seen in the `bootstrap-table.html` template.
 
 `routes.py: Render the users table`
 ```python
@@ -249,7 +254,7 @@ from flask import render_template
 @app.route('/index')
 def index():
     users = User.query.all()
-    return render_template('bootstrap.html', users=users, title='Bootstrap Table')
+    return render_template('bootstrap-table.html', users=users, title='Bootstrap Table')
 ```
 
 ![Bootstrap Table](images/flask_tables/render-table.png)
@@ -276,7 +281,7 @@ class User(db.Model):
 
 ```
 
-This model is used by the `index` view function to display all the users in the database. `bootstrap.html` uses the `for` loop to display all users' data. At this point, however, our `User` model is empty. We will update it by generating fake users.
+This model is used by the `index` view function to display all the users in the database. `bootstrap-table.html` uses the `for` loop to display all users' data. At this point, however, our `User` model is empty. We will update it by generating fake users.
 
 The [Faker](https://faker.readthedocs.io/en/master/) package is used to generate fake data. Install it in the terminal using the command `pip install faker`. Remember to add it to your `requirements.txt` file.
 
@@ -377,6 +382,10 @@ Welcome to [dataTable.js](https://datatables.net/). It is a great tool to create
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
+
+    {% block datatable_scripts %}
+
+    {% endblock %}
 {% endblock %}
 ```
 
@@ -385,6 +394,139 @@ There are three scripts I have added:
 - `jquery.dataTables.js`: jQuery dataTables library
 - `dataTables.bootstrap5.js`: jQuery dataTables library (custom logic for Bootstrap)
 
-If you are using a different framework, you will need to change the last script accordingly.
+If you are using a different framework, you will need to change the last script accordingly. I have added the block `datatable_scripts`. This block will be used by individual templates to define their own scripts.
 
 Note that I have also added a `dataTables.bootstrap5.css` file to our `head` block. The library comes with its own custom styles.
+
+## Basic Table
+
+I am going to update the structure of our application slightly to accomodate the new _basic table_. Let us create an empty template called `basic-table.html`:
+
+```python
+(tables_project) $ touch app/templates/basic-table.html
+```
+
+Copy the contents of `bootstrap-table.html` to `basic-table.html`:
+
+```html
+{% extends 'base.html' %}
+
+{% block app_context %}
+    <div class="row">
+        <div class="col-md-12">
+            <table id="data" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Age</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.age }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.phone }}</td>
+                            <td>{{ user.address }}</td>
+                        </tr>
+                    {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
+```
+To enhance the table we have so far, all that there is to do is to call the `DataTable` function. This function (for now) will only apply to the _basic table_. To ensure that this is possible, we will update our `base.html` template to include a custom block called `datatable_scripts`:
+
+`base.html: Add a custom block`
+```html
+{% extends 'bootstrap/base.html' %}
+
+{% block head %}
+    {{  super() }}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.css">
+{% endblock %}
+
+{% block title %}
+    {% if title %}
+        {{ title }} - Flask Tables
+    {% else %}
+        eautiful Flask Tables
+    {% endif %}
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href=" {{ url_for('index') }} ">Flask Tables</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">            
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href=" {{ url_for('index') }} ">Bootstrap Table</a></li>
+                <li><a href=" {{ url_for('basic_table') }} ">Basic Table</a></li>
+            </ul>                       
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% block app_context %}{% endblock %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{  super() }}
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
+    
+    {% block datatable_scripts %}
+
+    {% endblock %}
+{% endblock %}
+```
+Note that I have added a new link in the navbar called `Basic Table`. This link will take us to the `basic-table.html` template. It will be used to display the data in our _basic table_. 
+
+At the bottom of the `basic-table.html` template, we will add the following code:
+
+`basic-table.html: Add interactive features to the basic table`
+```html
+{% block datatable_scripts %}
+    <script>
+        $(document).ready(function() {
+            $('#data').DataTable();
+        });
+    </script>
+{% endblock %}
+```
+
+JQuery provides us with the `$(document).ready()` function. It is used to tell the browser to execute the function `DataTable()` after the page has fully loaded. `$('#data')` is a jQuery selector that will select the `#data` element. This is the table we want to apply the `DataTable()` function to.
+
+Finally, to display this _basic table_, we will add a new route called `basic_table`:
+
+`routes.py: View function to display the basic table`
+```python
+@app.route('/basic-table')
+def basic_table():
+    users = User.query.all()
+    return render_template('basic-table.html', users=users, title='Basic Table')
+```
+
+Navigate to http://127.0.0.1:5000/basic-table, and you should be able to see this:
+
+![basic-table](/images/flask_tables/basic-table.png)
+
+Try searching for any name in the search bar. You should be able to see the data filtered. Also, you can sort the table by clicking on the column headers.
+
