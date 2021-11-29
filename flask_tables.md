@@ -148,7 +148,7 @@ In the terminal, we can run the command `flask run` to start our flask server. Y
 
 ![Hello Flask World](images/flask_tables/hello-world.png)
 
-The `errors` module generally handles errors that come about as a result of using the application. We will use the `errorhandler` decorator to handle errors. Let us create two templates called `404.html` and `500.html`. These templates will be used to display the error messages. They will also allow the user to safely navigate back to the home pag of the application.
+The `errors` module generally handles errors that come about as a result of using the application. We will use the `errorhandler` decorator to handle errors. Let us create two templates called `404.html` and `500.html`. These templates will be used to display the error messages. They will also allow the user to safely navigate back to the home page of the application.
 
 ```python
 (tables_project) $ mkdir app/templates/errors
@@ -748,5 +748,180 @@ The script that will attach `dataTables.js` to the table needs to pass the `ajax
 ```
 ![Ajax Table](/images/flask_tables/ajax-table.png)
 
+Don't forget to update your navbar in `base.html`. 
+
 That's it! Now we have a table that is interactive and can be updated asynchronously.
+
+
+## Serverside Table
+
+You have probably noticed there is still a lag between the time the table is rendered and the time the data is displayed. Even though the _ajax table_ is slightly better than the _basic table_, there is the persistent problem where all the data has to be downloaded in a single request. If the data is too long, then there will be nothing to be displayed for a while until the entire data is downloaded. The tables we have had so are are, therefore, nice for short data.
+
+In the event where data is too long, say with thousands or even millions of rows, a great solution will be to load the data rows on demand, as they are needed. When a user decides to navigate to another page of the table, then that becomes a new request and the application will load only the data needed to be displayed on the new page.
+
+However, this creates a HUGE problem with sorting and searching because we will need the entire dataset to match a query string. With only a few rows of data being displayed per request, we will need to transfer the search and sort functionalities to the server. `dataTable.js` calls this [server-side processing](https://datatables.net/manual/server-side).
+
+To enable server-side processing, we will need to set the `serverSide` option to `true` in our ajax solution. Let us create a new template called `server-side-table.html` that will render the table with the server-side processing enabled.
+
+`server-side-table.html: Enable server-side processing`
+```html
+{% extends 'base.html' %}
+
+{% block app_context %}
+    <div class="row">
+        <div class="col-md-12">
+            <table id="data" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Age</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block datatable_scripts %}
+    <script>
+        $(document).ready(function() {
+            $('#data').DataTable({
+                ajax: '{{ url_for('server_side_table_data') }}',
+                serverSide: true,
+                columns: [
+                    {data: "username"},
+                    {data: "age"},
+                    {data: "email"},
+                    {data: "phone", orderable: false},
+                    {data: "address", orderable: false}
+                ],
+            });
+        });
+    </script>
+{% endblock %}
+
+
+```
+
+With `serverSide: true`, the library will disable its own processing of the data and instead transfer all table features (pagination, sorting and searching) to the server through the ajax endpoint. I will create a new ajax endpoint called `server_side_table_data` to separate it from the previous endpoint`ajax_table_data` .
+
+### Server-side Pagination
+
+Let us expand our data endpoint to include pagination. This will allow us to display only a subset of the data on each page.
+
+`routes.py: Server-side pagination`
+```python
+from flask import request
+
+
+@app.route('/server-side-table')
+def server_side_table():
+    return render_template('server-side-table.html', title='Server Side Table')
+
+
+
+@app.route('/ajax-table-data')
+def server_side_table_data():
+    query = User.query.all()
+
+    total_filtered = query.count()
+
+    # Pagination
+    start = request.args.get('page', type=int)
+    length = request.args.get('length', type=int)
+    query = query.offset(start).limit(length)
+
+    # Response
+    return {
+        'data': [user.to_dict() for user in query],
+        'recordsFiltered': total_filtered
+        'recordsTotal': User.query.count(),
+        'draw': request.args.get('draw', type=int),
+        
+        }
+
+
+```
+
+The JSON response has four keys:
+
+* `data`: the data to be displayed on the table, after accounting for pagination.
+* `recordsFiltered`: the total number of rows matching the search criteria (searching will be implemented below).
+* `recordsTotal`: the total number of rows in the table disregarding any search criteria.
+* `draw`: a unique identifier for the request.
+
+If you try to load the _server-side table_, you will notice that everything works except that the functionalities are not implemented yet.
+
+![Server-side Table](/images/flask_tables/server-side-pagination.png)
+
+### Server-side Searching
+
+`dataTable.js` sends what the user types in the search box in the `search[value]` query string argument. Note that the square brackets are part of the argument name. The `LIKE` operator which searches using a simple pattern, is normally used in relational databases. If you want to search for names that begin with 'Harr', the query would be:
+
+```sql
+User.query.filter(User.username.like('Harr%'))
+```
+
+`%` is a placeholder, so this query will match users named Harry, Harriet, Harrison et cetera. This can also be added to the start of the name, or on both ends:
+
+```sql
+User.query.filter(User.username.like('%harr'))
+
+User.query.filter(User.username.like('%harr%'))
+ ```
+
+In our previous implementation, we not only had the `username` searchable, but also the `email`. This can be implemented in SQLAlchemy using the `or_` operator. For example:
+
+```sql
+User.query.filter(db.or_(
+    User.username.like('%harr%'),
+    User.email.like('%harr%')
+))
+ ```
+
+Let us now implement the search functionality by adding it to the `total_filtered` variable in our endpoint. 
+
+`routes.py: Add search functionality`
+```python
+from app import db
+from app.models import User
+
+
+@app.route('/ajax-table-data')
+def server_side_table_data():
+    query = User.query.all()
+
+    # Search filter
+    search = request.args.get('search[value]')
+    if search:
+        query = query.filter(db.or_(
+            User.username.like(f'%{search}%'),
+            User.email.like(f'%{search}%')
+        ))
+
+    total_filtered = query.count()
+
+    # Pagination
+    start = request.args.get('start', type=int)
+    length = request.args.get('length', type=int)
+    query = query.offset(start).limit(length)
+
+    # Response
+    return {
+        'data': [user.to_dict() for user in query],
+        'recordsFiltered': total_filtered,
+        'recordsTotal': User.query.count(),
+        'draw': request.args.get('draw', type=int)
+        }
+
+
+```
+
+`totalFiltered` will now be calculated after the search has been applied, but before pagination, so it will tell the client how many records match the search.
 
