@@ -58,7 +58,7 @@ $ mkvirtualenv tables_project
 (tables_project) $ 
 ```
 
-The use of virtual environments helps to isolate the needs of our application from that of the rest of the system. To learn more about virtual environments and the `virtualenvwrapper`, refer to [this previous article on virtualenvwrapper](virtualenvwrapper_setup.md).
+The use of virtual environments help to isolate the needs of our application from that of the rest of the system. To learn more about virtual environments and the `virtualenvwrapper`, refer to [this previous article on virtualenvwrapper](virtualenvwrapper_setup.md).
 
 ### Install Flask and Other Extensions
 
@@ -71,7 +71,7 @@ The extensions our application will need include Flask, and Flask-Bootstrap. To 
 (tables_project) $ pip3 freeze > requirements.txt # From the top-level directory
 ```
 
-You might be asking why aren't we using Flask SQLAlchemy for our database and Flask Migrate to handle all databse migrations? The reason for not using these is because we will create fake users. We will be able to quicky generate fake users who we can use to test our application.
+You might be asking why aren't we using Flask SQLAlchemy for our database and Flask Migrate to handle all database migrations? The reason for not using these is because we will create fake users. We will be able to quicky generate fake users who we can use to test our application.
 
 ### Create a Basic Flask Application
 
@@ -99,7 +99,7 @@ from app import routes, models, errors
 
 ```
 
-We have created objects of the extensions previously installed. One thing you may have noted is the addition of `app.config.from_object(Config)`. This is a simple way to load the configuration from the `config.py` file. We will do so below. Once everything is set up, we will import the `routes` and `models` modules. The `errors` module is used to handle errors.
+We have created objects of the extensions previously installed. One thing you may have noted is the addition of `app.config.from_object(Config)`. This is a simple way to load all the configurations our application will need from the `config.py` file. We will do so below. Once everything is set up, we import the `routes` and `models` modules. The `errors` module is used to handle errors.
 
 Our application will have a very basic configuration setup. We will use the `Config` class to set up the configuration.
 
@@ -147,6 +147,73 @@ FLASK_DEBUG=1
 In the terminal, we can run the command `flask run` to start our flask server. You should be able to access the application at the following URL: http://127.0.0.1:5000/.
 
 ![Hello Flask World](images/flask_tables/hello-world.png)
+
+The `errors` module generally handles errors that come about as a result of using the application. We will use the `errorhandler` decorator to handle errors. Let us create two templates called `404.html` and `500.html`. These templates will be used to display the error messages. They will also allow the user to safely navigate back to the home pag of the application.
+
+```python
+(tables_project) $ mkdir app/templates/errors
+(tables_project) $ touch app/templates/errors/404.html app/templates/errors/500.html
+```
+
+The `errors` module will redirect the user to the error message pages.
+
+`errors.py: Redirect to error messages`
+```python
+from flask import render_template
+from app import db
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('errors/404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    db.session.rollback()
+    return render_template('errors/500.html'), 500
+
+
+```
+
+The error templates will contain the following error messages:
+
+`404.html: Page not found error`
+```html
+{% extends 'base.html' %}
+
+{% block app_context %}
+    <div class="row">
+        <div class="col-md-12">
+           <h1>Page Not Found</h1>
+           <a href=" {{ url_for('index') }} ">Go Home</a>
+        </div>
+    </div>
+{% endblock %}
+
+
+```
+
+`500.html: Internal server error`
+```html
+{% extends 'base.html' %}
+
+{% block app_context %}
+    <div class="row">
+        <div class="col-md-12">
+           <h1>Internal Server Error</h1>
+           <a href=" {{ url_for('index') }} ">Go Home</a>
+        </div>
+    </div>
+{% endblock %}
+
+
+```
+
+If you try to access a page that does not exist, you will be redirected to the `404.html` page. For example, if you try to access the following URL: http://127.0.0.1:5000/index1, you will get:
+
+![404 Page Not Found](images/flask_tables/error-msg.png)
+
 
 ## Bootstrap Table
 
@@ -682,5 +749,4 @@ The script that will attach `dataTables.js` to the table needs to pass the `ajax
 ![Ajax Table](/images/flask_tables/ajax-table.png)
 
 That's it! Now we have a table that is interactive and can be updated asynchronously.
-
 
