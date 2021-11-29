@@ -551,7 +551,136 @@ Try searching for any name in the search bar. You should be able to see the data
 {% endblock %}
 ```
 
-The `columns` option I have just added to `DataTable` accepts an array of sub-options for each column in the table. The columns that need no customization have `null`. These two columns identified in our scripts above are `username` and `address`. The columns that have `searchable` option set to `false` will be removed when the library looks for matches to a search string. These columns are `age`, `email`, and `phone`. The columns that have `orderable` option set to `false` will have the clickable sorting headers removed. These columns are `email` and `phone`.
+The `columns` option I have just added to `DataTable` accepts an array of sub-options for each column in the table. The columns that need no customization have `null`. These two columns identified in our script above are `username` and `address`. The columns that have `searchable` option set to `false` will be removed when the library looks for matches to a search string. These columns are `age`, `email`, and `phone`. The columns that have `orderable` option set to `false` will have the clickable sorting headers removed. These are `email` and `phone`.
 
 Other than this _basic table_ having interactive features, you probably have noticed that if your users' data is large, the table will be slow to load. For a few seconds, the entire table is displayed before the interactive features from `dataTable.js` kick in. This is because the library has to load all of the data into memory before it can be displayed. It is basic in the sense that it is a very good table for data that is short. But if you have a lot of data, we will need to think outside the box for a better user experience.
+
+## Ajax Table
+
+A solution we can implement to improve the user experience is to render the table empty on page load, and then the browser requests the data that goes into to the table asynchronously using a separate request. As complex is it may sound, it is relatively easy to implement. First, we will make a few modifications to the `User` model to serialize its data to JSON.
+
+`models.py: Return data in JSON format`
+```python
+from app import db
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True)
+    age = db.Column(db.Integer, index=True)
+    email = db.Column(db.String(120), index=True)
+    phone = db.Column(db.String(64))
+    address = db.Column(db.String(256))
+
+    def __repr__(self):
+        return 'User: {}'.format(self.username)
+
+    def to_dict(self):
+        return {
+            'username': self.username,
+            'age': self.age,
+            'email': self.email,
+            'phone': self.phone,
+            'address': self.address
+        }
+
+```
+
+Let us create an endpoint in the application that will render an empty table without the need to pass any data.
+
+`routes.py: Render empty table`
+```python
+@app.route('/ajax-table')
+def ajax_table():
+    return render_template('ajax-table.html', title='Ajax Table')
+
+```
+
+A second endpoint needs to be added to the table data. This endpoint will be responsible for returning the JSON payload in the format:
+
+```json
+{
+    "data": [
+        {
+            "username": "John Doe",
+            "age": "25",
+            "email": "john@email.com",
+            "phone": "555-555-5555",
+            "address": "123 Main St."
+        }
+    ]
+}
+```
+
+`routes.py: Return data in JSON format`
+```python
+@app.route('/ajax-table-data')
+def ajax_table_data():
+    return {'data': [user.to_dict() for user in User.query.all()]}
+
+
+```
+
+Let us update our structure to include the `ajax-table.html` template. This template will be responsible for rendering the _ajax table_.
+
+```python
+(tables_project) $ touch app/templates/ajax-table.html
+```
+
+We will remove the `for` loop used by the other tables since we are not rendering any more users. The table will be rendered without any data rows.
+
+```html
+{% extends 'base.html' %}
+
+{% block app_context %}
+    <div class="row">
+        <div class="col-md-12">
+            <table id="data" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Age</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+
+```
+
+The script that will attach `dataTables.js` to the table needs to pass the `ajax` option with the URL of the data endpoint. Each column will need the `data: "data"` sub-option to identify the data to be displayed.
+
+`ajax-table.html: Attach data`
+```html
+{% block datatable_scripts %}
+    <script>
+        $(document).ready(function() {
+            $('#data').DataTable({
+                ajax: '{{ url_for('ajax_table_data') }}',
+                columns: [
+                    {data: "username"},
+                    {data: "age"},
+                    {data: "email"},
+                    {data: "phone"},
+                    {data: "address"}
+                ],
+            });
+        });
+    </script>
+{% endblock %}
+
+
+```
+![Ajax Table](/images/flask_tables/ajax-table.png)
+
+That's it! Now we have a table that is interactive and can be updated asynchronously.
+
 
