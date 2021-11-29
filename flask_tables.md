@@ -2,10 +2,10 @@
 
 Tables are a simple way to display data in a web application. Making tables in flask templates is relatively easy. However, it becomes a bit more complicated when you want to add basic table features such as sorting, pagination and searching. These features are particularly useful when the tables contain a lot of data. In this article, I will show you how to create an interactive table. We will look at several example tables to really appreciate table interactivity.
 
-Example table 1: [Bootstrap Table](#bootstrap-table)
-Example table 2: [Basic Table](#basic-table)
-Example table 3: [Ajax Table](#ajax-table)
-Example table 4: [Serverside Table](#serverside-table)
+- Example table 1: [Bootstrap Table](#bootstrap-table)
+- Example table 2: [Basic Table](#basic-table)
+- Example table 3: [Ajax Table](#ajax-table)
+- Example table 4: [Serverside Table](#serverside-table)
 
 ## Basic Flask Application
 
@@ -529,4 +529,29 @@ Navigate to http://127.0.0.1:5000/basic-table, and you should be able to see thi
 ![basic-table](/images/flask_tables/basic-table.png)
 
 Try searching for any name in the search bar. You should be able to see the data filtered. Also, you can sort the table by clicking on the column headers.
+
+`DataTable` provides us with multiple custom functionality options. See the [documentation](https://datatables.net/reference/option/) for more information. Let us try to change the way sorting and searching works using the `columns` option.
+
+`basic-table.html: Customization options`
+```html
+{% block datatable_scripts %}
+    <script>
+        $(document).ready(function() {
+            $('#data').DataTable({
+                columns: [
+                    null,
+                    {searchable: false},
+                    {orderable: false, searchable: false},
+                    {orderable: false, searchable: false},
+                    null
+                ],
+            });
+        });
+    </script>
+{% endblock %}
+```
+
+The `columns` option I have just added to `DataTable` accepts an array of sub-options for each column in the table. The columns that need no customization have `null`. These two columns identified in our scripts above are `username` and `address`. The columns that have `searchable` option set to `false` will be removed when the library looks for matches to a search string. These columns are `age`, `email`, and `phone`. The columns that have `orderable` option set to `false` will have the clickable sorting headers removed. These columns are `email` and `phone`.
+
+Other than this _basic table_ having interactive features, you probably have noticed that if your users' data is large, the table will be slow to load. For a few seconds, the entire table is displayed before the interactive features from `dataTable.js` kick in. This is because the library has to load all of the data into memory before it can be displayed. It is basic in the sense that it is a very good table for data that is short. But if you have a lot of data, we will need to think outside the box for a better user experience.
 
