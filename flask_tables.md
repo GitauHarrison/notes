@@ -858,8 +858,6 @@ The JSON response has four keys:
 
 If you try to load the _server-side table_, you will notice that everything works except that the functionalities are not implemented yet.
 
-![Server-side Table](/images/flask_tables/server-side-pagination.png)
-
 ### Server-side Searching
 
 `dataTable.js` sends what the user types in the search box in the `search[value]` query string argument. Note that the square brackets are part of the argument name. The `LIKE` operator which searches using a simple pattern, is normally used in relational databases. If you want to search for names that begin with 'Harr', the query would be:
@@ -893,7 +891,7 @@ from app import db
 from app.models import User
 
 
-@app.route('/ajax-table-data')
+@app.route('/server-side-table-data')
 def server_side_table_data():
     query = User.query.all()
 
@@ -925,3 +923,87 @@ def server_side_table_data():
 
 `totalFiltered` will now be calculated after the search has been applied, but before pagination, so it will tell the client how many records match the search.
 
+### Server-side Sorting
+
+The client can send the sorting requirements in the following query string arguments:
+
+* `order[0][column]`: the column to be sorted
+* `order[0][dir]`: the direction of the sort (`asc` for ascending order or ``desc` for descending order)
+
+Let us see how we can calculate the first sorting column and direction:
+
+```python
+col_index = request.args.get('order[0][column]')
+col_name = request.args.get(f'columns[{col_index}][data]')
+if col_name not in ['username', 'email', 'age']:
+    col_name = 'username'
+descending = request.args.get(f'order[0][dir]') == 'desc'
+col = getattr(User, col_name)
+if descending:
+    col = col.desc()
+```
+
+`col_index` from the query string is used as an index to get the column name which will be saved in the variable `col_name`. We make certain that the column name is one of the three columns that has the `orderable` option set. Should the server receive any column name that is not one of the three, it will default to sorting by the `username` column. It is not a good idea to allow the client to request sorting by any column that is not `orderable`.
+
+The `descending` variable is used to determine whether the sort should be ascending or descending (the sorting direction). It returns a boolean `True` or `False`.
+
+The last three lines in the snippet obtain the selected column of the User model using `getattr`, and apply the `desc()` sorting qualifier if the descending direction was requested. When sorting by `username` ascending, the value of `col` at the end would be `User.username`. If sorting by `age` descending, the value of col would be `User.age.desc()`. This is exactly what the `order_by()` filter from SQLAlchemy requires as an argument.
+
+We can now update our endpoint to sort the data:
+
+```python
+@app.route('/server-side-table-data')
+def server_side_table_data():
+    query = User.query
+
+    # Search filter
+    search = request.args.get('search[value]')
+    if search:
+        query = query.filter(db.or_(
+            User.username.like(f'%{search}%'),
+            User.email.like(f'%{search}%')
+        ))
+    total_filtered = query.count()
+
+    # Sorting
+    order = []
+    i = 0
+    while True:
+        col_index = request.args.get(f'order[{i}][column]')
+        if col_index is None:
+            break
+        col_name = request.args.get(f'columns[{col_index}][data]')
+        if col_name not in ['username', 'age', 'email']:
+            col_name = 'username'
+        descending = request.args.get(f'order[{i}][dir]') == 'desc'
+        col = getattr(User, col_name)
+        if descending:
+            col = col.desc()
+        order.append(col)
+        i += 1
+    if order:
+        query = query.order_by(*order)
+
+    # Pagination
+    start = request.args.get('start', type=int)
+    length = request.args.get('length', type=int)
+    query = query.offset(start).limit(length)
+
+    # Response
+    return {
+        'data': [user.to_dict() for user in query],
+        'recordsFiltered': total_filtered,
+        'recordsTotal': User.query.count(),
+        'draw': request.args.get('draw', type=int),
+    }
+```
+
+Consider adding more fake users to the database to test the full functionality of the server-side table. 
+
+```python
+(tables_project) $ python create_fake_users.py 1000
+```
+
+In production, you may want to add `create_fake_users({users})` to your endpoints, so that every time a request is made, the database is populated with `{users}` users.
+
+Then run your application.
