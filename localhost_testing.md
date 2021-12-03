@@ -4,7 +4,7 @@ Obviously, if we want to test how our application looks like on other devices wh
 
 It is also possible to access your Flask application running on localhost from another device or location for the purposees of testing. Below, I will show you how to use [pyngrok](https://pyngrok.readthedocs.io/en/latest/) package to provision a temporary public URL for your application that works on your phone or from anywhere in the world.
 
-### Ngrok
+## Ngrok
 
 In order to use this package, make sure that you go into your project directory and activate your virtual environment.
 
@@ -27,7 +27,7 @@ Run `ngrok --help` in your virtual environment to confirm that it is installed a
 (your_virtualenv)$ ngrok --help
 ```
 
-##### How it Works
+## How it Works
 
 We will make use of two terminal windows for this, both with your virtual environment activated. _If your are using VS Code, you can simpley split your terminal window to get two windows. If you are using your default Ubuntu terminal window, you may want to consider [byobu](https://www.byobu.org/), an open source text-based window manager and terminal multiplexer.._
 
@@ -53,7 +53,7 @@ You will get a similar one, but the subdomain portion is going to be different e
 
 Send the URL to your phone and open it in your mobile browser to see how cool ngrok is. You can also send the URL to a friend if you like, as it works from anywhere in the world.
 
-### How to Create a Ngrok Tunnel
+## How to Create a Ngrok Tunnel
 
 By now, you must be excited about all the possibilities it opens. Below, I will show you an improved workflow that allows you to access Ngrok automatically every time you start your Flask application.
 
@@ -99,7 +99,7 @@ It would be better if the tunnel could be created only in the parent process, wh
 
 We will update our configration to accommodate these scenarios such that when the main Flask process starts it will set up the tunnel. If the reloader is enabled, then a child process will be launched with WERKZEUG_RUN_MAIN=true in the environment, so there will be no second tunnel started. And every time the child process is recycled the tunnel set up in the parent process will be unaffected, so the same tunnel URL will remain valid for as long as the reloader process is running, up to a maximum of eight hours.
 
-config.py: Working with Flask reloader
+`config.py: Working with Flask reloader`
 ```python
 class Config:
     # previous code
