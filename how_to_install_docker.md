@@ -6,7 +6,7 @@ In other words, containers are built on a lightweight virtualization technology 
 
 A system configured as a container host can execute many containers, all of them sharing the host's kernel and direct access to the host's hardware. This is in contrast to virtual machines, which have to emulate a complete system, including CPU, disk, other hardware, kernel, etc.
 
-### Installing Docker CE
+## Installing Docker CE
 
 There are two editions of Docker, a free community edition (CE) and a subscription based enterprise edition (EE). I will show you how to install the Docker CE.
 
@@ -69,7 +69,7 @@ docker-ce:
 ```
 Notice that docker-ce is not installed, but the candidate for installation is from the Docker repository for Ubuntu 20.04 (focal).
 
-### Install Docker Engine
+## Install Docker Engine
 
 Update the `apt` package index, and install the latest version of Docker Engine and `containerd`:
 
@@ -78,7 +78,7 @@ $ sudo apt-get update
 $ sudo apt-get install docker-ce docker-ce-cli containerd.io
 ```
 
-##### Configure Docker to start on boot
+## Configure Docker to start on boot
 
 Most current Linux distributions (RHEL, CentOS, Fedora, Ubuntu 16.04 and higher) use `systemd` to manage which services start when the system boots. Ubuntu 14.10 and below use `upstart`.
 
@@ -213,7 +213,7 @@ Server: Docker Engine - Community
 ```
 The Docker daemon binds to a Unix socket instead of a TCP port. By default that Unix socket is owned by the user `root` and other users can only access it using `sudo`. **The Docker daemon always runs as the `root` user**.
 
-#### Manage Docker as non-root user
+## Manage Docker as non-root user
 
 If you don’t want to preface the `docker` command with `sudo`, create a Unix group called `docker` and add users to it. When the Docker daemon starts, it creates a Unix socket accessible by members of the docker group.
 
@@ -252,3 +252,7 @@ To fix this problem, either remove the `~/.docker/` directory (it is recreated a
 $ sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
 $ sudo chmod g+rwx "$HOME/.docker" -R
 ```
+
+## Continue ..
+
+Now that you know how to install Docker, learn how you can dockerize your flask application and deploy it to the Docker Registry [here](docker_deployment.md).
