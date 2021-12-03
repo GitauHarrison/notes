@@ -340,3 +340,9 @@ $ sudo docker push <your docker registry account>/table:latest
 ```
 
 Your image should be now publicly available. Feel free to document how to install it and run from the Docker registry. Check this [MySQL example](https://hub.docker.com/_/mysql).
+
+## Continue ... 
+
+This was a great lesson. I hope you enjoyed it. There are more deployment methods you can use to get your application up and running. I recommend that you check out others such as:
+
+- [Heroku](deploy_to_heroku.md)

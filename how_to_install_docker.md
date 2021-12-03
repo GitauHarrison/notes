@@ -253,6 +253,6 @@ $ sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
 $ sudo chmod g+rwx "$HOME/.docker" -R
 ```
 
-## Continue ..
+## Continue ...
 
 Now that you know how to install Docker, learn how you can dockerize your flask application and deploy it to the Docker Registry [here](docker_deployment.md).
