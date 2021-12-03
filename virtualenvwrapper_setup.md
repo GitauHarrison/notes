@@ -9,11 +9,10 @@ I will show you how to set up your python environment to use virtualenvironment 
 * Install `virtualenvwrapper`
 * Edit `.bashrc/` file or `.bash_profile` file, or both
 
-##### Prerequisites
+
+## Setting Up a Virtual Environment
 
 We will use `pip3`, the default python package installer for Python3. 
-
-#### Setting Up a Virtual Environment
 
 Open your terminal in your home directory (or any other directory you may choose).First, you need to create a special directory which will be hidden that will store all your virtual environments
 
@@ -66,7 +65,7 @@ For now, there are two basic commands you need to know:
 
 Now that your editor is open, we need to start making changes. Scroll to the bottom of the file by pressing the down arrow key. At the very bottom of your editor, press the letter _i_ to enter into _insert_ mode (_i_ could mean 'insert').
 
-###### Insert Mode
+### Insert Mode
 Add these rows:
 
 ```python
@@ -76,7 +75,7 @@ VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
 . /usr/local/bin/virtualenvwrapper.sh
 ```
 
-###### Save and Quit
+### Save and Quit
 
 Press __esc__ and type `:wq` then press `Enter` This will allow you to save your changes and quit the editor. Close your terminal and reopen it.
 
@@ -87,7 +86,7 @@ Now you need to reload the _bashrc_ script. There are two ways to do it:
 
 You have completed setting up your virtual environment. 
 
-#### Create Your Virtual Environment
+## Create Your Virtual Environment
 
 `virtualenvwrapper` allows you to create and activate your virtual environment at the same time. To create your virtual environment, use the command `mkvirtualenv`:
 
@@ -109,7 +108,7 @@ To deactivate your virtual environment, run:
 $ deactivate
 ```
 
-#### Reactivate Your Virtual Environment
+## Reactivate Your Virtual Environment
 If you want to activate the virtual evironment you just created, run:
 
 ```python
@@ -122,7 +121,7 @@ $ workon chatapp
 $ workon
 ```
 
-#### Remove Your Virtual Environment
+## Remove Your Virtual Environment
 
 At some point, if you want to delete your virtual environment, simply use the `rmvirtualenv` command:
 
@@ -130,7 +129,7 @@ At some point, if you want to delete your virtual environment, simply use the `r
 $ rmvirtualenv chatapp
 ```
 
-#### Copy Your Virtual Environment
+## Copy Your Virtual Environment
 
 To copy an existing virtualevironment, use `cpvirtualenv`:
 
