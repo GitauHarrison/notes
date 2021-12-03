@@ -1,12 +1,12 @@
 # How to Deploy Your Flask App to Heroku
 
-###### Things to know beforehand
+### Things to know beforehand
 * `git`: Deploying to Heroku is done through `git` version control tool
 * `Procfile`: Heroku looks for a file called `Procfile` in the application's root directory for instructions on how to start the application
 * `requirements.txt`: For python projects(initially, Heroku was built for Ruby related projects), you will need a `requirements.txt` which lists all the packages that are required to build and run your application.
 
 
-###### Procedure:
+### Procedure
 
 1. Create an account at [Heroku](https://www.heroku.com/). It is free.
 2. Install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
@@ -16,11 +16,11 @@
 6. Deploy Application Updates
 
 
-#### Create Heroku account
+## Create Heroku account
 
 Before you can deploy your application to Heroku, you will need to have an account with them. Visit [heroku.com](https://www.heroku.com/) and sign up for free. Your applications will be listed on your dashboard whenever you log in.
 
-#### Install Heroku CLI
+## Install Heroku CLI
 
 To interact with Heroku services, you will need to use their commandline tool called [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli). It is available for Linux, Mac OS X and Windows. 
 
@@ -37,7 +37,7 @@ $ heroku login
 
 Heroku CLI will open in your default browser and ask you to enter your email address and your account password. Your authentication details will be remembered in subsequent commands.
 
-#### Setting Up Git
+## Setting Up Git
 
 `git` is core to the deployment of your applications to Heroku. You will need to install it on your system. Learn how to install it [here](./install_git.md)
 
@@ -61,7 +61,7 @@ $ pip3 install -r requirements.txt
 
 
 
-#### Create a Heroku Application
+## Create a Heroku Application
 
 Heroku uses the command `apps:create` to register new applications. You will need to run the command below from the root directory of your application.
 
@@ -76,7 +76,7 @@ The output of this command will include the URL Heroku assigned to your applicat
 $ git remote -v
 ```
 
-#### Postgres Database for Heroku
+## Postgres Database for Heroku
 
 Heroku's database offering is based on the Postgres database. You interact with it using its CLI tool.
 
@@ -120,7 +120,7 @@ Continuous Protection: Off
 Add-on:                postgresql-solid-77130
 ```
 
-#### Logging to `stdout`
+## Logging to `stdout`
 
 Logging allows for the writing of status messages to a file or any other output streams. The log files contain all the information on which part the code is executed and what problems may have arisen. Learn more on Python logging [here](https://realpython.com/python-logging/).
 
@@ -170,7 +170,7 @@ $ heroku config:set LOG_TO_STDOUT=1
 ```
 This variable is set to `1` and it will be used at runtime.
 
-#### Adding Search functionality in Heroku
+## Adding Search functionality in Heroku
 
 Unlike Postgres which is provided by Heroku, a service such as Elasticsearch is provided by third parties that partner with Heroku to provide add-ons. There are a number of search addons you can choose from. Find more [addons here](https://elements.heroku.com/addons).
 
@@ -214,18 +214,18 @@ If you are using `SEARCHBOX_SSL_URL`, then you should not have the trouble of in
 
 <br>
 
-#### Updating your Dependancies
+## Updating your Dependancies
 
 Heroku will use the listed dependancies to run your application. Additionally, it will need you to add 2 more dependancies to the `requirements.txt` file.
 
-###### `gunicorn`
+### `gunicorn`
 
 Since Flask's development server is not robust enough for use in production, you will need to add this server which is recommended by Heroku for Python applications:
 
 ```python
 $ sudo apt install gunicorn
 ```
-###### `psycopg2`
+### `psycopg2`
 
 Our application will also be connecting to a Postgres database, and for that it requires this package to be installed. 
 
@@ -241,7 +241,7 @@ $ pip3 install psycopg2
 ```
 <br>
 
-#### The Procfile
+## The Procfile
 
 Heroku needs to know how to execute your application. For that, you need a `Procfile` which is created in the root directory. So, fo ahead and create an empty `Procfile` file:
 
@@ -271,7 +271,7 @@ $ heroku config:set FLASK_APP=tinker.py
 
 **Our application has other environment variables listed in our `config.py` file. Configure them with Heroku as shown above.**
 
-#### How to generate good secret keys
+## How to generate good secret keys
 
 One of the variables you will need to add to heroku is `SECRET_KEY`. Our `SECRET_KEY` value is the message authentication code used to sign the cookies. If the value is known to the public, then someone can spoof a valid signature, which makes our app a lot less secure. The `SECRET_KEY` needs to be known only to the application even if the source code is published online. The solution to this is to generate a random `SECRET_KEY`. 
 
@@ -284,7 +284,7 @@ One of the variables you will need to add to heroku is `SECRET_KEY`. Our `SECRET
 b'_5#y2L"F4Q8z\n\xec]/'
 ```
 
-#### Deploying Application
+## Deploy The Application
 
 `git push` is used to deploy the application to Heroku's servers, similarly to how you would push changes from your local git repository to GitHub or any other remote server.
 
@@ -337,7 +337,7 @@ If you want to see the log entries for your application, run the command:
 $ heroku logs --tail
 ```
 
-###### Database Error
+## Database Error
 
 Chances are that when you try to log into your app or even try to register a new user you will come across an error such as:
 
@@ -378,7 +378,7 @@ $ heroku run flask db upgrade # add heroku run
 
 
 
-#### Application Updates
+## Application Updates
 
 Make changes to your applicatin and save it. You will need to `add` and `commit` them using `git`. Push the changes to Heroku:
 
@@ -388,7 +388,7 @@ $ git commit -a -m 'Message about your new changes'
 $ git push heroku master
 ```
 
-#### Removing addons and variables in Heroku
+## Removing addons and variables in Heroku
 
 If at some point you would like to remove a config var, consider running:
 
@@ -401,3 +401,9 @@ To remove an addon, do:
 ```python
 $ heroku addons:destroy <name-of-addon>
 ```
+
+## Continue ... 
+
+This was a great lesson. I hope you enjoyed it. There are more deployment methods you can use to get your application up and running. I recommend that you check out others such as:
+
+- [Docker](docker_deployment.md)
