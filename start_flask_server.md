@@ -322,6 +322,14 @@ You should have a nicer looking page with a link to the home page.
 
 ![404 Page](images/start_flask_server/404_page.png)
 
+### Update Project Dependancies
+
+Once you are done, we can update our `requirements.txt` file. This file contains all the dependencies that we have installed. Anyone who wished to install the application will need to install the same dependencies.
+
+```python
+(flask_project) $ pip freeze > requirements.txt
+```
+
 ## Going Further
 
 This is a good starting point for your Flask learning. You can build on this project by adding more routes, templates, and view functions. You can even learn how to use webforms and a database with Flask. Things you can do:
