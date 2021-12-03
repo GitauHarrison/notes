@@ -27,6 +27,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 23. [Beautiful flask table](flask_tables.md)
 24. [Starting a Flask Server](start_flask_server.md)
 25. [Comment moderation in Flask](comment_moderation.md)
+26. [Add File Uploads to Database](upload_files_to_database.md)
 
 I also make a note of some of the cool projects I have built or I have been involved in. You can find these projects below. Some may be in progess while others may be completed:
 
