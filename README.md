@@ -9,7 +9,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 5. [How to install and configure `git`](install_git.md)
 6. [How to download and install vagrant](vagrant_how_to_download_and_install.md)
 7. [How to set up Ubuntu 20.04 to use `virtualenvwrapper`](virtualenvwrapper_setup.md)
-8. [Deployment on Docker containers](how_to_install_docker.md)
+8. [Install Docker in Ubuntu 20.04](how_to_install_docker.md)
 9. [Integrate Google reCaptcha in Flask](recaptcha.md)
 10. [Adding markdown editing to Flask-WTF forms](handling_rich_text.md)
 11. [Setting Up Ngrok](localhost_testing.md)
@@ -24,6 +24,9 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 20. [How to send emails from your flask app using Twilio SendGrid](twilio_sendgrid.md)
 21. [Third party authentication in Flask](two_factor_authentication/third_party_auth.md)
 22. [Live Traffic WhatsApp chatbot](/whatsapp_chatbots/live_traffic_whatsapp_chatbot.md)
+23. [Beautiful flask table](flask_tables.md)
+24. [Starting a Flask Server](start_flask_server.md)
+25. [Comment moderation in Flask](comment_moderation.md)
 
 I also make a note of some of the cool projects I have built or I have been involved in. You can find these projects below. Some may be in progess while others may be completed:
 
