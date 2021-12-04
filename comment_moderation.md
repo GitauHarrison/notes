@@ -516,3 +516,39 @@ We query our `UserComment` database using the `UserComment.query.all()` function
 You should be able to see this:
 
 ![Display comments](images/comment_moderation/display_comments.png)
+
+## User Avatar
+
+So far so good. The last thing I would like to add to every user is an avatar. This avatar will be displayed in each user's comment. To add an avatar to each user, we will need to update our `UserComment` model.
+
+```python
+from hashlib import md5
+
+def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, size)
+
+```
+
+Here, I am making use of the [gravatar](https://en.gravatar.com/) service to generate an avatar for each user. The `avatar()` function is used to generate the avatar for each user. The `avatar()` function takes two arguments:
+
+* `self`: The current user object.
+* `size`: The size of the avatar.
+
+To request an avatar for a user, a URL of the format `https://www.gravatar.com/avatar/<hash>` is usedm, where `hash` is the MD5 hash of a user's email address. To generate the MD5 hash, we first convert the email address to lowercase and then encode it using the `utf-8` encoding before passing it to the hash function. You can learn more from the [gravatar documentation](https://gravatar.com/site/implement/images).
+
+We then need to update our table to ensure that a user's avatar is displayed alongside their comments. 
+
+```html
+{% for user in users %}
+    <table class="table table-striped">
+        <tr valign="top">
+            <td><img src="{{ user.avatar(36) }}"></td>
+            <td>{{ user.username }} says:<br>{{ user.content }}</td>
+        </tr>
+    </table>
+{% endfor %}
+```
+
+![User Avatar](images/comment_moderation/user_avatar.png)
