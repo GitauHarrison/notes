@@ -315,72 +315,6 @@ You will add the migration script to source control and commit it.
 
 If at any one point you would like to roll back the changes, you can run the `flask db downgrade` command, though this is less likely in a production system.
 
-## Database Relationships
-
-At the moment, we, the creators, know that the comments are posted by users. However, our application does not know this yet. We will need to add a new model called `User`. This model will contain all user information such as username and email address.
-
-`models.py: User database Schema`
-```python
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
-    email = db.Column(db.String(120), index=True, unique=True)
-
-    def __repr__(self):
-        return 'User: {}'.format(self.username)
-```
-
-A user of our application will be able to post comments. Our application will allow this user to post more than one comment. At the end of the day, when we query our database, we will find that one user can have many comments, and many comments can belong to one user.
-
-In relational databases, this kind of relationship is referred to as _one to many_ relationship or _many to one_ relationship. We need to establish a link between our `Comment` model and the `User` model. Once a link has been established, our database can answer queries about this link.
-
-Let us expand our models to include a link between the two.
-
-`models.py: Database relationships`
-```python
-from app import db
-from datetime import datetime
-
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
-    email = db.Column(db.String(120), index=True, unique=True)
-    comments = db.relationship('Comment', backref='author', lazy='dynamic') 
-    # backref is used to establish a link between the two models
-
-    def __repr__(self):
-        return 'User: {}'.format(self.username)
-
-
-class Comment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(255))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id')) # This is the link to the User model
-
-    def __repr__(self):
-        return 'Comment: {}'.format(self.content)
-
-```
-
-The `user_id` field is initialized to `user.id` as a foreign key. This means that it references and `id` value in the `User` model. It is an inconsistency that the foreign key is initialized in lower case letters whereas the model is actually upper case. 
-
-In the `User` model, we have used the `db.relationship` function to establish a link to the `Comment` model. It is conviniently used on the 'one' side in a _one to many_ relationship to help answer the query of one user having many comments. It can also be placed in the 'many' side where many comments can be traced to one user.
-
- This function takes two arguments:
-
-* `backref`: defines the field to be added to the many side of the relationship and it will be used to refer to the 'one' side. For example, `comment.author` will refer to the 'one' side of the relationship.
-
-* `lazy`: determines how the related objects get loaded when querying through relationships
-
-With all these updates, we are ready to create and apply the changes to the database. Run the following commands in the terminal:
-
-```python
-(comment_moderation)$ flask db migrate -m "user table"
-(comment_moderation)$ flask db upgrade
-```
-
 ## Update the Database
 
 Since all user information is now stored in our `User` database which is linked to the `Comment` database, we can now query the database to display all comments. Every time a request to render our index page content is made, we will query the database to display all comments.
@@ -923,7 +857,7 @@ I have added the `login_required` decorator to protect this page from unauthoriz
 
 ## Comment Moderation
 
-We are now ready to implement comment moderation. At the end of this section, our application will only show comments that the admin has approved. To begin, I will add a new field in the `UserComment` model to store the moderation status of the comment.
+We are now ready to implement comment moderation. At the end of this section, our application will only show comments that the admin has approved. To begin, I will add a new field in the `UserComment` model to store the moderation status of a comment.
 
 `models.py: Add comment moderation status`
 ```python
