@@ -74,7 +74,7 @@ I have began by importing the `Config` class from the top-level directory. I hav
 
 ## Flask Web Forms
 
-Flask-WTF uses Python classes to represent web forms. The form classes define the variable fields we would like to have in our forms.
+Another extension that we will use in our application is the `Flask-WTF`. It uses Python classes to represent web forms. The form classes define the variable fields we would like to have in our forms.
 
 ### Define Comment Form
 
@@ -158,9 +158,9 @@ Start your flask server in the terminal by running the command `flask run`. Navi
 
 ## Working with a Database
 
-After a user clicks the `Post` button, we will need to store the data in a database. This datat will persist even if we close the application. The database will also allow us to retrieve all the data about our users. 
+After a user clicks the `Post` button, we will need to store the user data in a database. This data will should persist even if a user closes the application. The database will also allow us to retrieve all the data about our users. 
 
-Since this application is small in nature, we will use a SQLite database. That does not mean that as the project grows and becomes bigger SQLite will not be a suitable choice. It is still a great choice for bigger applications. Typically, SQLite stores data in a file on the disk, and there is no need to run a datbase server like MySQL and PostreSQL.
+Since should this application is small in nature, we will use a SQLite database. That does not mean that as the project grows and becomes bigger SQLite will not be a suitable choice. It is still a great choice for bigger applications. Typically, SQLite stores data in a file on the disk, and there is no need to run a datbase server like MySQL and PostreSQL.
 
 Flask provides the `Flask-SQLAlchemy` extension to help us manage our database. It is a Flask-friendly wrapper around the popular SQLAlchemy package. As an [Object Relational Mapper](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping), SQLAlchemy is a Python library that allows us to manage our database using classes, objects and methods instead of tables and SQL. The aim of an ORM is to translate these high level operations into database commands.
 
@@ -478,7 +478,7 @@ def index():
 
 ```
 
-We query our `UserComment` database using the `UserComment.query.all()` function. This function returns a list of all the comments by users in the database. We can then loop through the list and display the comments in the `index.html` page.
+We query our `UserComment` database using the `UserComment.query.all()` function. This function returns a list of all the comments made by users in the database. We can then loop through the list and display the comments in the `index.html` page.
 
 `index.html: Display comments`
 ```html
@@ -521,6 +521,7 @@ You should be able to see this:
 
 So far so good. The last thing I would like to add to every user is an avatar. This avatar will be displayed in each user's comment. To add an avatar to each user, we will need to update our `UserComment` model.
 
+`models.py: User Avatar`
 ```python
 from hashlib import md5
 
@@ -531,12 +532,12 @@ def avatar(self, size):
 
 ```
 
-Here, I am making use of the [gravatar](https://en.gravatar.com/) service to generate an avatar for each user. The `avatar()` function is used to generate the avatar for each user. The `avatar()` function takes two arguments:
+Here, I am making use of the [gravatar](https://en.gravatar.com/) service to generate an avatar for each user using the `avatar()` functio. This function takes two arguments:
 
 * `self`: The current user object.
 * `size`: The size of the avatar.
 
-To request an avatar for a user, a URL of the format `https://www.gravatar.com/avatar/<hash>` is usedm, where `hash` is the MD5 hash of a user's email address. To generate the MD5 hash, we first convert the email address to lowercase and then encode it using the `utf-8` encoding before passing it to the hash function. You can learn more from the [gravatar documentation](https://gravatar.com/site/implement/images).
+To request an avatar for a user, a URL of the format `https://www.gravatar.com/avatar/<hash>` is used, where `hash` is the MD5 hash of a user's email address. To generate the MD5 hash, we first convert the email address to lowercase and then encode it using the `utf-8` encoding before passing it to the hash function. You can learn more from the [gravatar documentation](https://gravatar.com/site/implement/images).
 
 We then need to update our table to ensure that a user's avatar is displayed alongside their comments. 
 
@@ -584,7 +585,7 @@ class Admin(db.Model):
         return check_password_hash(self.password_hash, password)
 ```
 
-If there is anything that is not clear, please take some time to understand the code above. What I will point out here is the `password_hasg` field. It is advised to NEVER store a user's password in the database. Instead, store a representation of it in the form of a hash. This is because a user's password is a sensitive piece of information and we do not want to expose our users to an attacker in the event that the database is compromised.
+If there is anything that is not clear, please take some time to understand the code above. What I will point out here is the `password_hash` field. It is advised to NEVER store a user's password in the database. Instead, store a representation of it in the form of a hash. This is because a user's password is a sensitive piece of information and we do not want to expose our users to an attacker in the event that the database is compromised.
 
 I am using the `generate_password_hash` to generate a hash of the user's password. This function takes a password as an argument and returns a hash of the password. The `check_password_hash` function is used to check whether a user's password is correct. This function takes a hash and a password as arguments and returns a boolean value. 
 
@@ -906,12 +907,156 @@ The view function to render the admin dashboard will be `admin_dashboard()`.
 `routes.py: Admin Dashboard`
 ```python
 # ...
+from flask_login import login_required
+
 
 @app.route('/admin/dashboard')
+@login_required
 def admin_dashboard():
     users = UserComment.query.all()
     return render_template('admin/dashboard.html', users=users)
 ```
 
+I have added the `login_required` decorator to protect this page from unauthorized access.
+
 ![Admin Dashboard](images/comment_moderation/admin_dashboard.png)
 
+## Comment Moderation
+
+We are now ready to implement comment moderation. At the end of this section, our application will only show comments that the admin has approved. To begin, I will add a new field in the `UserComment` model to store the moderation status of the comment.
+
+`models.py: Add comment moderation status`
+```python
+# ...
+
+class UserComment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True)
+    email = db.Column(db.String(120), index=True)
+    content = db.Column(db.String(255))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    allowed_comment = db.Column(db.Boolean, default=False) # < ---- new field
+
+# ...
+```
+
+I have set the default value of the `allowed_comment` field to `False`. This will ensure that all comments are initially set to `False`.
+
+The next step is to add two view functions to _allow_ and _delete_ each comment.
+
+`routes.py: Allow and Delete Comment`
+```python
+@app.route('/admin/delete/<int:id>')
+def admin_delete(id):
+    user = UserComment.query.get_or_404(id)
+    db.session.delete(user)
+    db.session.commit()
+    flash(f'Comment {id} deleted!')
+    return redirect(url_for('admin_dashboard'))
+
+
+@app.route('/admin/allow/<int:id>')
+def admin_allow(id):
+    user = UserComment.query.get_or_404(id)
+    user.allowed_comment = True
+    db.session.commit()
+    flash(f'Comment {id} allowed!')
+    return redirect(url_for('admin_dashboard'))
+
+```
+
+I am identifying each comment by its ID. First, I query the database for first instance of a comment. Once retrieved the `admin_delete()` view function will delete the comment. The `admin_allow()` view function, on the other hand, updates the `allowed_comment` field to `True`. This action changes the status of a comment. Approved comments are those whose status is `True`, and they will be displayed in the `index` page.
+
+To make it work, let us update the admin's dashboard links to include the links to the `admin_delete()` and `admin_allow()` view functions.
+
+`dashboard.html: Add links to admin_delete() and admin_allow()`
+```html
+{% extends 'base.html' %}
+
+{% block app_context %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Review All User Comments</h1>
+        </div>  
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {% for user in users %}
+                <table class="table table-striped">
+                    <tr valign="top">
+                        <td><img src="{{ user.avatar(36) }}"></td>
+                        <td>{{ user.username }} says:<br>{{ user.content }}</td>
+                    </tr>
+                </table>
+
+                <span>
+                    <a href=" {{ url_for('admin_allow', id=user.id) }} ">Allow</a> 
+                    | 
+                    <a href=" {{ url_for('admin_delete', id=user.id) }} ">Delete</a>
+                </span>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+```
+
+### Display Approved Comments
+
+Let us update our `index()` view function to display only approved comments.
+
+`routes.py: Display Approved Comments`
+```python
+# ...
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+def index():
+    users = UserComment.query.filter_by(allowed_comment=True).all() # < ----- update
+    form = CommentForm()
+    if form.validate_on_submit():
+        user = UserComment(
+            username=form.username.data,
+            email=form.email.data,
+            content=form.comment.data
+        )
+        db.session.add(user)
+        db.session.commit()
+        flash('Your comment has been posted!')
+        return redirect(url_for('index'))
+    return render_template(
+                           'index.html',
+                           form=form,
+                           users=users
+                           )
+```
+
+If you navigate to the index page, you will notice that no comments are being displayed. This is because, at this point, all comments have a default value of `False` for the `allowed_comment` field. To show comments in this page, you will need to _allow_ them from the admin dashboard.
+
+![Display Approved Comments](images/comment_moderation/display_approved_comments.png)
+
+Notice how only one comment appears in the index page whereas the admin dashboard shows all comments.
+
+### Comment Moderation Complete
+
+To ensure that we do not approve a comment twice, I will display an empty link reading _allowed_.
+
+`admin_dashboard.html: Show allowed link`
+```html
+<span>
+    {% if user.allowed_comment == 1 %}
+        <a href=" # ">Allowed</a> 
+    {% else %}
+        <a href=" {{ url_for('admin_allow', id=user.id) }} ">Allow</a> 
+    {% endif %}
+    | 
+    <a href=" {{ url_for('admin_delete', id=user.id) }} ">Delete</a>
+</span>
+```
+
+I have created a condition that checks if the `allowed_comment` field is `True`. If it is, the application will display the `Allowed` link redirecting to nowhere. If it is not, I will display the `Allow` link.
+
+![Comment Moderation Complete](images/comment_moderation/comment_moderation_complete.png)
+
+## Conclusion
+
+That is how you can add comment moderation to your flask application. I hope you enjoy this tutorial and find it useful. Do you have any project where you have implemented comment moderation? If so, I will be glad to check it out.
