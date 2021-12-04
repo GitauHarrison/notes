@@ -552,3 +552,366 @@ We then need to update our table to ensure that a user's avatar is displayed alo
 ```
 
 ![User Avatar](images/comment_moderation/user_avatar.png)
+
+## Create An Admin User
+
+Obviously, it is the admin of the website who will have the ability to delete comments. Just as we created the anonymous user, we will create an admin user. But before we do that, I would like to ensure that the admin page is inaccessible to the anonymous user. To do so, I will implement another feature in the application which will allow us to manage user sessions.
+
+### Admin Model
+
+We want to collect an admin's username, email address and the password to their accounts. Our model will define these columns and store the relevant data in the database.
+
+`models.py: Admin model`
+
+```python
+# ...
+from werkzeug.security import generate_password_hash, check_password_hash
+
+
+class Admin(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True)
+    email = db.Column(db.String(120), index=True)
+    password_hash = db.Column(db.String(128))
+
+    def __repr__(self):
+        return 'Admin: {}'.format(self.username)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+```
+
+If there is anything that is not clear, please take some time to understand the code above. What I will point out here is the `password_hasg` field. It is advised to NEVER store a user's password in the database. Instead, store a representation of it in the form of a hash. This is because a user's password is a sensitive piece of information and we do not want to expose our users to an attacker in the event that the database is compromised.
+
+I am using the `generate_password_hash` to generate a hash of the user's password. This function takes a password as an argument and returns a hash of the password. The `check_password_hash` function is used to check whether a user's password is correct. This function takes a hash and a password as arguments and returns a boolean value. 
+
+Create an admin migration script and apply these changes to our databae.
+
+```python
+(comment_moderation) $ flask db migrate -m 'admin table'
+(comment_moderation) $ flask db upgrade
+```
+
+### Admin Registration
+
+We can now update our `Admin` model by registering a new admin. We will begin by creating an admin registration form.
+
+`forms.py: Admin Registration Form`
+```python
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Email
+
+
+class AdminRegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired()])
+    submit = SubmitField('Register')
+
+```
+
+With the form created, we will now create a view function which will handle the registration of an admin user.
+
+`routes.py: Admin Registration`
+```python
+# ...
+
+@app.route('register', methods=['GET', 'POST'])
+def register():
+    form = AdminRegistrationForm()
+    if form.validate_on_submit():
+        user = Admin(
+            username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user! Login to contunue.')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
+```
+
+Let us create the template that will be used to display the registration form. First, we will create an empty file in the `templates` sub-directory.
+
+```python
+(comment_moderation) $ touch app/templates/register.html
+```
+
+We will quickly display our form in the template with the help of flask-wtf.
+
+`register.html: Admin Registration Form`
+```html
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_context %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Register as Admin</h1>
+        </div>  
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+{% endblock %}
+```
+
+Navigate to http://127.0.0.1:5000/register to see the registration form.
+
+![Admin Registration Form](images/comment_moderation/admin_registration_form.png)
+
+### Admin Login
+
+Once the admin has been registered, he should be able to login to access their account. This means we need to create a login form and a view function which will handle the login of an admin.
+
+Flask provides the `flask-login` package which we will use to help us manage our user sessions. We will begin by first installing it to our virtual environment.
+
+```python
+(comment_moderation) $ pip3 install flask-login
+```
+
+Like other extensions, we will initialize it in the application instance.
+
+`__init__.py: Initialize Flask-Login`
+```python
+# ...
+from flask_login import LoginManager
+
+# ...
+
+login = LoginManager()
+```
+
+This extension will work with the Admin model, and therefore, expects certain properties and methods to be defined. There are four required items:
+
+* `is_authenticated`: This method returns a boolean value indicating whether the user is authenticated or not.
+* `is_active`: This method returns a boolean value indicating whether the user is active or not.
+* `is_anonymous`: This method returns a boolean value indicating whether the user is anonymous or not.
+* `get_id`: This method returns the user's unique identifier.
+
+`Flask-login` provides a _mixin_ class called `UserMixin`. It will afford us the ability to use generic implementations that are appropriate for our Admin model.
+
+`models.py: Admin model`
+```python
+# ...
+
+class Admin(UserMixin, db.Model):
+    # ...
+```
+
+Because `Flask-login` literally knows nothing about databases, it will need the application's help to load the admin. We will use a user loader function to load the admin by their ID.
+
+`models.py: User Loader`
+```python
+from app import login
+
+@login.user_loader
+def load_user(id):
+    return Admin.query.get(int(id))
+```
+With the Admin model fully prepared to handle user sessions, we will now create the login form.
+
+`forms.py: Admin Login Form`
+```python
+# ...
+from wtforms import StringField, SubmitField, PasswordField, BooleanField
+
+class AdminLoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember Me')
+    submit = SubmitField('Login')
+```
+
+The template that will be used to display the login form will be `login.html`. Let us create it and add the code below.
+
+```python
+(comment_moderation) $ touch app/templates/login.html # create empty login.html
+```
+
+`login.html: Display Admin Login Form`
+```html
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_context %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Login as Admin</h1>
+        </div>  
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ wtf.quick_form(form) }}
+            <p>
+                Forgot your password? <a href="#">Click here</a>.
+            </p>
+            <p>
+                New here? <a href="{{ url_for('register') }}">Register</a>.
+            </p>
+        </div>
+    </div>
+{% endblock %}
+```
+
+Finally, we will create the view function which will handle the login of an admin.
+
+`routes.py: Admin Login`
+```python
+from flask_login import login_user, current_user, logout_user
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = AdminLoginForm()
+    if form.validate_on_submit():
+        user = Admin.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        return redirect(url_for('index'))
+    return render_template('login.html', title='Sign In', form=form)
+```
+
+To make it easier for an admin to log in to their account, we will display a link in the navigation bar. If you noticed, the login page also contains a link to the registration page. So, there is no need to add a registration link beyond that. I have left out the _forgot password_ link because it is beyond the scope of this tutorial. However, you can take it up as a challenge and learn how you can implement it in the application.
+
+`base.html: Add a login link`
+```html
+{% block navbar %}
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href=" {{ url_for('index') }} ">Flask Comments</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">            
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href=" {{ url_for('login') }} ">Admin</a></li>
+            </ul>                       
+        </div>
+    </div>
+</nav>
+{% endblock %}
+```
+
+Now, if you click on the Admin link in the navigation bar, you will be redirected to the login page.
+
+![Admin Login Page](images/comment_moderation/admin_login_page.png)
+
+### Admin Logout
+
+As an admin, you would want to protect your account by ensuring you log out once you are done moderating user comments. The `logout_user()` method from `flask_login` handles this.
+
+`routes.py: Admin Logout`
+```python
+# ...
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+```
+
+We will create a condition in our base template to display the logout link only if the user is logged in.
+
+`base.html: Display logout link`
+```html
+{% block navbar %}
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href=" {{ url_for('index') }} ">Flask Comments</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">            
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.is_authenticated %}
+                    <li><a href=" {{ url_for('admin_dashboard') }} ">Admin</a></li>
+                    <li><a href=" {{ url_for('logout') }} ">Logout</a></li>
+                {% else %}
+                    <li><a href=" {{ url_for('login') }} ">Login</a></li>
+                {% endif %}
+            </ul>                       
+        </div>
+    </div>
+</nav>
+{% endblock %}
+```
+
+I have added the admin link to the navigation bar. This link will redirect an admin directly to the dashboard. I will discuss it in the next section below.
+
+![Admin Logout Link](images/comment_moderation/admin_logout_link.png)
+
+### Admin Dashboard
+
+As soon as a new admin has registered, they will access their account by passing in their credentials. If successful, they will be redirected to the admin dashboard. The dashboard will basically have all the posts made by anonymous users of our application together with two _action_ links to _allow_ or _delete_ each comment.
+
+For now, we will display all the user comments just as they can be seen in the index page.
+
+```python
+(comment_moderation) $ touch app/templates/admin_dashboard.html # create empty admin_dashboard template
+```
+
+
+`admin_dashboard.html: Display Admin Dashboard`
+```html
+{% extends 'base.html' %}
+
+{% block app_context %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Review All User Comments</h1>
+        </div>  
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {% for user in users %}
+                <table class="table table-striped">
+                    <tr valign="top">
+                        <td><img src="{{ user.avatar(36) }}"></td>
+                        <td>{{ user.username }} says:<br>{{ user.content }}</td>
+                    </tr>
+                </table>
+
+                <span>
+                    <a href="#">Allow</a> | <a href="#">Delete</a>
+                </span>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+```
+
+The view function to render the admin dashboard will be `admin_dashboard()`.
+
+`routes.py: Admin Dashboard`
+```python
+# ...
+
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    users = UserComment.query.all()
+    return render_template('admin/dashboard.html', users=users)
+```
+
+![Admin Dashboard](images/comment_moderation/admin_dashboard.png)
+
