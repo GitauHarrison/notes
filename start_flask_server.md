@@ -335,4 +335,4 @@ Once you are done, we can update our `requirements.txt` file. This file contains
 This is a good starting point for your Flask learning. You can build on this project by adding more routes, templates, and view functions. You can even learn how to use webforms and a database with Flask. Things you can do:
 
 * Learn how to work with Flask webforms
-* Add a database to your flask application
+* Add a database to your Flask application
