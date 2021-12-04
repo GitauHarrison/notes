@@ -90,17 +90,24 @@ Let us now create the class that defines all the fields we want in our comments 
 ```python
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Email
 
 
 class CommentForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
     comment = TextAreaField('Comment', validators=[DataRequired()])
     submit = SubmitField('Post')
 
 ```
 
-`flask-wtf` has a base class called `FlaskForm` which is needed. The variable fields are defined using `StringField`, `TextAreaField` and the `SubmitField` from `wtforms`. To ensure that the user does not submit empty data, we attach `DataRequired`. This will prevent them from clicking the `Post` button if any of the fields above are empty.
+`flask-wtf` has a base class called `FlaskForm` which is needed. The variable fields are defined using `StringField`, `TextAreaField` and the `SubmitField` from `wtforms`. To ensure that the user does not submit empty data, we attach `DataRequired`. This will prevent them from clicking the `Post` button if any of the fields above are empty. The ```Email``` validator will ensure that the email address is valid.
+
+You will need to install `email-validator` to use the ```Email``` validator.
+
+```python
+(comment_moderation)$ pip3 install email-validator
+```
 
 ### Display Comment Form
 
@@ -237,10 +244,13 @@ from app import db
 from datetime import datetime
 
 
-class Comment(db.Model):
+class UserComment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True)
+    email = db.Column(db.String(120), index=True)
     content = db.Column(db.String(255))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         return 'Comment: {}'.format(self.content)
@@ -273,18 +283,22 @@ Remember that the `flask` command relies on the environment variable `FLASK_APP`
 To create our first migrations script, which will include the comments from our application users, run the following command in the terminal:
 
 ```python
-(comment_moderation)$ flask db migrate -m "comment table"
+(comment_moderation)$ flask db migrate -m "user comment table"
 
 # Output
 
 INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
 INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
-INFO  [alembic.autogenerate.compare] Detected added table 'comments'
-INFO  [alembic.autogenerate.compare] Detected added index 'ix_comments_timestamp' on '['timestamp']'
-  Generating /home/harry/software_development/python/practice_projects/comment_moderation/migrations/versions/f68f8554dfba_comment_table.py ...  done
+INFO  [alembic.autogenerate.compare] Detected added table 'user_comment'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_user_comment_email' on '['email']'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_user_comment_timestamp' on '['timestamp']'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_user_comment_username' on '['username']'
+INFO  [alembic.autogenerate.compare] Detected removed index 'ix_comment_timestamp' on 'comment'
+INFO  [alembic.autogenerate.compare] Detected removed table 'comment'
+  Generating /home/harry/software_development/python/practice_projects/comment_moderation/migrations/versions/5fc3f28ab1bc_user_comment_table.py ...  done
 ```
 
-The `-m` option is used to specify a message that will be included in the migration history. If you check the _versions_ subdirectory, you will notice that we have a new file called `XXX_comment_table.py`. This file contains two important functions: `upgrade()` and `downgrade()`. The `upgrade()` function will be called when the migration is applied. The `downgrade()` function will be called when the migration is rolled back.
+The `-m` option is used to specify a message that will be included in the migration history. If you check the _versions_ subdirectory, you will notice that we have a new file called `XXX_user_comment_table.py`. This file contains two important functions: `upgrade()` and `downgrade()`. The `upgrade()` function will be called when the migration is applied. The `downgrade()` function will be called when the migration is rolled back.
 
 To apply these changes to the database, run the following command in the terminal:
 
@@ -294,7 +308,7 @@ To apply these changes to the database, run the following command in the termina
 # Output
 INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
 INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
-INFO  [alembic.runtime.migration] Running upgrade  -> f68f8554dfba, comment table
+INFO  [alembic.runtime.migration] Running upgrade -> 5fc3f28ab1bc, user comment table
 ```
 
 You will add the migration script to source control and commit it. 
@@ -366,3 +380,65 @@ With all these updates, we are ready to create and apply the changes to the data
 (comment_moderation)$ flask db migrate -m "user table"
 (comment_moderation)$ flask db upgrade
 ```
+
+## Update the Database
+
+Since all user information is now stored in our `User` database which is linked to the `Comment` database, we can now query the database to display all comments. Every time a request to render our index page content is made, we will query the database to display all comments.
+
+The first step is to update our database every time new data comes through the Comments Form. 
+
+`routes.py: Update the database`
+```python
+from flask.helpers import url_for
+from werkzeug.utils import redirect
+from app import app, db
+from flask import render_template, flash, redirect, url_for
+from app.forms import CommentForm
+from app.models import UserComment # < ----- update
+
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+def index():
+    form = CommentForm()
+    if form.validate_on_submit():
+        user = UserComment(
+            username=form.username.data,
+            email=form.email.data,
+            content=form.comment.data
+        )
+        db.session.add(user)
+        db.session.commit()
+        flash('Your comment has been posted!')
+        return redirect(url_for('index'))
+    return render_template('index.html', form=form)
+
+```
+
+`form.validate_on_submit()` is used to validate the form. If the form is valid, the `user` object is created and added to the database. Otherwise, the index page will be displayed. I have added a flash message to notify the user that their comment has been posted. To see the message, we need to update our `base.html` template.
+
+`base.html: Show flash message`
+```html
+<!-- Contents of all our pages will go here -->
+{% block content %}
+    <div class="container">
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block app_context %}{% endblock %}
+    </div>
+{% endblock %}
+```
+
+Try post a comment. If all goes well, then you should be able to see the flash message.
+
+![Flash Message](images/comment_moderation/flash_message.png)
+
