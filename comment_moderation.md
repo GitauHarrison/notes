@@ -16,7 +16,7 @@ Flask provides the `flask-wtf` extension, a wrapper around the [WTForms](https:/
 (comment_moderation)$ pip3 install flask-wtf
 ```
 
-As our application grows, certain configuratins will be needed. At the moment, we have had no need to use any configuration in our application. Most Flask applications expect certain configurations to be set. One such configuration is the `SECRET_KEY`. it is a variable whose value is used as a cryptographic key useful in the generation of signatures and tokens. Flask-WTF uses it to protect web forms against a nasty attack called [Cross Site Request Forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery) or CSRF (pronounced as 'sea-surf'). This value, as the name suggests, is meant to be a secret.
+As our application grows, certain configurations will be needed. At the moment, we have had no need to use any configuration in our application. Most Flask applications expect certain configurations to be set. One such configuration is the `SECRET_KEY`. It is a variable whose value is a cryptographic key useful in the generation of signatures and tokens. Flask-WTF uses it to protect web forms against a nasty attack called [Cross Site Request Forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery) or CSRF (pronounced as 'sea-surf'). This value, as the name suggests, is meant to be a secret.
 
 If you look carefully, I have a module called `config` in the top-level directory. Following the principle of _separtion of concerns_, all the configurations that our application will need will be added here.
 
@@ -31,7 +31,7 @@ class Config(object):
 
 ```
 
-I am sourcing the value of `SECRET_KEY` from the an environment variable. If the value is missing, I have provided a safe fallback by hardcoding a string. The environment variable is a secret and should not be added to version control. I will create a new file called `.env` which will have the actual value of `SECRET_KEY`. `.gitigonore` file we already have ignores this file from version control, so it is safe to create it in the top-level directory.
+I am sourcing the value of `SECRET_KEY` from an environment variable. If the value is missing, I have provided a safe fallback by hardcoding a string. The environment variable is a secret and should not be added to version control. I will create a new file called `.env` which will have the actual value of `SECRET_KEY`. `.gitigonore` file we already have ignores this file from version control, so it is safe to create it in the top-level directory.
 
 ```python
 (comment_moderation)$ touch .env
@@ -53,7 +53,7 @@ Hard to guess, right? I will add this value to my environment variable.
 SECRET_KEY=b'\x1eh\xfcIWC\x91\xd7\xb3\xfd\x02dK\xe0\xb5z'
 ```
 
-With the variable set, we can not update our application instance to read and apply our configurations
+With the variable set, we can now update our application instance to read and apply our configurations.
 
 `__init__.py: Regiser the config module in application instance`
 ```python
@@ -74,7 +74,7 @@ I have began by importing the `Config` class from the top-level directory. I hav
 
 ## Flask Web Forms
 
-Flask-WTF uses Python classes to represent web forms. The form class defines the variable fields we would like to have in our forms.
+Flask-WTF uses Python classes to represent web forms. The form classes define the variable fields we would like to have in our forms.
 
 ### Define Comment Form
 
@@ -84,7 +84,7 @@ Let us begin by creating a simple comment form. The information we want from a u
 (comment_moderation)$ touch app/forms.py 
 ```
 
-Let is now create the class that defines all the fields we want in our comments form.
+Let us now create the class that defines all the fields we want in our comments form.
 
 `forms.py: Create a user comment form`
 ```python
@@ -125,7 +125,7 @@ The next step is to display this form in our templates. We will use the `index.h
 {% endblock %}
 ```
 
-I have used Bootstrap to quicky display my comment form, though you can manually disply the same form using HTML. 
+I have used Bootstrap to quicky display my comment form, though you can manually display the same form using raw HTML. 
 
 With the form ready to be displayed, we will now update our `index()` view function to render it.
 
@@ -148,3 +148,155 @@ def index():
 Start your flask server in the terminal by running the command `flask run`. Navigate to http://127.0.0.1:5000/ to see the comments form displayed.
 
 ![Comment Moderation Form](images/comment_moderation/comment_moderation_form.png)
+
+## Working with a Database
+
+After a user clicks the `Post` button, we will need to store the data in a database. This datat will persist even if we close the application. The database will also allow us to retrieve all the data about our users. 
+
+Since this application is small in nature, we will use a SQLite database. That does not mean that as the project grows and becomes bigger SQLite will not be a suitable choice. It is still a great choice for bigger applications. Typically, SQLite stores data in a file on the disk, and there is no need to run a datbase server like MySQL and PostreSQL.
+
+Flask provides the `Flask-SQLAlchemy` extension to help us manage our database. It is a Flask-friendly wrapper around the popular SQLAlchemy package. As an [Object Relational Mapper](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping), SQLAlchemy is a Python library that allows us to manage our database using classes, objects and methods instead of tables and SQL. The aim of an ORM is to translate these high level operations into database commands.
+
+To install the `Flask-SQLAlchemy` extension, run the following command in the terminal:
+
+```python
+(comment_moderation)$ pip3 install flask-sqlalchemy
+```
+
+### Database Migrations
+
+Continued use of a database may result in the need to modify the original database schema. We may need to add a new field in the database to now collect users' email addressing, data that originally did not exist. So, when the structure of the database changes, we need to update the database schema by _migrating_ to the modified schema.
+
+We will use `flask-migrate` to perform this migration. Install it in the virtual environment by running the following command in the terminal:
+
+```python
+(comment_moderation)$ pip3 install flask-migrate
+```
+
+
+### Database Configuration
+
+SQLite, being the most convinient choice in developing small applications, expects certain configurations from `Flask-SQLAlchemy`. We first provide the location of the database in the application through `SQLALCHEMY_DATABASE_URI` configuration variable. This variable will source its value from the `DATABASE_URL` environment variable.
+
+`config.py: Database Configuration`
+```python
+import os
+basedir = os.path.abspath(os.path.dirname(__file__)) # < ---- update
+
+
+class Config(object):
+    # Form
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
+
+    # Database
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+        'sqlite:///' + os.path.join(os.path.dirname(__file__), 'app.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+```
+
+If `DATABASE_URL` does not exist, then I have provided a fallback value where I am configuring a database called `app.db` in the top-level directory. The `SQLALCHEMY_TRACK_MODIFICATIONS` configuration option is set to `False` to disable a feature of Flask-SQLAlchemy that tracks every modifications to the database.
+
+### Database Instance
+
+The database will be referenced through a database instance. We will create a `db` variable that will be used to access the database.
+
+`__init__.py: Database Instance`
+```python
+from flask import Flask
+from flask_bootstrap import Bootstrap
+from config import Config
+from flask_sqlalchemy import SQLAlchemy # < ---- update
+from flask_migrate import Migrate # < ---- update
+
+app = Flask(__name__)
+app.config.from_object(Config)
+
+boostrap = Bootstrap(app)
+db = SQLAlchemy(app) # < ---- update
+migrate = Migrate(app, db) # < ---- update
+
+from app import routes, errors, models # < ---- update
+
+```
+
+### Database Models
+
+Our model will contain columns that will store a user's name, email address and comment. All these data are of type `VARCHAR` (in database jargon) and are limited to a specified number of characters. They are basically strings.
+
+Let is create a new module called `models.py` that will contain our database models.
+
+```python
+(comment_moderation)$ touch  app/models.py
+```
+
+The translation of our database into code will look like this:
+
+`models.py: Comment database Schema`
+```python
+from app import db
+from datetime import datetime
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(255))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    def __repr__(self):
+        return 'Comment: {}'.format(self.content)
+
+```
+
+I have added a `timestamp` column to the schema of the `Comment` model. This column will be used to sort the comments by their timestamps. Note how I carefully use `utc.now` and not `utc.now()`. I am passing the function itself and not the result of calling it.
+
+### Database Migration
+
+With every change we might make to the database schema, we would like the flexibility of applying the new changes and work with the modified schema. Also, if we change our mind about the database structure, we should be able to easily roll back to the previous version. As seemingly difficult as it is, we can use the `flask-migrate` extension to do this. `Alembic` maintains a history of the changes that have been made to the database in a _migrations repository_. 
+
+To create a migrations repository, run the following command in the terminal:
+
+```python
+(comment_moderation)$ flask db init
+
+# Output 
+  Creating directory /home/harry/software_development/python/practice_projects/comment_moderation/migrations ...  done
+  Creating directory /home/harry/software_development/python/practice_projects/comment_moderation/migrations/versions ...  done
+  Generating /home/harry/software_development/python/practice_projects/comment_moderation/migrations/script.py.mako ...  done
+  Generating /home/harry/software_development/python/practice_projects/comment_moderation/migrations/alembic.ini ...  done
+  Generating /home/harry/software_development/python/practice_projects/comment_moderation/migrations/README ...  done
+  Generating /home/harry/software_development/python/practice_projects/comment_moderation/migrations/env.py ...  done
+  Please edit configuration/connection/logging settings in '/home/harry/software_development/python/practice_projects/comment_moderation/migrations/alembic.ini' before proceeding.
+```
+
+Remember that the `flask` command relies on the environment variable `FLASK_APP` to determine where our applciation is located. In the top-level directory, you should be able to see a _migrations repository_ which has a _versions_ subdirectory. This folder and all its files are now part of our applications, and should be committed our version control along with all other code.
+
+To create our first migrations script, which will include the comments from our application users, run the following command in the terminal:
+
+```python
+(comment_moderation)$ flask db migrate -m "comment table"
+
+# Output
+
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.autogenerate.compare] Detected added table 'comments'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_comments_timestamp' on '['timestamp']'
+  Generating /home/harry/software_development/python/practice_projects/comment_moderation/migrations/versions/f68f8554dfba_comment_table.py ...  done
+```
+
+The `-m` option is used to specify a message that will be included in the migration history. If you check the _versions_ subdirectory, you will notice that we have a new file called `XXX_comment_table.py`. This file contains two important functions: `upgrade()` and `downgrade()`. The `upgrade()` function will be called when the migration is applied. The `downgrade()` function will be called when the migration is rolled back.
+
+To apply these changes to the database, run the following command in the terminal:
+
+```python
+(comment_moderation)$ flask db upgrade
+
+# Output
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> f68f8554dfba, comment table
+```
+
+You will add the migration script to source control and commit it. 
+
+If at any one point you would like to roll back the changes, you can run the `flask db downgrade` command, though this is less likely in a production system.
