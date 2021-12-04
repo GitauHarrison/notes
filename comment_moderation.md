@@ -442,3 +442,77 @@ Try post a comment. If all goes well, then you should be able to see the flash m
 
 ![Flash Message](images/comment_moderation/flash_message.png)
 
+## Display Comments
+
+We will display the comments in the index page. So, let us update our `index()` view function to display the comments.
+
+```python
+from flask.helpers import url_for
+from werkzeug.utils import redirect
+from app import app, db
+from flask import render_template, flash, redirect, url_for
+from app.forms import CommentForm
+from app.models import UserComment
+
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+def index():
+    users = UserComment.query.all() # < ----- update
+    form = CommentForm()
+    if form.validate_on_submit():
+        user = UserComment(
+            username=form.username.data,
+            email=form.email.data,
+            content=form.comment.data
+        )
+        db.session.add(user)
+        db.session.commit()
+        flash('Your comment has been posted!')
+        return redirect(url_for('index'))
+    return render_template(
+                           'index.html',
+                           form=form,
+                           users=users # < ----- update
+                           )
+
+```
+
+We query our `UserComment` database using the `UserComment.query.all()` function. This function returns a list of all the comments by users in the database. We can then loop through the list and display the comments in the `index.html` page.
+
+`index.html: Display comments`
+```html
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_context %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Comment Moderation</h1>
+        </div>  
+    </div>
+    <!-- Display all user comments -->
+    <div class="row">
+        <div class="col-md-12">
+            {% for user in users %}
+                <table class="table table-striped">
+                    <tr valign="top">
+                        <td>{{ user.username }} says:<br>{{ user.content }}</td>
+                    </tr>
+                </table>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- End of displaying user comments -->
+    <hr>
+    <div class="row">
+        <div class="col-md-6">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+{% endblock %}
+```
+
+You should be able to see this:
+
+![Display comments](images/comment_moderation/display_comments.png)
