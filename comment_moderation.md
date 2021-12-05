@@ -997,4 +997,4 @@ I have created a condition that checks if the `allowed_comment` field is `True`.
 
 ## Conclusion
 
-That is how you can add comment moderation to your flask application. I hope you enjoy this tutorial and find it useful. Do you have any project where you have implemented comment moderation? If so, I will be glad to check it out.
+That is how you can add comment moderation to your flask application. I hope you enjoyed this tutorial and found it useful. Do you have any project where you have implemented comment moderation? If so, I will be glad to check it out.
