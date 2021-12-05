@@ -2,6 +2,8 @@
 
 Tables are a simple way to display data in a web application. Making tables in flask templates is relatively easy. However, it becomes a bit more complicated when you want to add basic table features such as sorting, pagination and searching. These features are particularly useful when the tables contain a lot of data. In this article, I will show you how to create an interactive table. We will look at several example tables to really appreciate table interactivity.
 
+![Beautiful Flask Tables](images/flask_tables/beautiful_flask_tables.gif)
+
 - Example table 1: [Bootstrap Table](#bootstrap-table)
 - Example table 2: [Basic Table](#basic-table)
 - Example table 3: [Ajax Table](#ajax-table)
