@@ -4,6 +4,8 @@ As an administrator of a website, one of the things you would really want to do 
 
 ![Comment Moderation](images/comment_moderation/comment_moderation.gif)
 
+You can [browse this repository on GitHub](https://github.com/GitauHarrison/user-comment-moderation-in-flask) to see the code for this tutorial.
+
 ## Create A Simple Flask Application
 
 We will need a simple application to test the Flask server. I have created one already [here](https://github.com/GitauHarrison/starting-a-flask-server). We will build on it and add a comment moderation feature. If you would like to know how the application in the link was built, you can read the [start a flask server tutorial](start_flask_server.md).
