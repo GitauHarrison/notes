@@ -14,7 +14,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 10. [Adding markdown editing to Flask-WTF forms](handling_rich_text.md)
 11. [Setting Up Ngrok](localhost_testing.md)
 12. [Install Elasticsearch](elasticsearch_installation.md)
-13. [Handling file upload in flask](file_upload_in_flask.md)
+13. [Add File Uploads to Database](upload_files_to_database.md)
 14. [Build a simple WhatsApp chatbot using Flask and Twilio](whatsapp_chatbots/simple_whatsapp_chatbot.md)
 15. [Build a video call application using Flask and Twilio](video_call_app/simple_video_call_app.md)
 16. [Deploy flask app in docker containers](docker_deployment.md)
@@ -27,7 +27,6 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 23. [Beautiful flask table](flask_tables.md)
 24. [Starting a Flask Server](start_flask_server.md)
 25. [Comment moderation in Flask](comment_moderation.md)
-26. [Add File Uploads to Database](upload_files_to_database.md)
 
 I also make a note of some of the cool projects I have built or I have been involved in. You can find these projects below. Some may be in progess while others may be completed:
 
