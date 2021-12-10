@@ -2,6 +2,8 @@
 
 It is common to see applications that allow users to add and update their avatars. This, obviously, is not the only way users can upload images to an application. During this article, I will show you how you can allow users to upload images to their accounts. These images will be accessed by quering the database used by the application.
 
+![File Upload](images/file_uploads/upload_files.gif)
+
 You can browse the source code of the application discussed here on this [repository]().
 
 ## What We Will Do
