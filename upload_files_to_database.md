@@ -2,6 +2,8 @@
 
 It is common to see applications that allow users to add and update their avatars. This, obviously, is not the only way users can upload images to an application. During this article, I will show you how you can allow users to upload images to their accounts. These images will be accessed by quering the database used by the application.
 
+You can browse the source code of the application discussed here on this [repository]().
+
 ## What We Will Do
 
 1. Create a simple application
@@ -255,7 +257,7 @@ Our form collects a user's username, email, about me and an avatar. Therefore, o
 from app import db
 
 
-class Admin(db.Model):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -310,3 +312,179 @@ INFO  [alembic.runtime.migration] Running upgrade  -> e7a88735908f, user table
 ```
 
 The changes we have made to our ```User``` model are now applied to the database. Notice that there is `app.db` file created in the top-level directory of the project. This file contains the database.
+
+## Update the Database
+
+Now that the database is created, I need to update it using the user form found in the home page of the application. The changes to be made will be done on the `index()` view function to validate and store the user's information.
+
+I want all files that will be uploaded through the form to be saved in `app/static/uploads` folder. Since `uploads` sub-folder is not created by default, I will create it.
+
+```python
+(file_upload)$ mkdir static/uploads
+```
+
+I will then save this path as a configuration in my `config` module.
+
+`config.py: Upload path configuration`
+```python
+    # ...
+
+    # File Upload
+    UPLOAD_PATH = os.environ.get('UPLOAD_PATH')
+```
+
+Once again, I am sourcing the value of the `UPLOAD_PATH` from an environment variable. I, therefore, need to update the `.env` file to include the `UPLOAD_PATH` variable.
+
+`.env: Upload path value`
+```python
+# ...
+UPLOAD_PATH='app/static/uploads'
+```
+
+Now, I need to create a `user` object in the `index()` view function which will accept the data available in the user form.
+
+`routes.py: Update user model`
+```python
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+def index():
+    form = UserForm()
+    if form.validate_on_submit():
+        admin = User(
+            username=form.username.data,
+            email=form.email.data,
+            about_me=form.about_me.data
+        )
+
+        # file upload handling
+        uploaded_file = form.avatar.data
+        filename = secure_filename(uploaded_file.filename)
+        avatar_path = os.path.join(app.config['UPLOAD_PATH'], filename)
+        uploaded_file.save(avatar_path)
+        admin.avatar = avatar_path
+        path_list = admin.avatar.split('/')[1:]
+        new_path = '/'.join(path_list)
+
+        # Update the database
+        admin.avatar = new_path
+        db.session.add(admin)
+        db.session.commit()
+
+        # User feedback
+        flash('Your changes have been saved.')
+        return redirect(url_for('index'))
+    return render_template(
+                           'index.html',
+                           form=form,
+                           title='User Form',
+                           )
+```
+
+That is a lot going on. I will help break it down for you so you can follow through. First, the `user` object accepts the data available in the _username_, _email_ and _about me_ fields in the form. 
+
+The second step to to upload a user's file. 
+- The data available in the `avatar` field of the form is stored in a variable I have called `uploaded_file`. 
+- The `secure_filename()` function is used to sanitize the file name. This ensures that regardless of whatever name a user has called this file, it is reduced to a flat name. `secure_filename` comes from `werkzeug.utils`.  
+- I then create a path to the uploaded file using the `os.path.join()` function. This function joins the path to the `UPLOAD_PATH` and the sanitized file name.
+- The `uploaded_file.save()` function is used to save the uploaded file to the path created in the previous step.
+- The `admin.avatar` attribute is then updated to the new path.
+- The `path_list` variable is used to split the path to the uploaded file. This is done to remove the `app/` part of the path. To check the path, add a `print` statement to the end of the code. It was necessary for me to implement this logic because the `index.html` template could not locate the file using the `app/static/uploads` path.
+- The `new_path` variable is used to create a new path to the uploaded file. This new path will be in the format `static/uploads/<image file>`. This is done by joining the `path_list` variable with a `/` character.
+- The `admin.avatar` attribute is then updated to the new path. See the new path by adding another `print` statement to the end of the code.
+
+
+The last step is to update the database.
+- The `admin` object is then added to the database.
+- The `db.session.commit()` function is used to commit the changes to the database.
+- The `flash()` function is used to display a message to the user to notify them that the upload process was successful.
+- The `redirect()` function is used to redirect the user to the home page after the database update.
+
+
+### Display All Users
+
+I will use a simple table to neatly display all users. This is achieved by using a `for` loop to iterate through the `User` model. To begin, I find all the users in the database using the `User.query.all()` function in the `index` view function.
+
+`routes.py: Display all users`
+```python
+def index():
+    users = User.query.all() # < --- update
+    form = UserForm()
+    if form.validate_on_submit():
+        admin = User(
+            username=form.username.data,
+            email=form.email.data,
+            about_me=form.about_me.data
+        )
+        uploaded_file = form.avatar.data
+        filename = secure_filename(uploaded_file.filename)
+        avatar_path = os.path.join(app.config['UPLOAD_PATH'], filename)
+        uploaded_file.save(avatar_path)
+        admin.avatar = avatar_path
+        path_list = admin.avatar.split('/')[1:]
+        new_path = '/'.join(path_list)
+        admin.avatar = new_path
+        db.session.add(admin)
+        db.session.commit()
+        flash('Your changes have been saved.')
+        return redirect(url_for('index'))
+    return render_template(
+                           'index.html',
+                           form=form,
+                           title='User Form',
+                           users=users # < --- update
+                           )
+```
+
+I will use this variable to iterate through the users in the database. I will then create a table in `index.html` to display the users.
+
+`index.html: Display all users`
+
+```html
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_context %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1> {{ title }} </h1>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>About Me</th>
+                        <th>Avatar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.about_me }}</td>
+                            <td><img src="{{ user.avatar }}"></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+```
+
+During each iteration, I intentionally retrieve each user's information using the `user.<column>` syntax. Since the last column is an image, I will use the `user.avatar` attribute to retrieve the image path and add it to an `img` tag.
+
+Navigate to the URL http://127.0.0.1:5000/ and try adding multiple users. You should be able to see all the users you have added being displayed at the bottom of the user form.
+
+![All users](images/file_uploads/all_users.png)
