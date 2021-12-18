@@ -1,4 +1,4 @@
-# Load Multiple Users in a Flask Application
+# Load Users in Different Database Tables in a Flask Application
 
 Imagine you have a database table of students and another database table of teachers. Let us imagine again that the application we are interested in building should be able to load all the students and all the teachers, separately. How do you go about it? 
 
@@ -213,3 +213,180 @@ Add a link in the navigation bar to the teacher registration page.
 </nav>
 {% endblock %}
 ```
+
+## Working With a Database
+
+Once a student or a teacher has registered we will need to store that information in a database. This will allow the application to remember the user's information during their subsequent visit.
+
+Let us begin by installing two packages that will allow us to work with a database.
+
+```python
+(venv) $ pip3 install flask-sqlalchemy flask-migrate
+```
+`Flask-sqlalchemy` is a popular Object Relational Mapper (ORM) for SqlAlchemy. Instead of using raw SQL commands to interact with the database, this package uses high-level classes, objects and methods.
+
+`Flask-migrate`, on the other hand, is used to manage the database. Should there be any change to the database tables, then `flask-migrate` is responsible for creating and managing these migrations.
+
+### Register Database Packages
+
+Just like the other packages, ensure that register them in the application instance.
+
+`__init__.py: Register the Database Packages`
+```python
+# ...
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+
+# ...
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+# ...
+from app import models # <--- update
+```
+
+### Configure the Database
+
+Before we can create our database, let us create some configurations that will be needed by the application in order to work with our database of choice, SQLite.
+
+`config.py: Create the Database Configuration`
+```python
+import os
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+
+class Config(object):
+    # Database
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or\
+        'sqlite:///' + os.path.join(basedir, 'app.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+```
+SQLite is perfect for the needs of our application at the moment. It if convinient to use with applications that are small and simple. However, if we were to use this application with a larger scale application, we would want to use a database that is more suitable and robust for larger scale applications.
+
+### Create the Database
+Now we can create a `models.py` file in the `app` sub-directory to define our database.
+
+```python
+(venv) $ touch app/models.py
+```
+`models.py: Define the Database Model`
+```python
+
+from app import db
+
+
+class Student(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(120), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+
+    def __repr__(self):
+        return f'Student: {self.username}'
+
+```
+
+We have defined a `Student` model with four columns. The first column is always an `id` of type Integer. The other three columns are strings. It is recommended to not store a user's password in its original form. Rather, it should be stored as a hash, a representation of itself. This is an additional security measure in the event that the database is compromised and the users' information is expose.
+
+### Apply the Changes Made to the Database
+
+Since we have just defined a new model, we need to apply this change by creating a migration script for the student. On our terminal, let us run the following commands:
+
+```python
+(venv) $ flask db init
+
+# Output
+Creating directory /home/harry/software_development/python/current_projects/load_multiple_users/migrations ...  done
+  Creating directory /home/harry/software_development/python/current_projects/load_multiple_users/migrations/versions
+  ...  done
+  Generating /home/harry/software_development/python/current_projects/load_multiple_users/migrations/script.py.mako ...  done
+  Generating /home/harry/software_development/python/current_projects/load_multiple_users/migrations/alembic.ini ...  done
+  Generating /home/harry/software_development/python/current_projects/load_multiple_users/migrations/README ...  done
+  Generating /home/harry/software_development/python/current_projects/load_multiple_users/migrations/env.py ...  done
+  Please edit configuration/connection/logging settings in
+  '/home/harry/software_development/python/current_projects/load_multiple_users/migrations/alembic.ini' before
+  proceeding.
+```
+
+This command will create a _migrations_ folder in the application's top-level directory. All database migrations scripts will be stored in this folder. 
+
+Next is to create a migration script for the student. This script will contain all the details of the student table.
+
+```python
+(venv) $ flask db migrate -m "student table"
+
+# Output
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.autogenerate.compare] Detected added table 'student'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_student_email' on '['email']'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_student_username' on '['username']'
+  Generating /home/harry/software_development/python/current_projects/load_multiple_users/migrations/versions/92f4003438
+  7a_students_table.py ...  done
+```
+
+You will notice that the file `app.db`, defined in our configurations, is created in the top-levle directory. Inspecting the _migrations_ folder, you will see a new sub-folder called _versions_. This folder will contain all the migration scripts that we will create. You will notice that a script called _92f4003438
+  7a_students_table.py_ has been added. The number _92f4003438
+  7a_ will be different in your case.
+
+To apply these changes, we will need to run the following command:
+
+```python
+(venv) $ flask db upgrade
+
+# Output
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> 92f40034387a, students table
+(load_multiple_users) harry@harry:~/software_development/python/current_projects/lo
+```
+
+**Remember that for you to use the command `flask`, you need to be in the top-level directory of the application.**
+
+We need to do the same for the teacher table.
+
+`models.py: Teacher Model`
+```python
+# ...
+
+class Teacher(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(120), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+
+    def __repr__(self):
+        return f'Teacher: {self.username}'
+```
+
+Since this is a change to our database, we need to create a migration script for the teacher table.
+
+```python
+(venv) $ flask db migrate -m "teacher table"
+
+
+# Output
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.autogenerate.compare] Detected added table 'teacher'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_teacher_email' on '['email']'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_teacher_username' on '['username']'
+  Generating /home/harry/software_development/python/current_projects/load_multiple_users/migrations/versions/07e7001b07
+  bd_teachers_table.py ...  done
+```
+
+Then apply the changes to the database:
+
+```python
+(venv) $ flask db upgrade
+
+
+# Output
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade 92f40034387a -> 07e7001b07bd, teachers table
+```
+
+That's it! We have now created a database with two tables, `Student` and `Teacher`.
