@@ -572,6 +572,56 @@ def load_teacher(id):
 
 The ID passed to the function is string, so we need to convert it to an integer using the `int()` function.
 
+### Add a User
+
+Before a user can log in, they need to register. Let us update our registration routes to store a user's information in the database.
+
+`routes.py: Add user to the database`
+```python
+from app import db
+# ...
+
+
+@app.route('/register/student', methods=['GET', 'POST'])
+def register_student():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        student = Student(
+            username=form.username.data,
+            email=form.email.data
+            )
+        student.set_password(form.password.data)
+        db.session.add(student)
+        db.session.commit()
+        flash('Congratulations, you are now a registered student!')
+        return redirect(url_for('login_student'))
+    return render_template(
+        'register.html',
+        title='Register Student',
+        form=form
+        )
+
+
+@app.route('/register/teacher', methods=['GET', 'POST'])
+def register_teacher():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        teacher = Teacher(
+            username=form.username.data,
+            email=form.email.data
+            )
+        teacher.set_password(form.password.data)
+        db.session.add(teacher)
+        db.session.commit()
+        flash('Congratulations, you are now a registered teacher!')
+        return redirect(url_for('login_teacher'))
+    return render_template(
+        'register.html',
+        title='Register Teacher',
+        form=form
+        )
+```
+
 ### Logging Users In
 
 To begin, we will create login routes for both `Student` and `Teacher`. 
@@ -638,6 +688,30 @@ def logout_teacher():
 
 If the user is authenticated, he will automatically be redirected to the `index` page. If not, the user will be required to fill in the correct credentials to access his account. I have used the `flash()` function to display a friendly user feedback if the login attempt is unsuccessful.
 
+Remember that we have used the `login_required` decorator to protect the respective _index_ pages of users. However, with all the changes we have made, we need to update the `login.login_view` property in the application's instance to reflect the changes.
+
+`__init__.py: Update login.login_view`
+```python
+# ... 
+
+login.login_view = 'login_student'
+login.login_view = 'login_teacher'
+```
+
+### Login Form
+
+Our login form will be a simple form with two fields: `username` and `password`.
+
+`forms.py: Login Form`
+```python
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember Me')
+    submit = SubmitField('Login')
+
+```
+
 ### Login Template
 
 Just like the registration template, we will use `flask-bootstrap`'s `wtf.quick_form` to create a login form. First, create an empty `login.html` file.
@@ -665,6 +739,8 @@ Then update it with the following code:
 {% endblock %}
 ```
 
+### Login Links
+
 Add a login link for both the student and the teacher in the `base.html` file.
 
 `base.html: Login Links`
@@ -680,9 +756,9 @@ Add a login link for both the student and the teacher in the `base.html` file.
                 <span class="icon-bar"></span>
             </button>
             {% if student %}
-                <li><a href=" {{ url_for('index_student') }} ">Index Student</a></li>
+                <a class="navbar-brand" href=" {{ url_for('index_student') }} ">Index Student</a>
             {% elif teacher %}
-                <li><a href=" {{ url_for('index_teacher') }} ">Index Teacher</a></li>
+                <a class="navbar-brand" href=" {{ url_for('index_teacher') }} ">Index Teacher</a>
             {% else %}
                 <a class="navbar-brand" href=" # ">Users</a>
             {% endif %}
@@ -693,7 +769,7 @@ Add a login link for both the student and the teacher in the `base.html` file.
                     {% if student %}
                         <li><a href=" {{ url_for('logout_student') }} ">Logout</a></li>
                     {% elif teacher %}
-                        <li><a href=" {{ url_for('logout_student') }} ">Logout</a></li>
+                        <li><a href=" {{ url_for('logout_teacher') }} ">Logout</a></li>
                     {% endif %}
                 {% else %}
                     <li><a href=" {{ url_for('register_student') }} ">Register Student</a></li>
@@ -709,6 +785,9 @@ Add a login link for both the student and the teacher in the `base.html` file.
 ```
 
 Notice how I have used the `if` statement to check if the user is a student or a teacher. If the user is a student, he will be redirected to the `index_student` page. If the user is a teacher, he will be redirected to the `index_teacher` page. If the user is not authenticated, he will be redirected to the `login_student` or `login_teacher` page.
+
+
+### Flash Messages
 
 To display the flash message seen earlier, I will update the `block content` with the following code:
 
@@ -776,21 +855,31 @@ I have used the `login_required` decorator to ensure that the user is authentica
 (venv) $ touch app/templates/index_student.html app/templates/index_teacher.html
 ```
 
-In these templates, we are  going display some of the user's information. Add these information to both templates:
+In these templates, we are  going display some of the user's information. Add these information to both templates, changing where appropriate. I will show you how to display a student's information below.
 
+`index_student.html: Display Student Information`
 ```html
 {% extends 'base.html' %}
 
 {% block app_context %}
 <div class="row">
-    <div class="col-sm-12">
-        <h1>Hi, {{ current_user.username }}</h1>
+    <div class="col-sm12">
+        <h1>Hi, {{ student.username }}</h1>
+        <p>Email: {{ student.email }}</p>
     </div>
 </div>
 {% endblock %}
+
+<!-- Teacher template -->
+<!-- Update the teacher's template accordingly -->
 ```
 
 Remember to update all the redirect URLs from `index` to `index_student` or `index_teacher`. You should be able to see this:
 
 ![Complete Project](images/load_multiple_users/full_project.png)
 
+Try registering a new student and a new teacher. You should be able to see their information on the home page.
+
+## Going Further
+
+Our application has the `errors` module. As it is, the redirect link will not work, since `/index` does not exist any more. Do you have an idea how you can improve this?
