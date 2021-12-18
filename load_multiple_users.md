@@ -784,12 +784,12 @@ Add a login link for both the student and the teacher in the `base.html` file.
 {% endblock %}
 ```
 
-Notice how I have used the `if` statement to check if the user is a student or a teacher. If the user is a student, he will be redirected to the `index_student` page. If the user is a teacher, he will be redirected to the `index_teacher` page. If the user is not authenticated, he will be redirected to the `login_student` or `login_teacher` page.
+Notice how we have used the `if` statement to check if the user is a student or a teacher. If the user is a student, he will be redirected to the `index_student` page. If the user is a teacher, he will be redirected to the `index_teacher` page. If the user is not authenticated, he will be redirected to the `login_student` or `login_teacher` page.
 
 
 ### Flash Messages
 
-To display the flash message seen earlier, I will update the `block content` with the following code:
+To display the flash message seen earlier, we will update the `block content` with the following code:
 
 `base.html: Flash Message`
 ```html
@@ -814,11 +814,11 @@ To display the flash message seen earlier, I will update the `block content` wit
 {% endblock %}
 ```
 
-I retrieve the flash messages from `get_flashed_messages()` function and save them in a `messages` variable. I can then loop through the messages and display them.
+We retrieve the flash messages from `get_flashed_messages()` function and save them in a `messages` variable. We can then loop through the messages and display them.
 
 ### Update The Homepage
 
-At the moment, both the teacher and the student have access to the same home page. I would like to ensure that each user has access to the right home page, in the event that we may consider to use this page as a dashboard where only the current user's information if to be viewed. 
+At the moment, both the teacher and the student have access to the same home page. We would like to ensure that each user has access to the right home page, in the event that we may consider to use this page as a dashboard where only the current user's information is to be viewed. 
 
 Let us update our `routes` module.
 
@@ -849,13 +849,13 @@ def index_teacher():
         )
 ```
 
-I have used the `login_required` decorator to ensure that the user is authenticated before accessing the home page. Let us create these two templates. 
+We have used the `login_required` decorator to ensure that the user is authenticated before accessing the home page. Let us create these two templates. 
 
 ```python
 (venv) $ touch app/templates/index_student.html app/templates/index_teacher.html
 ```
 
-In these templates, we are  going display some of the user's information. Add these information to both templates, changing where appropriate. I will show you how to display a student's information below.
+In these templates, we are  going display some of the user's information. Add these information to both templates, changing where appropriate. We will show you how to display a student's information below.
 
 `index_student.html: Display Student Information`
 ```html
