@@ -390,3 +390,407 @@ INFO  [alembic.runtime.migration] Running upgrade 92f40034387a -> 07e7001b07bd, 
 ```
 
 That's it! We have now created a database with two tables, `Student` and `Teacher`.
+
+### Flask Shell
+
+Sometimes, you may want to test the application in the shell. This is where you activate the Python interpreter in the context of the application. Typically, to activate a Python interpreter, you will need to run `python3` in the terminal. However, if you want to access the database objects for example, you will need to run `flask shell`. This is made possible by the `flask shell_context_processor` function.
+
+`multiple_users.py: Shell context processor`
+```python
+from app import app, db
+from app.models import Student, Teacher
+
+
+@app.shell_context_processor
+def make_shell_context():
+    return dict(
+        db=db,
+        Student=Student,
+        Teacher=Teacher
+        )
+```
+
+To test the application in the shell, run the following command:
+
+```python
+(venv) $ flask shell
+
+# Output
+Python 3.8.10 (default, Nov 26 2021, 20:14:08) 
+[GCC 9.3.0] on linux
+App: app [development]
+Instance: /home/harry/software_development/python/current_projects/load_multiple_users/instance
+```
+
+Try accessing the `db`object:
+
+```python
+>>> db
+<SQLAlchemy engine=sqlite:////home/harry/software_development/python/current_projects/load_multiple_users/app.db>
+```
+
+In a normal Python interpreter, this would not be possible:
+
+```python
+(venv) $ python3
+
+# Output
+Python 3.8.10 (default, Nov 26 2021, 20:14:08) 
+[GCC 9.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+
+>>> db
+Python 3.8.10 (default, Nov 26 2021, 20:14:08) 
+[GCC 9.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+```
+
+## Managing User Sessions
+
+`Flask-login` is a flask package that allows us to manage user sessions. We need to install it in our application.
+
+```python
+(venv) $ pip3 install flask-login
+```
+
+Create a `flask-login` object in the application instance as was with the other packages.
+
+`__init__.py: Initialize Flask-Login`
+```python
+# ...
+from flask_login import LoginManager
+
+# ...
+login = LoginManager(app)
+login.login_view = 'login'
+
+# ...
+```
+
+### Creating a Password Hash
+
+As mentioned earlier, it is not a good idea to store a user's password in the database. Instead, we will use a password hashing algorithm to store the password.
+
+We will do a random test to see if we can create a password hash. In the terminal, activate the python shell in the context of the application:
+
+```python
+(venv) $ flask shell
+
+>>> from werkzeug.security import generate_password_hash, check_password_hash
+>>> hash = generate_password_hash('test')
+>>> hash
+
+# Output
+'pbkdf2:sha256:260000$QT9jZ6D3a9qmEUBp$a56b0251f63aee5ace44bed2f36e21570c0e95ede52711d4449d7d929ece3f28'
+
+>>> check_password_hash(hash, 'test')
+
+# Output
+True
+
+>>> check_password_hash(hash, 'wrong')
+
+# Output
+False
+```
+
+The entire password hashing logic can be implemented in the `models.py` file as two functions for both `Student` and `Teacher`.
+
+`models.py: Password Hashing`
+```python
+# ...
+from werkzeug.security import generate_password_hash, check_password_hash
+
+# ...
+
+class Student(db.Model):
+    # ...
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+
+class Teacher(db.Model):
+    # ...
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+```
+
+### Flask Login Properties
+
+`Flask-login` expects certain properties to be implemented. There are four required items that we need to implement:
+
+1. `is_authenticated`: This is a boolean property that indicates whether the user is authenticated (`True`) or not(`False`).
+2. `is_active`: This is a boolean property that indicates whether the user is active (`True`) or not(`False`).
+3. `is_anonymous`: This is a boolean property that indicates whether the user is anonymous (`True`) or not(`False`).
+4. `get_id`: This is a method that returns the user's id.
+
+`Flask-login` provides a _mixin_ class called `UserMixin` that provides these properties. We will use this mixin class to implement the properties for our `Student` and `Teacher` classes.
+
+`models.py: User Mixin`
+```python
+# ...
+from flask_login import UserMixin
+
+
+class Student(UserMixin, db.Model):
+    # ...
+
+
+class Teacher(UserMixin, db.Model):
+    # ...
+```
+
+### Load a User
+
+At the moment, `Flask-login` knows nothing about databases. We need to tell it how to load a user from the database. Given a user ID, each user can be loaded from the database.
+
+`models.py`
+```python
+# ...
+from app import login
+
+
+@login.user_loader
+def load_student(id):
+    return Student.query.get(int(id))
+
+
+@login.user_loader
+def load_teacher(id):
+    return Teacher.query.get(int(id))
+
+# ...
+```
+
+The ID passed to the function is string, so we need to convert it to an integer using the `int()` function.
+
+### Logging Users In
+
+To begin, we will create login routes for both `Student` and `Teacher`. 
+
+`routes.py: Login Routes`
+```python
+# ...
+from flask import render_template, flash, redirect, url_for, request
+from flask_login import login_user, logout_user, current_user, login_required
+from app.forms import LoginForm
+from app.models import Student, Teacher
+
+
+@app.route('/login/student')
+def login_student():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        student = Student.query.filter_by(username=form.username.data).first()
+        if student is None or not student.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login_student'))
+        login_user(student, remember=form.remember_me.data)
+        return redirect(url_for('index'))
+    return render_template(
+        'login.html',
+        title='Login Student',
+        form=form
+        )
+
+
+@app.route('/login/teacher')
+def login_teacher():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        teacher = Teacher.query.filter_by(username=form.username.data).first()
+        if teacher is None or not teacher.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login_teacher'))
+        login_user(teacher, remember=form.remember_me.data)
+        return redirect(url_for('index'))
+    return render_template(
+        'login.html',
+        title='Login Teacher',
+        form=form
+        )
+
+
+@app.route('/logout/student')
+def logout_student():
+    logout_user()
+    return redirect(url_for('login_student'))
+
+
+@app.route('/logout/teacher')
+def logout_teacher():
+    logout_user()
+    return redirect(url_for('login_teacher'))
+
+```
+
+If the user is authenticated, he will automatically be redirected to the `index` page. If not, the user will be required to fill in the correct credentials to access his account. I have used the `flash()` function to display a friendly user feedback if the login attempt is unsuccessful.
+
+### Login Template
+
+Just like the registration template, we will use `flask-bootstrap`'s `wtf.quick_form` to create a login form. First, create an empty `login.html` file.
+
+```python
+(venv) $ touch app/templates/login.html
+```
+
+Then update it with the following code:
+
+`login.html: Display Login Form`
+```html
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_context %}
+<div class="row">
+    <div class="col-sm12">
+        <h1>{{ title }}</h1>
+        <p>
+            {{ wtf.quick_form(form) }}
+        </p>
+    </div>
+</div>
+{% endblock %}
+```
+
+Add a login link for both the student and the teacher in the `base.html` file.
+
+`base.html: Login Links`
+```html
+{% block navbar %}
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            {% if student %}
+                <li><a href=" {{ url_for('index_student') }} ">Index Student</a></li>
+            {% elif teacher %}
+                <li><a href=" {{ url_for('index_teacher') }} ">Index Teacher</a></li>
+            {% else %}
+                <a class="navbar-brand" href=" # ">Users</a>
+            {% endif %}
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">            
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.is_authenticated %}
+                    {% if student %}
+                        <li><a href=" {{ url_for('logout_student') }} ">Logout</a></li>
+                    {% elif teacher %}
+                        <li><a href=" {{ url_for('logout_student') }} ">Logout</a></li>
+                    {% endif %}
+                {% else %}
+                    <li><a href=" {{ url_for('register_student') }} ">Register Student</a></li>
+                    <li><a href=" {{ url_for('register_teacher') }} ">Register Teacher</a></li>
+                    <li><a href=" {{ url_for('login_student') }} ">Login Student</a></li>
+                    <li><a href=" {{ url_for('login_teacher') }} ">Login Teacher</a></li>
+                {% endif %}
+            </ul>                       
+        </div>
+    </div>
+</nav>
+{% endblock %}
+```
+
+Notice how I have used the `if` statement to check if the user is a student or a teacher. If the user is a student, he will be redirected to the `index_student` page. If the user is a teacher, he will be redirected to the `index_teacher` page. If the user is not authenticated, he will be redirected to the `login_student` or `login_teacher` page.
+
+To display the flash message seen earlier, I will update the `block content` with the following code:
+
+`base.html: Flash Message`
+```html
+{% block content %}
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="row">
+                    <div class="col-sm12">
+                        {% for message in messages %}
+                            <div class="alert alert-success" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block app_context %}{% endblock %}
+    </div>
+{% endblock %}
+```
+
+I retrieve the flash messages from `get_flashed_messages()` function and save them in a `messages` variable. I can then loop through the messages and display them.
+
+### Update The Homepage
+
+At the moment, both the teacher and the student have access to the same home page. I would like to ensure that each user has access to the right home page, in the event that we may consider to use this page as a dashboard where only the current user's information if to be viewed. 
+
+Let us update our `routes` module.
+
+`routes.py: Home pages`
+```python
+# ...
+from flask_login import login_required
+
+@app.route('/home/student')
+@login_required
+def index_student():
+    student = Student.query.all()
+    return render_template(
+        'index_student.html',
+        title='Home Student',
+        student=student
+        )
+
+
+@app.route('/home/teacher')
+@login_required
+def index_teacher():
+    teacher = Teacher.query.all()
+    return render_template(
+        'index_teacher.html',
+        title='Home Teacher',
+        teacher=teacher
+        )
+```
+
+I have used the `login_required` decorator to ensure that the user is authenticated before accessing the home page. Let us create these two templates. 
+
+```python
+(venv) $ touch app/templates/index_student.html app/templates/index_teacher.html
+```
+
+In these templates, we are  going display some of the user's information. Add these information to both templates:
+
+```html
+{% extends 'base.html' %}
+
+{% block app_context %}
+<div class="row">
+    <div class="col-sm-12">
+        <h1>Hi, {{ current_user.username }}</h1>
+    </div>
+</div>
+{% endblock %}
+```
+
+Remember to update all the redirect URLs from `index` to `index_student` or `index_teacher`. You should be able to see this:
+
+![Complete Project](images/load_multiple_users/full_project.png)
+
