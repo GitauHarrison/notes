@@ -830,7 +830,7 @@ from flask_login import login_required
 @app.route('/home/student')
 @login_required
 def index_student():
-    student = Student.query.all()
+    student = Student.query.first()
     return render_template(
         'index_student.html',
         title='Home Student',
@@ -841,7 +841,7 @@ def index_student():
 @app.route('/home/teacher')
 @login_required
 def index_teacher():
-    teacher = Teacher.query.all()
+    teacher = Teacher.query.first()
     return render_template(
         'index_teacher.html',
         title='Home Teacher',
