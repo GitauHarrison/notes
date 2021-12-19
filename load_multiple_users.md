@@ -27,10 +27,10 @@ Flask provides us with the `flask-wtf` package that allows for the creation of w
 
 ### Create a Registration Form
 
-Following the principle of _separation of concerns_, we will create a `forms` module with will hold all the forms our application will need. Inside `app/` subfolder, create an empty form called `forms.py`.
+Following the principle of _separation of concerns_, we will create a `forms` module which will hold all the forms our application will need. Inside `app/` subfolder, create an empty form called `forms.py`.
 
 ```python
-(venv) $ mkdir app/forms.py
+(venv) $ touch app/forms.py
 ```
 
 We will begin by creating a registration form. This form will collect the same information from both students and teachers.
@@ -51,7 +51,7 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Register')
 ```
 
-`Flask-wtf` provides several fields and validators that we have used to create the registration form. The first is the `StringField` which is used to collect a string of characters. The second is the `PasswordField` which is used to collect a string of characters. The third is the `EqualTo` validator which is used to compare the value of the password field to the value of the confirm password field. `DataRequired` ensures that the field needs to be field, otherwise clicking the submit button won't work. The last field is the `SubmitField` which is used to submit the form.
+`Flask-wtf` provides several fields and validators that we have used to create the registration form. The first is the `StringField` which is used to collect a string of characters. Same to the `PasswordField` . The `SubmitField` is used to submit the form. The `EqualTo` validator is used to compare the value of the password field to the value of the confirm password field. `DataRequired` ensures that the field needs to be field, otherwise clicking the submit button won't work.
 
 ### Display the Registration Form
 
@@ -73,7 +73,7 @@ Within the `app/templates`, we will create a `register.html` file. This file wil
 {% endblock %}
 ```
 
-In a single line of code, we are able to display the registration form. We are using the `wtf.quick_form` macro to create the form. The `wtf.quick_form` function takes in a form as an argument. We will use the `form` variable to store the form. The good thing here is that our form has all the styles needed to look good, thanks to the Bootstrap framework.
+In a single line of code, we are able to display the registration form. We have used the `wtf.quick_form` macro to create the form. The `wtf.quick_form` function takes in a form as an argument. We will use the `form` variable to store the form. The good thing here is that our form has all the styles needed to look good, thanks to the Bootstrap framework.
 
 ### Render the Registration Form
 
@@ -134,22 +134,7 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
 
 ```
-We are sourcing the value of the `SECRET_KEY` from an environment variable. If the variable is not set, we will use the string `you-will-never-guess`. 
-
-The next step will be to register this configuration module within the application instance.
-
-`__init__.py: Register the Configuration Module`
-```python
-# ...
-from config import Config
-
-# ...
-app.config.from_object(Config)
-
-# ...
-```
-
-To add this enviroment variable, we will do so in the `.env` file. Create this file in the top-level directory of our application.
+We are sourcing the value of the `SECRET_KEY` from an environment variable. If the variable is not set, we will use the string `you-will-never-guess`. To add this enviroment variable, we will do so in the `.env` file. Create this file in the top-level directory of our application.
 
 ```python
 (venv) $ touch .env
@@ -167,7 +152,21 @@ As the name suggests, this value should be secret, and hard to guess. I was able
 (venv) $ python3 -c "import os; print(os.urandom(16))"
 ```
 
-Now, reloading the application will display the registration form.
+The next step will be to register this configuration module within the application instance.
+
+`__init__.py: Register the Configuration Module`
+```python
+# ...
+from config import Config
+
+# ...
+app.config.from_object(Config)
+
+# ...
+```
+
+
+Now, reloading the application in your browser will display the registration form.
 
 ![Student Registration Form](images/load_multiple_users/register_student.png)
 
