@@ -6,7 +6,7 @@ In the previous chapter, you learnt how to display a string on the web browser. 
 
 Our application structure from [chapter 1](hello_world.md) was necessary to help us separate the application layout/presentation from the logic. Templates help us achieve this kind of separation. Flask templates are found in the _templates_ subfolder within the application instance.
 
-### Working with Templates
+## Working with Templates
 
 Below, I am going to create a template for the home page of our blog.
 
@@ -69,7 +69,7 @@ app/templates/home.html: Conditional statemenst in template
 ```
 The template is slightly  smarter now to know when a title has been provided or not. If there is a title in the view function, then it will use it within it's head, otherwise, it will resort to displaying _Welcome to My Personal Blog_.
 
-### Template Inheritance
+## Template Inheritance
 
 At this stage of the application, it is very easy to make edits in the templates. However, when the application becomes bigger and bigger, say, to have several templates, then making these edits on each template can become difficult and tiring. Thankfully, Flask allows for template inheritence where we can define a base layout for the entire blog. From this base layout, every other template that we will create will inherit the base styles and features. This makes is easy whenever we want to make changes to our growing application. The second reason to consider template inheritence is so that we can maintain a consistene theme or layout throughout our blog. We want that certain features be present in each template. For example, we would want to maintain our navigation bar and our footer everywhere.
 

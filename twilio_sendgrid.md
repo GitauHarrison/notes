@@ -1,15 +1,15 @@
-# How to Send and Receive Emails from You Flask App using Twilio SendGrid
+# How to Send and Receive Emails from Your Flask App using Twilio SendGrid
 
 [SendGrid](http://sendgrid.com/) is a communication platform for transactional and marketing email. The goal of using SendGrid is technically delivering an exceptional email experience since email is the backbone of a business' customer engagement. In this tutorial, I will show you how you can build a Flask application and integrate Twilio SendGrid APIs.
 
-### What we will do:
+## What we will do:
 
 1. Create a SendGrid account
 2. Build a Flask application
 3. Integrate Flask mail 
 4. Integrate Twilio SendGrid
 
-### Create a SendGrid account
+## Create a SendGrid account
 
 * Create a [free account](https://signup.sendgrid.com/) now
 * Log into your account
@@ -24,7 +24,7 @@
 
 Copy the API Key and save it somewhere safe. You will need it later.
 
-### Build a Flask Application
+## Build a Flask Application
 
 ![Login Demo](images/sendgrid/login_demo.gif)
 
@@ -105,7 +105,7 @@ Noteworthy, the files in `app/templates/email` carry the message that will be se
 
 Also, it should be noted the application does send errors to the admin of the application whenever there is an internal server error. This email bears the message of the error so the admin can see the actual cause problem.
 
-### Testing How to Send Password Reset Email Locally
+## Testing How to Send Password Reset Email Locally
 
 ![Password Reset](images/sendgrid/password_reset.gif)
 
@@ -123,7 +123,7 @@ Also, it should be noted the application does send errors to the admin of the ap
 
 You should be able to log in. From your terminal, you should have seen how the email authentication works. 
 
-### Sending Emails Using Twilio SendGrid
+## Sending Emails Using Twilio SendGrid
 
 Now that you know how to send emails using Flask Mail, you can do the same for applications that are on production. If you host this application, say in Heroku, you will note that the password reset feature does not work. You have no errors, but still it does not work. This is because the email service we are using does not work on production. And that is where Twilio SendGrid comes it.
 
