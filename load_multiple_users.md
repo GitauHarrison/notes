@@ -51,11 +51,11 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Register')
 ```
 
-`Flask-wtf` provides several fields and validators that we have used to create the registration form. The first is the `StringField` which is used to collect a string of characters. Same to the `PasswordField` . The `SubmitField` is used to submit the form. The `EqualTo` validator is used to compare the value of the password field to the value of the confirm password field. `DataRequired` ensures that the field needs to be field, otherwise clicking the submit button won't work.
+`Flask-wtf` provides several fields and validators that we have used to create the registration form. The first is the `StringField` which is used to collect a string of characters. Same to the `PasswordField` . The `SubmitField` is used to submit the form. The `EqualTo` validator is used to compare the value of the password field to the value of the confirm password field. `DataRequired` ensures that the field is not empty, otherwise clicking the submit button won't work.
 
 ### Display the Registration Form
 
-Within the `app/templates`, we will create a `register.html` file. This file will contain the registration form. I will use `flask-bootstrap` to create a quick form.
+Within the `app/templates` folder, we will create a `register.html` file. This file will contain the registration form. I will use `flask-bootstrap` to create a quick form.
 
 ```html
 {% extends 'base.html' %}
@@ -134,7 +134,7 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
 
 ```
-We are sourcing the value of the `SECRET_KEY` from an environment variable. If the variable is not set, we will use the string `you-will-never-guess`. To add this enviroment variable, we will do so in the `.env` file. Create this file in the top-level directory of our application.
+We are sourcing the value of the `SECRET_KEY` from an environment variable. If the variable is not set, we will use the string `you-will-never-guess`. This is just a safe fallback to ensure that the application does not crash in case the `SECRET_KEY` value is missing. To add this enviroment variable, we will do so in the `.env` file. Create this file in the top-level directory of our application.
 
 ```python
 (venv) $ touch .env
