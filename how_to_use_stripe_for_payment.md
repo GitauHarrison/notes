@@ -1,4 +1,4 @@
-# Stripe For Payment using Python and Flask
+# Integrate Stripe in Your Flask Application
 
 Stripe currently has 3 payment strategies for accepting one-time payments:
 
@@ -6,12 +6,12 @@ Stripe currently has 3 payment strategies for accepting one-time payments:
 2. [Stripe Checkout](https://stripe.com/payments/checkout) (We will focus on this)
 3. [Payments Intents API](https://stripe.com/docs/payments/payment-intents) 
 
-######  Which strategy should you use?
+##  Which strategy should you use?
 
 * Use _Stripe Checkout_ if you want to get up and running fast. It provides a number of powerful features out-of-the-box, supports multiple languages, and can even be used for [recurring payments](https://stripe.com/docs/billing/subscriptions/fixed-price). Most importantly, Checkout manages the entire payment process for you, so you can begin accepting payments without even having to add a single form!
 * Use the Payment Intents API (along with Elements) if you want to customize the payment experience for your end users.
 
-###### Workflow
+## Workflow
 
 1. Create a project structure to hold all your project resources
 2. Create a virtual environment and install `flask`
@@ -23,7 +23,9 @@ Stripe currently has 3 payment strategies for accepting one-time payments:
 8. Redirect the user appropriately when they have checked out
 9. Confirm payment with Stripe Webhooks
 
-#### Initial SetUp
+_This project's code can be located in [this GitHub repository](https://github.com/GitauHarrison/integrating-stripe-payment-in-flask)._
+
+## Initial SetUp
 
 You need to create your project directory and move into it. It is important that you activate your [virtual environment](https://docs.python.org/3/tutorial/venv.html) before installing `Flask`. 
 
@@ -39,7 +41,7 @@ $ python3 -m venv tutorial-env
 
 If you wish to use a virtualenvironment wrapper to create your virtual environment, learn how to [configure Python Environment with Virtualenvwrapper here](/virtualenvwrapper_setup.md).
 
-Install `flask`
+Install `flask`:
 ```python
 $ pip3 install flask
 ```
@@ -49,23 +51,13 @@ $ touch requirements.txt # this will create an empyty file
 $ pip3 freeze > requirements.txt
 ```
 
-###### Simple Flask App Structure
+## Simple Flask App Structure
 
-So far, we already have our project folder created and it holds the `requirements.txt` file. We will add the following empty files to complete the structure for our simple app.
+So far, we already have our project folder created and it holds the `requirements.txt` file. Add the remaining empty files to complete the structure for our simple app.
 
 ![Python Project Structure](images/stripe_project_structure.svg)
 
-```python
-(stripe-project)$ mkdir app
-(stripe-project)$ touch app/__init__.py # This is where the application is initialized
-(stripe-project)$ touch app/routes.py # All our views will be here
-(stripe-project)$ touch app.py # this allows for our app to run
-(stripe-project)$ touch config # all our configuration variables will be stored here
-(stripe-project)$ touch .flaskenv # stores all your environment variables 
-(stripe-project)$ mkdir app/templates # create a templates subfolder to hold all our template files
-(stripe-project)$ touch app/templates/base.html # base structure of the app will be here
-(stripe-project)$ touch app/templates/index.html # this is the primary template
-```
+
 Add the following contents to the appropriate files:
 
 `app/__init__.py`
@@ -76,6 +68,7 @@ app = Flask(__name__)
 
 from app import routes
 ```
+This creates an instance of the application and registers the `routes` module. To test that the app is working, we will display the classic 'Hello, world' message as seen below.
 
 `app/routes.py`
 ```python
@@ -86,28 +79,32 @@ from app import app
 def index():
     return "Hello, world!"
 ```
+Before we can run our app, we will need to create an entry point to our flask application. This will be done in the file called `app.py`.
 
 `app.py`
 ```python
 from app import app
 ```
-###### Fire Up Your Server
+## Start Your Flask Server
 
-**Method #1:**
+### Method #1
 
-Our app is set up and we need to fire our server to display _Hello, world!_. Let us set up `FLASK_APP` environment variable to import our flask app:
+Our app is set up and we need to fire up our server to display _Hello, world!_. Let us set up `FLASK_APP` environment variable in the terminal to import our flask app:
 
 ```python
 (stripe-project)$ export FLASK_APP=app.py
 (stripe-project)$ flask run
 
 # This is what you will see:
+
 * Serving Flask app "app"
 * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
-# click on the link (or copy this http address and paste it in your browser URL bar). You should see Hello, World!
+
+# Click on the link (or copy this http address and paste it 
+# in your browser URL bar). You should see Hello, World!
 ```
 
-**Method #2:**
+### Method #2
 
 Since environment variables such as the one created above (I mean `FLASK_APP`) aren't remembered across terminal sessions, you may find it tedious to always have to set the `FLASK_APP` environment variable when you open a new terminal windor. 
 
@@ -125,13 +122,15 @@ FLASK_APP=app.py
 ```
 Now, all you need to do as run `flask run` and you will be able to see the output in your browser.
 
-#### Adding Stripe
+## Adding Stripe
 
-Start by installing `stripe`:
+Start by installing `stripe` in your virtual environment:
 
 ```python
 (stripe-project)$ pip3 install stripe
 ```
+
+### Register For A Stripe Account
 
 [Register](https://dashboard.stripe.com/register) for a stripe account. Once you are in the dashboard, navigate to the _Developers_ menu on the left sidebar. Click on it to reveal _API Keys_.
 
@@ -139,11 +138,15 @@ Start by installing `stripe`:
 
 Click on _API Keys_. 
 
+### Stripe API Keys
+
 Each Stripe account has four [API keys](https://stripe.com/docs/keys): two keys for testing and two for production. Each pair has a "secret key" and a "publishable key". Do not reveal the secret key to anyone; the publishable key will be embedded in the JavaScript on the page that anyone can see. 
 
 ![Stripe API Keys](images/stripe_API_Keys.png)
 
 Currently the toggle for "Viewing test data" in the left sidebar indicates that we're using the test keys now. That's what we want.
+
+### Configure Stripe Keys in the Application
 
 Now that we know where to find our API keys, we need to store them in system-wide variables within the top-level `config.py` file.
 
@@ -192,7 +195,7 @@ Finally, you will need to add an account name. Click on the top-left sidebar whe
 
 ![Account name](images/account_name.png)
 
-#### Create a Product
+### Create a Product
 
 We need to create a product to sell. Click _Products_ on the left sidebar in your dashboard and _+Add Product_
 
@@ -202,18 +205,25 @@ Add a product name, enter your price and select _One time_, then click on _Save 
 
 ![New Product](images/new_product.png)
 
-#### Get Publishable Key
+### Get Publishable Key
 
 We will use _Javascript_. We will all a static folder which will hold our `.js` files.
 
 ```python
-(stripe-project)$ mkdir app/static && mkdir app/static/js # this will create a js sub-folder in static
-(stripe-project)$ touch app/static/js/main.js # empty js file
+(stripe-project)$ mkdir app/static && mkdir app/static/js 
+# This will create a js sub-folder in static
+
+(stripe-project)$ touch app/static/js/main.js 
+# Add an empty js file
 ```
+As a test, add the following contents to the `main.js` file:
+
 `app/static/js/main.js`
 ```js
 console.log("Sanity check!") // this is just a printout
 ```
+
+## Working with Templates
 
 In your `app/routes.py`, modify the file to now render your `index.html` file. We will use the `index.html` file to display a simple _Purchase_ button:
 
@@ -276,6 +286,7 @@ We have linked our `main.js` file with the base template. Your actual content wi
   </section>
 {% endblock %}
 ```
+### Run the Application
 
 Run the development server:
 
@@ -283,9 +294,11 @@ Run the development server:
 (stripe-project)$ flask run
 ```
 
-Navigate to _http://localhost:5000_, and open up the JavaScript console (ctrl +shift + I). You should see the _sanity check_:
+Navigate to http://localhost:5000, and open up the JavaScript console (ctrl +shift + I). You should see the _sanity check_:
 
 ![Sanity Check](images/sanity_check.png)
+
+## Handling AJAX
 
 Let us add a new route to handle the [AJAX](https://www.w3schools.com/js/js_ajax_intro.asp) request:
 
@@ -300,7 +313,7 @@ def get_publishable_key():
     return jsonify(stripe_config)
 ```
 
-##### Create an AJAX request
+### Create an AJAX request
 
 We will use the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) to make an AJAX request to the new route `/config` endpoint.
 
@@ -322,7 +335,7 @@ A reposnse from a `fetch` request is a [ReadableStream](https://developer.mozill
 
 Now, after the page load, a call will be made to `/config`, which will respond with the Stripe publishable key. We'll then use this key to create a new instance of Stripe.js.
 
-#### Create Checkout Session
+### Create Checkout Session
 
 We need to attach an event handler to the button's click event which will send another AJAX request to the server to generate a new Checkout session ID.
 
@@ -411,6 +424,8 @@ Navigate to http://localhost:5000. Click the button and you should be redirected
 
 _My form is slightly modified and branded to have the orange-ish color. You can achive this through [Brand Setting](https://dashboard.stripe.com/settings/branding)._
 
+### Test the Checkout Session
+
 Stripe provides us with several [test card numbers](https://stripe.com/docs/testing#cards). Pick one, depending on your region and fill in the form:
 
 * Provide a valid email address
@@ -422,7 +437,7 @@ Stripe provides us with several [test card numbers](https://stripe.com/docs/test
 
 If all goes well, the payment should be processed. Nothing will happen after a successful process because we have not set a `/success` redirect yet. So, below that is what we will do.
 
-#### Redirecting User Appropriately
+### Redirecting A User Appropriately
 
 We will now add routes for successful payment processing or any cancellation. 
 
@@ -480,7 +495,7 @@ You can test out `/cancel` by clicking on the back arrow in the Stripe payment f
 
 ![Stripe Payment Form](images/stripe_payment_form.png)
 
-#### Configure Payments with Stripe Webhooks
+## Configure Payments with Stripe Webhooks
 
 Our app works well at this point, but we still can't programmatically confirm payments and perhaps run some code if a payment was successful. We already redirected the user to the success page after they check out, but we can't rely on that page alone since payment confirmation happens asynchronously.
 
@@ -494,7 +509,7 @@ We need to do three things in order to use webhooks:
 2. Test the endpoint using the [Stripe CLI](https://stripe.com/docs/stripe-cli)
 3. Register the endpoint with Stripe
 
-###### Endpoint
+### Endpoint
 
 Whenever a payment goes through successfully, we will print a message.
 
@@ -531,7 +546,7 @@ def stripe_webhook():
 
 `stripe_webhook` function now serves our webhook endpoint. Here, we are only looking for `checkout.session.completed` events which are called whenever a checkout is successful. You can use the same pattern for other [Stripe Events](https://stripe.com/docs/api/events).
 
-###### Test Your Webhook
+### Test Your Webhook
 
 We will use the Stripe CLI to test our webhook. First, install the Stripe CLI:
 
@@ -593,7 +608,7 @@ Stripe will now forward events to our endpoint. Once again, test for a successfu
 
 At this point, you can stop the `stripe listen --forward-to localhost:5000/webhook` process.
 
-##### Register Your Endpoint
+### Register Your Endpoint
 
 After deploying your app, you can register your endpoint in the stripe dashboard under _Developer > Webhooks_. Click on the button _Add Enpoint_.
 
