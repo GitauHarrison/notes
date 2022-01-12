@@ -6,13 +6,13 @@ If you have been to [Stack Overflow](https://stackoverflow.com/), and at one poi
 
 You can achieve this same feature in your Flask web app. Below, you will learn how to integrate markdown preview on the client side and also how to handle rich text in the server.
 
-### Create Your Form
+## Create Your Form
 
 Since we want to have the ability to edit a post or comment in markdown, we will need to create a Flask form. If you are not aware of how to do this, check out how you can [create one here](recaptcha.md).
 
 ![Flask Form](images/successful_reCaptcha.png)
 
-### Rich Text Client Preview
+## Rich Text Client Preview
 
 > `Rich` is a Python library for writing rich text (with color and style) to the terminal, and for displaying advanced content such as tables, markdown, and syntax highlighted code.
 
@@ -28,7 +28,7 @@ $ pip3 install flask-pagedown
 
 The `flask-pagedown` extension needs to be registered in our application instance:
 
-app/__init__.py: Register pagedown extension
+`app/__init__.py: Register pagedown extension`
 ```python
 from flask_pagedown import PageDown
 
@@ -38,7 +38,7 @@ pagedown = PageDown(app)
 
 The Editor is supported through two Javascript files. To include these files in your HTML document, you will need to call `pagedown.html_head()` from inside the `<head>` element of your page:
 
-app/templates/base.html: Include pagedown in template
+`app/templates/base.html: Include pagedown in template`
 ```html
 {% block head %}
     {{ super() }}
@@ -47,7 +47,7 @@ app/templates/base.html: Include pagedown in template
 ```
 The Javascript files are loaded from a CDN, the files do not need to be hosted by your application.
 
-##### Updating Our Form with `PageDownField`
+## Update Form with `PageDownField`
 
 The extesion exports a `PagDownField` which is very similar to and works exactly as `TextAreaField`:
 
@@ -65,7 +65,7 @@ class CommentForm(FlaskForm):
 ```
 That's it! You should be able to have a client-side comment preview right below the Comment box.
 
-### Handling Rich Text in the Server
+## Handling Rich Text in the Server
 
 When the form is submitted, only the raw Markdown text is sent with the POST request; the HTML preview that is shown on the page is discarded. Sending the generated HTML preview is a security risk as an attacker can easily construct HTML sequences which don't match the markdown source and submit them. To avoid any risks, only the Markdown source text is submitted, and once in the server it is converted again to HTML using Markdown, a Python Markdown-to-HTML converter.
 
@@ -81,7 +81,7 @@ Comment conversion can be done in the `_comments.html` subtemplate, but it is in
 
 The HTML code for the rendered blog post is cached in a new field added to the Comment model that the template can access directly. The original Markdown source is also kept in the database in case the post needs to be edited.
 
-##### Update the Comment Table
+## Update the Comment Table
 
 ```python
 class Comment(db.Model):
@@ -123,7 +123,7 @@ $ flask db upgrade
 
 With our database updated, we will now replace `comment.body` with `comment.body_html` in the template when available:
 
-app/templates/_comments.html: Use HTML version in post body
+`app/templates/_comments.html: Use HTML version in post body`
 ```html
 <span> 
     {% if post.body_html %}
@@ -140,9 +140,9 @@ Reload your page and try to post a new comment with markdown syntax:
 
 ![Enabled Markdown Styling](images/enabled_md_styling.png)
 
-##### Update Your Requirements
+## Update Project Dependencies
 
-Run:
+Ensure you update your project requirements:
 ```python
 $ pip3 freeze > requirements.txt
 ```

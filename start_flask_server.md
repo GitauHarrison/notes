@@ -51,7 +51,7 @@ touch app/__init__.py app/routes.py app/errors.py # Create the files in the app 
 
 The `.gitignore` file is used to ignore the files that we don't want to be tracked by `git`. Find out what Python files you wont need to be tracked by `git` by looking at the [gitignore](https://github.com/github/gitignore/blob/master/Python.gitignore) file.
 
-### Create and Activate a Virtual Environment
+## Create and Activate a Virtual Environment
 
 During the development of this simple Flask application, we will need to install a few packages. We will create and activate a virtual environment. Virtual environments help isolate the needs of your application from that of your system. It also helps isolate one project's needs from another. 
 

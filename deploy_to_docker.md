@@ -82,7 +82,7 @@ The `EXPOSE` command configures the port that the container will be using for it
 
 The `ENTRYPOINT` command defines the default command that should be executed when the container is started. This is the command that will start the web server. To keep things well organized, we will now make a separate `boot.sh` script file:
 
-boot.sh: Docker container start up script
+`boot.sh: Docker container start up script`
 ```python
 #!/bin/sh
 source beautiful_flask_tables/bin/activate
@@ -346,3 +346,4 @@ Your image should be now publicly available. Feel free to document how to instal
 This was a great lesson. I hope you enjoyed it. There are more deployment methods you can use to get your application up and running. I recommend that you check out others such as:
 
 - [Heroku](deploy_to_heroku.md)
+- [Linode](deploy_to_linode.md)

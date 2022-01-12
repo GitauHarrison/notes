@@ -31,7 +31,7 @@ There are a couple of steps we need to follow to ensure that we have configured 
 * Download and install `Elasticsearch`
 * Start the `Elasticsearch` service
 
-### Install Necessary Packages
+## Install Necessary Packages
 Since Elasticsearch runs on top of Java, you need to install the Java Development Kit (JDK). You can check if Java is installed by running this command in your terminal:
 
 ```python
@@ -50,7 +50,7 @@ Then next step would be to allow access to our repositories via HTTPS. Therefore
 $ sudo apt install apt-transport-https
 ```
 
-### Download and Install `Elasticsearch`
+## Download and Install `Elasticsearch`
 
 First, update the GPG Key for the Elasticsearch repository using the wget command to pull the public key:
 
@@ -69,7 +69,7 @@ $ sudo apt update
 $ sudo apt install elasticsearch
 ```
 
-### Start Elasticsearch
+## Start Elasticsearch
 Elasticsearch does not run until you start it. Also, when you reboot your machine, you need to rerun the elasticsearch service since it does not start automatically. 
 
 To reload the `systemd` configuration, run:
@@ -94,7 +94,7 @@ At this point, elasticsearch will start everytime you reboot your system. To tes
 ```
 You should be able to see JSON formatted data displayed in your terminal. Alternatively, paste http://localhost:9200/ to youre browser's address bar. JSON data will be dumped on your screen.
 
-### Testing
+## Testing
 Create a virtual environment and install `elasticsearch` in this environment:
 
 ```python

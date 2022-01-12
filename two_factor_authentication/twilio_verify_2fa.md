@@ -18,7 +18,7 @@ Kindly note that you will need these before you proceed:
 * A Twilio account. Create a [free account](https://www.twilio.com/try-twilio?promo=WNPWrR) now.
 * Python 3.5+
 
-### Service Setup
+## Service Setup
 
 Once you have an account, 
 * Navigate to [Twilio Console](https://www.twilio.com/console). 
@@ -39,11 +39,11 @@ I have shown you the _Service ID_. However, this should be secret. I am not worr
 
 Copy all these somewhere because you will need them for your project.
 
-### Flask App with User Login
+## Flask App with User Login
 
 This project assumes you know a bit about Flask and Python. If you are new, you will need to start [here](personal_blog.md).
 
-#### Project Structure
+## Project Structure
 
 We will use this structure:
 
@@ -99,7 +99,7 @@ Once you have completed creating this project structure, move into _project_fold
 $ cd project_folder
 ```
 
-#### Create Virtual Environment
+## Create Virtual Environment
 
 Virtual environments allow you to isolate the project requirements from that of your Operating System. You need to create and activate it:
 
@@ -141,7 +141,7 @@ From your root directory (project_folder), update your `requirements.txt` to con
 (twilio_verify)$ pip3 freeze > requirements.txt
 ```
 
-#### Build Initial Project
+## Build Initial Project
 
 Let us make sure that the structure shown at the beginning of the article works by building a minimalist application:
 
@@ -200,7 +200,7 @@ You should see this:
 
 ![Test](/images/twilio_verify/test.png)
 
-#### Database Configuration
+## Database Configuration
 
 Our application will allow new users to register and current users to login. Let us implement this now. This information will be hosted by our SQLite database. 
 
@@ -302,7 +302,7 @@ INFO  [alembic.runtime.migration] Running upgrade  -> 9d3452db7add, user table
 
 These are the steps we will follow every time we want to make changes to our database.
 
-#### User Login
+## User Login
 
 User login will involve finding an existing user in the database and retrieving that information. Flask provides `flask-login` which is responsible for handling all user login needs. 
 
@@ -556,7 +556,7 @@ def home():
 ```
 ![Login](/images/twilio_verify/login_required.png)
 
-#### User Registration
+## User Registration
  
 Next, we well create a route that handles user registration:
 
@@ -659,7 +659,7 @@ After a successful registration and login, a user will be redirected to the home
 
 ![Home Page](/images/twilio_verify/home.png)
 
-### User Profile Page
+## User Profile Page
 
 ![User Profile](/images/twilio_verify/better_user_profile.png)
 
@@ -686,7 +686,7 @@ To make the profile page more interesting, we will add:
 * About Me 
 * User Avatar
 
-#### User Avatar
+### User Avatar
 
 We will use the [Gravatar](http://gravatar.com/) service to provide user images. It is actually simple to use. To request an image for a given user, an email is required. 
 
@@ -763,7 +763,7 @@ def user(username):
 
 ```
 
-#### Last Seen and About Me
+### Last Seen and About Me
 
 Let's extend out database to support this new feature:
 
@@ -911,7 +911,7 @@ Add a link to update profile in the `user.html` template:
 
 ![Edit Profile](/images/twilio_verify/edit_profile.png)
 
-### Integrate Twilio Verify
+## Integrate Twilio Verify
 
 Implementation of Twilio Verify works in two steps:
 
@@ -919,7 +919,7 @@ Implementation of Twilio Verify works in two steps:
 2. That code is verified by the application
 
 
-#### Send Verification Code
+### Send Verification Code
 
 Hopefully you have your _Twilio Account SID_, _Twilio Auth Token_ and _Service SID_. To demonstrate how the Twilio Verify API works, we will run the commads below in our Python shell:
 
@@ -932,7 +932,7 @@ Hopefully you have your _Twilio Account SID_, _Twilio Auth Token_ and _Service S
 
 Check your phone. You should receive an text message notification.
 
-#### Verify Code Received
+### Verify Code Received
 
 This is done on the flask application with another call into the Twilio Verify API.
 
@@ -945,7 +945,7 @@ This is done on the flask application with another call into the Twilio Verify A
 'approved'
 ```
 
-#### Add Twilio Credentials
+### Add Twilio Credentials
 
 We will add the three Twilio credentials to our configuration file
 
@@ -1004,7 +1004,7 @@ TWILIO_AUTH_TOKEN=
 TWILIO_VERIFY_SERVICE_ID=
 ```
 
-#### Access Twilio Verify API
+### Access Twilio Verify API
 
 We will handle the access to Twilio Verify API in a separate module called `twilio_verify_api.py` in the _app_ folder. Let us create this module:
 
@@ -1066,7 +1066,7 @@ from app import twilio_verify_api
 
 ```
 
-#### Add Phone Number To User Database
+### Add Phone Number To User Database
 
 Since we will be sending verification codes to a user's phone number, it needs to be stored in the database so that the tokens can be sent out every time they log in.
 
@@ -1142,7 +1142,7 @@ We can display the option to enable or disable two factor authentication on the 
 
 ![2fa Link](/images/twilio_verify/2fa_link.png)
 
-#### Route to Handle Two-factor Authentication
+### Route to Handle Two-factor Authentication
 
 To access this feature from their profile, a user has to provide their phone number. We will therefore need a form to recieve a user's phone number. We will use the [`phonenumbers`](https://pypi.org/project/phonenumbers/) package to validate the phone number given by the user. Install it in your application and update `requirements.txt`.
 
@@ -1278,7 +1278,7 @@ To improve usability of the phone number form, considering that the users might 
 
 Country codes are shown; the phone number placeholder information is also displayed to help guide the user when they provide their phone numbers.
 
-#### Expand Login Logic
+### Expand Login Logic
 
 The login logic needs to be expanded to accomodate users with two-factor authentication enabled. 
 
@@ -1319,7 +1319,7 @@ We have postponed the login attempt to cater for users who have two-factor authe
 
 The “remember me” flag from the login form and the "next page" are added to the redirect URL as query string arguments, while the username and phone number for the user are stored in the user session to protect them against tampering.
 
-#### Token Verification Route
+### Token Verification Route
 
 The user needs to provide the token sent to their phone. This token will be captured by the application through a token verification form.
 
@@ -1402,7 +1402,7 @@ We have determined two states of a user:
 * The current user is logged in and is trying to request for two-factor authentication
 * The user is not logged in and is trying to log in
 
-#### Disable Two-factor Authentication
+### Disable Two-factor Authentication
 
 In the user's profile page, once two-factor authentication is enabled, the _disable two-factor authentication_ link is displayed. When this link is clicked, a disable two-factor authentication button is displayed. We need to create this button form.
 
@@ -1467,7 +1467,7 @@ We can now display this form to the user
 That's it!
 
 
-### Additional Concepts
+## Additional Concepts
 
 This application has both _email_ and _error_ modules. So far, we have not handled any of them. You can try to implement them in the application.
 

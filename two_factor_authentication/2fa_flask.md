@@ -2,7 +2,7 @@
 
 ![TOTP Demo](/images/2fa_flask/totp_demo.gif)
 
-### Overview
+## Overview
 
 Two-factor authentication is basically a method that requires a user of an application to provide two forms of identification before being allowed to use the application. These two methods may include:
 
@@ -13,7 +13,7 @@ In the event that the user's account is compromised, then an attacker will find 
 
 This application requires all users to use two-factor authentication.
 
-### Project Requirements
+## Project Requirements
 
 1. A smartphone 
 2. Access to Google Playstore or App Store
@@ -26,21 +26,21 @@ Search for either of these two TOTP apps:
 You are not limited to these two. You can use any other if you like. Why these apps? We will need them to scan the application's QR Code when we try to register a new user. The apps will consistently generate 30-seconds one-time passwords for us.
 
 
-### Testing
+## Testing
 
 If you would like to test this project out, consider checking the [hosted application](https://simple-2fa.herokuapp.com/) or [test it locally](https://github.com/GitauHarrison/how-to-implement-time-based-two-factor-auth-in-flask).
 
 To make the project a bit more complete, I have added features such as _password resets_ and _email verification_, though they have nothing to do with what we will do in this article.
 
 
-### Generall Rules About Passwords
+## General Rules About Passwords
 
 1. Never store a password in the database; rather store its hash
 2. Always use secure `HTTP` to transmit passwords
 3. Compare a user's password against its hash in the database when authenticating a user
 
 
-### Create project structure
+## Create project structure
 
 This is the structure we will follow:
 
@@ -100,7 +100,7 @@ $ git init
 
 We will use `git` to host our application in both GitHub and Heroku. If you have not set up `git` in your computer, learn how to do that [here](install_git.md). `git` allows you to work with both of GitHub's `ssh` and `http`. Find out what they are and how to use them [here](github_ssh.md).
 
-### Activate Virtual Environment
+## Activate A Virtual Environment
 
 While working on multiple prjects, it is recommended that you isolate the requirements of each project from that running in your Operating System. Virtual environments are for this purpose; they create a virtual environment that allows you to work on multiple and independent projects.
 
@@ -112,7 +112,7 @@ $ mkvirtualenv totp
 
 The `mkvirtualenv` command creates and activates the virtual environment called `totp` for you. Here, I have used `virtualenvwrapper` to help me manage my workflow. Virtualenvwrapper has many more commands that makes it easier to work with virtual environments. Follow [this guide](virtualenvwrapper_setup.md) to learn how to set up your machine to use `virtualenvwrapper`.
 
-### Application Dependencies
+## Application Dependencies
 
 This project will use several dependencies:
 
@@ -141,11 +141,11 @@ From your root directory (project_folder), update your `requirements.txt` to con
 (totp)$ pip3 freeze > requirements.txt
 ```
 
-### Build Project
+## Build Project
 
 Let's begin by creating an instance of our application:
 
-#### Application Instance
+### Application Instance
 
 `__init__.py: Application Instance`
 
@@ -188,7 +188,7 @@ I have created an instance of the flask application. Additionally, I have instan
 
 Our other modules are imported at the botton of the application instance to avoid the issue of circular dependencies.
 
-#### Application Configuration
+### Application Configuration
 
 From the application instance section above, you have seen `app.config["START_NGROK"]`. Here, we are referring to the data of `START_NGROK` variable which is found in the config file. All of the configurations needed to run our applications will be found in the `config.py` file. 
 
@@ -276,7 +276,7 @@ START_NGROK=1
 
 Our application is in development so we have set our flask environment to development. Every time we make changes to the application, flask's debugger actively detects those changes and loads them immediately due to the setting `FLASK_DEBUG=True`.
 
-#### Working with Database
+## Working with Database
 
 This application involves adding and loading a user from a database. we will now set up a database table called `User` to handle a user's data.
 
@@ -346,7 +346,7 @@ False
 True
 ```
 
-#### Web Forms
+## Web Forms
 
 A user registers for an account by providing their names, username and password.
 
@@ -408,7 +408,7 @@ class ResetPasswordForm(FlaskForm):
 
 ```
 
-#### Handling User Data
+## Handling User Data
 
 We will update our `routes.py` file with functions that handle each data group from the user.
 
@@ -519,7 +519,7 @@ Every time a user is authenticated, they are redirected to the home page. Otherw
 
 At this point, we need to complete setting up email support for our applicaiton. Our _route_ module has imported functions from the _email_ module such as `send_password_reset_email` which does not exist yet.
 
-#### Email Support
+## Email Support
 
 This is where we use `flask-mail`, already installed and imported at the beginning of this article. We will use it to allow users to request for password resets.
 
@@ -595,7 +595,7 @@ class User(UserMixin, db.Model):
 
 The `get_reset_password_token()` function returns a JWT token as a string, which is generated directly by the `jwt.encode()` function. Upon token verification, if the token is valid, then the value of the `reset_password` key from the token's payload is the ID of the user, so we can load the user and return it.
 
-#### Template Pages
+## Template Pages
 
 Note how we are using flask's `render_template` to return the `html` files that display our pages.
 
@@ -872,7 +872,7 @@ The 2fa Team
 
 A text version of the email template.
 
-#### Error Handling
+## Error Handling
 
 Currently, the _home_ route is accessed through `/home`. What happens when you try to access the _home_ route through `/home/`? Obviously, this will throw a 404 error because we do not have a page like that. Instead of our application displaying a rather scary and possibly too revealing an error message, we can catch it and redirect a user to an existing page. We need to update our _errors_ module to handle these eventualities.
 
@@ -982,7 +982,7 @@ if not app.debug and not app.testing:
 
 These error templates provide a polite message with a gently redirect link to the home page.
 
-#### Creating Migration Repository
+## Creating Migration Repository
 
 We will use SQLite database due to its convinience working with small applications. Flask-migrate becomes very handy at this stage.
 
@@ -1035,7 +1035,7 @@ This command applys the changes we have made. `flask db upgrade` does not make a
 
 _Every time we make changes to our database schema, we will be following the order of these commands to apply those changes._
 
-#### Run the Application
+## Run the Application
 
 With the application setup complete (we have not yet added two-factor authentication), we can test its functionality. On your terminal, run:
 
@@ -1045,11 +1045,11 @@ With the application setup complete (we have not yet added two-factor authentica
 
 You should be able to access localhost on http://127.0.0.1:5000/. Click this link or paste it on a new browser tab to see the output.
 
-### Two Factor Authentication
+## Two Factor Authentication
 
 I will use [`onetimepass`](https://github.com/tadeck/onetimepass/) package. There are other packages that implement TOTP algorithms. A simple search on [pypi](https://pypi.python.org/pypi?%3Aaction=search&term=totp&submit=search) will reveal them.
 
-#### Update the User Model
+### Update the User Model
 
 We will need to add a new field called `otp_secret` to our User model. This field will store the shared secret that the TOTP algorithm uses as input.
 
@@ -1106,7 +1106,7 @@ Since we have made some changes to the database schema, we need to generate and 
 (totp)$ flask db upgrade
 ```
 
-#### Authentication Logic
+### Authentication Logic
 
 An application can implement two-factor authentication in two ways:
 1. Making it optional
@@ -1158,7 +1158,7 @@ def two_factor_setup():
 
 The `two_factor_setup` validates whether there is a username in the user's session. If it exists, all it does is to render a two-factor setup page. The page tells the browser not to do any caching so as to prevent an attacker from getting access to the QR code which has time-based tokens .
 
-#### Display the QRCode Page
+### Display the QRCode Page
 
 The page includes a reference the the QRcode image, but the url to this image is not the usual image link. 
 
@@ -1223,7 +1223,7 @@ The information stored in the QR codes is the URL that contains TOTP data. This 
 
 We ensure that the browser does not cache the page by including some headers.
 
-#### Login Token
+### Login Token
 
 We now need to include a token field in our _Login_ page.
 
@@ -1263,7 +1263,7 @@ We have added `user.verify_totp()` to check tokens using the `onetimepass` packa
 
 That's it! You now have a mandatory two-factor authentication set up in your flask application.
 
-### Deployment
+## Deployment
 
 Heroku is a free Platform-as-a-Service which you can use to deploy your application. I have previously covered [how to deploy an app to Heroku](deploy_to_heroku.md) in another article. The method is exactly the same, with a few modifications to suite this app's features.
 
@@ -1284,6 +1284,6 @@ In summary, this is what you will need to do to deploy your app to Heroku:
 11. Push to Heroku (`$ git push heroku master`)
 
 
-### Optional Two-factor Authentication in Flask
+## Optional Two-factor Authentication in Flask
 
 Want to see how to implement optional two-factor authentication in a flask app? Read more [here](twilio_verify_2fa.md).

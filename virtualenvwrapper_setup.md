@@ -1,4 +1,4 @@
-# How to configure Python Environment to use Virtualenv Wrapper
+# Configure Python Environment to use Virtualenvwrapper
 
 Working on a python project in an isolated python environment is recommended so that python modules and packages don’t meddle with that of other projects or even that of the operating system. Thus, a virtual environment is needed eminently.
 

@@ -184,7 +184,7 @@ You should be able to see this:
 ![Home Page](images/file_uploads/home_page_form.png)
 
 
-## Add A Database to Flask
+## Working With a Database
 
 If you try to use the form and click 'Update', you will notice that there is nothing happening. It will be nice that the form sends the user data to a database which will then allow us to retrieve whatever we want. To do so, we will create a `models` module in our application instance. This module will contain the `User` model.
 

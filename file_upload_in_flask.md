@@ -2,7 +2,7 @@
 
 Most web application allow for file uploads. In this article, I will show you how you can implement that feature in a flask app.
 
-### Flask Application Structure
+## Flask Application Structure
 
 ![App structure](/images/file_upload_structure.png)
 
@@ -13,7 +13,7 @@ $ mkdir my_new_project # this creates an empty directory in the current working 
 $ touch my_new_project/my_new_file # this creates an empty file in the new directory
 ```
 
-### Useful dependancies
+## Useful dependancies
 
 Make sure to be working in a virtual environment before you begin the project. Create and activate your virtual environment as follows:
 
@@ -41,7 +41,7 @@ Other useful dependancies can be:
 (venv)$ pip3 install python-dotenv # load flask environment variables
 ```
 
-#### What We Will Do
+## What We Will Do
 
 This article covers:
 
@@ -50,9 +50,9 @@ This article covers:
 3. Securing uploaded files
 4. Consuming uploaded files
 
-**NOTE: The assumption is you have a basic understanding of how to create forms manually, as I will not be reviewing manual creation of forms, but rather focus on how to render forms that are styled using `flask-bootstrap`.**
+_NOTE: The assumption is you have a basic understanding of how to create forms manually, as I will not be reviewing manual creation of forms, but rather focus on how to render forms that are styled using `flask-bootstrap`._
 
-### 1. Acccepting File Uploads
+## 1. Acccepting File Uploads
 
 Let us set up our application to display a flask web form as follows:
 
@@ -227,7 +227,7 @@ You should be able to see this:
 ![Accepting File Uploads](/images/accepting_file_uploads.png)
 Browse the compelete code [here](https://github.com/GitauHarrison/handling-file-uploads-in-flask/commit/40a9928c1c978b7fcf878cb33dd3a0b9874a77f0).
 
-### 2. File Submissions in Flask
+## 2. File Submissions in Flask
 
 Form fileds in `Flask` are generally accessed used using `request.form` dictionary. For file fields, `request.files` is used.
 
@@ -259,7 +259,7 @@ Reload your page and choose a file by clicking the _Choose File_ button. Hit the
 
 Browse the file submission code [here](https://github.com/GitauHarrison/handling-file-uploads-in-flask/commit/3fb49d3f3c46aba655cee2aed76252da4223fefd).
 
-### 3. File Upload Security
+## 3. File Upload Security
 
 A rule of thumb when building web application is that data submitted by clients should never be trusted. Hence, the need for strict form validation. This data could maliciously be intended to crash the server by because the file is too large that the disk space in the server is completely filled, or the file is named in a manner that it tricks the server into rewriting system configuration files.
 
@@ -269,7 +269,7 @@ Basic steps we can take to protect our application would be:
 * Validating the names of the uploaded files
 * Scanning the file content before submission
 
-#### Limit File Size
+### Limit File Size
 
 Flask provides an option to limit the file size a client can upload. In `config.py`, we can add this configuration:
 
@@ -278,7 +278,7 @@ MAX_CONTENT_LENGTH = 1024 * 1024 # equal to 1 MB
 ```
 If you try to upload a file larger than 1 MB, the application will now refuse it. The server will return a `413` Request Entity Too Large error because the data value transmitted exceeds the capacity limit.
 
-#### Validating Filenames
+### Validating Filenames
 
 We can implement very simple form validation to check that the file extension used by clients are accepted by the application. `flask-wtf` provides validators such as `FileAllowed` and `FileRequired` when creating forms. Look at the example below:
 
@@ -380,7 +380,7 @@ class Config(object):
 
 ```
 
-#### Validate File Content
+### Validate File Content
 
 Say your application allows only for __image files__ to be uploaded. It is possible to first check the content of the uploaded file before accepting it.
 
@@ -514,7 +514,7 @@ To display the loaded files, we need to loop through all available content in th
 
 When you reload your page, you should be able to see tumbnails of the images from your _uploads_ directory.
 
-### The Miracle of Dropzone.js
+## The Miracle of Dropzone.js
 
 [dropzone.js](https://www.dropzonejs.com/) is a popular upload client. So far, we have been using default browser widget to do the uploading. This JS client has the ability to show upload progress when uploading file, a useful feedback especially when uploading large files.
 

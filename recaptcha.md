@@ -4,25 +4,25 @@ reCAPTCHA is a free service from Google that helps protect websites from spam an
 
 ![reCaptcha](images/recaptcha_logo.png)
 
-##### Overview
+## Overview
 
 To start using reCAPTCHA, you need to sign up for an API key pair for your site. The key pair consists of a site key and secret key. The site key is used to invoke reCAPTCHA service on your site or mobile application. The secret key authorizes communication between your application backend and the reCAPTCHA server to verify the user's response. The secret key needs to be kept safe for security purposes.
 
-##### Things You Will Do
+### Things You Will Do
 
 1. Build a simple flask form
 2. Sign Up for an API key pair
 3. Choose the type of reCAPTCHA and fill in authorized domains or package names
 4. Integrate reCAPTCHA into the form
 
-### Build a Simple Flask Form
+## Build a Simple Flask Form
 
 During this tutorial, you will learn how to integrat reCAPTCHA to a form, because that is where you want to manage user interactions with your app. We will use the structure below to guide us on how to create our simple flask form:
 
 ![reCaptcha Project Structure](images/reCaptcha_project_structure.png)
 
 
-##### Project Structure
+### Project Structure
 
 So let us go ahead and create this project structure:
 
@@ -63,7 +63,7 @@ In order for us to install all these packages and the dependancies, it is recomm
 
 We will use `pip` to install all our dependancies. Learn what `pip` is [here](https://pypi.org/project/pip/).
 
-##### Create Virtual Environment
+### Create Virtual Environment
 
 To create a virtual environment, we will use a virtual environment wrapper to not only create but also to activate it.
 
@@ -90,7 +90,7 @@ If you are not familiar with `virtualenvwrapper`, learn how you can install it i
 
 From now, we will be working within our new virtual environment to really isolate our app during development.
 
-##### Install Flask
+### Install Flask
 
 
 
@@ -114,7 +114,7 @@ This should not scare you, rather you should take your time to read the warning 
 
 As soon as `flask` is installed, we need to register it in our application.
 
-app/__init__.py: Create application instance
+`app/__init__.py: Create application instance`
 ```python
 from flask import Flask
 
@@ -125,7 +125,7 @@ from app import routes
 
 We have imported our `routes` module at the bottom of our app as a walkaround to _circular imports_ which is a common problem in Flask. Let us now create a _view function_ which will handle the URL to our form.:
 
-app/routes.py: Form Page
+`app/routes.py: Form Page`
 ```python
 from app import app
 from flask import render_template
@@ -147,7 +147,7 @@ def comments():
 
 We need to register these two dependancies in our application instance as below:
 
-app/__init__.py: Register Bootstrap
+`app/__init__.py: Register Bootstrap`
 ```python
 from flask import Flask
 # new
@@ -163,7 +163,7 @@ moment = Moment(app)
 from app import routes
 ```
 
-##### Create Page Templates
+### Working With Templates
 
 Now we can create our base template for the application:
 
@@ -240,7 +240,7 @@ app/templates/comments.html: Display comments form
 </div>
 {% endblock %}
 ```
-##### Create a Form
+### Create a Form
 
 First and foremost, we need to configure our app to protect it from an attack called [CSRF](https://en.wikipedia.org/wiki/Cross-site_request_forgery) (Cross-Site Request Forgery), pronounced as 'seasurf'. The Flask-WTF extension uses it to protect web forms against this nasty attack.
 
@@ -256,7 +256,7 @@ Flask and some of its extensions use the value of the secret key as a cryptograp
 
 We need to tell Flask to apply and use SECRET_KEY. To do this, we will register our configuration in the application instance:
 
-app/__init__.py
+`app/__init__.py`
 ```python
 # previous imports
 
@@ -278,7 +278,7 @@ Flask provides `flask-wtf` which handles all the form requirements. We need to i
 
 We will use attributes from `flask-wtf` to create all aspects of our form: 
 
-app/forms.py
+`app/forms.py`
 ```python
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField
@@ -298,7 +298,7 @@ Due to the email field in our form, flask expects us to install `email-validator
 
 We need to register the form we have created in the `comments` view function which will be responsible of displaying the form:
 
-app/routes.py: Register form in view function
+`app/routes.py: Register form in view function`
 
 ```python
 from app.forms import CommentForm
@@ -324,11 +324,11 @@ From our view function above, you can see that I have introduced two new things:
 
 These two variables are responsible for handling the input data from the form and updating our database tables. In a subsequent section below, I will explain how to work with databases.
 
-##### Adding Flask Environment Variables
+## Adding Flask Environment Variables
 
 Flask requires us to create our appication  in the `app.py` file. We need to provide the FLASK_APP environment variable which stores the `app.py` file. Update the file as below:
 
-app.py: Location of Flask application
+`app.py: Location of Flask application`
 
 ```python
 from app import app
@@ -339,14 +339,14 @@ Then install the `python-dotenv` dependancy to help us handle all the flask envi
 ```
 We will store all the flask environment variables in the `.flaskenv` file we had created ealier. Add these variables to the file:
 
-.flaskenv: Flask environment variables
+`.flaskenv: Flask environment variables`
 ```python
 FLASK_APP=app.py
 FLASK_ENV=development
 FLASK_DEBUG=True
 ```
 
-##### Working with Databases
+## Working with Databases
 
 For the purposes of this simple project, I will resort to use the SQLite database. There are other databases that can be used but for simplicity and for being light, I will use SQLite. There are two dependancies we will need in order to work with SQLite. Go ahead and install them:
 
@@ -360,7 +360,7 @@ For the purposes of this simple project, I will resort to use the SQLite databas
 
 As seen before during each import of a dependancy, we need to register the dependancy to the app:
 
-app/__init__.py
+`app/__init__.py`
 
 ```python
 # previous imports
@@ -376,7 +376,7 @@ from app import routes, models
 ```
 We need to update our configurations to effect this new change:
 
-config.py: Flask SQLAlchemy configuration
+`config.py: Flask SQLAlchemy configuration`
 
 ```python
 import os
@@ -389,11 +389,11 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 ```
 
-##### Database Models
+### Database Models
 
 Now, we will create two tables that will will handle user input plus their actual comment. This comment will be displayed within the app right above our comments form.
 
-app/models.py: Create user table
+`app/models.py: Create user table`
 ```python
 from app import db
 from hashlib import md5
@@ -427,7 +427,7 @@ SQLite saves the database tables locally in a disk by creating a _migration dire
 
 We now have a `user` table which will store a user's _username_ and _email_ information. Next, we need to store the user's comment. We will create a `comment` table:
 
-app/models.py: Create comment table
+`app/models.py: Create comment table`
 ```python
 # previous code
 
@@ -443,7 +443,7 @@ class Comment(db.Model):
 
 Because a comment belongs to a user, we need to show the relationship between the `Comment` table and `User` table. Relational databases excel at creating relationships hence this makes it easier for us to implement relationships between tables:
 
-app/models.py
+`app/models.py`
 
 ```python
 class User(db.Model):
@@ -471,7 +471,7 @@ Phew! That was a lot of new stuff put down right there. To understand what is do
 
 Make sure you update your `routes.py` file to include the form and database tables:
 
-app/routes.py: Updated view function
+`app/routes.py: Updated view function`
 
 ```python
 from app import app, db
@@ -499,7 +499,7 @@ At this point, this is what we have:
 
 ![Form Page](images/recaptcha_form_display.png)
 
-##### Show User Post
+## Show User Post
 
 We have all we need for our reCaptcha app to work. Just a few more things to go:
 
@@ -512,7 +512,7 @@ Let us add a `_comments.html` subtemplate which we will include in our `comments
 (recaptcha_project) gitau@harry:~/recaptcha_project$ touch app/templates/_comments.html
 ```
 
-app/templates/_comments.html
+`app/templates/_comments.html`
 
 ```html
 <table class="table table-hover">
@@ -536,7 +536,7 @@ app/templates/_comments.html
 ```
 Add `_comments.html` to your main `comments.html` template as below:
 
-app/templates/comments.html
+`app/templates/comments.html`
 
 ```html
 {% extends 'base.html' %}
@@ -563,7 +563,7 @@ At this point all our posts can be seen in our simple app:
 
 ![Display Post](images/display_recaptcha_posts.png)
 
-### Integrate Google reCaptcha
+## Integrate Google reCaptcha
 
 In order to integrate Google reCAPTCHA in our app, we need to register a site and get an API key pair. Google provides four types of reCAPTCHA.
 
@@ -578,7 +578,7 @@ In order to integrate Google reCAPTCHA in our app, we need to register a site an
 
 For now, we will make use of reCAPTCHA v2 to validate requests in our app. If you do not have a [Google Account](https://accounts.google.com/signup/v2/webcreateaccount?flowName=GlifWebSignIn&flowEntry=SignUp), you need to create one. 
 
-##### Things You Need To Do
+### Things You Need To Do
 
 1. Visit [reCaptcha Home Page](https://www.google.com/recaptcha/about/)
 2. Click on [Admin Console](https://www.google.com/recaptcha/admin/create)
@@ -593,7 +593,7 @@ For now, we will make use of reCAPTCHA v2 to validate requests in our app. If yo
 
 Upon creation, you will get the registered site API keys. We will add these two keys to our `config.py` file:
 
-config.py: reCaptcha Keys
+`config.py: reCaptcha Keys`
 
 ```python
 class Config(object):
@@ -608,7 +608,7 @@ Note that you need to name your variables as RECAPTCHA_PUBLIC_KEY and RECAPTCHA_
 
 You will then need to add the reCaptcha js file in `base.html` as done below:
 
-app/templates/base.html
+`app/templates/base.html`
 
 ```html
 <!-- Scripts Section -->
@@ -622,7 +622,7 @@ app/templates/base.html
 
 Since reCaptcha is part of our from, we need to update our `form.py` file to include reCaptcha:
 
-app/form.py
+`app/form.py`
 ```python
 from flask_wtf import FlaskForm, RecaptchaField
 # previous imports
@@ -645,14 +645,14 @@ You can update the strength of your reCaptcha in the settings.
 
 ![Strong reCaptcha](images/strong_reCaptcha.png)
 
-##### Update your requirements.txt
+## Update Your Dependencies
 
-With all that work, remember to update your requirements.txt file to include all the dependancies you have used while building this app
+With all that work, remember to update your `requirements.txt` file to include all the dependancies you have used while building this app
 
 ```python
 (recaptcha_project) gitau@harry:~/recaptcha_project$ pip3 freeze > requirements.txt
 ```
-### Next:
+## Next:
 
 * Learn how you can improve your form by allowing markdown editing [here](handling_rich_text.md).
 * Learn how to test your application on localhost from multiple devices [here](localhost_testing.md)

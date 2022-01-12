@@ -37,7 +37,7 @@ These are the steps we will follow to create our chatbot:
 4. Build our application
 5. Test our application
 
-#### 1. Create Application Structure
+### 1. Create Application Structure
 Our project will use a very simple structure:
 
 ![WhatsApp chatbot structure](/images/whatsapp_chatbot/chatbot_structure.png)
@@ -45,7 +45,7 @@ Our project will use a very simple structure:
 Go ahead and create your project structure using the `mkdir` and `touch` commands in your terminal to create folders and empty files respectively.
 
 
-#### 2. Create and Activate Virtual Environment
+### 2. Create and Activate Virtual Environment
 
 To ensure that we do not clutter our Operating System, we will create and activate a virtual environment:
 
@@ -56,7 +56,7 @@ $ mkvirtualenv whatsapp_chatbot
 I have used a `virtualenvwrapper` to create my virtual environment. If you are not familiar with `virtualenvwrapper`, learn what it is and how to use it [here](virtualenvwrapper_setup.md).
 
 
-#### 3. Install Dependancies
+### 3. Install Dependancies
 
 It is now recommended to install the dependancies needed for this project inside your virtual environment. These dependencies are:
 
@@ -75,7 +75,7 @@ To install all of them at once, run:
 For the purposes of demonstration, I have kept this application very simple. All the chatbot does is to determine if two select words come in the conversation. Whenever a user's message includes the word 'quote', the chatbot will respond by giving a random quote. If the user's sentence includes the word 'cat', then an image of cat will be the response from the chatbot. What do you think will happen when a user sends a message that has both words?
 
 
-#### 4. Build Application
+### 4. Build Application
 
 Let us now build our application:
 
@@ -145,7 +145,7 @@ Before we can run this application, we need to update `bot.py` file as follows:
 from app import app
 ```
 
-#### 5. Test Application
+### 5. Test Application
 
 Envrionment variables are run before our application. Every time we fire up our server, these variables need to be run first. So, what environment variables are these?
 
