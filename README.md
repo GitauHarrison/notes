@@ -17,7 +17,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 13. [Add File Uploads to Database](upload_files_to_database.md)
 14. [Build a simple WhatsApp chatbot using Flask and Twilio](whatsapp_chatbots/simple_whatsapp_chatbot.md)
 15. [Build a video call application using Flask and Twilio](video_call_app/simple_video_call_app.md)
-16. [Deploy flask app in docker containers](docker_deployment.md)
+16. [Deploy flask app in docker containers](deploy_to_docker.md)
 17. [Simple 2FA in flask](two_factor_authentication/2fa_flask.md)
 18. [Enable/disable 2fa in flask using Twilio Verify API](two_factor_authentication/twilio_verify_2fa.md)
 19. [Push Notication 2fa in flask using Python](two_factor_authentication/twilio_authy.md)
@@ -28,7 +28,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 24. [Starting a Flask Server](start_flask_server.md)
 25. [Comment moderation in Flask](comment_moderation.md)
 26. [Load multiple users in flask](load_multiple_users.md)
-27. [How to host your flask application on linode](linode_hosting.md)
+27. [How to host your flask application on linode](deploy_to_linode.md)
 
 I also make a note of some of the cool projects I have built or I have been involved in. You can find these projects below. Some may be in progess while others may be completed:
 
