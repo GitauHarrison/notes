@@ -1,6 +1,6 @@
 # Install Elasticseacrch with Debian Package (Ubuntu 20.04)
 
-### Install Necessary Packages
+## Install Necessary Packages
 
 Since `Elasticsearch` runs on top of `Java`, you need to install the Java Development Kit (JDK). You can check if Java is installed by running this command in your terminal:
 
@@ -20,7 +20,7 @@ Run `$ java -version` to check that `java` is installed. Then, allow access to y
 $ sudo apt install apt-transport-https
 ```
 
-### Download and Install Elasticsearch
+## Download and Install Elasticsearch
 
 First, update the GPG Key for the Elasticsearch repository using the `wget` command to pull the public key ([from the documentation now](https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html)):
 
@@ -40,7 +40,7 @@ $ sudo apt update
 $ sudo apt install elasticsearch
 ```
 
-### Start `elasticsearch`
+## Start `elasticsearch`
 
 Elasticsearch does not run until you start it. Also, when you reboot your machine, you need to rerun the `elasticsearch` service since it does not start automatically. To reload the `systemd` configuration, run:
 
@@ -70,7 +70,7 @@ $ curl localhost:9200
 
 This completes the setup, installation and how to start the elasticsearch service. Now you can try running your commands on the terminal and everything should work fine.
 
-**Example Commands**:
+Example Commands in your Python interpreter:
 
 ```python
 >>> from datetime import datetime
