@@ -1,9 +1,19 @@
 # How to Install and Configure Git in Ubuntu
 
-It is best to install `git` from the Ubuntu Software repository. This tutorial is based on Ubuntu 20.04. Run the following commands in your terminal following the order below:
-<br>
+## Overview
+
+> Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
+
+Every Git clone is a full-fledged repository with complete history and full revision tracking capabilities, not dependent on network access or a central server. Branching and merging are fast and easy to do.
+
+Typically, Git is used with hosting services such as GitHub, GitLab, Bitbucket, among others. They all offer distributed version control services. Unlike Git, which is strictly a commandline tool, GitHub, and the likes, provides a web-based graphical interface for 'version control'. This allows for collaboration and sharing of projects among people or groups of people.
 
 ## Installation
+
+Before you start using Git, you have to make it available on your computer. Even if it’s already installed, it’s probably a good idea to update to the latest version. You can either install it as a package or via another installer, or download the source code and compile it yourself.
+
+In this tutorial, I will recommend installing `git` from the Ubuntu Software repository. This tutorial is based on Ubuntu 20.04. Run the following commands in your terminal following the order below:
+<br>
 
 ### Step 1
 
