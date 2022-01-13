@@ -11,7 +11,7 @@ You can connect and authenticate to remote serves such as GitHub without supplyi
 $ ls -al ~/.ssh
 ```
 
-This lists all your available `SSH` keys. Check to see if you have an public `SSH` key. The file naming, by default, could be as follows:
+This lists all your available `SSH` keys. Check to see if you have a public `SSH` key. The file naming, by default, could be as follows:
 
 ```
 id_rsa.pub
@@ -50,7 +50,7 @@ $ ssh-add ~/.ssh/id_rsa
 
 ## Adding your `SSH` key to your GitHub account
 
-Copy your `ssh` key to your clipboard [ctrl + shift + C from your terminal]. **Make sure not to add newlines or whitespaces while you copy to the clipboard** as  shown below:
+Copy your `ssh` key to your clipboard (ctrl + shift + C from your terminal). **Make sure not to add newlines or whitespaces while you copy to the clipboard** as  shown below:
 
 ```python
 $ sudo apt install xclip
@@ -64,7 +64,9 @@ This copies the content of the _id_rsa.pub_ file to your clipboard. You can subs
 
 <br>
 
-_If this method does not work for you, consider doing the following:_
+## Short and Easy Method
+
+_If the method above does not work very well for you, consider doing the following:_
 
 1. Generate SSH key using:
     ```python
@@ -73,6 +75,9 @@ _If this method does not work for you, consider doing the following:_
 2. Copy the output of the command below to your clipboard: 
     ```python
     $ cat ~/.ssh/id_rsa.pub
+
+    # This will display the key in your terminal
+    # Make sure not to add newlines or whitespaces
     ```
 3. Paste the above-copied output to the form at https://github.com/settings/ssh/new.
 <br>
