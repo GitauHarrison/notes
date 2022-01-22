@@ -1,6 +1,6 @@
 # Starting a Flask Server
 
-Before we can start a Flask server, we need to understand what Flask is. [Flask](https://flask.palletsprojects.com/en/2.0.x/) is a micro-framework for the web. A framework is a collection of code (software) that can be used to build web applications. As a developer, you don't need to start from scratch when you can make good use of tools designed to help you with your projects.
+Before we can start a Flask server, we need to understand what Flask is. [Flask](https://flask.palletsprojects.com/en/2.0.x/) is a micro-framework for the web. A framework is a collection of code (software) that can be used to build web applications. As a developer, you don't need to start from scratch (all the time) when you can make good use of tools designed to help you with your projects.
 
 The 'micro' in Flask may be a bit misleading, but the good folks at Flask have taken their time to clarify this:
 
@@ -8,9 +8,9 @@ The 'micro' in Flask may be a bit misleading, but the good folks at Flask have t
 
 ## Creating a Flask Application
 
-We need to create an application before we can start a Flask server. The application is the main object that holds all the information about the web application we want to build. 
+We need to create an application before we can start a Flask server. The application is the main object that holds all the information about what we want to build. 
 
-You can browse the project on GitHub [here](https://github.com/GitauHarrison/starting-a-flask-server).
+You can browse the completed project on the GitHub repository [Start a flask server](https://github.com/GitauHarrison/starting-a-flask-server).
 
 ### Project Strucutre
 

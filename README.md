@@ -30,6 +30,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 26. [Load multiple users in flask](load_multiple_users.md)
 27. [How to host your flask application on linode](deploy_to_linode.md)
 28. [Handling file uploads in flask](file_upload_in_flask.md)
+29. [Flask popover](flask_popover.md)
 
 I also make a note of some of the cool projects I have built or I have been involved in. You can find these projects below. Some may be in progess while others may be completed:
 
