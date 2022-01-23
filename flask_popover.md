@@ -15,7 +15,7 @@ You can find the completed project on this [flask popovers](https://github.com/G
 
 ## Create a Simple Application
 
-I have already created a simple application that we will further build on. You can see follow through by checking the [start flask server](start_flask_server.md) tutorial.
+I have already created a simple application that we will further build on. You can follow through by checking the [start flask server](start_flask_server.md) tutorial.
 
 ## Project Requirements
 
@@ -34,7 +34,7 @@ We will take advantage of the following packages to build this application:
 
 ## Web Forms
 
-Web forms are one of the most basic building blocks of web applications. They are used to collect data from the user and send it to the server. We will begin by install the following package:
+Web forms are one of the most basic building blocks of web applications. They are used to collect data from a user and send it to the server. We will begin by install the following package:
 
 ```python
 (venv) $ pip install flask-wtf
@@ -76,7 +76,7 @@ SECRET_KEY=b'\x11\xc40\x02ax\x1ed\x88\xc9-\xb0\xb1\xe9\xde\xef'
 ```
 We will then need to tell our application to load the environment variables. This is done in the `__init__.py` file.
 
-`__init__.py`: Register the configration object
+`app/__init__.py`: Register the configration object
 ```python
 from flask import Flask
 from config import Config # < --- new
@@ -108,7 +108,7 @@ Ensure that you are in the `app` subdirectory before creating the file.
 #### Registration Form
 
 
-`forms.py`: User registration form
+`app/forms.py`: User registration form
 ```python
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
@@ -143,7 +143,7 @@ To display this form, we will do so in `register.html` file. Our application cur
 
 Flask-Bootstrap provides for a quick method to create and display formatted forms using the `quick_form()` function.
 
-`register.html`: User registration form
+`app/templates/register.html`: User registration form
 ```html
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
@@ -170,7 +170,7 @@ Flask-Bootstrap provides for a quick method to create and display formatted form
 
 With the registration template ready for display, we will create a new route to render the registration form.
 
-`routes.py`: Register route
+`app/routes.py`: Register route
 ```python
 from app.forms import RegistrationForm
 from flask import render_template
@@ -199,7 +199,7 @@ Navigate to the URL `http://localhost:5000/register` to see the registration for
 
 To authenticate users, all we will want a user to do is enter their username and password. We will create a login form to handle this.
 
-`forms.py`: User login form
+`app/forms.py`: User login form
 ```python
 # ...
 from wtforms import BooleanField
@@ -221,6 +221,7 @@ Again, we need to create a `login.html` file to display the login form.
 ```
 Update the `login.html` file with the following:
 
+`app/templates/login.html`: User login form
 ```html
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
@@ -246,7 +247,7 @@ Update the `login.html` file with the following:
 ```
 Notice how similar the design of the login template is to that of the registration template. To render it, we will create another view function to handle the login form.
 
-`routes.py`: Login route
+`app/routes.py`: Login route
 ```python
 # ...
 from app.forms import LoginForm
@@ -266,5 +267,133 @@ Navigate to the URL `http://localhost:5000/login` to see the login form.
 ![Login Form](/images/flask_popover/login_form.png)
 
 
+## Working With A Database
 
+When a user registers, we will want to store their username, email and password in a database. We will also want to retrieve a user's information from a database to authenticated them before they can access their account. We will use the `flask_sqlalchemy` package to handle this.
+
+```python
+(venv) $ pip3 install flask-sqlalchemy
+```
+
+I am going to use the SQLite database engine for the convinience of this tutorial. It is perfect for small applications, as each database is stored in a single file on a disk and there is no need to run a database server like MySQL and PostgreSQL.
+
+### Configure Flask-SQLAlchemy
+
+All our configurations are in the `config` module. We will update this module with two new items:
+
+`config.py`: Database configuration
+```python
+import os
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+
+class Config(object):
+    # Form security
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
+
+    # Database
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+        'sqlite:///' + os.path.join(basedir, 'app.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+```
+
+Flask-sqlalchemy extension takes the location of the database from `SQLALCHEMY_DATABASE_URI` environement variable. If this variable does not exist, I have provided a default database named `app.db` which will be located in the application's main directory.
+
+Every time we make changes to the database, we need to run some _migrations_ to effect the changes. The `flask_migrate` extension helps us do this.
+
+```python
+(venv) $ pip3 install flask-migrate
+```
+For example, if we decide that we want to add a new column to the `User` table to store the user's first name, we will need to create a new migration file. This new file will contain the new schema for the table.
+
+The database is going to represented in the application by a database instance. This is done in `__init__.py` file.
+
+`app/__init__.py`: Database instance
+```python
+# ...
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+# ...
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+from app import routes, models
+```
+
+The structure of the database is defined in the `models` module.
+
+### Database Models
+
+The data that will be stored in the database will be represented by a collection of classes, usually called _models_. The ORM layer withing SQLAlchemy will do the translations required to map objects created from these classes into rows in the database tables. Each model represents a single table in the database. In our case, we want to create a `User` model which will have columns such as `username`, `email` and `password`.
+
+
+`app/models.py`: User model
+```python
+from app import db
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(120), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+
+    def __repr__(self):
+        return f'User: {self.username}'
+```
+The `__repr__()` method is used to print the objects of this class.
+
+### Create Migration
+
+With the schema in place, we need to create this table and apply the changes to the database.
+
+```python
+(venv) $ flask db init
+
+# Output
+
+Creating directory /home/harry/software_development/python/practice_projects/start_flask_server/migrations ...  done
+Creating directory /home/harry/software_development/python/practice_projects/start_flask_server/migrations/versions ...  done
+Generating /home/harry/software_development/python/practice_projects/start_flask_server/migrations/script.py.mako ...  done
+Generating /home/harry/software_development/python/practice_projects/start_flask_server/migrations/alembic.ini ...  done
+Generating /home/harry/software_development/python/practice_projects/start_flask_server/migrations/README ...  done
+Generating /home/harry/software_development/python/practice_projects/start_flask_server/migrations/env.py ...  done
+Please edit configuration/connection/logging settings in '/home/harry/software_development/python/practice_projects/start_flask_server/migrations/alembic.ini' before proceeding.
+```
+
+This command creates a _migrations_ folder in the application's main directory. All database files will be stored in this folder.If you inspect this folder, you will notice that it comes with a _versions_ subfolder. All changes we make to the database will be recorded as "versions" and they will be stored in this folder.
+
+_Note that the `flask` command relies on the `FLASK_APP` environment variable to locate the application. Ensure that you have set it in the `.flaskenv` file._
+
+Next, let us create our first database migration which will include a user's table that maps to our `User` model in the database.
+
+```python
+(venv) $ flask db migrate -m "user table"
+
+# Output
+
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.autogenerate.compare] Detected added table 'user'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_user_email' on '['email']'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_user_username' on '['username']'
+  Generating /home/harry/software_development/python/practice_projects/start_flask_server/migrations/versions/ac423ee17380_user_table.py ...  done
+```
+
+Since this is the first migration, this command will add the entire `User` model to the migration script. Notice how Alembic has named this file `ac423ee17380_user_table.py`. This is the name of the migration.
+
+The `flask-migrate` command does not make any changes to the database; it only generates the migration script. To apply these changes, we need to run the `flask db upgrade` command.
+
+```python
+(venv) $ flask db upgrade
+
+
+# Output
+
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> ac423ee17380, user table
+```
 
