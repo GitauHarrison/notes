@@ -397,3 +397,155 @@ INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
 INFO  [alembic.runtime.migration] Running upgrade  -> ac423ee17380, user table
 ```
 
+The application we want to build will allow a user to post comments in the form of a chat conversation. The user will be the author of the comment. Each post will have the author's image, their username, the time they posted the comment, and the comment itself.
+
+![Post](/images/flask_popover/post.png)
+
+Let us expand the database to include a `Post` model and show the relationship it has with the `User` model.
+
+`app/models.py`: Post model
+```python
+from app import db
+from datetime import datetime
+
+
+class User(db.Model):
+    __table_name__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(64), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+    posts = db.relationship('Post', backref='author', lazy='dynamic') # < --- relationship
+
+    def __repr__(self):
+        return f'Body: {self.username}'
+
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(140))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id')) # < --- author
+
+    def __repr__(self):
+        return f'Body: {self.body}'
+
+```
+
+The `user_id` field is initialized as a foreign key to the `user.id` field of the `User` model, referencing the `id` field of the `User` model. Technically, this is a one-to-many relationship where one user can author several posts in the application.
+
+> It is an unfortunate inconsistency that in some instances such as in a `db.relationship()` call, the model is referenced by the model class, which typically starts with an uppercase character, while in other cases such as this `db.ForeignKey()` declaration, a model is given by its database table name, for which SQLAlchemy automatically uses lowercase characters and, for multi-word model names, snake case.
+
+Since we have updates in the application models, we need to generate new database migrations.
+
+```python
+(venv) $ flask db migrate -m "post table"
+
+
+# Output
+
+
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.autogenerate.compare] Detected added table 'post'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_post_timestamp' on '['timestamp']'
+  Generating /home/harry/software_development/python/practice_projects/start_flask_server/migrations/versions/3179c8a31797_post_table.py ...  done
+```
+
+This migration needs to be applied to the database:
+
+```python
+(venv) $ flask db upgrade
+
+
+# Output
+
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade ac423ee17380 -> 3179c8a31797, post table
+```
+
+### Shell Context
+
+You can test the applicaton by running some commands on the terminal. Since we have a database, we can create a context of the application such that we have access to the database. Typically, on a normal Python interpreter, we will have to do the following:
+
+```python
+(venv) $ python3
+Python 3.8.10 (default, Nov 26 2021, 20:14:08) 
+[GCC 9.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+
+# Access configurations
+
+>>> from app import app
+>>> app.config['SECRET_KEY']
+'you-will-never-guess'
+
+# Access database
+
+>>> from app import db
+>>> db
+<SQLAlchemy engine=sqlite:////home/harry/software_development/python/practice_projects/start_flask_server/app.db>
+
+# Access User model
+
+>>> from app.models import User
+>>> user = User.query.all()
+>>> user
+[]
+```
+Everything will work fine but you have to explicitly import `app`, `db` and `User` model. If you try to run the above commands without properly importing the `app`, `db` and `User` model, you will get an error.
+
+```python
+(venv) $ python3
+Python 3.8.10 (default, Nov 26 2021, 20:14:08)
+[GCC 9.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+
+# Example of error
+
+>>> import db
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ModuleNotFoundError: No module named 'db'
+```
+
+This where the shell context comes in. It makes testing things out a lot easier. To begin, you have to make a shell context in your application's entry point. In the case of this tutorial, the entry point is `my_app.py`. Let us upate this file to include the following:
+
+`my_app.py`: Flask shell context
+```python
+from app import app, db
+from app.models import User, Post
+
+
+@app.shell_context_processor
+def make_shell_context():
+    return dict(
+        db=db,
+        User=User,
+        Post=Post
+    )
+```
+The `app.shell_context_processor` decorator is a function that returns a dictionary of variables (and not a list) that will be available in the shell session every time `flash shell` is run.
+
+Now, to easily access the database, you can run the following command in the terminal:
+
+```python
+(venv) $ flask shell
+
+Python 3.8.10 (default, Nov 26 2021, 20:14:08) 
+[GCC 9.3.0] on linux
+App: app [development]
+Instance: /home/harry/software_development/python/practice_projects/start_flask_server/instance
+
+# db object
+
+>>> db
+<SQLAlchemy engine=sqlite:////home/harry/software_development/python/practice_projects/start_flask_server/app.db>
+
+# User model
+
+>>> user = User.query.all()
+>>> user
+[]
+```
