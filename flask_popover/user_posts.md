@@ -139,7 +139,7 @@ This template is deliberately named with an underscore simply to make it clear t
 </table>
 ```
 
-I have used a table to display the posts. The table is defined with a `<table>` tag, and the `<tr>` tag defines a row in the table. The first column is the user's avatar, and the second column is the user's post (username as a link, timestamp and body).
+The table is defined with a `<table>` tag, and the `<tr>` tag defines a row in the table. The first column is the user's avatar, and the second column is the user's post (username as a link, timestamp and body of the post).
 
 Within the `index()` view function, we have already defined a `posts` variable that contains all the posts made in the application. We can use this variable to display all the posts made in the application. We can loop through this variable to retrieve all the posts and display them in a table.
 
@@ -167,7 +167,7 @@ Within the `index()` view function you have seen me use the `paginate()` method 
 * `per_page`(set as an environment variable): The number of posts to be displayed per page.
 * `error_out`: If `True`, then the `paginate()` method will return `None` if the page number is out of range. If `False`, then the `paginate()` method will return an empty list if the page number is out of range.
 
-We need to display buttons to navigate through the pages of posts. 
+We need to display buttons to help a user navigate through the pages of all posts. 
 
 `app/templates/index.html`: Pagination buttons
 ```html
@@ -196,7 +196,7 @@ Hopefully, you can see the navigation buttons displayed.
 
 ### User's Own Posts
 
-All that needs to be done is to link the posts made to its author. We want a user to see only his own posts when he is in his profile page.
+All that needs to be done is to link the posts made to its author. We want a user to see a particular user's own posts when he is in their profile page, including his own.
 
 `app/routes.py`: User posts in his profile
 ```python
@@ -225,7 +225,7 @@ def user(username):
     )
 ```
 
-A user's posts are retrieved from the database by quering the `User` model using the `posts` relationship. We display them based on when they were created. 
+A user's posts are retrieved from the database by quering the `User` model using the `posts` relationship. We display them based on when they were created. `desc()` is used to sort the posts in descending order. This means that the newest posts will be displayed first.
 
 Let us update the `user.html` template to display these posts with pagination included.
 
