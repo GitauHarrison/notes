@@ -2,12 +2,12 @@
 
 For your reference, these are the sections included in this tutorial:
 
-[Section 1: Create a simple web application](/flask_popover.md#create-a-simple-application)
-[Section 2: Web Forms](web_forms.md)
-[Sectin 3: Working with Databases](database.md)
-[Section 4: User Login](user_login.md)
-[Section 5: User Posts](user_posts.md)
-[Section 6: Implement Popover](popover.md)
+1. [Section 1: Create a simple web application](/flask_popover.md#create-a-simple-application)
+2. [Section 2: Web Forms](web_forms.md)
+3. [Sectin 3: Working with Databases](database.md)
+4. [Section 4: User Login](user_login.md)
+5. [Section 5: User Posts](user_posts.md)
+6. [Section 6: Implement Popover](popover.md)
 
 When a user registers, we need to store their username, email and password in a database.  During subsequent visits. we will also need to retrieve a user's information from a database to authenticate them before they can access their account. Flask-sqlalchemy makes it possible to work with databases in Flask. We need to install this package in our virtual environment before we can create our database.
 

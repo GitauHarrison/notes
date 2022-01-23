@@ -2,12 +2,12 @@
 
 For your reference, these are the sections included in this tutorial:
 
-[Section 1: Create a simple web application](/flask_popover.md#create-a-simple-application)
-[Section 2: Web Forms](web_forms.md)
-[Sectin 3: Working with Databases](database.md)
-[Section 4: User Login](user_login.md)
-[Section 5: User Posts](user_posts.md)
-[Section 6: Implement Popover](popover.md)
+1. [Section 1: Create a simple web application](/flask_popover.md#create-a-simple-application)
+2. [Section 2: Web Forms](web_forms.md)
+3. [Sectin 3: Working with Databases](database.md)
+4. [Section 4: User Login](user_login.md)
+5. [Section 5: User Posts](user_posts.md)
+6. [Section 6: Implement Popover](popover.md)
 
 A user can access their account upon registration by providing their username and password. It is very important that a user's password is kept secret at all times. Even the admin of the application should not be able to know the password of a user. It is recommended that we use a hashing algorithm to hash the password instead of storing it in plain text. A hash is a representation of a string (a user's password in this case) that is not easily decoded.
 

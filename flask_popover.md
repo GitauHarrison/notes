@@ -6,23 +6,16 @@ On Twitter, you often see that when you hover your mouse over a user's username,
 
 You can find the completed project on this [flask popovers](https://github.com/GitauHarrison/flask-popovers) github repository.
 
-## What We Will Do
-
-1. Create a simple web application
-2. Add user profile
-3. Display user comments
-4. Integrate popovers on username links
-
 ## Project Sections
 
 For your reference, these are the sections included in this tutorial:
 
-[Section 1:Create a simple web application](#create-a-simple-application)
-[Section 2: Web Forms](flask_popover/web_forms.md)
-[Section 3: Working with Databases](flask_popover/database.md)
-[Section 4: User Login](flask_popover/user_login.md)
-[Section 5: User Posts](flask_popover/user_posts.md)
-[Section 6: Implement Popover](flask_popover/popover.md)
+1. [Section 1:Create a simple web application](#create-a-simple-application)
+2. [Section 2: Web Forms](flask_popover/web_forms.md)
+3. [Section 3: Working with Databases](flask_popover/database.md)
+4. [Section 4: User Login](flask_popover/user_login.md)
+5. [Section 5: User Posts](flask_popover/user_posts.md)
+6. [Section 6: Implement Popover](flask_popover/popover.md)
 
 
 ## Project Requirements
