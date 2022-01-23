@@ -4,7 +4,7 @@ On Twitter, you often see that when you hover your mouse over a user's username,
 
 ![Flask popover](/images/flask_popover/flask_popovers.gif)
 
-You can find the completed project on this [flask popovers](https://github.com/GitauHarrison/flask-popovers) github repository
+You can find the completed project on this [flask popovers](https://github.com/GitauHarrison/flask-popovers) github repository.
 
 ## What We Will Do
 
@@ -34,11 +34,12 @@ We will take advantage of the following packages to build this application:
 
 ## Web Forms
 
-Web forms are one of the most basic building blocks of web applications. They are used to collect data from a user and send it to the server. We will begin by install the following package:
+Web forms are one of the most basic building blocks of web applications. They are used to collect data from a user and send it to the server. We will begin by installing the following package:
 
 ```python
 (venv) $ pip install flask-wtf
 ```
+This package is a simple integration of [Flask](https://flask.palletsprojects.com/en/2.0.x/) and [WTForms](https://wtforms.readthedocs.io/en/3.0.x/), including CSRF, file upload, and reCAPTCHA.
 
 The forms we intend to create will be used to "register" and "login" users. Let us do so within the `/app` subdirectory.
 
@@ -76,7 +77,7 @@ SECRET_KEY=b'\x11\xc40\x02ax\x1ed\x88\xc9-\xb0\xb1\xe9\xde\xef'
 ```
 We will then need to tell our application to load the environment variables. This is done in the `__init__.py` file.
 
-`app/__init__.py`: Register the configration object
+`app/__init__.py`: Register the configuration object
 ```python
 from flask import Flask
 from config import Config # < --- new
@@ -128,7 +129,7 @@ class RegistrationForm(FlaskForm):
 ```
 I have used the `RegistrationForm()` class to define all the fields we want to use in our form. The `username`, `email`, `password` and `confirm_password` fields are required before submission. The `password` fields must be at least 8 characters long. The `confirm_password` field must match the `password` field.
 
-With the `email` field in place, we have used `Email()` to validate the data entered by a user. Flask expects `email-validator` package to be installed. To install it, run the following command:
+With the `email` field in place, we have used `Email()` to validate the data entered by a user. Flask expects `email-validator` package to be installed for this validation to work. To install it, run the following command:
 
 ```python
 (venv) $ pip3 install email-validator
@@ -188,7 +189,7 @@ def register():
 
 ```
 
-The `register()` view function is used to render the registration form. The object `form` is passed to the `quick_form()` method, without which the form won't be displayed.
+The `register()` view function is used to render the registration form. The `form` object is passed to the `quick_form()` method, without which the form won't be displayed.
 
 Navigate to the URL `http://localhost:5000/register` to see the registration form.
 
@@ -197,7 +198,7 @@ Navigate to the URL `http://localhost:5000/register` to see the registration for
 
 #### Login Form
 
-To authenticate users, all we will want a user to do is enter their username and password. We will create a login form to handle this.
+To authenticate users, all we will want a user to do is enter their username and password. We will create a login form where they will fill in their credentials.
 
 `app/forms.py`: User login form
 ```python
@@ -216,7 +217,7 @@ class LoginForm(FlaskForm):
 Again, we need to create a `login.html` file to display the login form.
 
 ```python
-(venv) $ cd templates
+(venv) $ cd templates # skip this if you are in templates/
 (venv) $ touch login.html
 ```
 Update the `login.html` file with the following:
@@ -266,10 +267,43 @@ Navigate to the URL `http://localhost:5000/login` to see the login form.
 
 ![Login Form](/images/flask_popover/login_form.png)
 
+To improve a user's experience when navigating through the application, let us attach a link to the registration page within the login form.
+
+`app/templates/login.html`: Login form with link to registration page
+```html
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_context %}
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h1>{{title}}</h1>
+    </div>  
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        <!-- Empty column -->
+    </div>
+    <div class="col-sm-4 my-form">
+        {{ wtf.quick_form(form) }}
+        <p>
+            New here?
+            <a href="{{ url_for('register') }}">Register</a>
+        </p>
+    </div>
+    <div class="col-sm-4">
+        <!-- Empty column -->
+    </div>
+</div>
+{% endblock %}
+```
+Now, instead of appending "register" to the URL, a user can simply click the "Register" link to sign up.
+
+![Login with register link](/images/flask_popover/login_with_register_link.png)
 
 ## Working With A Database
 
-When a user registers, we will want to store their username, email and password in a database. We will also want to retrieve a user's information from a database to authenticated them before they can access their account. We will use the `flask_sqlalchemy` package to handle this.
+When a user registers, we need to store their username, email and password in a database. We will also want to retrieve a user's information from a database to authenticated them before they can access their account. Flask-sqlalchemy makes it possible to work with databases in Flask. We need to install it in our virtual environment before we can create our database.
 
 ```python
 (venv) $ pip3 install flask-sqlalchemy
@@ -300,12 +334,14 @@ class Config(object):
 
 Flask-sqlalchemy extension takes the location of the database from `SQLALCHEMY_DATABASE_URI` environement variable. If this variable does not exist, I have provided a default database named `app.db` which will be located in the application's main directory.
 
-Every time we make changes to the database, we need to run some _migrations_ to effect the changes. The `flask_migrate` extension helps us do this.
+Now we area ready to begin creating our application's database. Note that very time we make changes to the database, we need to run some _migrations_ to effect the changes. 
+For example, if we decide that we want to add a new column to the `User` table to store the user's first name, we will need to create a new migration file. This new file will contain the new schema for the table.
+
+The `flask_migrate` extension helps us do this. Ensure that you have installed it in your virtual environment.
 
 ```python
 (venv) $ pip3 install flask-migrate
 ```
-For example, if we decide that we want to add a new column to the `User` table to store the user's first name, we will need to create a new migration file. This new file will contain the new schema for the table.
 
 The database is going to represented in the application by a database instance. This is done in `__init__.py` file.
 
@@ -326,7 +362,7 @@ The structure of the database is defined in the `models` module.
 
 ### Database Models
 
-The data that will be stored in the database will be represented by a collection of classes, usually called _models_. The ORM layer withing SQLAlchemy will do the translations required to map objects created from these classes into rows in the database tables. Each model represents a single table in the database. In our case, we want to create a `User` model which will have columns such as `username`, `email` and `password`.
+The data that will be stored in the database will be represented by a collection of classes, usually called _models_. The ORM layer within SQLAlchemy will do the translations required to map objects created from these classes into rows in the database tables. Each model represents a single table in the database. In our case, we want to create a `User` model which will have columns such as `username`, `email` and `password`.
 
 
 `app/models.py`: User model
@@ -363,7 +399,7 @@ Generating /home/harry/software_development/python/practice_projects/start_flask
 Please edit configuration/connection/logging settings in '/home/harry/software_development/python/practice_projects/start_flask_server/migrations/alembic.ini' before proceeding.
 ```
 
-This command creates a _migrations_ folder in the application's main directory. All database files will be stored in this folder.If you inspect this folder, you will notice that it comes with a _versions_ subfolder. All changes we make to the database will be recorded as "versions" and they will be stored in this folder.
+This command creates a _migrations_ folder in the application's main directory. All database files will be stored in this folder. If you inspect this folder, you will notice that it comes with a _versions_ subfolder. All changes we make to the database will be recorded as "versions" and they will be stored in this folder.
 
 _Note that the `flask` command relies on the `FLASK_APP` environment variable to locate the application. Ensure that you have set it in the `.flaskenv` file._
 
@@ -510,7 +546,7 @@ Traceback (most recent call last):
 ModuleNotFoundError: No module named 'db'
 ```
 
-This where the shell context comes in. It makes testing things out a lot easier. To begin, you have to make a shell context in your application's entry point. In the case of this tutorial, the entry point is `my_app.py`. Let us upate this file to include the following:
+This is where the shell context comes in. It makes testing things out a lot easier. To begin, you have to make a shell context in your application's entry point. In the case of this tutorial, the entry point is `my_app.py`. Let us upate this file to include the following:
 
 `my_app.py`: Flask shell context
 ```python
@@ -526,7 +562,7 @@ def make_shell_context():
         Post=Post
     )
 ```
-The `app.shell_context_processor` decorator is a function that returns a dictionary of variables (and not a list) that will be available in the shell session every time `flash shell` is run.
+The `app.shell_context_processor` decorator is a function that returns a dictionary of variables (and not a list) that will be available in the shell session every time `flask shell` is run.
 
 Now, to easily access the database, you can run the following command in the terminal:
 
