@@ -60,11 +60,11 @@ I am only displaying the user's avatar, their username, bio and last seen date i
 (venv) $ cd templates
 (venv) $ touch user_popup.html
 ```
-We will use JavaScript to invoke this route when the user hovers the mouse pointer over a username. In response, the server will return the HTML content for the popup. To check how the popup looks like, you can navigate to the URL _/user/<username>/popup_ in your browser. I have simply appended _/popup_ to a user's profile URL.
+We will use JavaScript to invoke this route when the user hovers the mouse pointer over a username. In response, the server will return the HTML content for the popup. To check how the popup looks like, you can navigate to the URL _/user/username/popup_ in your browser. I have simply appended _/popup_ to a user's profile URL.
 
-Since we are using Boostrap to style our application, we can as well refer to its documentation to learn how it implements popovers. [Bootstrap popovers](https://getbootstrap.com/docs/3.3/javascript/#popovers) add small overlays of content to any element for housing secondary information.
+Since we are using Boostrap to style our application, we can as well refer to its documentation to learn how it implement popovers. [Bootstrap popovers](https://getbootstrap.com/docs/3.3/javascript/#popovers), as it is said, add small overlays of content to any element for housing secondary information.
 
-To is actually very simple to implement popovers to a HTML portion. Identify what element you want to attach the popover then invoke the `popover()` function in JavaScript to initialize the popover. In our case, this will be the username link:
+It is actually very simple to implement popovers to a HTML portion. Identify what element you want to attach the popover then invoke the `popover()` function in JavaScript to initialize the popover. In our case, this will be the username link:
 
 `app/templates/_post.html`: Identify the element to attach the popover
 ```python
@@ -99,7 +99,7 @@ Bootstrap creates the popover component as a sibling of the target element in th
     <div> <!--popover element will go here--> </div>
 </a>
 ```
-This is not desirable. To avoid it, we can wrap the `<a>` element inside a `<span>` element then associate the hover event to the `<span?` element.
+This is not desirable. To avoid it, we can wrap the `<a>` element inside a `<span>` element then associate the hover event to the `<span>` element.
 
 ```html
 <span class="user_popup">
@@ -109,9 +109,7 @@ This is not desirable. To avoid it, we can wrap the `<a>` element inside a `<spa
     <div> <!--popover element will go here--> </div>
 </span>
 ```
-The `<div>` and `<span>` elements are invisible, and therefore, great for our use case.
-
-Let us restructure our `_post.html` template to use the `<span>` element.
+The `<div>` and `<span>` elements are invisible, and therefore, great for our use case. Let us restructure our `_post.html` template to use the `<span>` element.
 
 `app/templates/_post.html`: Use the `<span>` element
 ```html
@@ -151,9 +149,9 @@ Using JQuery, the hover event can be attached to any HTML element by calling the
     </script>
 {% endblock %}
 ```
-The `event` argument is the event object containing information about the event. The `event.currentTarget` is the element that triggered the event.
+The `event` argument is the event object containing information about the event. The `event.currentTarget` is the element that triggered the event. So, our event here would be the profile popup.
 
-A browser will _immediately_ dispatch the hover event by invoking the `handlerIn` function as soon as the mouse pointer enters the affected area. What we would like to see is a slight delay when the mouse pointer briefly passes over the element but does not stay on it so there will be no need to flash a popup.
+A browser will _immediately_ dispatch the hover event by invoking the `handlerIn` function as soon as the mouse pointer enters the affected area. What we would like to see is a slight delay when the mouse pointer briefly passes over the element but does not stay on it, meaning there will be no need to flash a popup.
 
 `app/templates/base.html`: Delay the popup
 ```js
@@ -188,7 +186,7 @@ We have stored the `timer` object in a `timer` variable defined outside the `hov
 
 When using JQuery, the `$.ajax()` function is used to make an asynchronous HTTP request to the server. The request we are going to make is to fetch the user profile information as seen in the URL _/user/username/popup_.
 
-The big challenge here would be to include a username in the request URL. The `elem` variable cotnains the target element from the hover event. To extract the username, we can parse through the target DOM element's `href` attribute.
+The big challenge here would be to include a username in the request URL. The `elem` variable contains the target element from the hover event. To extract the username, we can parse through the target DOM element's `href` attribute.
 
 ```js
 elem.first().text().trim()
