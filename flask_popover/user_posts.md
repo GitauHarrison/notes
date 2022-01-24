@@ -122,11 +122,9 @@ This template is deliberately named with an underscore simply to make it clear t
             <img src=" {{ post.author.avatar(36) }} ">
         </td>
         <td>
-            <span class="user_popup">
-                <a href="{{ url_for('user', username=post.author.username) }}">
+            <a href="{{ url_for('user', username=post.author.username) }}">
                     {{ post.author.username }}
-                </a>
-            </span>
+            </a>
             said
             <span>
             {{ moment(post.timestamp).fromNow() }}:

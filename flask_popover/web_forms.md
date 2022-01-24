@@ -16,18 +16,12 @@ Web forms are one of the most basic building blocks of web applications. They ar
 ```
 This package is a simple integration of [Flask](https://flask.palletsprojects.com/en/2.0.x/) and [WTForms](https://wtforms.readthedocs.io/en/3.0.x/), including CSRF, file upload, and reCAPTCHA.
 
-The forms we intend to create will be used to "register" and "login" users. Let us do so within the `/app` subdirectory.
-
-```python
-(venv) $ cd app
-(venv) $ touch forms.py # Create an empty file
-```
 
 ## Configure Environment Variables
 
-At this point, the application is very basic and we do not have to worry about configurations. However, to work with web forms, Flask expects the `SECRET_KEY` variable to be set. We will set it to a random string.
+At this point(if you are running the application locally), the application is very basic and we do not have to worry about configurations. However, to work with web forms, Flask expects the `SECRET_KEY` variable to be set. We will set it to a random string.
 
-`config.py`: Secret key for protection against CSRF
+`config.py`: Secret key for protection against CSRF attacks
 ```python
 import os
 
@@ -70,6 +64,7 @@ The application still needs help to load this environment variable, even though 
 ```python
 (venv) $ pip3 install python-dotenv
 ```
+That's it! You should be able to run the application locally.
 
 ## Create Forms
 
@@ -83,6 +78,7 @@ Ensure that you are in the `app` subdirectory before creating the file.
 
 ### Registration Form
 
+In the forms module, we can define the structure of the registration form. 
 
 `app/forms.py`: User registration form
 ```python
