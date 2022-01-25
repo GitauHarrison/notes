@@ -40,7 +40,7 @@ class Config(object):
 
 Flask-sqlalchemy extension takes the location of the database from `SQLALCHEMY_DATABASE_URI` environement variable. If this variable does not exist, I have provided a default database named `app.db` which will be located in the application's main directory.
 
-Now we area ready to begin creating our application's database. Note that very time we make changes to the database, we need to run some _migrations_ to effect the changes. 
+Now we are ready to begin creating our application's database. Note that very time we make changes to the database, we need to run some _migrations_ to effect the changes. 
 For example, if we decide that we want to add a new column to the `User` table to store the user's first name, we will need to create a new migration file. This new file will contain the new schema for the table.
 
 The `flask_migrate` extension helps us do this. Ensure that you have installed it in your virtual environment.
@@ -49,7 +49,7 @@ The `flask_migrate` extension helps us do this. Ensure that you have installed i
 (venv) $ pip3 install flask-migrate
 ```
 
-The database is going to represented in the application by a database instance. This is done in `__init__.py` file.
+The database is going to be represented in the application by a database instance. This is done in `__init__.py` file.
 
 `app/__init__.py`: Database instance
 ```python
@@ -64,7 +64,7 @@ migrate = Migrate(app, db)
 from app import routes, models
 ```
 
-The structure of the database is defined in the `models` module.
+The structure of the database will be defined in the `models` module.
 
 ### Database Models
 
@@ -107,7 +107,7 @@ Please edit configuration/connection/logging settings in '/home/harry/software_d
 
 This command creates a _migrations_ folder in the application's main directory. All database files will be stored in this folder. If you inspect this folder, you will notice that it comes with a _versions_ subfolder. All changes we make to the database will be recorded as "versions" and they will be stored in this folder.
 
-_Note that the `flask` command relies on the `FLASK_APP` environment variable to locate the application. Ensure that you have set it in the `.flaskenv` file._
+_Note that the `flask` command relies on the `FLASK_APP` environment variable to locate the application. Ensure that you have set it in the `.flaskenv` file._ If you are not aware what this file is, kindly review the [start a flask server](https://github.com/GitauHarrison/notes/blob/master/start_flask_server.md) tutorial. In a nutshell, this file defines environment variables needed by the application as soon as the server is fired up.
 
 Next, let us create our first database migration which will include a user's table that maps to our `User` model in the database.
 
@@ -252,7 +252,7 @@ Traceback (most recent call last):
 ModuleNotFoundError: No module named 'db'
 ```
 
-This is where the shell context comes in. It makes testing things out a lot easier. To begin, you have to make a shell context in your application's entry point. In the case of this tutorial, the entry point is `my_app.py`. Let us upate this file to include the following:
+This is where the shell context comes in. It makes testing things out a lot easier. To begin, you have to make a shell context in your application's entry point. In the case of this tutorial, the entry point is `my_app.py`. Let us update this file to include the following:
 
 `my_app.py`: Flask shell context
 ```python

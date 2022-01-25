@@ -89,7 +89,7 @@ We can take advantage of JQuery, a JavaScript library, to register a function wh
     </script>
 {% endblock %}
 ```
-To select an element, we can user either the `id` or the `class` attribute. `id` is applied to an element when it is unique to a page. `class` is applied to an element when it is shared by multiple elements. Since our application will have multiple posts from users, the `class` attribute is more appropriate. If you try to use the `id` attribute, you will notice that only the first post in your page will have a popover.
+To select an element, we can use either the `id` or the `class` attribute. `id` is applied to an element when it is unique to a page. `class` is applied to an element when it is shared by multiple elements. Since our application will have multiple posts from users, the `class` attribute is more appropriate. If you try to use the `id` attribute, you will notice that only the first post in your page will have a popover.
 
 Bootstrap creates the popover component as a sibling of the target element in the DOM. This means that to add a popover to a link (in our case the username link), the popover will acquire the behaviour of the link, and the end result would be something like:
 
