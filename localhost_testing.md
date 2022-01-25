@@ -83,7 +83,8 @@ Add the script below to your application instance to register your `ngrok` confi
 
 app/__init__.py: Register your ngrok configuration
 ```python
-if app.config['START_NGROK']
+if app.config['START_NGROK']:
+    start_ngrok()
 ```
 
 Since we want this variable to be set to True, such that when the application starts it creates a tunnel for us, we will update our envrionment variables to include it:
