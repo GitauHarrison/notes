@@ -496,7 +496,7 @@ To display the loaded files, we need to loop through all available content in th
         </div>
         <div class="col-sm-12 col-md-4 col-lg-2">
              <!-- empty -->
-        </div>        
+        </div>        20
     </div><hr>
 
     <!-- display content in uploads folder -->
