@@ -304,3 +304,9 @@ function(event) {
 ```
 
 ![Another popover](/images/flask_popover/another_popover.gif)
+
+Before we end this section, and tutorial, remember to update your `requirements.txt` file by running:
+
+```python
+(venv)$ pip3 freeze > requirements.txt # You should be in the root directory
+```
