@@ -8,6 +8,7 @@ For your reference, these are the sections included in this tutorial:
 4. [Section 4: User Login](user_login.md)
 5. [Section 5: User Posts](user_posts.md)
 6. [Section 6: Implement Popover](popover.md)
+7. [Section 7: User Notifications](user_notifications.md)
 
 All we need to display in the user's profile page is their avatar, username and email. Since much of the work is already done, the only bit remaining is adding a user's avatar. This can be done in the `User` model.
 

@@ -8,6 +8,7 @@ For your reference, these are the sections included in this tutorial:
 4. [Section 4: User Login](user_login.md)
 5. [Section 5: User Posts](user_posts.md)
 6. [Section 6: Implement Popover](popover.md)
+7. [Section 7: User Notifications](user_notifications.md)
 
 Popovers are a common feature in social web applications where a quick summary of a user's profile is displayed when the user hovers over a link or image. In this section, we will implement a popover that displays a user's profile.
 

@@ -8,6 +8,7 @@ For your reference, these are the sections included in this tutorial:
 4. [Section 4: User Login](user_login.md)
 5. [Section 5: User Posts](user_posts.md)
 6. [Section 6: Implement Popover](popover.md)
+7. [Section 7: User Notifications](user_notifications.md)
 
 Web forms are one of the most basic building blocks of web applications. They are used to collect data from a user and send it to the server. We will begin by installing the following package:
 

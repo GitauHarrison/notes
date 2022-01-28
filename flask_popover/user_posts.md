@@ -8,6 +8,7 @@ For your reference, these are the sections included in this tutorial:
 4. [Section 4: User Login](user_login.md)
 5. [Section 5: User Posts](user_posts.md)
 6. [Section 6: Implement Popover](popover.md)
+7. [Section 7: User Notifications](user_notifications.md)
 
 Let us create a `PostForm` in the index page to allow users to add a new post.
 

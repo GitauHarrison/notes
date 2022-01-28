@@ -8,6 +8,7 @@ For your reference, these are the sections included in this tutorial:
 4. [Section 4: User Login](user_login.md)
 5. [Section 5: User Posts](user_posts.md)
 6. [Section 6: Implement Popover](popover.md)
+7. [Section 7: User Notifications](user_notifications.md)
 
 When a user registers, we need to store their username, email and password in a database.  During subsequent visits. we will also need to retrieve a user's information from a database to authenticate them before they can access their account. Flask-sqlalchemy makes it possible to work with databases in Flask. We need to install this package in our virtual environment before we can create our database.
 
