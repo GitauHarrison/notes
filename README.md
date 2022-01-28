@@ -31,6 +31,8 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 27. [How to host your flask application on linode](deploy_to_linode.md)
 28. [Handling file uploads in flask](file_upload_in_flask.md)
 29. [Flask popover](flask_popover.md)
+30. [Private messaging and user notifications in Flask](flask_popover/user_notifications.md)
+31. [Understanding HTTP Life Cycle](http_life_cycle.md)
 
 I also make a note of some of the cool projects I have built or I have been involved in. You can find these projects below. Some may be in progess while others may be completed:
 
@@ -38,4 +40,4 @@ I also make a note of some of the cool projects I have built or I have been invo
 
 ![Personal Blog](images/personal_blog.gif)
 
-Find out what projects I have up and running [here](https://gitauharrison-blog.herokuapp.com/web-development).
+Find out what projects I have up and running [here](https://www.gitauharrison.com/blog).
