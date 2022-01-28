@@ -243,7 +243,7 @@ Create two users in two browser windows and send a private message from one to t
 
 ![Private messaging system](/images/flask_popover/private_messaging_system.gif)
 
-## Notification Badges
+## Static Notification Badges
 
 Creating a notification bagde to tell a user that there are new messages in their inbox is actually quite simple. Bootstrap provides a badge widget that we can take advantage of.
 
@@ -263,3 +263,210 @@ Creating a notification bagde to tell a user that there are new messages in thei
 By invoking the `new_messages()` helper method in the `User` model, we are able to store the number of unread messages in a new variable called `new_messages`. We then pass this variable's value to the badge widget.
 
 ![Static notification badge](/images/flask_popover/static_notification_badge.gif)
+
+## Visibility of Notification Badges
+
+A user has to click on any link within the application so that the bage can appear. This means that the badge can only be seen when the value of unread messages in non-zero. This does not provide the best user experience. What would be great is to have the badge be present all the time even if the value of `new_messages` is zero.
+
+`app/templates/base.html`: Add visibility to badge
+```html
+<li>
+    <a href="{{ url_for('messages') }}">
+        Messages
+        {% set new_messages = current_user.new_messages() %}
+        {% if new_messages %}
+            <span id="message_count" class="badge"
+                style="visibility: {% if new_messages %} visible {% else %} hidden {% endif %};">
+                {{ new_messages }}
+            </span>
+        {% endif %}
+    </a>
+</li>
+```
+
+Now, the badge will always be present, but the its visibility is conditional. If the value of `new_messages` is zero, the badge will be hidden, but if the value of `new_messages` is non-zero, the badge will be visible.
+
+We can use JQuery to update the badge's visibility whenever the value of `new_messages` changes.
+
+`app/templates/base.html`: Update badge visibility
+```html
+{% block scripts %}
+    <script>
+        // ...
+        function set_message_count(n) {
+            $(#message_count).text(n);
+            $(#message_count).css('visibility', n ? 'visible': 'hidden');
+        }
+    </script>
+{% endblock %}
+```
+## Deliver Notification Changes to Clients
+
+There are two ways to deliver an update to the notification badges seen by the client. The changes will invoke `set_message_count()` to update the badge's visibility.
+
+1. Using ajax
+2. Using a websocket
+
+### Using Ajax
+
+The application (client) will send periodic asynchronous request to the server to check for new messages. The server will respond with a list of updates which the client can use to update various parts of the application such as the notification badge. All that needs to be done is to render a route that returns a JSON list of notifications. This approach, though, has a short-coming, in the sense that there is going to be a delay between the time a request is made and the time the response is received. If the client asks for an update every 5 seconds, notifications can be received 5 seconds late.
+
+### Using a WebSocket
+
+The most common method to implement server-initiated updates is by extending the flask server to support WebSocket connections besides HTTP. 
+
+> WebSocket is a protocol that unlike HTTP, establishes a permanent connection between the server and the client. The server and the client can both send data to the other party at any time, without the other side asking for it. 
+
+The advantage of using this approach is that there is no delay whenever an event of interest occurs. The client can receive notifications as soon as they occur.
+
+If the kind of application being built requires near-zero latency, then the WebSocket approach is most suitable. In our case, we can use the first approach since it is much easier to setup compared to WebSocket.
+
+## Prepare the Database for Notification Updates
+
+We need to update the `User` model to work with user notifications.
+
+`app/models.py`: Notification table
+```python
+# ...
+import json
+from time import time
+
+
+class User(UserMixin, db.Model):
+    # ...
+    notifications = db.relationship(
+        'Notification', backref='user', lazy='dynamic')
+
+
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128), index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    timestamp = db.Column(db.Float, index=True, default=time)
+    payload_json = db.Column(db.Text)
+
+    def get_data(self):
+        return json.loads(str(self.payload_json))
+```
+
+The payload will be different for each notification, so writing it as a JSON string is a good idea. The `get_data()` method will be used to deserialize and retrieve the payload of a notification.
+
+With these new changes, we need to apply them to our database.
+
+```python
+(venv) $ flask db migrate -m 'notifications'
+(venv) $ flask db upgrade
+```
+
+Since we are not going to create a form to add notifications, we can create a helper method within `Notifications` table to update a user's notifications.
+
+`app/models.py`: Add notifications to the database
+```python
+class Notification(db.Model):
+    # ...
+
+    def add_notification(self, name, data):
+        self.notifications.filter_by(name=name).delete()
+        n = Notification(name=name, payload_json=json.dumps(data), user=self)
+        db.session.add(n)
+        return n
+```
+
+The first thing we want to do is to delete the name of the previous notification as soon as a new update has come. This is done by filtering the notifications by the name and deleting them. We can give a notification a name, say "unread_message_count". If the database has a notification by this name with a value of, say 3, and the message count goes to 4, then we need to replace the old notification with the new one. The `add_notification()` method will create a new notification and add it to the database.
+
+## Update the Client to Use the New Notification Model
+
+The next logical step would be to update the user's notifications when two events take place:
+
+1. When a user is sending a message (this creates the need for a notification)
+2. When a user is reading a message (this removes the need for a notification)
+
+We need to update the `send_message()` view function to add a notification whenever a user sends a message.
+
+`app/routes.py`: Create a notification
+```python
+def send_message(recipient):
+    # ...
+    if form.validate_on_sbumit():
+        # ...
+        user.add_notification('unread_message_count', user.new_messages())
+        db.session.commit()
+```
+
+The event of reading a message is handled by the `messages()` view function. Here, we need to reset the notification to zero.
+
+`app/routes.py`: Reset notification
+```python
+def messages():
+    # ...
+    current_user.last_message_read_time = datetime.utcnow()
+    current_user.add_notification('unread_message_count', 0)
+    db.session.commit()
+    # ...
+```
+
+The client can retrieve the notifications of a logged in user by making an asynchronous request to the server.
+
+`app/routes.py`: Retrieve notifications
+```python
+from app.models import Notification
+from flask import jsonify
+
+
+@app.route('/notifications')
+@login_required
+def notifications():
+    since = request.args.get('since', 0.0, type=float)
+    notifications = current_user.notifications.filter_by(
+        Notifications.timestamp > since).order_by(
+            Notification.timestamp.asc())
+    return jsonify(
+        [
+            {
+                'name': n.name,
+                'data': n.get_data(),
+                'timestamp': n.timestamp
+            }for n in notifications
+        ]
+    )
+```
+
+Each JSON payload is a list of notification for the user. Each notification is a dictionary with the following keys:
+
+* `name`: The name of the notification
+* `data`: The payload of the notification
+* `timestamp`: The timestamp of the notification
+
+
+## Poll the Server for Updates
+
+As mentioned earlier, we  are going to make asynchronous request to the server to get the notifications. The client will need to periodically make this request.
+
+`app/templates/base.html`: Add a polling script
+```html
+<script>
+    // ...
+    {% if current_user.is_authenticated %}
+        $(function () {
+            var since = 0;
+            setInterval(function() {
+                $.ajax("{{ url_for('notifications') }}?since=" + since).done(
+                    function(notifications) {
+                        for (var i = 0; i < notifications.length; i++) {
+                            if (notifications[i].name == 'unread_message_count')
+                                set_message+count(notifications[i].data);
+                            since = notifications[i].timestamp;
+                        }
+                    }
+                );
+            }, 5000);
+        });
+    {% endif %}
+</script>
+```
+
+The `setInterval()` function works similarly to the `setTimeout()` function. The only difference is that the function is called repeatedly. The first argument is the function to be called, and the second argument is the time in milliseconds between each call.
+
+The function being called issues an Ajax request to the server to retrieve the notifications. By iterating through the list of notifications, if a notification with the name `unread_message_count` is received, the client will update the message count, visible in the badge.
+
+What is worth paying attention to is the `since` argument. Unfortunately, Flask's `url_for()` function only runs once, meaning that this argument will remain the same. We have set it to 0 hence its initial value will be _/notifications?since=0_. But we need this argument to be dynamic such that as soon as a user receives a new notification, it should update according to its timestamp. This ensures that there are no duplicate notifications. The `since` argument is the timestamp of the last notification received.
