@@ -242,3 +242,24 @@ To make it easier for a user to read their private messages, we will need to add
 Create two users in two browser windows and send a private message from one to the other. Hopefully, you can see the message appear in the messages page of the recipient.
 
 ![Private messaging system](/images/flask_popover/private_messaging_system.gif)
+
+## Notification Badges
+
+Creating a notification bagde to tell a user that there are new messages in their inbox is actually quite simple. Bootstrap provides a badge widget that we can take advantage of.
+
+`app/templates/base.html`: Add badge to messages link
+```html
+<li>
+    <a href="{{ url_for('messages') }}">
+        Messages
+        {% set new_messages = current_user.new_messages() %}
+        {% if new_messages %}
+            <span class="badge">{{ new_messages }}</span>
+        {% endif %}
+    </a>
+</li>
+```
+
+By invoking the `new_messages()` helper method in the `User` model, we are able to store the number of unread messages in a new variable called `new_messages`. We then pass this variable's value to the badge widget.
+
+![Static notification badge](/images/flask_popover/static_notification_badge.gif)
