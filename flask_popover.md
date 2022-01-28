@@ -35,4 +35,4 @@ We will take advantage of the following packages to build this application:
 
 ## Create a Simple Application
 
-I have already created a simple application that we will further build on. You can follow through by checking the [start flask server](start_flask_server.md) tutorial.
+I have already created a simple application that we will further build on. You can follow through by checking the [start a flask server](start_flask_server.md) tutorial.
