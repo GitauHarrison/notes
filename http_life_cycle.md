@@ -16,7 +16,7 @@ When I hit enter, this is what I get:
 
 ![Personal blog](/images/http_life_cycle/personal_blog.png)
 
-So, what happened? From the above URL, `https` is the protocol, `www.gitauharrison.com` is the host (domain name) and `/blog` is the resource path. Domains are mapped to the IP address of the host. Rather than remembering an IP address such as 142.250.203.206, it is much easier to remember a name such as _google.com_.
+So, what happened? From the above URL, `https` is the protocol, `www.gitauharrison.com` is the host (domain name) and `/blog` is the resource path. Domains are mapped to the IP address of the host. Rather than remembering an IP address such as 142.250.203.206, it is much easier to remember a name such as _google.com_. Read more on host names [here](#host-names).
 
 Since the browser now knows what host it is trying to reach, which is www.gitauharrison.com, it will try to connect to the server. The steps involved in resolving the Domain Name System (DNS) include:
 
@@ -170,3 +170,11 @@ If the request was unsuccessful, headers can be used to tell the client what the
 
 The message body is the content of the response. The message payload of a succesfully processed request will contain the resource requested by the client. For example, if the client requested the resource at _/blog?page=1_, then the message body will contain the contents of the blog found on page 1. However, if the request was unsuccessful, the message body will contain the error message and some actions a client can take to complete the request successfully.
 
+
+## Further Reading
+
+### Host Names
+
+A website (also known as a host) can be indentified on the internet by a host name such as www.gitauharrison.com. They are sometimes called _domain names_. These names are mapped to an IP (Internet Protocol) address.
+
+A host name is used by a client to make a HTTP request to a host. The user, the person making the request, can specifiy can use the IP address of the host name but it is more conviniet to use the host name. This is because the host name can be remembered easily.
