@@ -16,11 +16,11 @@ Since we want to have the ability to edit a post or comment in markdown, we will
 
 > `Rich` is a Python library for writing rich text (with color and style) to the terminal, and for displaying advanced content such as tables, markdown, and syntax highlighted code.
 
-With our form set up, there is no way that you can style your comment before it is posted. What we want to show users as they are typing their comments is something as this: 
+With our form set up, there is no way that you can style your comment before it is posted. What we want to show users as they are typing their comments is something like this: 
 
 ![Rich Text Preview](images/rich_text_preview.png)
 
-There is a `flask-pagedown` extension we can use to enable client side markdown preview. Let us go ahead and install it:
+There is the `flask-pagedown` extension we can use to enable client side markdown preview. Let us go ahead and install it:
 
 ```python
 $ pip3 install flask-pagedown
@@ -28,7 +28,7 @@ $ pip3 install flask-pagedown
 
 The `flask-pagedown` extension needs to be registered in our application instance:
 
-`app/__init__.py: Register pagedown extension`
+`app/__init__.py`: Register pagedown extension
 ```python
 from flask_pagedown import PageDown
 
@@ -38,7 +38,7 @@ pagedown = PageDown(app)
 
 The Editor is supported through two Javascript files. To include these files in your HTML document, you will need to call `pagedown.html_head()` from inside the `<head>` element of your page:
 
-`app/templates/base.html: Include pagedown in template`
+`app/templates/base.html`: Include pagedown in template
 ```html
 {% block head %}
     {{ super() }}
@@ -49,8 +49,9 @@ The Javascript files are loaded from a CDN, the files do not need to be hosted b
 
 ## Update Form with `PageDownField`
 
-The extesion exports a `PagDownField` which is very similar to and works exactly as `TextAreaField`:
+The extention exports a `PagDownField` which is very similar to and works exactly as `TextAreaField`:
 
+`app/forms.py`: Create form
 ```python
 from flask_wtf import FlaskForm
 from flask_pagedown.fields import PageDownField #<---------------New
@@ -78,7 +79,7 @@ First, we need to install the `flask-sqlalchemy` extension:
 Then, we need to add the `db` variable to our application instance:
 
 
-`app/__init__.py: Add db variable`
+`app/__init__.py`: Add db variable
 ```python
 # ...
 from flask_sqlalchemy import SQLAlchemy
@@ -90,7 +91,7 @@ db = SQLAlchemy(app)
 The application expects certain configuration variables to be set in the `config.py` file. Add the following to the `config` module:
 
 
-`config.py: Add db configuration`
+`config.py`: Add db configuration
 ```python
 # ...
 
@@ -152,6 +153,9 @@ The HTML code for the rendered blog post is cached in a new field added to the C
 
 ## Update the Comment Table
 
+First, we need to add a `html` field to the table. We can do this by adding the following to the `Comment` model:
+
+`app/models.py`: Add html field
 ```python
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
