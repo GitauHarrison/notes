@@ -4,7 +4,7 @@ As an administrator of a website, one of the things you would really want to do 
 
 ![Comment Moderation](images/comment_moderation/comment_moderation.gif)
 
-You can [browse this repository on GitHub](https://github.com/GitauHarrison/user-comment-moderation-in-flask) to see the code for this tutorial.
+You can browse the source code on [this repository on GitHub](https://github.com/GitauHarrison/user-comment-moderation-in-flask).
 
 ## Create A Simple Flask Application
 
@@ -24,7 +24,7 @@ As our application grows, certain configurations will be needed. At the moment, 
 
 If you look carefully, I have a module called `config` in the top-level directory. Following the principle of _separtion of concerns_, all the configurations that our application will need will be added here.
 
-`config.py: Secret key configuration`
+`config.py`: Secret key configuration
 ```python
 import os
 
@@ -52,14 +52,14 @@ b'\x1eh\xfcIWC\x91\xd7\xb3\xfd\x02dK\xe0\xb5z'
 
 Hard to guess, right? I will add this value to my environment variable.
 
-`.env: Add secret configuration keys`
+`.env`: Add secret configuration keys
 ```python
 SECRET_KEY=b'\x1eh\xfcIWC\x91\xd7\xb3\xfd\x02dK\xe0\xb5z'
 ```
 
 With the variable set, we can now update our application instance to read and apply our configurations.
 
-`__init__.py: Regiser the config module in application instance`
+`__init__.py`: Regiser the config module in application instance
 ```python
 from flask import Flask
 from flask_bootstrap import Bootstrap
@@ -90,7 +90,7 @@ Let us begin by creating a simple comment form. The information we want from a u
 
 Let us now create the class that defines all the fields we want in our comments form.
 
-`forms.py: Create a user comment form`
+`forms.py`: Create a user comment form
 ```python
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField
@@ -140,7 +140,7 @@ I have used Bootstrap to quicky display my comment form, though you can manually
 
 With the form ready to be displayed, we will now update our `index()` view function to render it.
 
-`routes.py: Render the comments form`
+`routes.py`: Render the comments form
 
 ```python
 from app import app
@@ -189,7 +189,7 @@ We will use `flask-migrate` to perform this migration. Install it in the virtual
 
 SQLite, being the most convinient choice in developing small applications, expects certain configurations from `Flask-SQLAlchemy`. We first provide the location of the database in the application through `SQLALCHEMY_DATABASE_URI` configuration variable. This variable will source its value from the `DATABASE_URL` environment variable.
 
-`config.py: Database Configuration`
+`config.py`: Database Configuration
 ```python
 import os
 basedir = os.path.abspath(os.path.dirname(__file__)) # < ---- update
@@ -211,7 +211,7 @@ If `DATABASE_URL` does not exist, then I have provided a fallback value where I 
 
 The database will be referenced through a database instance. We will create a `db` variable that will be used to access the database.
 
-`__init__.py: Database Instance`
+`__init__.py`: Database Instance
 ```python
 from flask import Flask
 from flask_bootstrap import Bootstrap
@@ -242,7 +242,7 @@ Let is create a new module called `models.py` that will contain our database mod
 
 The translation of our database into code will look like this:
 
-`models.py: Comment database Schema`
+`models.py`: Comment database Schema
 ```python
 from app import db
 from datetime import datetime
@@ -325,7 +325,7 @@ Since all user information is now stored in our `User` database which is linked 
 
 The first step is to update our database every time new data comes through the Comments Form. 
 
-`routes.py: Update the database`
+`routes.py`: Update the database
 ```python
 from flask.helpers import url_for
 from werkzeug.utils import redirect
@@ -355,7 +355,7 @@ def index():
 
 `form.validate_on_submit()` is used to validate the form. If the form is valid, the `user` object is created and added to the database. Otherwise, the index page will be displayed. I have added a flash message to notify the user that their comment has been posted. To see the message, we need to update our `base.html` template.
 
-`base.html: Show flash message`
+`base.html`: Show flash message
 ```html
 <!-- Contents of all our pages will go here -->
 {% block content %}
@@ -384,6 +384,7 @@ Try post a comment. If all goes well, then you should be able to see the flash m
 
 We will display the comments in the index page. So, let us update our `index()` view function to display the comments.
 
+`app/routes.py`: Display comments
 ```python
 from flask.helpers import url_for
 from werkzeug.utils import redirect
@@ -418,7 +419,7 @@ def index():
 
 We query our `UserComment` database using the `UserComment.query.all()` function. This function returns a list of all the comments made by users in the database. We can then loop through the list and display the comments in the `index.html` page.
 
-`index.html: Display comments`
+`index.html`: Display comments
 ```html
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
@@ -459,7 +460,7 @@ You should be able to see this:
 
 So far so good. The last thing I would like to add to every user is an avatar. This avatar will be displayed in each user's comment. To add an avatar to each user, we will need to update our `UserComment` model.
 
-`models.py: User Avatar`
+`models.py`: User Avatar
 ```python
 from hashlib import md5
 
@@ -500,7 +501,7 @@ Obviously, it is the admin of the website who will have the ability to delete co
 
 We want to collect an admin's username, email address and the password to their accounts. Our model will define these columns and store the relevant data in the database.
 
-`models.py: Admin model`
+`models.py`: Admin model
 
 ```python
 # ...
@@ -538,7 +539,7 @@ Create an admin migration script and apply these changes to our databae.
 
 We can now update our `Admin` model by registering a new admin. We will begin by creating an admin registration form.
 
-`forms.py: Admin Registration Form`
+`forms.py`: Admin Registration Form
 ```python
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
@@ -556,7 +557,7 @@ class AdminRegistrationForm(FlaskForm):
 
 With the form created, we will now create a view function which will handle the registration of an admin user.
 
-`routes.py: Admin Registration`
+`routes.py`: Admin Registration
 ```python
 # ...
 
@@ -582,7 +583,7 @@ Let us create the template that will be used to display the registration form. F
 
 We will quickly display our form in the template with the help of flask-wtf.
 
-`register.html: Admin Registration Form`
+`register.html`: Admin Registration Form
 ```html
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
@@ -617,7 +618,7 @@ Flask provides the `flask-login` package which we will use to help us manage our
 
 Like other extensions, we will initialize it in the application instance.
 
-`__init__.py: Initialize Flask-Login`
+`__init__.py`: Initialize Flask-Login
 ```python
 # ...
 from flask_login import LoginManager
@@ -646,7 +647,7 @@ class Admin(UserMixin, db.Model):
 
 Because `Flask-login` literally knows nothing about databases, it will need the application's help to load the admin. We will use a user loader function to load the admin by their ID.
 
-`models.py: User Loader`
+`models.py`: User Loader
 ```python
 from app import login
 
@@ -656,7 +657,7 @@ def load_user(id):
 ```
 With the Admin model fully prepared to handle user sessions, we will now create the login form.
 
-`forms.py: Admin Login Form`
+`forms.py`: Admin Login Form
 ```python
 # ...
 from wtforms import StringField, SubmitField, PasswordField, BooleanField
@@ -674,7 +675,7 @@ The template that will be used to display the login form will be `login.html`. L
 (comment_moderation) $ touch app/templates/login.html # create empty login.html
 ```
 
-`login.html: Display Admin Login Form`
+`login.html`: Display Admin Login Form
 ```html
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
@@ -701,7 +702,7 @@ The template that will be used to display the login form will be `login.html`. L
 
 Finally, we will create the view function which will handle the login of an admin.
 
-`routes.py: Admin Login`
+`routes.py`: Admin Login
 ```python
 from flask_login import login_user, current_user, logout_user
 
@@ -723,7 +724,7 @@ def login():
 
 To make it easier for an admin to log in to their account, we will display a link in the navigation bar. If you noticed, the login page also contains a link to the registration page. So, there is no need to add a registration link beyond that. I have left out the _forgot password_ link because it is beyond the scope of this tutorial. However, you can take it up as a challenge and learn how you can implement it in the application.
 
-`base.html: Add a login link`
+`base.html`: Add a login link
 ```html
 {% block navbar %}
 <nav class="navbar navbar-default">
@@ -755,7 +756,7 @@ Now, if you click on the Admin link in the navigation bar, you will be redirecte
 
 As an admin, you would want to protect your account by ensuring you log out once you are done moderating user comments. The `logout_user()` method from `flask_login` handles this.
 
-`routes.py: Admin Logout`
+`routes.py`: Admin Logout
 ```python
 # ...
 
@@ -767,7 +768,7 @@ def logout():
 
 We will create a condition in our base template to display the logout link only if the user is logged in.
 
-`base.html: Display logout link`
+`base.html`: Display logout link
 ```html
 {% block navbar %}
 <nav class="navbar navbar-default">
@@ -811,7 +812,7 @@ For now, we will display all the user comments just as they can be seen in the i
 ```
 
 
-`admin_dashboard.html: Display Admin Dashboard`
+`admin_dashboard.html`: Display Admin Dashboard
 ```html
 {% extends 'base.html' %}
 
@@ -842,7 +843,7 @@ For now, we will display all the user comments just as they can be seen in the i
 
 The view function to render the admin dashboard will be `admin_dashboard()`.
 
-`routes.py: Admin Dashboard`
+`routes.py`: Admin Dashboard
 ```python
 # ...
 from flask_login import login_required
@@ -863,7 +864,7 @@ I have added the `login_required` decorator to protect this page from unauthoriz
 
 We are now ready to implement comment moderation. At the end of this section, our application will only show comments that the admin has approved. To begin, I will add a new field in the `UserComment` model to store the moderation status of a comment.
 
-`models.py: Add comment moderation status`
+`models.py`: Add comment moderation status
 ```python
 # ...
 
@@ -882,7 +883,7 @@ I have set the default value of the `allowed_comment` field to `False`. This wil
 
 The next step is to add two view functions to _allow_ and _delete_ each comment.
 
-`routes.py: Allow and Delete Comment`
+`routes.py`: Allow and Delete Comment
 ```python
 @app.route('/admin/delete/<int:id>')
 def admin_delete(id):
@@ -907,7 +908,7 @@ I am identifying each comment by its ID. First, I query the database for first i
 
 To make it work, let us update the admin's dashboard links to include the links to the `admin_delete()` and `admin_allow()` view functions.
 
-`dashboard.html: Add links to admin_delete() and admin_allow()`
+`dashboard.html`: Add links to update and delete comments
 ```html
 {% extends 'base.html' %}
 
@@ -942,7 +943,7 @@ To make it work, let us update the admin's dashboard links to include the links 
 
 Let us update our `index()` view function to display only approved comments.
 
-`routes.py: Display Approved Comments`
+`routes.py`: Display Approved Comments
 ```python
 # ...
 
@@ -978,7 +979,7 @@ Notice how only one comment appears in the index page whereas the admin dashboar
 
 To ensure that we do not approve a comment twice, I will display an empty link reading _allowed_.
 
-`admin_dashboard.html: Show allowed link`
+`admin_dashboard.html`: Show allowed link
 ```html
 <span>
     {% if user.allowed_comment == 1 %}
