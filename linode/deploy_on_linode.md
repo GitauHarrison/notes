@@ -59,7 +59,7 @@ The reason for having the split terminal windows is to allow me to run commands 
 
 The window on the left will be my linode server while the one on the right will be my local machine's. I have copied and pasted my linode's root SSH command in the left terminal window to hightlight this.
 
-Copy and paste your SSH Access code in one of the terminal windows to access our linode server. I will paste mine as follows:
+Copy and paste your SSH Access code in one of the terminal windows to access your linode server. I will paste mine as follows:
 
 ```python
 $ ssh root@139.162.221.92
@@ -79,7 +79,7 @@ Type "yes" to continue your connection. When prompted, key in your linode's root
 As is normally the case with your local machine's server, we need to set up a few things in our new linode server:
 
 - Upgrade the software the first time you log into any linux system
-
+    <br>
     ```python
     root@localhost:~# apt update && apt upgrade
 
@@ -88,7 +88,7 @@ As is normally the case with your local machine's server, we need to set up a fe
 <br>
 
 - Set a host name in this machine:
-
+<br>
     ```python
     root@localhost:~# hostnamectl set-hostname bolderlearner
     ```
@@ -102,35 +102,39 @@ As is normally the case with your local machine's server, we need to set up a fe
         ```
 <br>
 
-- Set hostname in a host file:
+- Set your hostname in a host file:
+<br>
     ```python
     root@localhost:~# nano /etc/host
     ```
     - This will open the file `host` in the `nano` editor. If you are not familiar with this editor, consider searching it online to learn more. However, for this tutorial, there are only a few commands that we shall be using while working with the `nano` editor. 
-
+    
     - You can use the arrow keys to move around. Begin by adding these lines in the `/etc/host` file which is currently opened in your `nano` editor:
+    <br>
         ```python
         127.0.0.1         localhost
         139.162.221.92    bolder learner
         ```
     - The first is the IP address of the localhost whereas the second is the IP address of my linode server as seen in the dashboard.
 
-    - To save this file, hit `ctrl + x`. It will ask if you want to save this file. Type in "y" and press `Enter`. You will have saved this file upon exiting, which is automatic thereafter.
+    - To save this file, hit `ctrl + x`. It will ask if you want to save this file. Type in "y" and press `Enter`. You will have saved this file upon exiting.
+    <br>
     ![Host file](/images/linode/etc_host_file.png)
 <br>
 
 - Create a limited user. 
 At the moment, we are logged in as the root user, who has unlimited priviledges and can execute any command. However, it is best practice to add a user who has limited priviledges. This user will still be able to run admin commands using `sudo`, which is much safer than running everything as root. Run this command to add a new user:
-
+    <br>
     ```python
     root@localhost:~# adduser gitauharrison
     ```
     - You will be prompted to create a new password for this user. Please do so. Ensure that you can remember that password. You will be asked a few more questions such as "Full Name" etc. You can fill that up or leave them blank. This step is optional.
+    <br>
     ![Add user](/images/linode/adduser.png)
 <br>
 
 - Add the user to a sudo group so that they can run admin commands
-
+    <br>
     ```python
     root@localhost:~# adduser gitauharrison sudo
 
@@ -142,7 +146,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 <br>
 
 - Logout of root user and log in as `gitauharrison` user. It is just best practice to work as a limited user. Run:
-
+    <br>
     ```python
     root@localhost:~# exit
 
@@ -152,10 +156,12 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
     ```
 
     - This will log you out as a `root` user. Notice that I am taken back to my local machine.
+    <br>
     ![Logout root user](/images/linode/logout_root_user.png)
+    <br>
 
     - Log back in as user `gitauharrison`. To do this, simply press the up arrow key on your keyboard to access your linode's SSH Access command. Mine was `ssh root@139.162.221.92`. Instead of hitting `Enter` just yet, I will replace `root` in the SSH Access command with `gitauharrison`. Now, the new command that I need to run to start my _bolderlearner_ linode server will be:
-
+        <br>
         ```python
         $ ssh gitauharrison@139.162.221.92
         ```
@@ -164,27 +170,29 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
 - Set up SSH Authentication. This will allow me to log into my server without having to supply my password every time. This is quite convinient.
     - Make a `.ssh` directory from the home directory.
+        <br>
         ```python
         gitauharrison@bolderlearner:~$ mkdir .ssh
         ```
     - If you are not sure if your are in your home directory or not, simply run the command `pwd` in the terminal. `pwd` stands for `print working directory`. Another way to find out if you are in your home directory is to look at your terminal. If you can see a tilde character (`~`), then you are in your home directory.
+    <br>
 
     - __Moving to your other terminal window running your local machine__, run the following command:
-
+        <br>
         ```python
         $ ssh-keygen -b 4096 
         ``` 
         - You will be asked to create a password. You can add one if you want more security, but again, you can still leave it blank. This is okay. You will also be asked to overwrite an existing `id_rsa` file. Type "y" for yes to continue.
-
+        <br>
         - Notice that you will have two files created, _id_rsa_ and _id_rsa.pub_ which is our public key. We will need to move our public key to our linode server. To do this, run the `scp` (secure copy) command in your terminal:
-
+            <br>
             ```python
             $ scp ~/.ssh/id_rsa.pub gitauharrison@139.162.221.92:~/.ssh/authorized_keys
             ```
             - Here, we are securely copying the _id_rsa.pub_ file to our new linode user. I am using the colon punctuation mark to specify what location I want the file to be copied to. I will save the contents of _id_rsa.pub_ in a file called _authorized_keys_ found in the hidden `.ssh` folder.
-
+        <br>
     - __Moving back to the new linode user terminal window__, let us test to see if the new _id_rsa.pub_ key has been copied. Run the `ls` command to list all the files found in `.ssh` folder:
-
+        <br>
         ```python
         gitauharrison@bolderlearner:~$ ls .ssh/
 
@@ -194,13 +202,13 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 <br>
 
 - Update SSH permissions where the owner of the directory has  read, write and execute permissions on the directory and read and write permissions on the files. 
-
+    <br>
     ```python
     gitauharrison@bolderlearner:~$ sudo chmod 700 ~/.ssh/
     ```
 
     - You will be required to provide your user password. Here, we are updating the permissions on the `ssh` folder.
-
+    <br>
     ```python
     gitauharrison@bolderlearner:~$ sudo chmod 600 ~/.ssh/*
     ```
@@ -214,7 +222,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 - Disallow root logins over SSH. 
 
     - As the new user, update the SSH Config file. 
-
+        <br>
         ```python
         gitauharrison@bolderlearner:~$ sudo nano /etc/ssh/sshd_config
         ```
@@ -226,9 +234,9 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
             2. `PasswordAuthentication`. It is most likely commented out so make sure you uncomment it. If it is not commented out, then simply change its value from "yes" to "no". With SSH setup, there is really no need to log in using a password. 
 
         - Press `ctrl + x` to exit. On your way out, type "y" to save the file using its current name.
-
+    <br>
     - Now, what we need to do is to restart the SSH service. Run the command below:
-
+    <br>
         ```python
         gitauharrison@bolderlearner:~$ sudo systemctl restart sshd
         ```
