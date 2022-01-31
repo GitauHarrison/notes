@@ -6,6 +6,16 @@ During this tutorial, I will walk you through the steps you can follow to deploy
 2. [Buy a domain name for your deployed application](/linode/buy_domain.md)
 3. [Secure your domain with SSL](/linode/secure_domain_with_ssl.md)
 
+## Table of Contents
+
+If you would like to skip to a particular section within this tutorial, you can click on any of these links.
+
+- [Overview](#overview)
+- [Create a linode account](#create-a-linode-account)
+- [Create a linode](#create-a-linode)
+- [Log into your virtual machine](#log-into-your-virtual-machine)
+- [Set up your linux server](#set-up-your-linux-server)
+- [Add application on the linux server](#add-application-on-the-linux-server)
 
 ## Overview
 
@@ -301,4 +311,4 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         # Port 22 is SSH; there is port 5000 as well
         ```
 
-## Add Application on the Web Server
+## Add Application on the Linux Server
