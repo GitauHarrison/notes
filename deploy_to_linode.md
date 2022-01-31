@@ -31,3 +31,6 @@ Alternatively, you can host a flask application yourself. During this tutorial, 
 1. [Deploy your flask app on Linode](/linode/deploy_on_linode.md)
 2. [Buy a domain name for your deployed application](/linode/buy_domain.md)
 3. [Secure your domain with SSL](/linode/secure_domain_with_ssl.md)
+
+I won't lie to you, deploying an application can be overwhelming because there are a lot of different ways to do it. Knowing what is best for your specific application can also be difficult. Here, you will learn how to deploy your flask application to a Linux server using NGINX and GUNICORN.
+
