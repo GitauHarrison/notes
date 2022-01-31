@@ -97,8 +97,8 @@ As is normally the case with your local machine's server, we need to set up a fe
     ```
 <br>
 
-- Set a host name in this machine:
-<br>
+- Create a host name in this machine:
+    <br>
     ```python
     root@localhost:~# hostnamectl set-hostname bolderlearner
     ```
@@ -113,7 +113,8 @@ As is normally the case with your local machine's server, we need to set up a fe
 <br>
 
 - Set your hostname in a host file:
-<br>
+    <br>
+
     ```python
     root@localhost:~# nano /etc/host
     ```
@@ -229,6 +230,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
     - Now, if I exit the server by running `exit` in the terminal, and hit `Enter` again after pasting `ssh gitauharrison@139.162.221.92`, I should be able to SSH into the virtual machine without a password.
 <br>
+
 - Disallow root logins over SSH. 
 
     - As the new user, update the SSH Config file. 
@@ -246,15 +248,16 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         - Press `ctrl + x` to exit. On your way out, type "y" to save the file using its current name.
     <br>
     - Now, what we need to do is to restart the SSH service. Run the command below:
-    <br>
+        <br>
         ```python
         gitauharrison@bolderlearner:~$ sudo systemctl restart sshd
         ```
 
     - If you would like to learn more about SSH Key-based authentication, [click here](/linode/ssh_key_based_authentication.md) to check out the SSH Authentication.
 <br>
+
 - Set up a firewall to monitor and control incoming and outgoing network traffic based on predetermined security rules. For your information, a firewall creates a barrier between a trusted network and an untrusted network. An example of an untrusted network can be the internet.
-<br>
+    <br>
     - Install `uncomplicated firewall`:
         <br>
 
@@ -282,7 +285,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         ```python
         gitauharrison@bolderlearner:~$ sudo ufw allow 5000
         ``` 
-    
+        
         - This will allow me to access port 5000 which will be used by our flask development server. Using this port will enable me to test my application before going live on a production server.
         <br>
 
