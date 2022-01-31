@@ -293,3 +293,4 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         # Port 22 is SSH; there is port 5000 as well
         ```
 
+## Add Application on the Web Server
