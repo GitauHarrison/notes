@@ -330,6 +330,25 @@ Once you are done, we can update our `requirements.txt` file. This file contains
 (flask_project) $ pip freeze > requirements.txt
 ```
 
+## Brief on the Flask Server
+
+The `flask run` command is used to start the flask application in a development server. This server provides an interactive debugger and reloads when it notices changes in code. It is intended for local use only since it is not designed to be particularly efficient, stable or secure.
+
+> Prior to Flask 1.0 the FLASK_ENV environment variable was not supported and you needed to enable debug mode by exporting FLASK_DEBUG=1. This can still be used to control debug mode, but it is now preferred to set it as an evironment variable.
+
+To stop your flask server, you can hit `ctrl + C`. However, when you hit `ctrl + Z`, you will notice a _traceback_ when you try restarting your flask server. You will be informed that the address you are trying to connect to is _already in use_.
+
+```python
+* Serving Flask app 'blog.py' (lazy loading)
+ * Environment: development
+ * Debug mode: on
+Traceback (most recent call last):
+ # ...
+OSError: [Errno 98] Address already in use
+```
+
+To fix it, you need to identify and stop the other program or use the command `flask run --port 50001` to pick a different port.
+
 ## Going Further
 
 This is a good starting point for your Flask learning. You can build on this project by adding more routes, templates, and view functions. You can even learn how to use webforms and a database with Flask. Things you can do:
