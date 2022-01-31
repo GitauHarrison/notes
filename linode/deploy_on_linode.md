@@ -90,6 +90,7 @@ As is normally the case with your local machine's server, we need to set up a fe
 
 - Upgrade the software the first time you log into any linux system
     <br>
+    
     ```python
     root@localhost:~# apt update && apt upgrade
 
@@ -99,12 +100,14 @@ As is normally the case with your local machine's server, we need to set up a fe
 
 - Create a host name in this machine:
     <br>
+
     ```python
     root@localhost:~# hostnamectl set-hostname bolderlearner
     ```
 
     - To test that the host name has actually been set, run:
         <br>
+
         ```python
         root@localhost:~# hostname
 
@@ -123,6 +126,7 @@ As is normally the case with your local machine's server, we need to set up a fe
     
     - You can use the arrow keys to move around. Begin by adding these lines in the `/etc/host` file which is currently opened in your `nano` editor:
         <br>
+
         ```python
         127.0.0.1         localhost
         139.162.221.92    bolder learner
@@ -137,6 +141,7 @@ As is normally the case with your local machine's server, we need to set up a fe
 - Create a limited user. 
 At the moment, we are logged in as the root user, who has unlimited priviledges and can execute any command. However, it is best practice to add a user who has limited priviledges. This user will still be able to run admin commands using `sudo`, which is much safer than running everything as root. Run this command to add a new user:
     <br>
+
     ```python
     root@localhost:~# adduser gitauharrison
     ```
@@ -147,6 +152,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
 - Add the user to a sudo group so that they can run admin commands
     <br>
+
     ```python
     root@localhost:~# adduser gitauharrison sudo
 
@@ -159,6 +165,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
 - Logout of root user and log in as `gitauharrison` user. It is just best practice to work as a limited user. Run:
     <br>
+
     ```python
     root@localhost:~# exit
 
@@ -174,6 +181,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
     - Log back in as user `gitauharrison`. To do this, simply press the up arrow key on your keyboard to access your linode's SSH Access command. Mine was `ssh root@139.162.221.92`. Instead of hitting `Enter` just yet, I will replace `root` in the SSH Access command with `gitauharrison`. Now, the new command that I need to run to start my _bolderlearner_ linode server will be:
         <br>
+
         ```python
         $ ssh gitauharrison@139.162.221.92
         ```
@@ -183,6 +191,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 - Set up SSH Authentication. This will allow me to log into my server without having to supply my password every time. This is quite convinient.
     - Make a `.ssh` directory from the home directory.
         <br>
+
         ```python
         gitauharrison@bolderlearner:~$ mkdir .ssh
         ```
@@ -191,6 +200,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
     - __Moving to your other terminal window running your local machine__, run the following command:
         <br>
+
         ```python
         $ ssh-keygen -b 4096 
         ``` 
@@ -210,6 +220,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
     - __Moving back to the new linode user terminal window__, let us test to see if the new _id_rsa.pub_ key has been copied. Run the `ls` command to list all the files found in `.ssh` folder:
         <br>
+
         ```python
         gitauharrison@bolderlearner:~$ ls .ssh/
 
@@ -220,12 +231,14 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
 - Update SSH permissions where the owner of the directory has  read, write and execute permissions on the directory and read and write permissions on the files. 
     <br>
+
     ```python
     gitauharrison@bolderlearner:~$ sudo chmod 700 ~/.ssh/
     ```
 
     - You will be required to provide your user password. Here, we are updating the permissions on the `ssh` folder.
-    
+    <br>
+
     ```python
     gitauharrison@bolderlearner:~$ sudo chmod 600 ~/.ssh/*
     ```
@@ -253,8 +266,10 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
         - Press `ctrl + x` to exit. On your way out, type "y" to save the file using its current name.
     <br>
+
     - Now, what we need to do is to restart the SSH service. Run the command below:
-        
+        <br>
+
         ```python
         gitauharrison@bolderlearner:~$ sudo systemctl restart sshd
         ```
@@ -287,7 +302,8 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         ```
 
         - This will allow me to SSH into our server, without which our firewall will prevent its use.
-        
+        <br>
+
         ```python
         gitauharrison@bolderlearner:~$ sudo ufw allow 5000
         ``` 
@@ -304,7 +320,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
         - To see the status of the things I have allowed, I can run the command below:
         <br>
-        
+
         ```python
         gitauharrison@bolderlearner:~$ sudo ufw status
 
