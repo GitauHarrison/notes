@@ -197,7 +197,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         - You will be asked to create a password. You can add one if you want more security, but again, you can still leave it blank. This is okay. You will also be asked to overwrite an existing `id_rsa` file. Type "y" for yes to continue.
         <br>
         - Notice that you will have two files created, _id_rsa_ and _id_rsa.pub_ which is our public key. We will need to move our public key to our linode server. To do this, run the `scp` (secure copy) command in your terminal:
-            <br>
+            
             ```python
             $ scp ~/.ssh/id_rsa.pub gitauharrison@139.162.221.92:~/.ssh/authorized_keys
             ```
@@ -220,7 +220,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
     ```
 
     - You will be required to provide your user password. Here, we are updating the permissions on the `ssh` folder.
-    <br>
+    
     ```python
     gitauharrison@bolderlearner:~$ sudo chmod 600 ~/.ssh/*
     ```
@@ -249,7 +249,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         - Press `ctrl + x` to exit. On your way out, type "y" to save the file using its current name.
     <br>
     - Now, what we need to do is to restart the SSH service. Run the command below:
-        <br>
+        
         ```python
         gitauharrison@bolderlearner:~$ sudo systemctl restart sshd
         ```
@@ -282,7 +282,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         ```
 
         - This will allow me to SSH into our server, without which our firewall will prevent its use.
-        <br>
+        
         ```python
         gitauharrison@bolderlearner:~$ sudo ufw allow 5000
         ``` 
