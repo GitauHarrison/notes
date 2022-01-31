@@ -196,13 +196,18 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         ``` 
         - You will be asked to create a password. You can add one if you want more security, but again, you can still leave it blank. This is okay. You will also be asked to overwrite an existing `id_rsa` file. Type "y" for yes to continue.
         <br>
+
         - Notice that you will have two files created, _id_rsa_ and _id_rsa.pub_ which is our public key. We will need to move our public key to our linode server. To do this, run the `scp` (secure copy) command in your terminal:
-            
+            <br>
+
             ```python
             $ scp ~/.ssh/id_rsa.pub gitauharrison@139.162.221.92:~/.ssh/authorized_keys
             ```
+            <br>
+
             - Here, we are securely copying the _id_rsa.pub_ file to our new linode user. I am using the colon punctuation mark to specify what location I want the file to be copied to. I will save the contents of _id_rsa.pub_ in a file called _authorized_keys_ found in the hidden `.ssh` folder.
         <br>
+
     - __Moving back to the new linode user terminal window__, let us test to see if the new _id_rsa.pub_ key has been copied. Run the `ls` command to list all the files found in `.ssh` folder:
         <br>
         ```python
@@ -298,6 +303,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         <br>
 
         - To see the status of the things I have allowed, I can run the command below:
+        <br>
         
         ```python
         gitauharrison@bolderlearner:~$ sudo ufw status
