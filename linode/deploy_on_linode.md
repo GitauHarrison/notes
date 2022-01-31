@@ -121,7 +121,7 @@ As is normally the case with your local machine's server, we need to set up a fe
     - This will open the file `host` in the `nano` editor. If you are not familiar with this editor, consider searching it online to learn more. However, for this tutorial, there are only a few commands that we shall be using while working with the `nano` editor. 
     
     - You can use the arrow keys to move around. Begin by adding these lines in the `/etc/host` file which is currently opened in your `nano` editor:
-    <br>
+        <br>
         ```python
         127.0.0.1         localhost
         139.162.221.92    bolder learner
