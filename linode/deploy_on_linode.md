@@ -338,3 +338,200 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         ```
 
 ## Add Application on the Linux Server
+
+There are two ways that I can get my flask application onto my linux server. The first method would simply be to clone my GitHub repository onto my server. The other method would be to copy the files of my local application onto my server. 
+
+I will use the second method to show you how you can transfer your application files to your server. Kindly note that the project on GitHub does not show the `.env` file which contains all the secret keys needed by our project. for this reason, make sure that you create that file in your root directory and add your keys following the `.env-template` file as a guide. However, since the project is on my local machine, I don't have to worry about "missing" files. I can proceed to copy my entire project folder onto my server.
+
+### Copy Project Root Folder to Server
+
+I will run the command below on the __terminal window of my local machine__:
+<br>
+
+```python
+(venv)$ scp -r home/Desktop/somasoma-elearning gitauharrison@139.162.221.92:~/
+```
+
+![scp](/images/linode/scp.png)
+
+<br>
+
+You have seen me use the command `scp` before. Basically, I am securly copying my entire _somasoma-elearning_ folder from my local machine's Desktop folder to my user's home folder. The `~/` denote that the location I am interested in is the home folder of the user in the linux server. Note that since I am copying a non-empty folder, I have used the `-r` flag. This flag tells the command to copy the entire folder and its contents. Depending on the size of your project, it can take a few seconds to several minutes to finish the process.
+
+I can now check that the project folder was copied entirely by navigating to my linux server and listing everything in the home folder. The linux server is on the other terminal window.
+<br>
+
+```python
+gitauharrison@bolderlearner$ ls
+
+# Output
+
+somasoma-elearning-app
+# I can check this folder's contents by running the command cd and ls
+```
+
+### Create and Activate a Virtual Environment
+
+Virtual environments help isolate the needs of our application from that of our server. This has the benefit of ensuring that our server remains clean. Also, should we want to add another project in this server, a virtual environment will help isolate the needs of one project from that of another. This will help us to avoid any conflicts that may arise due to dependancy-related issues.
+
+I will install `pip`:
+<br>
+
+```python
+gitauharrison@bolderlearner$ sudo apt install python3-pip
+```
+
+
+The command `python3-venv` will help me instal my virtual environment.
+<br>
+
+```python
+gitauharrison@bolderlearner$ sudo apt install python3-venv
+```
+
+With the two packages installed, now I can create a virtual environment. I will change directory to _somasoma-elearning-app_ and run the command below:
+<br>
+
+```python
+gitauharrison@bolderlearner$ cd somasoma-elearning-app
+gitauharrison@bolderlearner$ python3 -m venv venv
+```
+
+I have created a virtual environment called `venv`. The first `venv` is the folder that holds our virtual environemnt. To activate it, I will run this command:
+<br>
+
+```python
+gitauharrison@bolderlearner:~/somasoma-elearning-app$ source bin/venv/activate
+
+# You will notice a prompt at the beginning of your terminal
+```
+
+### Install Project Dependancies
+
+My project has a `requirements.txt` file in the root directory. This file lists all the packages used to build the elearning app. The packages even define what version they are. To install them in `venv`, I run this command in the linux server:
+<br>
+
+```python
+(venv)gitauharrison@bolderlearner:~/somasoma-elearning-app$ pip3 install -r requirements.txt
+```
+
+You may encounter an issue installing `psycopg2`. This is because psycopg2 is not a standard package. It is built as a wrapper around `libpq`. It requires some `PostgreSQL` binaries and headers requried for building 3rd-party applications for `PostgreSQL`. To install `psycopg2`, I will run the command below:
+<br>
+
+
+```python
+(venv)gitauharrison@bolderlearner:~/somasoma-elearning-app$ sudo apt install python3-dev libpq-dev
+```
+
+Then you can re-install the packages in `requirements.txt`.
+
+
+### Set Environment Variables
+
+All our evironment variables are located in the hidden file `.env`. Sometimes, it is a little tricky to work with environment variables in web servers. So, what I am going to do is to create a configuration file for my application. I will load this file in my application instead of environment variables. 
+
+To begin, I create a new file for my configurations:
+<br>
+
+```python
+(venv)somasoma-elearning-app$ sudo touch /etc/somasoma_elearning_config.json
+```
+
+Then, to update it with the contents of the `.env` file, I need to open it in `nano`:
+<br>
+
+```python
+(venv)somasoma-elearning-app$ sudo nano /etc/somasoma_elearning_config.json
+```
+
+I can now populate it with environment variables in JSON format:
+
+`/etc/somasoma_elearning_config.json`: Environment Variables
+```python
+{
+    "SECRET_KEY": "put-here-your-secret-key",
+    "SQLALCHEMY_DATABASE_URI": "sqlite:///path-to-database-file-as-seen-in-linux-server",
+    "MAIL_USERNAME": "put-your-email-here",
+    "MAIL_PASSWORD": "put-your-email-password-here"
+}
+```
+
+If you are not so sure how you can ge the path to your datbase file, you can refer to my method below:
+<br>
+
+```python
+(venv)somasoma-elearning-app$ pwd
+
+# Output
+/home/gitauharrison/somasoma-elearning-app
+
+# My app.db file is found in the folder above
+# I can add the path to the database file to the folder above
+# sqlite:////home/gitauharrison/somasoma-elearning-app/app.db
+```
+
+I will save this file and close it by hitting `Ctrl + X` and typing `Y` to confirm the changes.
+
+The next thing is to edit the `config.py` file in our project. Open it in `nano` once again:
+<br>
+
+
+```python
+(venv)somasoma-elearning-app$ sudo nano config.py
+```
+
+Update the file with these information:
+
+`config.py`: Environment Variables
+```python
+# ... 
+import json
+
+
+with open('/etc/somasoma_elearning_config.json') as config_file:
+    config = json.load(config_file)
+
+
+class Config(object):
+    SECRET_KEY = config.get('SECRET_KEY')
+    SQLALCHEMY_DATABASE_URI = config.get('SQLALCHEMY_DATABASE_URI')
+    MAIL_USERNAME = config.get('MAIL_USERNAME')
+    MAIL_PASSWORD = config.get('MAIL_PASSWORD')
+    # ...
+```
+
+Everthing else remains the same. Using `json.loads()` makes the `config` variable a Python dictionary. Everywhere we are using `os.environ.get()` to get the environment variable can now be replaced with `config.get()`. Save the file and close it.
+
+### Test the Application
+
+To start a flask server, typically, we would run `flask run` command. However, this method only works for development. We can expose this application to the outside world by using `flask run --host=`:
+<br>
+
+
+```python
+(venv)somasoma-elearning-app$ flask run --host=0.0.0.0
+
+
+# Output
+ * Serving Flask app 'elearning.py' (lazy loading)
+ * Environment: development
+ * Debug mode: on
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://139.162.221.92:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 387-730-869
+```
+
+You can see that the application is running on http://139.162.221.92:5000/. I will paste this link in my browser to test the application.
+
+![Somasoma app](/images/linode/somasoma_app.png)
+
+The application is running on my server at port 5000. If I try to access the application without the port number, I mean http://139.162.221.92, I won't get anything. See the image below. This is because port 80 is not open yet on our firewall. Thankfully, several parts of the application are working.
+
+![Backend not working](/images/linode/backend_not_working.png)
+
+So far, everything seems to be working. There is one big issue though. I am running a development server on a live production server. This is okay for testing, but it is not recommended. Development servers are inefficient, unstable, and insecure. What I would want to do is to switch to Nginx and gunicorn because such applications can handle traffic and are good on performance.
+
+I will kill this server by hitting `Ctrl + C`. The application will stop running.
