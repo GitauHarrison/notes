@@ -55,7 +55,7 @@ Hosts can be followed by a port number. The port number is optional. If it is no
 
 ## The HTTP Protocol
 
-The corrent HTTP fortmat depends on the version fo the HTTP protocol. There are two formarts:
+The correct HTTP fortmat depends on the version fo the HTTP protocol. There are two formarts:
 
 - HTTP/1.0: earlier protocol with fewer functions
 - HTTP/1.1: later protocol with more functions
@@ -177,4 +177,4 @@ The message body is the content of the response. The message payload of a succes
 
 A website (also known as a host) can be indentified on the internet by a host name such as www.gitauharrison.com. They are sometimes called _domain names_. These names are mapped to an IP (Internet Protocol) address.
 
-A host name is used by a client to make a HTTP request to a host. The user, the person making the request, can specifiy can use the IP address of the host name but it is more conviniet to use the host name. This is because the host name can be remembered easily.
+A host name is used by a client to make a HTTP request to a host. The user, the person making the request, can specifiy to use the IP address of the host name but it is more conviniet to use the host name. This is because the host name can be remembered easily.
