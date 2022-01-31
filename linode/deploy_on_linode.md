@@ -104,6 +104,7 @@ As is normally the case with your local machine's server, we need to set up a fe
     ```
 
     - To test that the host name has actually been set, run:
+        <br>
         ```python
         root@localhost:~# hostname
 
@@ -129,7 +130,7 @@ As is normally the case with your local machine's server, we need to set up a fe
     - The first is the IP address of the localhost whereas the second is the IP address of my linode server as seen in the dashboard.
 
     - To save this file, hit `ctrl + x`. It will ask if you want to save this file. Type in "y" and press `Enter`. You will have saved this file upon exiting.
-    <br>
+    
     ![Host file](/images/linode/etc_host_file.png)
 <br>
 
@@ -140,7 +141,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
     root@localhost:~# adduser gitauharrison
     ```
     - You will be prompted to create a new password for this user. Please do so. Ensure that you can remember that password. You will be asked a few more questions such as "Full Name" etc. You can fill that up or leave them blank. This step is optional.
-    <br>
+    
     ![Add user](/images/linode/adduser.png)
 <br>
 
@@ -167,7 +168,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
     ```
 
     - This will log you out as a `root` user. Notice that I am taken back to my local machine.
-    <br>
+    
     ![Logout root user](/images/linode/logout_root_user.png)
     <br>
 
@@ -297,7 +298,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         <br>
 
         - To see the status of the things I have allowed, I can run the command below:
-        <br>
+        
         ```python
         gitauharrison@bolderlearner:~$ sudo ufw status
 
