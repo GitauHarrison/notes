@@ -1,6 +1,6 @@
 # Deploy to Linode Servers
 
-During this tutorial, I will walk you through the steps you can follow to deploy your flask application on Linode servers. For your reference, these are the topics I am going to discuss:
+In this tutorial, I will walk you through the steps you can follow to deploy your flask application on Linode servers. For your reference, these are the topics I am going to discuss:
 
 1. [Deploy your flask app on Linode](/linode/deploy_on_linode.md)
 2. [Buy a domain name for your deployed application](/linode/buy_domain.md)
@@ -15,14 +15,15 @@ If you would like to skip to a particular section within this tutorial, you can 
 - [Create a linode](#create-a-linode)
 - [Log into your virtual machine](#log-into-your-virtual-machine)
 - [Set up your linux server](#set-up-your-linux-server)
-- [Add application on the linux server](#add-application-on-the-linux-server)
+- [Add flask application to the linux server](#add-flask-application-to-the-linux-server)
+- [Using nginx and gunicorn](#using-nginx-and-gunicorn)
 
 ## Overview
 
 
-The assumption is that you have already built an application. However, you probably already know that a locally running app is only accessible to you and no one else. There is a tool such as `ngrok` that you can use to create a tunnel and provision a publicly accessible URL. However, we would like to make our application accessible to anyone who has internet through a browser such as Brave or Google Chrome.
+The assumption is that you have already built an application. You probably already know that a locally running app is only accessible to you and no one else. There is a tool such as `ngrok` that you can use to create a tunnel and provision a temporary publicly accessible URL. However, we would like to make our application accessible to anyone who has internet through a browser such as Brave or Google Chrome.
 
-For the purposes of this tutorial, I will be hosting an elearning application built using Python and the Flask micro-framework. You can access the project on [this GitHub repository](https://github.com/GitauHarrison/somasoma-eLearning-app) and use it to follow along. Alternatively, if you have built one for yourself, ensure that you have it on GitHub, or an alterntive version control system.
+For the purposes of this tutorial, I will be hosting an elearning application built using Python and the Flask micro-framework on a Linode server. You can access the project on [this GitHub repository](https://github.com/GitauHarrison/somasoma-eLearning-app) and use it to follow along. Alternatively, if you have built one for yourself, ensure that you have it on GitHub, or an alterntive version control system.
 
 
 ## Create Linode Account
@@ -195,8 +196,8 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         ```python
         gitauharrison@bolderlearner:~$ mkdir .ssh
         ```
-    - If you are not sure if your are in your home directory or not, simply run the command `pwd` in the terminal. `pwd` stands for `print working directory`. Another way to find out if you are in your home directory is to look at your terminal. If you can see a tilde character (`~`), then you are in your home directory.
-    <br>
+        - If you are not sure if your are in your home directory or not, simply run the command `pwd` in the terminal. `pwd` stands for `print working directory`. Another way to find out if you are in your home directory is to look at your terminal. If you can see a tilde character (`~`), then you are in your home directory.
+        <br>
 
     - __Moving to your other terminal window running your local machine__, run the following command:
         <br>
@@ -229,7 +230,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         ```
 <br>
 
-- Update SSH permissions where the owner of the directory has  read, write and execute permissions on the directory and read and write permissions on the files. 
+- Update SSH permissions where the owner of the directory has (1) read, write and execute permissions on the directory and (2) read and write permissions on the files. 
     <br>
 
     ```python
@@ -301,7 +302,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         gitauharrison@bolderlearner:~$ sudo ufw allow ssh 
         ```
 
-        - This will allow me to SSH into our server, without which our firewall will prevent its use.
+        - This will allow me to SSH into my server, without which our firewall will prevent its use.
         <br>
 
         ```python
@@ -337,7 +338,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         # Port 22 is SSH; there is port 5000 as well
         ```
 
-## Add Application on the Linux Server
+## Add Flask Application to the Linux Server
 
 There are two ways that I can get my flask application onto my linux server. The first method would simply be to clone my GitHub repository onto my server. The other method would be to copy the files of my local application onto my server. 
 
@@ -528,10 +529,113 @@ You can see that the application is running on http://139.162.221.92:5000/. I wi
 
 ![Somasoma app](/images/linode/somasoma_app.png)
 
-The application is running on my server at port 5000. If I try to access the application without the port number, I mean http://139.162.221.92, I won't get anything. See the image below. This is because port 80 is not open yet on our firewall. Thankfully, several parts of the application are working.
-
-![Backend not working](/images/linode/backend_not_working.png)
+The application is running on my server at port 5000. If I try to access the application without the port number, I mean http://139.162.221.92, I won't get anything. This is because port 80 is not open yet on our firewall. Thankfully, several parts of the application are working.
 
 So far, everything seems to be working. There is one big issue though. I am running a development server on a live production server. This is okay for testing, but it is not recommended. Development servers are inefficient, unstable, and insecure. What I would want to do is to switch to Nginx and gunicorn because such applications can handle traffic and are good on performance.
 
 I will kill this server by hitting `Ctrl + C`. The application will stop running.
+
+## Using Nginx and Gunicorn
+
+Back to my user's home directory, I will install `nginx` and `gunicorn`:
+
+```python
+(venv)gitauharrison@bolderlearner$ sudo apt install nginx
+```
+
+Next, I will install `gunicorn` within my user's virtual environment:
+
+```python
+(venv)gitauharrison@bolderlearner$ pip3 install gunicorn
+```
+
+Typically, Nginx is a web server that we want to handle requests for static files (CSS, JS, images). The Python files will be handled by Gunicorn. I will begin my removing the default Nginx configuration file:
+
+
+```python
+(venv)gitauharrison@bolderlearner$ sudo rm /etc/nginx/sites-enabled/default
+```
+
+Then I will create a new file for my Nginx configuration:
+
+
+```python
+(venv)gitauharrison@bolderlearner$ sudo nano /etc/nginx/sites-enabled/somasoma_elearning
+```
+
+This will create a completely blank file using `nano`. I will add the following lines:
+
+
+```python
+server {
+    listen 80;
+    server_name 139.162.221.92;
+    location /static {
+        alias /home/gituaharrison/somasoma-elearning-app/app/static/css;
+
+    }
+    location / {
+        proxy_pass http://localhost:8000;
+        include /etc/nginx/proxy_params;
+        proxy_redirect off;
+
+}
+```
+
+I have began by add the location of my static files. This will be handled by Nginx. The `/` is the root directory as seen in the second location. The `proxy_pass` will forward all the traffic to Gunicorn and it will handle all the Python code. I have added a few more variables to that proxy. If you would like to learn more about these variables you can check the [Nginx documentation](https://nginx.org/en/docs/http/ngx_http_proxy_module.html). Save the file and close it by hitting `ctrl + X`, type "y" for "yes" and then hit `Enter`.
+
+I have set my server to listen to port 80, which is the default port for HTTP, but if you remember from above, I have not opened this port yet. The next step is to open the port.
+
+
+```python
+(venv)gitauharrison@bolderlearner$ sudo ufw allow http/tcp
+
+
+# Output
+Rule added
+Rule added (v6)
+```
+
+At this point, I am done with the testing port 5000. So, I will disallow this port from being used by Nginx.
+
+
+```python
+(venv)gitauharrison@bolderlearner$ sudo ufw delete allow 5000
+
+
+# Output
+Rule deleted
+Rule deleted (v6)
+```
+
+To make sure that the new rules are enabled, I will run the command below:
+
+
+```python
+(venv)gitauharrison@bolderlearner$ sudo ufw enable
+
+
+# Output
+Command may disrupt existing ssh connections. Proceed with operation (y|n)?
+# Hit 'y' for 'yes'
+
+Firewall is active and enabled on system startup
+```
+
+Finally, I will restart my Nginx server:
+
+
+```python
+(venv)gitauharrison@bolderlearner$ sudo systemctl restart nginx
+```
+
+If I navigate to http://139.162.221.92/ on my browser, I will get an Nginx 502 Bad Gateway error. 
+
+![Nginx 502 Bad Gateway](/images/linode/nginx_502_bad_gateway.png)
+
+The server is currently listening to port 80, and therefore it has gotten into contact with Nginx, but it does not know how to forward Python code. This is because Gunicorn is not running. I will need to run Gunicorn so that Nginx can forward the requests for Python files to it.
+
+
+```python
+(venv)gitauharrison@bolderlearner$ sudo systemctl start gunicorn
+```

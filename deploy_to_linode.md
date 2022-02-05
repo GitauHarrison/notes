@@ -26,11 +26,13 @@ Let us say you have completed building your application and you have hosted it i
 - [Deploying on Azure (IIS)](https://docs.microsoft.com/en-us/azure/app-service/containers/how-to-configure-python)
 - [Deploying on PythonAnywhere](https://help.pythonanywhere.com/pages/Flask/)
 
-Alternatively, you can host a flask application yourself. During this tutorial, I will show how you can deploy your flask application on [Linode](https://www.linode.com/). In particular, I will show you three things:
+The services above are all hosted on the cloud and are designed to scale, be secure and stable. They are characterized by lifting the burden of setting up, configuring and maintaining the server from the developer.
 
-1. [Deploy your flask app on Linode](/linode/deploy_on_linode.md)
-2. [Buy a domain name for your deployed application](/linode/buy_domain.md)
-3. [Secure your domain with SSL](/linode/secure_domain_with_ssl.md)
+Alternatively, you can choose to host a flask application yourself. This approach will allow you to learn the technical details that go into web hosting and server configuration and maintainance. During this tutorial, I will show how you can deploy your flask application on [Linode](https://www.linode.com/). In particular, I will show you three things:
+
+1. [How to deploy your flask app on Linode](/linode/deploy_on_linode.md)
+2. [How to buy a domain name for your deployed application](/linode/buy_domain.md)
+3. [How to secure your domain with SSL](/linode/secure_domain_with_ssl.md)
 
 I won't lie to you, deploying an application can be overwhelming because there are a lot of different ways to do it. Knowing what is best for your specific application can also be difficult. Here, you will learn how to deploy your flask application to a Linux server using NGINX and GUNICORN.
 
