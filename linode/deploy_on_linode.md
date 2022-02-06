@@ -246,7 +246,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
     - Here, we are updating the permissions on all files found inside `.ssh` folder.
 
-    - In Linux, the `chmod` command is used to change permissions of files and directories. The first digit in the command `chmod 700`, that is number 7, define the permissions for the owner/user of that file or folder which is basically means the user has _read_, _write_ and _execute_ rights. The second digit, 0, means no permissions, and it applies to the group of that directory. The last digit, 0, applies to everyone else. The second command `chmod 600` applies the 6 hundred permissions to the owner, the group and everyone else on the files found in the `.ssh` folder.
+    - In Linux, the `chmod` command is used to change permissions of files and directories. The first digit in the command `chmod 700`, that is number 7, defines the permissions for the owner/user of that file or folder. It means that the user has _read_, _write_ and _execute_ rights. The second digit, 0, means no permissions, and it applies to the group of that directory. The last digit, 0, applies to everyone else. The second command `chmod 600` applies the 6 hundred permissions to the owner, the group and everyone else on the files found in the `.ssh` folder.
 
     - Now, if I exit the server by running `exit` in the terminal, and hit `Enter` again after pasting `ssh gitauharrison@139.162.221.92`, I should be able to SSH into the virtual machine without a password.
 <br>
@@ -293,7 +293,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         ```python
         gitauharrison@bolderlearner:~$ sudo ufw default allow outgoing
 
-        gitauharrison@bolderlearner:~$ sudo ufw defualt deny incoming
+        gitauharrison@bolderlearner:~$ sudo ufw default deny incoming
         ```
 
     - We want to configure these allow rules to allow for SSH, HTTP and any other port that we may want to access from the outside of our server. Begin by running the commands below. I have provided a brief explanation of what each command does.
@@ -571,7 +571,7 @@ server {
     listen 80;
     server_name 139.162.221.92;
     location /static {
-        alias /home/gituaharrison/somasoma-elearning-app/app/static/css;
+        alias /home/gitauharrison/somasoma-eLearning-app/app/static/css;
 
     }
     location / {
@@ -622,6 +622,9 @@ Command may disrupt existing ssh connections. Proceed with operation (y|n)?
 Firewall is active and enabled on system startup
 ```
 
+### Start Nginx
+
+
 Finally, I will restart my Nginx server:
 
 
@@ -635,7 +638,157 @@ If I navigate to http://139.162.221.92/ on my browser, I will get an Nginx 502 B
 
 The server is currently listening to port 80, and therefore it has gotten into contact with Nginx, but it does not know how to forward Python code. This is because Gunicorn is not running. I will need to run Gunicorn so that Nginx can forward the requests for Python files to it.
 
+However, before running Gunicorn, I should be able to access my CSS files. So, navigating to http://139.162.221.92/static/css/main.css will allow me to see the CSS file. This means that Nginx is working.
+
+![Nginx 200 OK](/images/linode/nginx_200_ok.png)
+
+### Start Gunicorn
+
+Back to serving my python code, I will run the following command:
+
 
 ```python
-(venv)gitauharrison@bolderlearner$ sudo systemctl start gunicorn
+(venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ gunicorn -w 3 elearning:app
+
+
+# Output
+
+[2022-02-06 04:55:03 +0000] [88381] [INFO] Starting gunicorn 20.1.0
+[2022-02-06 04:55:03 +0000] [88381] [INFO] Listening at: http://127.0.0.1:8000 (88381)
+[2022-02-06 04:55:03 +0000] [88381] [INFO] Using worker: sync
+[2022-02-06 04:55:03 +0000] [88382] [INFO] Booting worker with pid: 88382
+[2022-02-06 04:55:03 +0000] [88383] [INFO] Booting worker with pid: 88383
+[2022-02-06 04:55:03 +0000] [88384] [INFO] Booting worker with pid: 88384
+
 ```
+
+First ensure that you are in the project folder, in my case, I have navigated into the _somasoma-eLearning-app_. The reason for this is to ensure that you have access to the application's entry point file, that is _elearning_. Alternatively, you can supply th path to the entry point file if you are in the home directory.
+
+Breaking down the command above:
+
+
+- `gunicorn` is the command to run Gunicorn.
+- `-w 3`: This will tell Gunicorn to run 3 worker processes.
+- `elearning:app`: This is the entry point file (the module containing my application's variable name).
+
+
+How do you know how many workers you need to run?
+
+```python
+(venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ (2 * num_of_cores_in_your_machine) + 1
+```
+
+To see the number of cores in my machine in Linux, I will run the following command:
+
+
+```python
+(venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ nproc --all
+
+
+# Output
+1
+```
+
+Doing the calculation as seen above will give me the number of workers I need to run. Now, If I navigate to http://139.162.221.92/ on my browser, I will get a 200 OK response for all my files.
+
+![Nginx 200 OK](/images/linode/gunicorn_running.gif)
+
+### Handling Gunicorn Error
+
+As interesting as it is to see Nginx and Gunicorn running, our server is still not ready for production yet. All the processes are running in the foreground. If I close your server before killing the Gunicorn process (by typing `exit` or `ctrl + Z`), my application will still be running in the background and I can access it on http://139.162.221.92/. Any further attempts to restart Gunicorn will fail with a `Connection is use: ...` error.
+
+```python
+(venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ gunicorn -w 3 elearning:app
+
+# Output
+
+[2022-02-06 05:46:04 +0000] [89201] [INFO] Starting gunicorn 20.1.0
+[2022-02-06 05:46:04 +0000] [89201] [ERROR] Connection in use: ('127.0.0.1', 8000)
+[2022-02-06 05:46:04 +0000] [89201] [ERROR] Retrying in 1 second.
+[2022-02-06 05:46:05 +0000] [89201] [ERROR] Connection in use: ('127.0.0.1', 8000)
+[2022-02-06 05:46:05 +0000] [89201] [ERROR] Retrying in 1 second.
+[2022-02-06 05:46:06 +0000] [89201] [ERROR] Connection in use: ('127.0.0.1', 8000)
+[2022-02-06 05:46:06 +0000] [89201] [ERROR] Retrying in 1 second.
+[2022-02-06 05:46:07 +0000] [89201] [ERROR] Connection in use: ('127.0.0.1', 8000)
+[2022-02-06 05:46:07 +0000] [89201] [ERROR] Retrying in 1 second.
+[2022-02-06 05:46:08 +0000] [89201] [ERROR] Connection in use: ('127.0.0.1', 8000)
+[2022-02-06 05:46:08 +0000] [89201] [ERROR] Retrying in 1 second.
+[2022-02-06 05:46:09 +0000] [89201] [ERROR] Can't connect to ('127.0.0.1', 8000)
+```
+
+Technically, what should happen is that my request for the resource found at http://139.162.221.92/, for example, should serve me with a 502 Bad Gateway error from NGinx. No request should go through. To fix this, I will need to first kill the Gunicorn process that is currently running. This can be achieved by executing this command:
+
+```python
+(venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ sudo fuser -k 8000/tcp
+
+# Output
+
+8000/tcp:            89314 89392 89393 89394
+```
+The `fuser` command will list all the processes that are using the port 8000. The `-k` flag will kill all the processes listed above. I can now restart gunicorn by running `gunicorn -w 3 elearning:app`.
+
+### Auto-restart Gunicorn with Supervisor
+
+It would be such a life-saver if there is a way that Gunicorn can be constantly monitored, such that it can auto-restart if it crashes. There is the software `supervisor` which can be installed on Ubuntu to help with this.
+
+```python
+(venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ sudo apt install supervisor
+```
+
+Once that is installed, I need to set up a supervisor configuration file. 
+
+
+```python
+(venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ sudo nano /etc/supervisor/conf.d/somasoma_elearning.conf
+```
+
+This will open _somasoma_elearning.conf_ in the nano editor. Update the file with this information:
+
+`/etc/supervisor/conf.d/somasoma_elearning.conf`: Supervisor configuration
+```python
+[program:somasoma_elearning]
+directory=/home/gitauharrison/somasoma-eLearning-app
+command=/home/gitauharrison/somasoma-eLearning-app/venv/bin/gunicorn -w 3 elearning:app
+user=gitauharrison
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+stderr_logfile=var/log/somasoma_elearning/somasoma_elearning.err.log
+stdout_logfile=var/log/somasoma_elearning/somasoma_elearning.out.log
+```
+
+I have began by giving my program a name, _somasoma_elearning_. Then I have set a directory from which I want to run the `gunicorn` command. I need to explicitly find the location of gunicorn within my application's folder. Line #3 will be responsible for running this `gunicorn` command.
+
+I have added a few other configurations which are self-explanatory. The application will automatically start when the server is started, it will auto-restart in the event the application crashes. I have also provided a few log files for the application.
+
+I will need to create the log files set above.
+
+```python
+(venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ sudo mkdir -p var/log/somasoma_elearning
+```
+
+
+The `-p` flag will create any directory in the change if none exists. I will then create the log files.
+
+
+```python
+(venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ sudo touch var/log/somasoma_elearning/somasoma_elearning.err.log
+
+(venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ sudo touch var/log/somasoma_elearning/somasoma_elearning.out.log
+```
+
+I will then restart `supervisor`:
+
+
+```python
+(venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ sudo supervisorctl reload
+```
+If I exit my server (by pressing `ctrl + Z` or type "exit") on my terminal, I should still be able to access my application on http://139.162.221.92/. Sometimes it can take a while for the supervisor to start up that process.
+
+![supervisor_working](/images/linode/supervisor_working.png)
+
+If you want to delete your linode, for whatever reason, say it was just a test application, you can do so from your dashboard. Click the "Linode" tab, find the three dots next to your Linode, and click "Delete". It will ask you to confirm the deletion.
+
+![Delete Linode](/images/linode/delete_linode.png)
+
