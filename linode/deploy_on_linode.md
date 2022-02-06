@@ -471,9 +471,7 @@ If you are not so sure how you can ge the path to your datbase file, you can ref
 # sqlite:////home/gitauharrison/somasoma-elearning-app/app.db
 ```
 
-I will save this file and close it by hitting `Ctrl + X` and typing `Y` to confirm the changes.
-
-The next thing is to edit the `config.py` file in our project. Open it in `nano` once again:
+I will save this file and close it by hitting `Ctrl + X` and typing `Y` to confirm the changes. The next thing is to edit the `config.py` file in our project. Open it in `nano` once again:
 <br>
 
 
@@ -565,7 +563,7 @@ Then I will create a new file for my Nginx configuration:
 
 This will create a completely blank file using `nano`. I will add the following lines:
 
-
+`/etc/nginx/sites-enabled/somasoma_elearning`: Nginx Configuration
 ```python
 server {
     listen 80;
@@ -582,7 +580,7 @@ server {
 }
 ```
 
-I have began by add the location of my static files. This will be handled by Nginx. The `/` is the root directory as seen in the second location. The `proxy_pass` will forward all the traffic to Gunicorn and it will handle all the Python code. I have added a few more variables to that proxy. If you would like to learn more about these variables you can check the [Nginx documentation](https://nginx.org/en/docs/http/ngx_http_proxy_module.html). Save the file and close it by hitting `ctrl + X`, type "y" for "yes" and then hit `Enter`.
+I have began by adding the location of my static files. This will be handled by Nginx. The `/` is the root directory as seen in the second location. The `proxy_pass` will forward all the traffic to Gunicorn and it will handle all the Python code. I have added a few more variables to that proxy. If you would like to learn more about these variables you can check the [Nginx documentation](https://nginx.org/en/docs/http/ngx_http_proxy_module.html). Save the file and close it by hitting `ctrl + X`, type "y" for "yes" and then hit `Enter`.
 
 I have set my server to listen to port 80, which is the default port for HTTP, but if you remember from above, I have not opened this port yet. The next step is to open the port.
 
@@ -787,6 +785,8 @@ I will then restart `supervisor`:
 If I exit my server (by pressing `ctrl + Z` or type "exit") on my terminal, I should still be able to access my application on http://139.162.221.92/. Sometimes it can take a while for the supervisor to start up that process.
 
 ![supervisor_working](/images/linode/supervisor_working.png)
+
+### Delete Your Linode
 
 If you want to delete your linode, for whatever reason, say it was just a test application, you can do so from your dashboard. Click the "Linode" tab, find the three dots next to your Linode, and click "Delete". It will ask you to confirm the deletion.
 
