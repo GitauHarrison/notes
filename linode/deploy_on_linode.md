@@ -36,7 +36,7 @@ When you deploy to a Linux server, you are are going to be using a virtual machi
 
 Deploying to a Linux server takes a lot of effort to set up, but this method offers you a lot of flexibility on the kind of control you will have over your application and web server. Free tier hosting options normally offer only basic functionalities, but should you desire to have more control, say you want to use a custom domain name like my-app.com rather than something such as my-app.herokuapp.com, you will be required to upgrade to a paid version. Even so, you may not have all the control you might want.
 
-I already have an account with Linode, but I will still show you how you can get started from scratch. Below, you will see that I already have one server called _official_personal_website_.
+I already have an account with Linode, but I will still show you how you can get started from scratch. Below, I have logged into my account and you can see that I already have one server called _official_personal_website_.
 
 ![Linode Dashboard](/images/linode/sample_linode.png)
 
@@ -130,7 +130,7 @@ As is normally the case with your local machine's server, we need to set up a fe
 
         ```python
         127.0.0.1         localhost
-        139.162.221.92    bolder learner
+        139.162.221.92    bolderlearner
         ```
     - The first is the IP address of the localhost whereas the second is the IP address of my linode server as seen in the dashboard.
 
@@ -259,7 +259,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         gitauharrison@bolderlearner:~$ sudo nano /etc/ssh/sshd_config
         ```
 
-        - This will open the SSH configuration file in the `nano` editor. There are two values that we need to change in this configuration file. Using the down arrow key on your keyboard, scroll down until you can see:
+        - This will open the SSH configuration file in the `nano` editor. There are two values that I need to change in this configuration file. Using the down arrow key on your keyboard, scroll down until you can see:
 
             1. `PermitRootLogin`. Currently, it is set to "yes". Change it to "no" by deleting the existing value and writing "no". We have a limited user who now has `sudo` access and, therefore, there is no need to log into my machine as `root`. 
 
@@ -275,7 +275,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         gitauharrison@bolderlearner:~$ sudo systemctl restart sshd
         ```
 
-    - If you would like to learn more about SSH Key-based authentication, [click here](/linode/ssh_key_based_authentication.md) to check out the SSH Authentication.
+    - If you would like to learn more about SSH Key-based authentication, [click here](/linode/ssh_key_based_authentication.md) to check out the SSH Authentication guide.
 <br>
 
 - Set up a firewall to monitor and control incoming and outgoing network traffic based on predetermined security rules. For your information, a firewall creates a barrier between a trusted network and an untrusted network. An example of an untrusted network can be the internet.
@@ -342,7 +342,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
 There are two ways that I can get my flask application onto my linux server. The first method would simply be to clone my GitHub repository onto my server. The other method would be to copy the files of my local application onto my server. 
 
-I will use the second method to show you how you can transfer your application files to your server. Kindly note that the project on GitHub does not show the `.env` file which contains all the secret keys needed by our project. for this reason, make sure that you create that file in your root directory and add your keys following the `.env-template` file as a guide. However, since the project is on my local machine, I don't have to worry about "missing" files. I can proceed to copy my entire project folder onto my server.
+I will use the second method to show you how you can transfer your application files to your server. Kindly note that the project on GitHub does not show the `.env` file which contains all the secret keys needed by our project. For this reason, make sure that you create that file in your root directory and add your keys following the `.env-template` file as a guide. However, since the project is on my local machine, I don't have to worry about "missing" files. I can proceed to copy my entire project folder onto my server.
 
 ### Copy Project Root Folder to Server
 
@@ -527,7 +527,7 @@ You can see that the application is running on http://139.162.221.92:5000/. I wi
 
 ![Somasoma app](/images/linode/somasoma_app.png)
 
-The application is running on my server at port 5000. If I try to access the application without the port number, I mean http://139.162.221.92, I won't get anything. This is because port 80 is not open yet on our firewall. Thankfully, several parts of the application are working.
+The application is running on my server at port 5000. If I try to access the application without the port number, I mean http://139.162.221.92, I won't get anything. This is because port 80 is not open yet on my firewall. Thankfully, several parts of the application are working.
 
 So far, everything seems to be working. There is one big issue though. I am running a development server on a live production server. This is okay for testing, but it is not recommended. Development servers are inefficient, unstable, and insecure. What I would want to do is to switch to Nginx and gunicorn because such applications can handle traffic and are good on performance.
 
@@ -693,7 +693,7 @@ Doing the calculation as seen above will give me the number of workers I need to
 
 ### Handling Gunicorn Error
 
-As interesting as it is to see Nginx and Gunicorn running, our server is still not ready for production yet. All the processes are running in the foreground. If I close your server before killing the Gunicorn process (by typing `exit` or `ctrl + Z`), my application will still be running in the background and I can access it on http://139.162.221.92/. Any further attempts to restart Gunicorn will fail with a `Connection is use: ...` error.
+As interesting as it is to see Nginx and Gunicorn running, our server is still not ready for production yet. All the processes are running in the foreground. If I close my server before killing the Gunicorn process (by typing `exit` or `ctrl + Z`), my application will still be running in the background and I can access it on http://139.162.221.92/. Any further attempts to restart Gunicorn will fail with a `Connection in use: ...` error.
 
 ```python
 (venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ gunicorn -w 3 elearning:app
@@ -760,7 +760,7 @@ I have began by giving my program a name, _somasoma_elearning_. Then I have set 
 
 I have added a few other configurations which are self-explanatory. The application will automatically start when the server is started, it will auto-restart in the event the application crashes. I have also provided a few log files for the application.
 
-I will need to create the log files set above.
+I need to save the file above before creating the log files.
 
 ```python
 (venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ sudo mkdir -p var/log/somasoma_elearning
@@ -784,11 +784,18 @@ I will then restart `supervisor`:
 ```
 If I exit my server (by pressing `ctrl + Z` or type "exit") on my terminal, I should still be able to access my application on http://139.162.221.92/. Sometimes it can take a while for the supervisor to start up that process.
 
-![supervisor_working](/images/linode/supervisor_working.png)
+And that is it! I have now completed manually setting up my application that can be accessed on http://139.162.221.92/ on any browser.
 
-### Delete Your Linode
+## Delete Your Linode
 
 If you want to delete your linode, for whatever reason, say it was just a test application, you can do so from your dashboard. Click the "Linode" tab, find the three dots next to your Linode, and click "Delete". It will ask you to confirm the deletion.
 
 ![Delete Linode](/images/linode/delete_linode.png)
 
+## Being Logged Out of Your Server
+
+For one reason or another, you may find yourself in a situation where you cannot log back in to your server. Given the fact that we have disabled root login and disallowed password authentication except through SSH, there is no way you will access your server. The reason for this situation may be that you recreated a new SSH key in your local machine and therefore the server does not have a copy of this. This will give you a `... permission denied (publickey)` error. To fix this, you can use your Linode Shell terminal on the web to make these changes. In your linode (dashboard), just before the elipsis, there is "Launch Lish Console" aka "Weblish". You can use this to perform the necessary actions to restore access to your server.
+
+## Going Further
+
+Congratualtions on coming this far. I hope you have been able to get your application up and running on your server. The next thing that I would like to share with you to complete this process would be how to get yourself a domain name. You can agree with me that _139.162.221.92/_ is difficult to remember. Rather, I would like to rename that IP address to something anyone can quickly remember, such as bolderlearner.com. Check the reference section atop this tutorial to navigate to the next step.
