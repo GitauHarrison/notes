@@ -782,6 +782,22 @@ I will then restart `supervisor`:
 ```python
 (venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ sudo supervisorctl reload
 ```
+
+Should you encounter an issue running the command above, such as `error: <class 'FileNotFoundError'>, [Errno 2] No such file or directory: file: /usr/lib/python3/dist-packages/supervisor/xmlrpc.py line: 560`, consider running these to commands below to fix it:
+
+```python
+(venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ sudo supervisord -c /etc/supervisor/supervisord.conf
+
+(venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ sudo supervisorctl -c /etc/supervisor/supervisord.conf
+
+# Output
+somasoma_elearning_app           RUNNING   pid 60456, uptime 0:00:13
+supervisor> # Type "reload"
+Really restart the remote supervisord process y/N? # Answer "y" for "yes"
+# You should see "Restarted supervisord"
+# Exit serpvisor prompt using "ctrl + c"
+```
+
 If I exit my server (by pressing `ctrl + Z` or type "exit") on my terminal, I should still be able to access my application on http://139.162.221.92/. Sometimes it can take a while for the supervisor to start up that process.
 
 And that is it! I have now completed manually setting up my application that can be accessed on http://139.162.221.92/ on any browser.
