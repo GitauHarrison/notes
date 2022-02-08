@@ -630,8 +630,33 @@ Finally, I will restart my Nginx server:
 ```python
 (venv)gitauharrison@bolderlearner$ sudo systemctl restart nginx
 ```
+Should `nginx` refuse to start for any reason, you can check the logs by typing:
 
-If I navigate to http://139.162.221.92/ on my browser, I will get an Nginx 502 Bad Gateway error. 
+```python
+(venv)gitauharrison@bolderlearner$ sudo systemctl status nginx.service 
+
+
+# Output
+ nginx.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+     Active: failed (Result: exit-code) since Tue 2022-02-08 11:47:45 UTC; 3min 31s ago
+       Docs: man:nginx(8)
+    Process: 53244 ExecStartPre=/usr/sbin/nginx -t -q -g daemon on; master_process on; (code=exited, status=1/FAILURE)
+
+Feb 08 11:47:45 bolderlearner systemd[1]: Starting A high performance web server and a reverse proxy server...
+Feb 08 11:47:45 bolderlearner nginx[53244]: nginx: [emerg] directive "server_name" is not terminated by ";" in /etc/nginx/sites-enabled/somasoma_elearning:5
+Feb 08 11:47:45 bolderlearner nginx[53244]: nginx: configuration file /etc/nginx/nginx.conf test failed
+Feb 08 11:47:45 bolderlearner systemd[1]: nginx.service: Control process exited, code=exited, status=1/FAILURE
+Feb 08 11:47:45 bolderlearner systemd[1]: nginx.service: Failed with result 'exit-code'.
+Feb 08 11:47:45 bolderlearner systemd[1]: Failed to start A high performance web server and a reverse proxy server.
+
+
+OR
+
+(venv)gitauharrison@bolderlearner$ sudo journalctl -u nginx
+```
+
+Nginx status will tell you exactly where the error is coming from. If I navigate to http://139.162.221.92/ on my browser, I will get an Nginx 502 Bad Gateway error. 
 
 ![Nginx 502 Bad Gateway](/images/linode/nginx_502_bad_gateway.png)
 
