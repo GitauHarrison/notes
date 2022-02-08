@@ -576,6 +576,7 @@ server {
         proxy_pass http://localhost:8000;
         include /etc/nginx/proxy_params;
         proxy_redirect off;
+    }
 
 }
 ```
@@ -783,7 +784,7 @@ I will then restart `supervisor`:
 (venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ sudo supervisorctl reload
 ```
 
-Should you encounter an issue running the command above, such as `error: <class 'FileNotFoundError'>, [Errno 2] No such file or directory: file: /usr/lib/python3/dist-packages/supervisor/xmlrpc.py line: 560`, consider running these to commands below to fix it:
+Should you encounter an issue running the command above, such as `error: <class 'FileNotFoundError'>, [Errno 2] No such file or directory: file: /usr/lib/python3/dist-packages/supervisor/xmlrpc.py line: 560`, consider running the to commands below to fix it:
 
 ```python
 (venv)gitauharrison@bolderlearner:~/somasoma-eLearning-app$ sudo supervisord -c /etc/supervisor/supervisord.conf
