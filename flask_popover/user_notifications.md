@@ -86,6 +86,7 @@ class MessageForm(FlaskForm):
 
 To display these private message form, we will need to create a `send_message` template.
 
+`app/templates/send_message.html`: Send private message form
 ```html
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
