@@ -100,3 +100,81 @@ I will click on "Add an A/AAAA Record" button to update my hostname, IP address,
 ![A record](/images/linode/buy_domain/a_record.png)
 
 I have added my host name as `www`, my IP address as 212.71.247.241 and I left TTL as it was, that is "Default". The IP address that I am using currently is different from the one you saw in [the previous tutorial](deploy_on_linode.md). This is because I recreated the entire project and obtained a new IP address. Moving forward, I will be using this new IP address.
+
+I can add more A records to my domain. Currently, I have only `www` record.
+
+- `Hostname`: for example bolderlearner.com. I want a quick search of this domain, without the `www.` prefix.
+- `blog`: so this will be something like blog.bolderlearner.com.
+- `*` (asterisk) - this is an example of a wildcard record. It will match any request for domains that do not exist. Wildcards are often used to point all non-existing domains to a specific IP address or top-level domain. If the querried first-level domain does not exist, the IP address specified in the wildcard DNS record will respond. For example, if I search for a non-existent app.bolderlearner.com, I will re-directed to www.bolderlearner.com.
+
+
+
+
+### Set Up Reverse DNS
+
+Computers usually use DNS to determine the IP address that is associated with a domain name. Reverse DNS is the opposite of this. Reverse DNS is used to determine the domain name that is associated with a specific IP address. Reverse DNS uses a pointer record (PTR) to match an IP address with a domain or subdomain. PTR records are generally set with a hosting provider, so reverse DNS is set in the Linode Cloud Manager.
+
+I will click on my _bolderlearner_ linode, then navigate to the _Network_ tab. Scrolling down the Network tab page, I will see a section called IP Addresses.
+
+![Reverse dns](/images/linode/buy_domain/reverse_dns.png)
+
+What I am interested in here is the IPv4 address. The first row is the IP address of my linode. It has an "Edit RDNS" button. I will click on this button to edit the reverse DNS.
+
+![Edit reverse dns](/images/linode/buy_domain/edit_reverse_dns.png)
+
+Only on form field is provided. In my case, I have added my domain name as www.bolderlearner.com. Sometimes it may take a few minutes for the DNS to propagate and it might look like you have an error. Give it a few minutes if that is the case for you. My edit was instant. As soon as you save, you will see that Reverse DNS column has been updated.
+
+I will open my browser and paste my domain name into the search bar to test if the application is accessible.
+
+![Live app on domain](/images/linode/buy_domain/live_app_on_domain.png)
+
+As you can see, I can access my application on www.bolderlearner.com. I have tested all aspects of my application such as user authentication and authorization and everything is working as expected. 
+
+
+### Add Additional DNS Records
+
+If you are familiar with [Twilio Sendgrid](https://sendgrid.com/), you probably know that it is a cloud-based email service. There is a good chance that using the Flask-mail package may give you authentication and email credibility issues. This package works exceptionally well during testing, but on a live production server, receiving emails may fail. Thankfully, our current setup work find and you do not have to worry about this. I want to show you how you can configure an email service such as SendGrid to work with your new domain name. 
+
+This section will show you how to **receive** emails within a Flask application. If you want to learn how you can **send** emails from a Python Flask application, you can check this [other comprehensive tutorial](/twilio_sendgrid.md) to learn more. I recommend that you begin with this tutorial before you can continue.
+
+I need to authenticate my domain name with Twilio SendGrid so that the service can send and receive emails on my behalf. You can check the [Twilio SendGrid documentation](https://docs.sendgrid.com/ui/account-and-settings/how-to-set-up-domain-authentication) to learn more.
+
+First, I need to [login](https://app.sendgrid.com/) to my SendGrid account. Once authenticated, check the sidebar on the left of the dashboard and click on "Settings". You will see a section called "Sender Authentication".
+
+![Sender authentication](/images/linode/buy_domain/sendgrid_sender_authentication.png)
+
+Click on this link to access the Sender Authentication page. There is a button called "Authenticate Your Domain".
+
+![Authenticate Your Domain](/images/linode/buy_domain/authenticate_your_domain_button.png)
+
+There are several questions you will be asked. The first page has two questions. Unfortunately, Linode, my DNS provider, is not listed in the dropdown menu. I needed to click on "Other Hoste (Not Listed)" to provide the host name. I also allowed for link branding in this domain.
+
+![Authenticate Your Domain Page 1](/images/linode/buy_domain/authenticate_domain_page_1.png)
+
+Click on the "Next" button to continue. You will be required to update the domain name an email can be sent from. A nice little preview of the email is shown as you key in your domain name.
+
+![Authenticate Your Domain Page 2](/images/linode/buy_domain/authenticate_domain_page_2.png)
+
+Finally, I will manually need to add the records seen in page 3 to my domain in Linode. There are five records that I need to add. These records need to be added to the CNAME section within Linode.
+
+![Authenticate Your Domain Page 3](/images/linode/buy_domain/authenticate_domain_page_3.png)
+
+On my Linode domain, I will scroll down to the CNAME section, click on the "Add a CNAME Record" button, and add the above records.
+
+![CNAME records section](/images/linode/buy_domain/cname_record_section.png)
+
+Below is an example of the CNAME values under the HOST column as they are displayed and how you will need to enter them into your DNS management with one of these providers:
+
+- HOST/NAME `em123.yourdomain.com` . ENTER CNAME RECORD HOST/NAME AS: `em123`
+- HOST/NAME `s1._domainkey.yourdomain.com` ENTER CNAME RECORD HOST/NAME AS: `s1._domainkey`
+- HOST/NAME `s2._domainkey.yourdomain.com` ENTER CNAME RECORD HOST/NAME AS: `s2._domainkey`
+
+It can take up to 48 hours for the records to verify after you upload them into your DNS host, so you will likely have to come back later to verify by clicking the "Verify" button. If you click verify, and only half of your CNAME records verify, this usually means that you need to wait a bit longer. It's also possible that you entered one of your records incorrectly.
+
+![Verification error](/images/linode/buy_domain/verification_error.png)
+
+Any time that you send an email with a FROM address whose domain matches the domain set in the domain authentication, SendGrid applies that domain to your email. You only need to update your domain authentication if you want to update the domain you are emailing from.
+
+![Sendgrid CNAME records](/images/linode/buy_domain/sengrid_cname_record.png)
+
+With the edits done in my evironment variables as seen on [the earlier mentioned tutorial](/twilio_sendgrid.md), everything should work just fine.
