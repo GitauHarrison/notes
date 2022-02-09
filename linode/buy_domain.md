@@ -71,4 +71,32 @@ I will paste the nameservers into the text boxes then click on the :heavy_check_
 
 ![Save nameserver changes](/images/linode/buy_domain/save_nameserver_changes.png)
 
-Both Linode and Namecheap say that the changes I have made will take some time, usually 24 - 48 hours, to take effect. 
+Both Linode and Namecheap say that the changes I have made will take some time, usually 24 - 48 hours, to take effect. In computer jargon, this is known as a "DNS propagation delay".
+
+### Use the DNS Manager to Add a New Record to Your Domain
+
+Within my domain list in Linode's dashboard, there is a button called "Create Domain". 
+
+![Create domain](/images/linode/buy_domain/create_domain.png)
+
+To add my new domain name, I will click on this button.
+
+![Create domain in linode](/images/linode/buy_domain/create_domain_in_linode.png)
+
+I have added a temporary email _admin@bolderlearner.com_ which does not exist yet. "Create Domain" button will create this new domain and redirect me to Linode's domain management page.
+
+![Linode domain management](/images/linode/buy_domain/linode_domain_management.png)
+
+At first, this might look very intimidating, but it is actually very simple. What I am interested in here is to add some DNS records to my domain. Example of DNS records are A records, CNAME records, MX records, and TXT records.
+
+The first record that I am going to add is an A record. This record is used to point my domain name to a specific IP address. I will use the IP address of my Linode. This record requires the following fields:
+
+- `Hostname`: This is the domain name that I want to point to my IP address.
+- `IP Address`: This is the IP address that I want to point to my domain name.
+- `TTL`: This is the time to live of the record. It sets the lifespan of the cache for the DNS record
+
+I will click on "Add an A/AAAA Record" button to update my hostname, IP address, and TTL.
+
+![A record](/images/linode/buy_domain/a_record.png)
+
+I have added my host name as `www`, my IP address as 212.71.247.241 and I left TTL as it was, that is "Default". The IP address that I am using currently is different from the one you saw in [the previous tutorial](deploy_on_linode.md). This is because I recreated the entire project and obtained a new IP address. Moving forward, I will be using this new IP address.
