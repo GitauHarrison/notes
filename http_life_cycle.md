@@ -60,7 +60,7 @@ The correct HTTP fortmat depends on the version fo the HTTP protocol. There are 
 - HTTP/1.0: earlier protocol with fewer functions
 - HTTP/1.1: later protocol with more functions
 
-HTTP request is normally made by a client to a named host located on the server, with the aim of requesting to access a resource on the server. HTTP response is made by the server to a client who made a request, the aim being to provide the requested resource. All these actions are referred to at __requirements__. A client or server that fulfills the requirements for its version of the HTTP protocol is said to be _complaint_ with the HTTP specification.
+**HTTP request** is normally made by a client to a named host located on the server, with the aim of requesting to access a resource on the server. **HTTP response** is made by the server to a client who made a request, the aim being to provide the requested resource. All these actions are referred to as __requirements__. A client or server that fulfills the requirements for its version of the HTTP protocol is said to be _complaint_ with the HTTP specification.
 
 ### HTTP Requests
 
