@@ -28,7 +28,7 @@ Let us say you have completed building your application and you have hosted it i
 
 The services above are all hosted on the cloud and are designed to scale, be secure and stable. They are characterized by lifting the burden of setting up, configuring and maintaining the server from the developer.
 
-Alternatively, you can choose to host a flask application yourself. This approach will allow you to learn the technical details that go into web hosting and server configuration and maintainance. During this tutorial, I will show how you can deploy your flask application on [Linode](https://www.linode.com/). In particular, I will show you three things:
+Alternatively, you can choose to host a flask application yourself. This approach will allow you to learn the technical details that go into web hosting and server configuration and maintainance. During this tutorial, I will show how you can deploy your flask application on [Linode](https://linode.gvw92c.net/15oBBg/). In particular, I will show you three things:
 
 1. [How to deploy your flask app on Linode](/linode/deploy_on_linode.md)
 2. [How to buy a domain name for your deployed application](/linode/buy_domain.md)

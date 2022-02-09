@@ -8,7 +8,7 @@ In this tutorial, I will walk you through the steps you can follow to deploy you
 
 ## Table of Contents
 
-If you would like to skip to a particular section within this tutorial, you can click on any of these links.
+If you would like to skip to a particular section within this tutorial, you can click on any of these links below:
 
 - [Overview](#overview)
 - [Create a linode account](#create-a-linode-account)
@@ -29,7 +29,7 @@ For the purposes of this tutorial, I will be hosting an elearning application bu
 ## Create Linode Account
 
 
-When you deploy to a Linux server, you are are going to be using a virtual machine hosted by your provider, in this case it is Linode. To begin, ensure that you have created an account on Linode. If you haven't already, [click here](https://login.linode.com/signup) to sign up. Occassionally, Linode will offer you free hosting credits as soon as you sign up. So, be sure to check that out and take advantage of it.
+When you deploy to a Linux server, you are are going to be using a virtual machine hosted by your provider, in this case it is Linode. To begin, ensure that you have created an account on Linode. If you haven't already, [click here](https://linode.gvw92c.net/15oBBg) to sign up. Occassionally, Linode will offer you free hosting credits as soon as you sign up. So, be sure to check that out and take advantage of it.
 
 
 ## Create a Linode
