@@ -10,10 +10,10 @@ During this tutorial, I will show you how you can purchase a domain name for you
 
 If you would like to skip to a particular section within this tutorial, you can click on any of these links below:
 
-- [Purchase a domain name](#purchase-a-domain-name)
+- [Register a domain name](#register-a-domain-name)
 - [Connect domain name to your application](#connect-domain-name-to-your-application)
 
-## Purchase a Domain Name
+## Register a Domain Name
 
 The very first thing I will need to do is to register a domain name from a domain registrar. This will cost me a small amount of money, usually about $12 per year. There are several domain registrars, for example, [Google Domains](https://domains.google/) and [Godaddy](https://www.godaddy.com/en-uk). The registrar that I will use is [Namecheap](https://linode.gvw92c.net/15oBBg).
 
@@ -36,3 +36,39 @@ I will be redirected to the billing page where I can enter my credit card inform
 Back to my namecheap dashboard, I can click the [Domain List](https://ap.www.namecheap.com/domains/list/) link in the sidebar navigational menu to see the domain I just purchased. There is a "Manage" button next the domain. Clicking this button will redirect me to the domain management page. 
 
 ![Domain management](/images/linode/buy_domain/domain_management.png)
+
+## Connect Domain Name to Your Application
+
+On my Linode dashboard, there is a "Domains" link in the sidebar navigational menu. Clicking this link will show me a list of all the domains I have registered. You can see that I currently have one domain registered.
+
+![Domain list](/images/linode/buy_domain/domain_list.png)
+
+To add a new domain, I will make use of the [DNS Manager Documentation](https://www.linode.com/docs/guides/dns-manager/). This documenation can be found on top of your domains list, clearly labeled as _Docs_. Clicking this link should take you to the DNS Manager documentation.
+
+### DNS Set-Up Checklist
+
+1. [Register a domain name](#register-a-domain-name)
+2. [Set your domain name to use Linode's nameservers](#set-your-domain-name-to-use-linode-s-nameservers)
+3. [Use the DNS Manager to add a new record to your domain](#use-the-dns-manager-to-add-a-new-record-to-your-domain)
+4. [Set up revers DNS](#set-up-revers-dns)
+5. [Add additional DNS records](#add-additional-dns-records)
+
+### Set Your Domain Name to Use Linode's Nameservers
+
+The five entries below are the nameservers that Linode uses. I will need to add these to my domain name in Namecheap.
+
+- `ns1.linode.com`
+- `ns2.linode.com`
+- `ns3.linode.com`
+- `ns4.linode.com`
+- `ns5.linode.com`
+
+On my domain management page, there is a section called "NAMESERVERS". By default, the nameservers are set to use _Namecheap BasicDNS_. I will click on the dropdown menu and select "Custom DNS". This will allow me to enter Linode's nameservers.
+
+![Custom DNS](/images/linode/buy_domain/custom_dns.png)
+
+I will paste the nameservers into the text boxes then click on the :heavy_check_mark: to save the changes.
+
+![Save nameserver changes](/images/linode/buy_domain/save_nameserver_changes.png)
+
+Both Linode and Namecheap say that the changes I have made will take some time, usually 24 - 48 hours, to take effect. 
