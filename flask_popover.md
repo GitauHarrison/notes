@@ -16,6 +16,7 @@ For your reference, these are the sections included in this tutorial:
 4. [Section 4: User Login](flask_popover/user_login.md)
 5. [Section 5: User Posts](flask_popover/user_posts.md)
 6. [Section 6: Implement Popover](flask_popover/popover.md)
+7. [Section 7: Private Messaging and User Notifications](flask_popover/user_notifications.md)
 
 
 ## Project Requirements
