@@ -33,7 +33,7 @@ Namecheap also offers other addons such as SSL, VPN, Professional Email, and mor
 
 I will be redirected to the billing page where I can enter my credit card information. I have left out an image illustration of the billing page for privacy of my details. For this domain, I will disable autorenewal for my purchase. Once that is done, I will click "Continue". Namecheap will then redirect me to a confirmation page just to make sure that the details I have entered are correct. If everything looks good, I will confirm this purchase. 
 
-Back to my namecheap dashboard, I can click the [Domain List](https://ap.www.namecheap.com/domains/list/) link in the sidebar navigational menu to see the domain I just purchased. There is a "Manage" button next the domain. Clicking this button will redirect me to the domain management page. 
+Back to my namecheap dashboard, I can click the [Domain List](https://ap.www.namecheap.com/domains/list/) link in the sidebar navigational menu to see the domain I just purchased. There is a "Manage" button next to the listed domain. Clicking this button will redirect me to the domain management page as seen below. 
 
 ![Domain management](/images/linode/buy_domain/domain_management.png)
 
@@ -63,7 +63,7 @@ The five entries below are the nameservers that Linode uses. I will need to add 
 - `ns4.linode.com`
 - `ns5.linode.com`
 
-On my domain management page, there is a section called "NAMESERVERS". By default, the nameservers are set to use _Namecheap BasicDNS_. I will click on the dropdown menu and select "Custom DNS". This will allow me to enter Linode's nameservers.
+On my domain management page in Namecheap, there is a section called "NAMESERVERS". By default, the nameservers are set to use _Namecheap BasicDNS_. I will click on the dropdown menu and select "Custom DNS". This will allow me to enter Linode's nameservers.
 
 ![Custom DNS](/images/linode/buy_domain/custom_dns.png)
 
@@ -145,11 +145,11 @@ Click on this link to access the Sender Authentication page. There is a button c
 
 ![Authenticate Your Domain](/images/linode/buy_domain/authenticate_your_domain_button.png)
 
-There are several questions you will be asked. The first page has two questions. Unfortunately, Linode, my DNS provider, is not listed in the dropdown menu. I needed to click on "Other Host (Not Listed)" to provide the host name. I also allowed for link branding in this domain.
+Once I have clicked on this button, tere are several questions that I will be asked. The first page has two questions. Unfortunately, Linode, my DNS provider, is not listed in the dropdown menu. I needed to click on "Other Host (Not Listed)" to provide the host name. I also allowed for link branding in this domain.
 
 ![Authenticate Your Domain Page 1](/images/linode/buy_domain/authenticate_domain_page_1.png)
 
-I will click on the "Next" button to continue. I am required to update the domain name from which an email can be sent. A nice little preview of the email is shown as I key in my domain name.
+The "Next" button, blue in color, will redirect me to the next page in this process. I am required to update the domain name from which an email can be sent. A nice little preview of the email is shown as I key in my domain name.
 
 ![Authenticate Your Domain Page 2](/images/linode/buy_domain/authenticate_domain_page_2.png)
 
