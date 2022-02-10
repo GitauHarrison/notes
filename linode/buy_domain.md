@@ -149,7 +149,7 @@ There are several questions you will be asked. The first page has two questions.
 
 ![Authenticate Your Domain Page 1](/images/linode/buy_domain/authenticate_domain_page_1.png)
 
-Click on the "Next" button to continue. You will be required to update the domain name from which an email can be sent. A nice little preview of the email is shown as you key in your domain name.
+I will click on the "Next" button to continue. I am required to update the domain name from which an email can be sent. A nice little preview of the email is shown as I key in my domain name.
 
 ![Authenticate Your Domain Page 2](/images/linode/buy_domain/authenticate_domain_page_2.png)
 
@@ -157,7 +157,7 @@ Finally, I will need to manually add the records seen in page 3 to my domain in 
 
 ![Authenticate Your Domain Page 3](/images/linode/buy_domain/authenticate_domain_page_3.png)
 
-On my Linode domain, I will scroll down to the CNAME section, click on the "Add a CNAME Record" button, and add the above records.
+On my Linode Dashboard manager domain link, I will scroll down to the CNAME section, click on the "Add a CNAME Record" button, and add the above records.
 
 ![CNAME records section](/images/linode/buy_domain/cname_record_section.png)
 
