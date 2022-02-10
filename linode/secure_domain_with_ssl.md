@@ -12,6 +12,7 @@ This tutorial is divided into the following sections:
 
 - [SSL Overview](#ssl-overview)
 - [Working With Let's Encrypt](#working-with-lets-encrypt)
+- [Certbot commands](#certbot-commands)
 
 I have noted that next to my domain name on a browser, there is "Not Secure" badge. Clicking on this badge reveals a message that says "Your connection to this site is not secure." 
 
