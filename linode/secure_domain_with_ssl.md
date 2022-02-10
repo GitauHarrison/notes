@@ -27,9 +27,9 @@ In full, SSL stands for Secure Sockets Layer. It is a standard technology used t
 
 HTTPS (Hypertext Transfer Protocol Secure) is a protocol that uses SSL to encrypt the data sent between the client and the server. It is a standard protocol that is used to securely transfer data between a client and a server. The principal motivations for using HTTPS are to protect the privacy of the data and to prevent eavesdropping. It protects against man-in-the-middle-attacks. 
 
-The authentication aspect of HTTPS typically requires a trusted third party to sign server-side digital certificates. We still refer to HTTPS using SSL rather than TLS because the term is more commonly used. The details of the certificate, including the issuing authority and the corporate name of the website owner, can be viewed by clicking on the lock symbol on the browser bar.
+The authentication aspect of HTTPS typically requires a trusted third party to sign server-side digital certificates. We still refer to HTTPS using SSL rather than TLS because the term is more commonly used. The details of the certificate, including the issuing authority and the corporate name of the website owner, can be viewed by clicking on the lock symbol on the browser bar. Learn the full HTTP life cycle [here](/http_life_cycle.md#understanding-http-life-cycle).
 
-## Workign With Let's Encrypt
+## Working With Let's Encrypt
 
 This is a non-profit organization that is authorized to issue digital certificates. To get started, paste the following URL into your browser to access their page: https://letsencrypt.org/
 
