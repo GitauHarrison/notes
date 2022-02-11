@@ -203,7 +203,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         - If you are not sure if your are in your home directory or not, simply run the command `pwd` in the terminal. `pwd` stands for `print working directory`. Another way to find out if you are in your home directory is to look at your terminal. If you can see a tilde character (`~`), then you are in your home directory.
         <br>
 
-    - __Moving to your other terminal window running your local machine__, run the following command:
+    - __Moving to my other terminal window running your local machine__, run the following command:
         <br>
 
         ```python
@@ -284,9 +284,9 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
 ### Firewall
 
-- Set up a firewall to monitor and control incoming and outgoing network traffic based on predetermined security rules. For your information, a firewall creates a barrier between a trusted network and an untrusted network. An example of an untrusted network can be the internet.
+- I need to set up a firewall to monitor and control incoming and outgoing network traffic based on predetermined security rules. For your information, a firewall creates a barrier between a trusted network and an untrusted network. An example of an untrusted network can be the internet.
     <br>
-    - Install `uncomplicated firewall`:
+    - Install `ufw` also known as "uncomplicated firewall":
         <br>
 
         ```python
@@ -297,15 +297,33 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         <br>
         
         ```python
+        # 1
         gitauharrison@bolderlearner:~$ sudo ufw default allow outgoing
 
+        # Output
+
+        Default outgoing policy changed to 'allow'
+        (be sure to update your rules accordingly)
+
+
+        # 2
         gitauharrison@bolderlearner:~$ sudo ufw default deny incoming
+
+        # Output
+
+        Default incoming policy changed to 'deny'
+        (be sure to update your rules accordingly)
         ```
 
     - We want to configure these allow rules to allow for SSH, HTTP and any other port that we may want to access from the outside of our server. Begin by running the commands below. I have provided a brief explanation of what each command does.
         <br>
         ```python
-        gitauharrison@bolderlearner:~$ sudo ufw allow ssh 
+        gitauharrison@bolderlearner:~$ sudo ufw allow ssh
+
+        
+        # Output
+        Rules updated
+        Rules updated (v6)
         ```
 
         - This will allow me to SSH into my server, without which our firewall will prevent its use.
@@ -313,6 +331,12 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
         ```python
         gitauharrison@bolderlearner:~$ sudo ufw allow 5000
+
+
+        # Output
+
+        Rules updated
+        Rules updated (v6)
         ``` 
         
         - This will allow me to access port 5000 which will be used by our flask development server. Using this port will enable me to test my application before going live on a production server.
@@ -320,6 +344,12 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
         ```python
         gitauharrison@bolderlearner:~$ sudo ufw enable
+
+
+        # Output
+
+        Command may disrupt existing ssh connections. Proceed with operation (y|n)? # type "y" for "yes"
+        Firewall is active and enabled on system startup
         ```
 
         - The command above basically enables all that we have set for our SSH and port 5000. When prompted, type "y" to activate and enable firewall on system startup.
@@ -350,7 +380,7 @@ There are two ways that I can get my flask application onto my linux server. The
 
 I will use the second method to show you how you can transfer your application files to your server. Kindly note that the project on GitHub does not show the `.env` file which contains all the secret keys needed by our project. For this reason, make sure that you create that file in your root directory and add your keys following the `.env-template` file as a guide. However, since the project is on my local machine, I don't have to worry about "missing" files. I can proceed to copy my entire project folder onto my server.
 
-### Copy Project Root Folder to Server
+### Copy Project Folder to New Linode Server
 
 I will run the command below on the __terminal window of my local machine__:
 <br>
@@ -374,7 +404,7 @@ gitauharrison@bolderlearner$ ls
 # Output
 
 somasoma-elearning-app
-# I can check this folder's contents by running the command cd and ls
+# I can check this folder's contents by running the commands cd and ls
 ```
 
 ### Create and Activate a Virtual Environment
@@ -575,7 +605,7 @@ server {
     listen 80;
     server_name 139.162.221.92;
     location /static {
-        alias /home/gitauharrison/somasoma-eLearning-app/app/static/css;
+        alias /home/gitauharrison/somasoma-eLearning-app/app/static;
 
     }
     location / {
@@ -827,7 +857,7 @@ somasoma_elearning_app           RUNNING   pid 60456, uptime 0:00:13
 supervisor> # Type "reload"
 Really restart the remote supervisord process y/N? # Answer "y" for "yes"
 # You should see "Restarted supervisord"
-# Exit serpvisor prompt using "ctrl + c"
+# Exit supervisor prompt using "ctrl + c"
 ```
 
 If I exit my server (by pressing `ctrl + Z` or type "exit") on my terminal, I should still be able to access my application on http://139.162.221.92/. Sometimes it can take a while for the supervisor to start up that process.

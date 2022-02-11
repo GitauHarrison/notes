@@ -277,6 +277,6 @@ Scroll to the bottom of the file and add the following line:
 
 `/tmp/crontab.SYULN5/crontab`: Auto-renewal
 ```python
-30 4 1 * * sudo certbot renw --quiet
+30 4 1 * * sudo certbot renew --quiet
 ```
 To save, I will press `ctrl + X`, type `y` and hit `enter`. This basically autorenews the certificate at 4.30 am on the 1st of every month. The `--quiet` option tells the program to not print out any messages or feedback.
