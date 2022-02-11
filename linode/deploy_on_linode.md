@@ -99,6 +99,8 @@ As is normally the case with your local machine's server, we need to set up a fe
     ```
 <br>
 
+### Root User
+
 - Create a host name in this machine:
     <br>
 
@@ -186,8 +188,10 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         ```python
         $ ssh gitauharrison@139.162.221.92
         ```
-    - Hit `Enter`. You will be required to key in your `gitauharrison` password that we had set earlier. Do so and you will notice that you will be logged in as your new user. For me, this is `gitauharrison@bolderlearner:~$`
+    - Hit `Enter`. I will be required to key in my `gitauharrison` password that I had set earlier. Doing so will log me in as the new user, that is `gitauharrison@bolderlearner:~$`.
 <br>
+
+### SSH Authentication
 
 - Set up SSH Authentication. This will allow me to log into my server without having to supply my password every time. This is quite convinient.
     - Make a `.ssh` directory from the home directory.
@@ -277,6 +281,8 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
     - If you would like to learn more about SSH Key-based authentication, [click here](/linode/ssh_key_based_authentication.md) to check out the SSH Authentication guide.
 <br>
+
+### Firewall
 
 - Set up a firewall to monitor and control incoming and outgoing network traffic based on predetermined security rules. For your information, a firewall creates a barrier between a trusted network and an untrusted network. An example of an untrusted network can be the internet.
     <br>
