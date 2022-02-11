@@ -838,6 +838,58 @@ If you want to delete your linode, for whatever reason, say it was just a test a
 
 For one reason or another, you may find yourself in a situation where you cannot log back in to your server. Given the fact that we have disabled root login and disallowed password authentication except through SSH, there is no way you will access your server. The reason for this situation may be that you recreated a new SSH key in your local machine and therefore the server does not have a copy of this. This will give you a `... permission denied (publickey)` error. To fix this, you can use your Linode Shell terminal on the web to make these changes. In your linode (dashboard), just before the elipsis, there is "Launch Lish Console" aka "Weblish". You can use this to perform the necessary actions to restore access to your server.
 
+## Rebuild Your Linode
+
+It is not uncommon that at one point we fry our servers. It may be during routine maintenance, or it may be due to a bug in our code. In either case, we need to rebuild our server. By rebuilding, we will end up with a fresh install of our application, and still maintain our current IP address. We will need to set up whatever configurations we'd like to have and any software we'd still need.
+
+To begin the rebuild process, navigate back to your Linode Dashboard manager. Click on the "Linode" link in the sidebar to access a list of all your available linodes. At the end of each Linode's row, there is an ellipis for more options. Click on the ellipsis to access "Rebuild". Once you click this, the rebuild process will begin almost immediately. If you were currently logged in to your server, you will notice that you will be automatically logged out. 
+
+![Rebuild linode](/images/linode/rebuild_linode.png)
+
+Any attempst to login to your previously existing linode server will give you an error.
+
+```python
+$ ssh ssh gitauharrison@139.162.221.92
+
+# or ssh root@ssh root@139.162.221.92
+
+
+# Output
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the ECDSA key sent by the remote host is
+SHA256:...............
+Please contact your system administrator.
+Add correct host key in /home/harry/.ssh/known_hosts to get rid of this message.
+Offending ECDSA key in /home/harry/.ssh/known_hosts:10
+  remove with:
+  ssh-keygen -f "/home/harry/.ssh/known_hosts" -R "139.162.221.92"
+ECDSA host key for 85.159.212.84 has changed and you have requested strict checking.
+Host key verification failed.
+```
+
+Thankfully, there is useful feedback on what we can do to fix this issue. In my case, I need to remove the offending host key from my known_hosts file. This key can be found in `/home/harry/.ssh/known_hosts`. Of particular interest is line number 10. I will open this file in `nano` and remove the offending line. Press `ctrl + x`, type 'y' and hit `enter` to save the edits.
+
+Now, if I SSH into my linode server using `root`, I should be able to access it.
+
+```python
+$ ssh root@139.162.221.92
+
+
+# Output
+
+The authenticity of host '139.162.221.92 (139.162.221.92)' can't be established.
+ECDSA key fingerprint is SHA256:..................
+Are you sure you want to continue connecting (yes/no/[fingerprint])?
+```
+
+From here, I can begin to reinstall my flask application afresh.
+
 ## Going Further
 
 Congratualtions on coming this far. I hope you have been able to get your application up and running on your server. The next thing that I would like to share with you to complete this process would be how to get yourself a domain name. You can agree with me that _139.162.221.92/_ is difficult to remember. Rather, I would like to rename that IP address to something anyone can quickly remember, such as bolderlearner.com. Check the reference section atop this tutorial to navigate to the next step.
