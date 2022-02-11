@@ -842,13 +842,15 @@ For one reason or another, you may find yourself in a situation where you cannot
 
 It is not uncommon that at one point we fry our servers. It may be during routine maintenance, or it may be due to a bug in our code. In either case, we need to rebuild our server. By rebuilding, we will end up with a fresh install of our application, and still maintain our current IP address. We will need to set up whatever configurations we'd like to have and any software we'd still need.
 
-To begin the rebuild process, navigate back to your Linode Dashboard manager. Click on the "Linode" link in the sidebar to access a list of all your available linodes. At the end of each Linode's row, there is an ellipis for more options. Click on the ellipsis to access "Rebuild". Once you click this, the rebuild process will begin almost immediately. If you were currently logged in to your server, you will notice that you will be automatically logged out. 
+To begin the rebuild process, navigate back to your Linode Dashboard manager. Click on the "Linode" link in the sidebar to access a list of all your available linodes. At the end of each Linode's row, there is an ellipis for more options. Click on the ellipsis to access "Rebuild". Complete the registration form by providing needed information.
+
+![Rebuild form](/images/linode/rebuild_form.png)
+
+Click the "Rebuild Linode" button (after you have properly filled the form) and the rebuild process will begin almost immediately. If you were currently logged in to your server, you will notice that you will be automatically logged out. 
 
 ![Rebuild linode](/images/linode/rebuild_linode.png)
 
-Complete the registration form by providing needed information.
 
-![Rebuild form](/images/linode/rebuild_form.png)
 
 It might takes several minutes for the rebuild to complete. You can check the status of the rebuild process in the "Activity Feed" tab to monitor and confirm that the rebuild has completed. Once the process is successfully completed, any attempt to login to your previously existing linode server will give you an error.
 
