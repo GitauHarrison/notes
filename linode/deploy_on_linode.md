@@ -846,7 +846,11 @@ To begin the rebuild process, navigate back to your Linode Dashboard manager. Cl
 
 ![Rebuild linode](/images/linode/rebuild_linode.png)
 
-Any attempst to login to your previously existing linode server will give you an error.
+Complete the registration form by providing needed information.
+
+![Rebuild form](/images/linode/rebuild_form.png)
+
+It might takes several minutes for the rebuild to complete. You can check the status of the rebuild process in the "Activity Feed" tab to monitor and confirm that the rebuild has completed. Once the process is successfully completed, any attempt to login to your previously existing linode server will give you an error.
 
 ```python
 $ ssh ssh gitauharrison@139.162.221.92
