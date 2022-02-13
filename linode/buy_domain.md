@@ -2,9 +2,10 @@
 
 During this tutorial, I will show you how you can purchase a domain name for your deployed application. A domain name makes it easy for users to remember your site rather than an IP (Internet Protocol) address. For your reference, these are the topics in our discussion:
 
-1. [Deploy your flask app on Linode](/linode/deploy_on_linode.md)
-2. [Buy a domain name for your deployed application](/linode/buy_domain.md)
-3. [Secure your domain with SSL](/linode/secure_domain_with_ssl.md)
+1. [Welcome to Linode](/deploy_to_linode.md)
+2. [Deploy your flask app on Linode](/linode/deploy_on_linode.md)
+3. [Buy a domain name for your deployed application](/linode/buy_domain.md)
+4. [Secure your domain with SSL](/linode/secure_domain_with_ssl.md)
 
 ## Table of Contents
 
@@ -105,7 +106,7 @@ I can add more A records to my domain. Currently, I have only `www` record.
 
 - `Hostname`: in case a user forgest the `www.` prefix.
 - `blog`: this will be something like _blog.bolderlearner.com_.
-- `*` (asterisk) - this is an example of a wildcard record. It will match any request for domains that do not exist. Wildcards are often used to point all non-existing domains to a specific IP address or top-level domain. If the querried first-level domain does not exist, the IP address specified in the wildcard DNS record will respond. For example, if I search for a non-existent _app.bolderlearner.com_, I will re-directed to www.bolderlearner.com.
+- `*` (asterisk) - this is an example of a wildcard record. It will match any request for domains that do not exist. Wildcards are often used to point all non-existing domains to a specific IP address or top-level domain. If the querried first-level domain does not exist, the IP address specified in the wildcard DNS record will respond. For example, if I search for a non-existent _app.bolderlearner.com_, I will be re-directed to www.bolderlearner.com.
 
 
 
@@ -137,7 +138,7 @@ If you are familiar with [Twilio Sendgrid](https://sendgrid.com/), you probably 
 
 This section will show you how to **receive** emails within a Flask application. If you want to learn how you can **send** emails from a Python Flask application, you can check this [other comprehensive tutorial](/twilio_sendgrid.md) to learn more. I recommend that you begin with this tutorial before you can continue.
 
-I need to authenticate my domain name with Twilio SendGrid so that the service can send and receive emails on my behalf. First, I need to [login](https://app.sendgrid.com/) to my SendGrid account. Once authenticated, check the sidebar on the left of the dashboard and click on "Settings". You will see a section called "Sender Authentication".
+I need to authenticate my domain name with Twilio SendGrid so that the service can send and receive emails on my behalf. First, I need to [login](https://app.sendgrid.com/) to my SendGrid account. Once authenticated, check the sidebar on the left of the dashboard and click on "Settings". You will see a link called "Sender Authentication".
 
 ![Sender authentication](/images/linode/buy_domain/sendgrid_sender_authentication.png)
 
@@ -145,7 +146,7 @@ Click on this link to access the Sender Authentication page. There is a button c
 
 ![Authenticate Your Domain](/images/linode/buy_domain/authenticate_your_domain_button.png)
 
-Once I have clicked on this button, tere are several questions that I will be asked. The first page has two questions. Unfortunately, Linode, my DNS provider, is not listed in the dropdown menu. I needed to click on "Other Host (Not Listed)" to provide the host name. I also allowed for link branding in this domain.
+Once I have clicked on this button, there are several questions that I will be asked. The first page has two questions. Unfortunately, Linode, my DNS provider, is not listed in the dropdown menu. I needed to click on "Other Host (Not Listed)" to provide the host name. I also allowed for link branding in this domain.
 
 ![Authenticate Your Domain Page 1](/images/linode/buy_domain/authenticate_domain_page_1.png)
 

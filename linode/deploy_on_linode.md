@@ -2,9 +2,10 @@
 
 In this tutorial, I will walk you through the steps you can follow to deploy your flask application on Linode servers. For your reference, these are the topics I am going to discuss:
 
-1. [Deploy your flask app on Linode](/linode/deploy_on_linode.md)
-2. [Buy a domain name for your deployed application](/linode/buy_domain.md)
-3. [Secure your domain with SSL](/linode/secure_domain_with_ssl.md)
+1. [Welcome to Linode](/deploy_to_linode.md)
+2. [Deploy your flask app on Linode](/linode/deploy_on_linode.md)
+3. [Buy a domain name for your deployed application](/linode/buy_domain.md)
+4. [Secure your domain with SSL](/linode/secure_domain_with_ssl.md)
 
 ## Table of Contents
 
@@ -203,7 +204,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         - If you are not sure if your are in your home directory or not, simply run the command `pwd` in the terminal. `pwd` stands for `print working directory`. Another way to find out if you are in your home directory is to look at your terminal. If you can see a tilde character (`~`), then you are in your home directory.
         <br>
 
-    - __Moving to my other terminal window running your local machine__, run the following command:
+    - __Moving to my other terminal window running my local machine__, run the following command:
         <br>
 
         ```python
@@ -290,7 +291,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         <br>
 
         ```python
-            gitauharrison@bolderlearner:~$ sudo apt install ufw
+        gitauharrison@bolderlearner:~$ sudo apt install ufw
         ```
     
     - Add rules while working with `ufw`:

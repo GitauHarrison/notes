@@ -2,9 +2,10 @@
 
 With my application up and running on my server, and with a domain name, I will now secure my domain with SSL. For your reference, these are the topics in our discussion throughout this series:
 
-1. [Deploy your flask app on Linode](/linode/deploy_on_linode.md)
-2. [Buy a domain name for your deployed application](/linode/buy_domain.md)
-3. [Secure your domain with SSL](/linode/secure_domain_with_ssl.md)
+1. [Welcome to Linode](/deploy_to_linode.md)
+2. [Deploy your flask app on Linode](/linode/deploy_on_linode.md)
+3. [Buy a domain name for your deployed application](/linode/buy_domain.md)
+4. [Secure your domain with SSL](/linode/secure_domain_with_ssl.md)
 
 ## Table of Contents
 
@@ -253,7 +254,7 @@ This certificate typically lasts for around 90 days and after that I need to ren
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ```
 
-This is was a simulated renewal. To automate this renewal process, I will run a cronjob. I will open my crontab file using nano:
+This is a simulated renewal. To automate this renewal process, I will run a cronjob. I will open my crontab file using nano:
 
 
 ```python
@@ -279,4 +280,4 @@ Scroll to the bottom of the file and add the following line:
 ```python
 30 4 1 * * sudo certbot renew --quiet
 ```
-To save, I will press `ctrl + X`, type `y` and hit `enter`. This basically autorenews the certificate at 4.30 am on the 1st of every month. The `--quiet` option tells the program to not print out any messages or feedback.
+To save, I will press `ctrl + X`, type `y` and hit `enter`. This basically autorenews the certificate at 4.30 am on the 1st of every month. The `--quiet` option tells the program not print out any messages or feedback.
