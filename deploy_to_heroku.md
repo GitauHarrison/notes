@@ -294,10 +294,10 @@ One of the variables you will need to add to heroku is `SECRET_KEY`. Our `SECRET
 >A _secret key_ should be as random as possible. Your operating system has ways to generate pretty random data based on a cryptographic random generator. Use the following command to quickly generate a value for `Flask.secret_key` (or `SECRET_KEY`):
 
 ```python
-(venv)$ python -c 'import os; print(os.urandom(16))'
+(venv)$ python -c 'import secrets; print(secrets.token_hex(16))'
 
 # Output
-b'_5#y2L"F4Q8z\n\xec]/'
+4e54580b75aa65a67aa25915e542baf2
 ```
 
 ## Deploy The Application
