@@ -224,6 +224,8 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
             - Here, we are securely copying the _id_rsa.pub_ file to our new linode user. I am using the colon punctuation mark to specify what location I want the file to be copied to. I will save the contents of _id_rsa.pub_ in a file called _authorized_keys_ found in the hidden `.ssh` folder.
             <br>
 
+            ### Connecting to GitHub
+
             - Kindly note that this step only allows me to log in to my linode server without having to supply your password. In case I want to connect my project folder to a version control system such as GitHub, I will need to generate a new SSH key pair. This is done in my other terminal window where I have my linode server running:
             <br>
 
@@ -240,7 +242,7 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
             ```
             <br>
 
-            - This is paste the contents of _id_rsa.pub_ on my terminal window. I will copy this content and add it to my [list of SSH keys on GitHub](https://github.com/settings/ssh/new).
+            - This will paste the contents of _id_rsa.pub_ file on my terminal window. I will copy this content and add it to my [list of SSH keys on GitHub](https://github.com/settings/ssh/new).
         <br>
 
     - __Moving back to the new linode user terminal window__, let us test to see if the new _id_rsa.pub_ key has been copied. Run the `ls` command to list all the files found in `.ssh` folder:
