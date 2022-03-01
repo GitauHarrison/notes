@@ -1,6 +1,8 @@
 # All Notes
 
-This repository holds all the notes of the things I have learnt. Anyone else can use it to learn the very same things. Currently, things included are:
+This repository holds all the notes of the things I have learnt. Anyone else can use it to learn the very same things. 
+
+## Articles
 
 1. [How to deploy to Heroku](deploy_to_heroku.md)
 2. [How to use GitHub SSH](github_ssh.md)
@@ -38,10 +40,15 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 34. [Add Google Analytics to your Flask App](google_analytics.md)
 35. [Integrate ChartJS in Flask](chartjs.md)
 
-I also make a note of some of the cool projects I have built or I have been involved in. You can find these projects below. Some may be in progess while others may be completed:
+## Demo Projects
 
-1. [Personal Blog using Python and Flask](web_development/personal_blog/personal_blog.md)
+The articles above are great, though I think that seeing demos of the projects which integrate the concepts is a good way to learn. These are some of the projects I have created using the concepts I have learnt.
 
-![Personal Blog](images/personal_blog.gif)
+Note: The projects below are currently in progress. The links shared below are placeholders.
 
-Find out what projects I have up and running [here](https://www.gitauharrison.com/blog).
+|  Project Name |  Description | Source Code | Demo Video |  Live Link |
+| ------------- | ------------ | ----------- | ---------- | ---------- |
+| Tech Blog | A simple and interactive programming blog built using Flask | [Tech Blog on GitHub]() (in progress) | [Tech Blog on YouTube]() (in progress) | [Tech Blog Live Link]() (in progress) |
+| eLearning App | An eLearning app built using Flask  and Python| [eLearning App on GitHub]() (in progress) | [eLearning App on YouTube]() (in progress) | [eLearning App Live Link]() (in progress) |
+| Chat App | A simple chat app built using Flask and Python | [Chat App on GitHub]() (in progress) | [Chat App on YouTube]() (in progress) | [Chat App Live Link]() (in progress) |
+| Video Call App | A video conferencing app built using Flask and Twilio | [Video Call App on GitHub]() (in progress) | [Video Call App on YouTube]() (in progress) | [Video Call App Live Link]() (in progress) |
