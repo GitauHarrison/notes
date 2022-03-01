@@ -58,7 +58,9 @@ USER table
 EXPOSE 5000
 ENTRYPOINT ["./boot.sh"]
 ```
-Each line in the `Dockerfile` is a command. The `FROM` command specifies the base container image on which the new image will be built. The whole idea is that you start from an existing base container image, add or change some things, and you end up with a derived image. Images are referenced by a _name_ and a _tag_, separated by a _colon_. The tag is used as a versioning mechanism, allowing an image to provide more than one variant. Above, the image used is `python`, the official Docker image for Python. The tags for this image allow you to specifiy the interprter version and the base operating system. The `alpine` tag is from Alpine Linux. You can be more specific with the kind of tag you want to use. Say, `3.8-alpine` tag selects a Python 3.8 interpreter installed on Alpine Linux. The Alpine Linux distribution is often used instead of the more popular ones such as Ubuntu because of its small size. You can see what tags are available for the Python image in the [Python Image Reposistory](https://hub.docker.com/_/python?tab=tags).
+Each line in the `Dockerfile` is a command. The `FROM` command specifies the base container image on which the new image will be built. The whole idea is that you start from an existing base container image, add or change some things, and you end up with a derived image. Images are referenced by a _name_ and a _tag_, separated by a _colon_. The tag is used as a versioning mechanism, allowing an image to provide more than one variant. 
+
+Above, the image used is `python`, the official Docker image for Python. The tags for this image allow you to specifiy the interprter version and the base operating system. The `alpine` tag is from Alpine Linux. You can be more specific with the kind of tag you want to use. Say, `3.8-alpine` tag selects a Python 3.8 interpreter installed on Alpine Linux. The Alpine Linux distribution is often used instead of the more popular ones such as Ubuntu because of its small size. You can see what tags are available for the Python image in the [Python Image Reposistory](https://hub.docker.com/_/python?tab=tags).
 
 The `RUN` command executes an arbitrary command in the context of the container, similar to you typing the command in a shell prompt. The `adduser -D table` command creates a new user named `table`. Most container images have `root` as the default user. It is never a good practice to run an application as `root`, so we need to create our own user.
 
@@ -82,7 +84,7 @@ The `EXPOSE` command configures the port that the container will be using for it
 
 The `ENTRYPOINT` command defines the default command that should be executed when the container is started. This is the command that will start the web server. To keep things well organized, we will now make a separate `boot.sh` script file:
 
-`boot.sh: Docker container start up script`
+`boot.sh`: Docker container start up script
 ```python
 #!/bin/sh
 source beautiful_flask_tables/bin/activate
