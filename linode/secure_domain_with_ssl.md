@@ -254,7 +254,7 @@ This certificate typically lasts for around 90 days and after that I need to ren
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ```
 
-This is a simulated renewal. To automate this renewal process, I will run a cronjob. I will open my crontab file using nano:
+This is a simulated renewal. To automate this renewal process, I will run a [cronjob](/cron_jobs_in_flask.md). I will open my crontab file using nano:
 
 
 ```python
