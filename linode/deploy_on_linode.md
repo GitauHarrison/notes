@@ -274,6 +274,29 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
 
     - In Linux, the `chmod` command is used to change permissions of files and directories. The first digit in the command `chmod 700`, that is number 7, defines the permissions for the owner/user of that file or folder. It means that the user has _read_, _write_ and _execute_ rights. The second digit, 0, means no permissions, and it applies to the group of that directory. The last digit, 0, applies to everyone else. The second command `chmod 600` applies the 6 hundred permissions to the owner, the group and everyone else on the files found in the `.ssh` folder.
 
+        #### Understanding CHMOD command
+
+        - `chmod` is used to change the mode of a file system object. Files have read (r), write (w), and execute (x) permissions. The chmod command is run as follows: `chmod [permissions] [file]`. For example, 
+        <br>
+
+            ```python
+            gitauharrison@bolderlearner:~$ chmod 700 ~/.ssh/
+            ```
+            - This will change the permissions of the `.ssh` folder to 700. The first number stands for the user associated with the file. The second number stands for the group associated with the file. The third number stands for everyone else, who is not the user or part of the group.
+
+                | Octal Notation |      Permission                                       |Symbolic Representation|
+                | -------------- | ----------------------------------------------------- | ----------------------|
+                | 0              |    No permission                                      | ---                   |
+                | 1              |    Execute Permission Only                            | --x                   |
+                | 2              |    Write Permission Only                              | -w-                   |
+                | 3              |    Write and Execute Permission Only (1+2)=3          | -wx                   |
+                | 4              |    Read Permission Only                               | r--                   |
+                | 5              |    Read and Execute Permission Only (4+1)=5           | r-x                   |
+                | 6              |    Read and Write Permission Only (4+2)=6             | rw-                   |
+                | 7              |    Read, Write and Execute Permission Only (4+3)=7    | rwx                   |
+            
+        <br>
+
     - Now, if I exit the server by running `exit` in the terminal, and hit `Enter` again after pasting `ssh gitauharrison@139.162.221.92`, I should be able to SSH into the virtual machine without a password.
 <br>
 
