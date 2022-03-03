@@ -277,11 +277,10 @@ At the moment, we are logged in as the root user, who has unlimited priviledges 
         #### Understanding CHMOD command
 
         - `chmod` is used to change the mode of a file system object. Files have read (r), write (w), and execute (x) permissions. The chmod command is run as follows: `chmod [permissions] [file]`. For example, 
-        <br>
+            <br>
 
-            ```python
-            gitauharrison@bolderlearner:~$ chmod 700 ~/.ssh/
-            ```
+            
+            
             - This will change the permissions of the `.ssh` folder to 700. The first number stands for the user associated with the file. The second number stands for the group associated with the file. The third number stands for everyone else, who is not the user or part of the group.
 
                 | Octal Notation |      Permission                                       |Symbolic Representation|
