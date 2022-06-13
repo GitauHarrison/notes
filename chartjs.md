@@ -21,9 +21,10 @@ We will assume that the teacher has already calculated the mean scores of each s
 1. [Create a simple flask app](#create-a-simple-flask-app)
 2. [Add web forms to the app](#add-web-forms-to-the-app)
 3. [Add data to the app](#add-data-to-the-app)
-4. Enable user login
-5. Display the mean scores of each subject per term
-6. Display the mean scores of each subject in a line chart during each term
+4. [Enable user login](#enable-user-login)
+5. [Improve user experience](#improve-user-experience)
+6. Display the mean scores of each subject per term
+7. Display the mean scores of each subject in a line chart during each term
 
 ### Create a simple flask app
 
@@ -193,3 +194,184 @@ This is a new structure. We need to apply these changes and create a brand new d
 ```
 
 You should be able to see a new __data.sqlite__ file in the root directory of the application.
+
+### Add a user to the database
+
+To update the database with new data, our application will use the registration form to create a new user. To do this, let us add a few logic to the `routes.py` file.
+
+`app/routes.py: Register a new user`
+```python
+from app import db
+from flask import url_for, flash, redirect, render_template
+from app.models import User
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(email=form.email.data, username=form.username.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Successfully registered! You can now log in.')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
+```
+
+We store a user's information in a variable called `user`. Of interest her is to note that we do not pass a user's password data into this variable. Instead, we hash the password using the helper function `set_password()` as seen in `models.py`. Thereafter, we add the user to the database.
+
+### Enable user login
+
+After a user has registered, we redirect them to the login page. This is a good way to ensure that the user has successfully registered. To add this functionality, we will need to add some login logic to the `login()` view functions.
+
+User login in flask is easily handled by `flask-login` package. We need to first install it and then create an instance of it in the app.
+
+```python
+(venv)$ pip install flask-login
+```
+
+`app/__init__.py: Initialize the login manager`
+```python
+# ...
+# from flask_login import LoginManager
+
+# ...
+login = LoginManager()
+```
+
+Since our database has no clue about user sessions, we need to modily it slightly. 
+
+`app/models.py: Modify the User table`
+```python
+# ...
+from app import login
+from flask_login import UserMixin
+
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+
+class User(UserMixin, db.Model):
+    # ...
+```
+
+We first ensure that a particular user is accessed using their _id_ and returned during the login process. Flask-Login provides certain properties and methods to work with a database user. For example, the _is_authenticated_ and _is_anonymous_. To implement these properties, the _UserMixin_ class from flask-login is used.
+
+We can now update our `login()` view function to use the `login_user()` method from flask-login.
+
+`app/routes.py: Login a user`
+
+```python
+from flask_login import login_user
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        return redirect(url_for('index'))
+    return render_template('login.html', title='Login', form=form)
+```
+
+To show this change, it would be nice and necessary to change the _Login_ link in the navigation bar to _Logout_. This will give a user the chance to protect their account by logging out whenever they are done using it. We will implement this by first creating a new `Logout` view function.
+
+`app/routes.py: Logout a user`
+
+```python
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+```
+
+We will then update our _base.html_ template to include a conditional statement to determine the state of the user.
+
+`app/templates/base.html: Log user out`
+
+```html
+<! -- ... -- >
+
+{% block navbar %}
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">            
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                    <li><a href=" {{ url_for('login') }} ">Login</a></li>
+                {% endif %}
+            </ul>                       
+        </div>
+{% endblock %}
+
+<! -- ... -- >
+```
+
+A quick reload will reveal the state of a user. If the user is logged in, then the link will change to _logout_. Upon logout, the user will be redirected to the login page.
+
+### Improve user experience
+
+To improve the user experience, we will add a flash message every time a user registers or logs into their account. This can be achieved by adding the following to the _base.html_ file.
+
+`app/templates/base.html: Flash message`
+
+```html
+<! -- ... -- >
+
+{% block content %}
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block app_context %}{% endblock %}
+    </div>
+{% endblock %}
+
+<! -- ... -- >
+```
+
+![User sessions](images/data_visualization/chartjs/user_sessions.gif)
+
+
+### User validation
+
+To further improve a user's experience during registration, we will do the following:
+
+`app/forms.py: Improve User Experience During Registration`
+
+```python
+from wtforms.validators import ValidationError
+from app.models import User
+
+
+def RegistrationForm(FlaskForm):
+    # ...
+
+    def validate_email(self, field):
+        if User.query.filter_by(email=field.data).first():
+            raise ValidationError('Email already registered.')
+    
+
+    def validate_username(self, field):
+        if User.query.filter_by(username=field.data).first():
+            raise ValidationError('Username already in use.')
+
+```
+
+Every time a new user tries to user an already existing email address or username, we will raise a validation error and provide useful information as to why the registration process does not work.
