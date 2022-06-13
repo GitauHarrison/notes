@@ -320,6 +320,8 @@ A quick reload will reveal the state of a user. If the user is logged in, then t
 
 ### Improve user experience
 
+__Flash Message__
+
 To improve the user experience, we will add a flash message every time a user registers or logs into their account. This can be achieved by adding the following to the _base.html_ file.
 
 `app/templates/base.html: Flash message`
@@ -349,7 +351,7 @@ To improve the user experience, we will add a flash message every time a user re
 ![User sessions](images/data_visualization/chartjs/user_sessions.gif)
 
 
-### User validation
+__Duplicate registration__
 
 To further improve a user's experience during registration, we will do the following:
 
@@ -375,3 +377,5 @@ def RegistrationForm(FlaskForm):
 ```
 
 Every time a new user tries to user an already existing email address or username, we will raise a validation error and provide useful information as to why the registration process does not work.
+
+![Ux registration](images/data_visualization/chartjs/ux_registration.png)
