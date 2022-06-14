@@ -23,8 +23,8 @@ We will assume that the teacher has already calculated the mean scores of each s
 3. [Add data to the app](#add-data-to-the-app)
 4. [Enable user login](#enable-user-login)
 5. [Improve user experience](#improve-user-experience)
-6. Display the mean scores of each subject per term
-7. Display the mean scores of each subject in a line chart during each term
+6. [Display the mean scores of each subject per term](#display-the-mean-scores-of-each-subject-per-term)
+7. [Show meanscore chart](#show-meanscore-chart)
 
 ### Create a simple flask app
 
@@ -33,13 +33,13 @@ I have already created a simple flask app for you. You can refer to it in [this 
 
 ### Add web forms to the app
 
-Flask provides the [wtf](https://flask-wtf.readthedocs.io/en/latest/) library for creating web forms. This library is used to create forms that are used to collect data from a user, in our case, it will be the classroom teacher. To create a form, we will need to:
+Flask provides the [wtf](https://flask-wtf.readthedocs.io/en/latest/) library for creating web forms. This library is helps create forms that are used to collect data from a user, in our case, it will be the classroom teacher. To create a form, we will need to:
 
 - Create a _forms_ module to define all the forms we will need (login, register and meanscore)
-- Create templates for each form (login.html, register.html, meanscore.html)
+- Create templates for each form (login.html, register.html)
 - Create a _views_ module to render our forms
 
-In the terminal, install `flask-wtf` in your virtual environment.
+In the terminal, install `flask-wtf` in your virtual environment:
 
 ```python
 (venv)$ pip install flask-wtf
@@ -47,7 +47,7 @@ In the terminal, install `flask-wtf` in your virtual environment.
 
 #### Forms module
 
-This module (`forms.py`) will contain all the forms we will need. It is located in the root folder of the application. We will use classes to define all the fields we want in the forms.
+This module (`forms.py`) will contain all the forms we will need. We will use classes to define all the fields we want in the forms.
 
 `forms.py: Define login and register forms`
 ```python
@@ -379,3 +379,352 @@ def RegistrationForm(FlaskForm):
 Every time a new user tries to user an already existing email address or username, we will raise a validation error and provide useful information as to why the registration process does not work.
 
 ![Ux registration](images/data_visualization/chartjs/ux_registration.png)
+
+### Display the meanscore of each subject per term
+
+This is the most crucial step in the data visualization process. To begin, we need to provide the classroom teacher with a form to record the mean score of each subject per term. The class below will define the form.
+
+`app/forms.py: Define Mean Score Per Term Form`
+```python
+class MeanScore(FlaskForm):
+    term = StringField(
+        'Term',
+        validators=[DataRequired()],
+        render_kw={"placeholder": 'e.g. "1"'})
+    math = StringField(
+        'Math',
+        validators=[DataRequired()],
+        render_kw={"placeholder": 'e.g. "66.98"'})
+    english = StringField(
+        'English',
+        validators=[DataRequired()],
+        render_kw={"placeholder": 'e.g. "66.98"'})
+    science = StringField(
+        'Science',
+        validators=[DataRequired()],
+        render_kw={"placeholder": 'e.g. "66.98"'})
+    ict = StringField(
+        'ICT',
+        validators=[DataRequired()],
+        render_kw={"placeholder": 'e.g. "66.98"'})
+    history = StringField(
+        'History',
+        validators=[DataRequired()],
+        render_kw={"placeholder": 'e.g. "66.98"'})
+    submit = SubmitField('Submit')
+```
+
+We will show this form in the index page. So, let us update the index template to include this form.
+
+`app/templates/index.html: Display Mean Score Per Term Form`
+
+```html
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_context %}
+    <div class="row">
+        <div class="col-md-4">
+            <h1>Update Class Meanscore</h1>
+            {{ wtf.quick_form(form) }}            
+        </div>
+        <div class="col-md-8">
+            <h1>Visualize Class Meanscore</h1>
+            <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
+    </div>
+{% endblock %}
+```
+
+We need to update the `index()` view function to accommodate this form.
+
+`app/routes.py: Handling the meanscore form`
+
+```python
+from app.forms import MeanScore
+
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    form = MeanScore()
+    if form.validate_on_submit():
+        # ...
+        return redirect(url_for('index'))
+    return render_template('index.html', form=form)
+```
+
+The form should be on display in the index template after refreshing the page. To story the data, we need to create a MeanScore model. This model will store the following data: term, math, english, science, ict, and history.
+
+`app/models.py: MeanScore Model`
+
+```python
+class User(UserMixin, db.Model):
+    # ...
+    meanscores = db.relationship('Meanscore', backref='author', lazy='dynamic')
+
+
+class Meanscore(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    term = db.Column(db.String(64))
+    math = db.Column(db.Integer)
+    english = db.Column(db.Integer)
+    science = db.Column(db.Integer)
+    ict = db.Column(db.Integer)
+    history = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+```
+
+The _User_ and the _Meanscore_ tables are related by the _user_id_ column. This means that each user will have a list of meanscores. To apply the changes we need to once again run the commands below:
+
+```python
+(venv)$ flask db migrate -m 'meanscore table'
+(venv)$ flask db upgrade
+```
+
+Finally, we need to add a bit of logic on the form to ensure that the data is processed and stored in the new database.
+
+`app/routes.py: Meanscore Form Logic`
+
+```python
+# ...
+
+
+@app.route('/', methods=['GET', 'POST'])
+@login_required
+def index():
+    teacher = User.query.filter_by(email=current_user.email).first()
+    form = MeanScore()
+    if form.validate_on_submit():
+        meanscore = Meanscore(
+            term=form.term.data,
+            math=form.math.data,
+            english=form.english.data,
+            science=form.science.data,
+            ict=form.ict.data,
+            history=form.history.data,
+            author=current_user)
+        db.session.add(meanscore)
+        db.session.commit()
+        flash('Your mean score has been recorded.')
+        return redirect(url_for('index'))
+    return render_template('index.html', form=form, teacher=teacher)
+
+# ...
+```
+
+To display the results, we will need to update the index template.
+
+`app/templates/index.html: Display Mean Score Per Term`
+
+```html
+{% block app_context %}
+<div class="row">
+    <div class="col-md-4">
+        <h1>Update Class Meanscore</h1>
+        {{ wtf.quick_form(form) }}
+        <hr>
+        <h1>Results</h1>
+        Terms: {{ terms }}<br>
+        Math: {{  math }}<br>
+        English: {{ english }}<br>
+        Science: {{ science }}<br>
+        ICT: {{ ict }}<br>
+        History: {{ history }}
+    </div>
+</div>
+{% endblock %}
+```
+
+Every time new data is entered, the output will be updated.
+
+### Show meanscore chart
+
+A [quick overview of ChartJS](https://www.chartjs.org/docs/latest/) reveals that in order for us to use this library, we need to get the latest version. We will add the line below in our base template to get started.
+
+`app/templates/base.html: Add ChartJS`
+
+```html
+{% block scripts %}
+    {{  super() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% block app_scripts %}{% endblock %}
+    
+{% endblock %}
+```
+
+ChartJS requires that we create a canvas element in our template. This element will be used to display the chart.
+
+`app/templates/index.html: Add Chart Canvas`
+
+```html
+{% block app_context %}
+<div class="row">
+    <div class="col-md-4"><!-- form/results --></div>
+    <div class="col-md-8">
+        <h1>Visualize Class Meanscore</h1>
+        <canvas id="myChart" width="400" height="400"></canvas>
+    </div>
+</div>
+{% endblock %}
+```
+
+A simple chart can be created as follows:
+
+```js
+<script>
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: '# of Votes',
+                data: [12, 19, 3, 5, 2, 3],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+```
+
+The most important elements for our chart will be the label, and the datasets. The label will be the lesson meanscores in any given term, and the datasets will be the actual mean scores. You can get the graph as a bar chart, a line chart, a pie chart, or a radar chart. We will stick with the basic line chart.
+
+As you can see, the values needed for the chart are primarily sourced from a list. We need to figure out a logic to get the data from the database and dislplay it in a simple list. This changes will be applied to the `index()` view function.
+
+`app/routes.py: List meanscores`
+
+```python
+@app.route('/', methods=['GET', 'POST'])
+@login_required
+def index():
+    # ...
+
+    term_meanscore = teacher.meanscores.all()
+    terms = []
+    math = []
+    english = []
+    science = []
+    ict = []
+    history = []
+    for term in term_meanscore:
+        terms.append(term.term)
+        math.append(term.math)
+        english.append(term.english)
+        science.append(term.science)
+        ict.append(term.ict)
+        history.append(term.history)
+    return render_template(
+        'index.html',
+        terms=terms,
+        math=math,
+        english=english,
+        science=science,
+        ict=ict,
+        history=history)
+```
+
+Here, I have looped through the results stored in the database as filled by a particular teacher. The `teacher.meanscores.all()` method returns a list of all the meanscores for a particular teacher. The result is subsequrently appended to relevant lists. This lists will then be used in the index template to display the results.
+
+`app/templates/index.html: Display Mean Score Per Term`
+
+```html
+{% block app_scripts %}
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [
+                    {% for term in terms %}
+                        'Term {{ term }}',
+                    {% endfor %}
+                ],
+                datasets: [{
+                    label: 'Math Meanscore',
+                    data: [
+                        {% for math_score in math %}
+                            {{ math_score }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: ['white'],
+                    borderColor: ['teal'],
+                    borderWidth: 1
+                }, {
+                    label: 'English Meanscore',
+                    data: [
+                        {% for english_score in english %}
+                            {{ english_score }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: ['purple'],
+                    borderColor: ['red'],
+                }, {
+                    label: 'Science Meanscore',
+                    data: [
+                        {% for science_score in science %}
+                            {{ science_score }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: ['black'],
+                    borderColor: ['cyan'],
+                }, {
+                    label: 'ICT Meanscore',
+                    data: [
+                        {% for ict_score in ict %}
+                            {{ ict_score }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: ['orange'],
+                    borderColor: ['pink'],
+                }, {
+                    label: 'History Meanscore',
+                    data: [
+                        {% for history_score in history %}
+                            {{ history_score }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: ['green'],
+                    borderColor: ['yellow'],
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+{% endblock %}
+```
+
+Notice how I once again loop through individual meanscore lists to retrieve the data we want. Intentionally, we use several dictinaries in our dataset list to display all the meanscores in one graph. Background color and border color are used to differentiate the different datasets.
+
+![Final chartjs demo](images/data_visualization/chartjs/final_chartjs_demo.png)
+
+That is all for this tutorial. We have covered the basics of chartjs.
