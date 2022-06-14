@@ -16,6 +16,8 @@ We will build a simple flask application for a class teacher to record the mean 
 
 We will assume that the teacher has already calculated the mean scores of each subject, so we don't need to stress about it.
 
+The completed application can be found in this [GitHub repository](https://github.com/GitauHarrison/data-visualization-using-chartjs).
+
 ## Table of Contents
 
 1. [Create a simple flask app](#create-a-simple-flask-app)
