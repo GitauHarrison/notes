@@ -662,7 +662,7 @@ Here, I have looped through the results stored in the database as filled by a pa
                     {% endfor %}
                 ],
                 datasets: [{
-                    label: 'Math Meanscore',
+                    label: 'Math',
                     data: [
                         {% for math_score in math %}
                             {{ math_score }},
@@ -672,7 +672,7 @@ Here, I have looped through the results stored in the database as filled by a pa
                     borderColor: ['teal'],
                     borderWidth: 1
                 }, {
-                    label: 'English Meanscore',
+                    label: 'English',
                     data: [
                         {% for english_score in english %}
                             {{ english_score }},
@@ -681,7 +681,7 @@ Here, I have looped through the results stored in the database as filled by a pa
                     backgroundColor: ['purple'],
                     borderColor: ['red'],
                 }, {
-                    label: 'Science Meanscore',
+                    label: 'Science',
                     data: [
                         {% for science_score in science %}
                             {{ science_score }},
@@ -690,7 +690,7 @@ Here, I have looped through the results stored in the database as filled by a pa
                     backgroundColor: ['black'],
                     borderColor: ['cyan'],
                 }, {
-                    label: 'ICT Meanscore',
+                    label: 'ICT',
                     data: [
                         {% for ict_score in ict %}
                             {{ ict_score }},
@@ -699,7 +699,7 @@ Here, I have looped through the results stored in the database as filled by a pa
                     backgroundColor: ['orange'],
                     borderColor: ['pink'],
                 }, {
-                    label: 'History Meanscore',
+                    label: 'History',
                     data: [
                         {% for history_score in history %}
                             {{ history_score }},
