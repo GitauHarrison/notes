@@ -382,7 +382,7 @@ Every time a new user tries to user an already existing email address or usernam
 
 ![Ux registration](images/data_visualization/chartjs/ux_registration.png)
 
-### Display the meanscore of each subject per term
+### Display the mean scores of each subject per term
 
 This is the most crucial step in the data visualization process. To begin, we need to provide the classroom teacher with a form to record the mean score of each subject per term. The class below will define the form.
 
