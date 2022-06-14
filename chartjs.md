@@ -2,7 +2,7 @@
 
 You can tell very powerful stories using data. 
 
-![ChartJS Demo](images/data_visualization/chartjs/chartjs_demo.png)
+![ChartJS Demo](images/data_visualization/chartjs/data_stories.gif)
 
 Should you want to 'see' or understand deeply the data generated in your application, there are a handful of libraries that can help. One of them is ChartJS, the focus of this article. [ChartJs](https://www.chartjs.org/docs/latest/) is a free JavaScript library for creating charts in the browser (HTML-based charts). It is very easy to use, though basic understanding of JavaScript is required.
 
@@ -14,7 +14,7 @@ We will build a simple flask application for a class teacher to record the mean 
 * **Mean Scores**: [70, 80, 90, 100, 95]
 * **Term**: [1, 2, 3]
 
-We will assume that the teacher has already calculated the mean scores of each subject, so we don't need to stress about it.
+We will assume that the teacher has already calculated the mean scores of each subject, so we don't need to stress about them.
 
 The completed application can be found in this [GitHub repository](https://github.com/GitauHarrison/data-visualization-using-chartjs).
 
@@ -44,7 +44,7 @@ Flask provides the [wtf](https://flask-wtf.readthedocs.io/en/latest/) library fo
 In the terminal, install `flask-wtf` in your virtual environment:
 
 ```python
-(venv)$ pip install flask-wtf
+(venv)$ pip3 install flask-wtf
 ```
 
 #### Forms module
@@ -106,12 +106,12 @@ This variable will be sourced from the environment. In the event the variable do
 
 ### Add data to the app
 
-Just like web forms, we will also use classes to create a database model to store a user's data. `flask-sqlalchemy`, a flask-friendly wrapper to SQLAlchemy, will translate the classes objects and methods to tables and SQL. Intentionally, I will use the SQLite database since it does not require a server to run.
+Just like web forms, we will also use classes to create a database model to store a user's data. `flask-sqlalchemy`, a flask-friendly wrapper to SQLAlchemy, will translate the classes, objects and methods to tables and SQL. Intentionally, I will use the SQLite database since it does not require a server to run.
 
 To install Flask-SQLAlchemy, run:
 
 ```python
-(venv)$ pip install flask-sqlalchemy
+(venv)$ pip3 install flask-sqlalchemy
 ```
 
 Every time we create a new model, we need apply those changes to our database. Same goes to when we update the structure/schema of our database. This action is called `migrating` the database. Database migrations are easily handled by `flask-migrate`.
@@ -119,7 +119,7 @@ Every time we create a new model, we need apply those changes to our database. S
 To install Flask-Migrate, run:
 
 ```python
-(venv)$ pip install flask-migrate
+(venv)$ pip3 install flask-migrate
 ```
 
 We need to further configure the application to accommodate the database. This is done in the `config.py` file.
@@ -192,7 +192,7 @@ This is a new structure. We need to apply these changes and create a brand new d
 ```python
 (venv)$ flask db init # creates migrations folder
 (venv)$ flask db migrate -m "user table" # creates a new migration file
-(venv)$ flask db upgrade # applies the new migration file
+(venv)$ flask db upgrade # applies the changes
 ```
 
 You should be able to see a new __data.sqlite__ file in the root directory of the application.
@@ -230,7 +230,7 @@ After a user has registered, we redirect them to the login page. This is a good 
 User login in flask is easily handled by `flask-login` package. We need to first install it and then create an instance of it in the app.
 
 ```python
-(venv)$ pip install flask-login
+(venv)$ pip3 install flask-login
 ```
 
 `app/__init__.py: Initialize the login manager`
@@ -389,30 +389,30 @@ This is the most crucial step in the data visualization process. To begin, we ne
 `app/forms.py: Define Mean Score Per Term Form`
 ```python
 class MeanScore(FlaskForm):
-    term = StringField(
+    term = IntegerField(
         'Term',
         validators=[DataRequired()],
         render_kw={"placeholder": 'e.g. "1"'})
-    math = StringField(
+    math = IntegerField(
         'Math',
         validators=[DataRequired()],
-        render_kw={"placeholder": 'e.g. "66.98"'})
-    english = StringField(
+        render_kw={"placeholder": 'e.g. "66"'})
+    english = IntegerField(
         'English',
         validators=[DataRequired()],
-        render_kw={"placeholder": 'e.g. "66.98"'})
-    science = StringField(
+        render_kw={"placeholder": 'e.g. "66"'})
+    science = IntegerField(
         'Science',
         validators=[DataRequired()],
-        render_kw={"placeholder": 'e.g. "66.98"'})
-    ict = StringField(
+        render_kw={"placeholder": 'e.g. "66"'})
+    ict = IntegerField(
         'ICT',
         validators=[DataRequired()],
-        render_kw={"placeholder": 'e.g. "66.98"'})
-    history = StringField(
+        render_kw={"placeholder": 'e.g. "66"'})
+    history = IntegerField(
         'History',
         validators=[DataRequired()],
-        render_kw={"placeholder": 'e.g. "66.98"'})
+        render_kw={"placeholder": 'e.g. "66"'})
     submit = SubmitField('Submit')
 ```
 
@@ -725,7 +725,7 @@ Here, I have looped through the results stored in the database as filled by a pa
 {% endblock %}
 ```
 
-Notice how I once again loop through individual meanscore lists to retrieve the data we want. Intentionally, we use several dictinaries in our dataset list to display all the meanscores in one graph. Background color and border color are used to differentiate the different datasets.
+Notice how I once again loop through individual meanscore lists to retrieve the data we want. Intentionally, we use several dictionaries in our dataset list to display all the meanscores in one graph. Background color and border color are used to differentiate the different datasets.
 
 ![Final chartjs demo](images/data_visualization/chartjs/final_chartjs_demo.png)
 
