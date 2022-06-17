@@ -39,6 +39,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 33. [Cron Jobs in Flask](cron_jobs_in_flask.md)
 34. [Add Google Analytics to your Flask App](google_analytics.md)
 35. [Integrate ChartJS in Flask](chartjs.md)
+36. [Create a YouTube Video Downloader](youtube_video_downloader.md)
 
 ## Demo Projects
 
