@@ -26,7 +26,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 20. [How to send emails from your flask app using Twilio SendGrid](twilio_sendgrid/overview.md)
 21. [Third party authentication in Flask](two_factor_authentication/third_party_auth.md)
 22. [Live Traffic WhatsApp chatbot](/whatsapp_chatbots/live_traffic_whatsapp_chatbot.md)
-23. [Beautiful flask table](flask_tables.md)
+23. [Beautiful flask table with DataTableJS](flask_tables/flask_tables.md.md)
 24. [Starting a Flask Server](start_flask_server.md)
 25. [Comment moderation in Flask](comment_moderation.md)
 26. [Load multiple users in flask](load_multiple_users.md)
@@ -40,6 +40,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 34. [Add Google Analytics to your Flask App](google_analytics.md)
 35. [Integrate ChartJS in Flask](chartjs.md)
 36. [Create a YouTube Video Downloader](youtube_video_downloader.md)
+37. [Beautiful flask tables with Grid.js](flask_tables/gridjs.md)
 
 ## Demo Projects
 
