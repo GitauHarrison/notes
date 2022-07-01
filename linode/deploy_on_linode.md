@@ -936,7 +936,7 @@ Click the "Rebuild Linode" button (after you have properly filled the form) and 
 It might takes several minutes for the rebuild to complete. You can check the status of the rebuild process in the "Activity Feed" tab to monitor and confirm that the rebuild has completed. Once the process is successfully completed, any attempt to login to your previously existing linode server will give you an error.
 
 ```python
-$ ssh ssh gitauharrison@139.162.221.92
+$ ssh gitauharrison@139.162.221.92
 
 # or ssh root@ssh root@139.162.221.92
 
