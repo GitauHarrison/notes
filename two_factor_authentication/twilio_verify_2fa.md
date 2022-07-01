@@ -1,1264 +1,271 @@
 # Two-factor Authentication Using Twilio Verify in Flask
 
-There are a couple of ways to use two-factor authentication in a flask application. In [another article](2fa_flask.md), I showed how you can enable mandatory two-factor authentication where users of an app have to key in a time-based one-time password that is sent to a TOTP app in their smartphone. In this article, we will make two-factor authentication optional. Whenever a user enables this feature, a code will be sent to their phone through sms. They will use that code to authenticate themselves.
+One of the most effective ways to reduce online identity theft of online accounts is to enable two-factor authentication (2FA) on an account. It adds an additional layer of security to the authentication process by making it harder for attackers to gain access to a person's devices or online accounts because, even if the victim's password is hacked, a password alone is not enough to pass the authentication check.
 
-[Twilio Verify](https://www.twilio.com/verify) is a service that allows your application to send verification codes to users of your application through SMS or phone call.
+1. [Time-based two-factor authentication](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/2fa_flask.md)
+2. [SMS two-factor authentication](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/twilio_verify_2fa.md) (this article)
+3. [Push two-factor authentication](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/twilio_authy.md) 
+
+Twilio offers mulitple ways to implement two-factor authentication. In this article, you will learn how to enable optional two-factor authentication in your flask application. I say optional because a user can choose to not enable it and will still have access to their account. 
+
+## Welcome to Twilio Verify
 
 ![Twilio Verify](/images/twilio_verify/twilio_verify.gif)
 
-What we will do:
 
-1. Create a flask app with user login features
-2. Add a profile page
-3. Integrate Twilio Verify
+Using the [Twilio Verify API](https://www.twilio.com/verify) allows you to authenticate users using verification codes over their preferred channels with a single API call. The available channels are SMS, Voice, email, push notification, WhatsApp an even time-based one-time password. A user will receive a verification code via their preferred channel. 
 
-Kindly note that you will need these before you proceed:
+## Things We Will Do
 
-* A working phone number
-* A Twilio account. Create a [free account](https://www.twilio.com/try-twilio?promo=WNPWrR) now.
-* Python 3.5+
+1. [Set up the Twilio Verify API](#set-up-the-twilio-verify-api)
+2. [Create a simple flask application with basic form validation](#create-a-simple-flask-application-with-basic-form-validation)
+3. [Integrate Twilio Verify with your flask application](#integrate-twilio-verify-with-your-flask-application)
 
-## Service Setup
+The completed and working project is available at [GitHub](https://github.com/GitauHarrison/twilio-verify-2fa-implementation-in-flask). To test it live, click [here](https://twilio-verify-2fa-test.herokuapp.com/).
 
-Once you have an account, 
-* Navigate to [Twilio Console](https://www.twilio.com/console). 
-* From the far-left menu bar, click "All Products and Services"
-* Find and click on [Verify](https://www.twilio.com/console/verify/services)
-* Create a new service by clicking on the blue button
+## Requirements
 
-![Create Service](/images/twilio_verify/create_service.png)
+1. A Twilio account
+2. A working phone number
+3. Python3+
 
-* Give it a friendly name and click "Create"
-* You will be given a _Service ID_
+## Set Up the Twilio Verify API
 
-![Service ID](/images/twilio_verify/service_id.png)
+1. Create a [free twilio account](https://www.twilio.com/try-twilio?promo=WNPWrR) now.
+2. Once the account is created, navigate to the [Twilio Console](https://www.twilio.com/console)
+3. Click [Explore Products](https://console.twilio.com/develop/explore) on the left sidebar.
+4. Find and click on [Verify](https://console.twilio.com/us1/develop/verify?frameUrl=%2Fconsole%2Fverify%3Fx-target-region%3Dus1) in the _Account Security_ section (You can pinned for easy access).
+4. Create a new [service](https://console.twilio.com/us1/develop/verify/services) by clicking on the blue "Create new" button.
+5. Provide a friendly name for the service.
+6. Toggle the SMS channel on.
+6. Click "Create" button
+<br>
 
-I have shown you the _Service ID_. However, this should be secret. I am not worried about it because I will discard it in no time.
+    ![Verify Service](/images/twilio_verify/create_new_verify_service.png)
+<br>
 
-* Besides the _Service ID_, you will also need your _Twilio Account SID_ and _Auth Token_ which are found in the [Twilio Console](https://www.twilio.com/console).
+7. You will be provided with a __Service SID__. This is a unique identifier for the service. You will also need your __Account SID__ and __Auth Token__. These are unique identifiers for your account. To find Account SID and Auth token, head over to your [Twilio Console](https://console.twilio.com/?frameUrl=%2Fconsole%3Fx-target-region%3Dus1). We will use it later in the article.
 
-Copy all these somewhere because you will need them for your project.
+Note that these keys ar private and should not be commited to version control. In the event the keys are exposed, you risk having someone else use your service. Rotate your keys immediately.
 
-## Flask App with User Login
 
-This project assumes you know a bit about Flask and Python. If you are new, you will need to start [here](personal_blog.md).
+## Create a simple flask application with basic form validation
 
-## Project Structure
+I will not go into the details of how to create a simple flask application. If you are new to flask, you can [learn how here](https://github.com/GitauHarrison/notes/blob/master/start_flask_server.md). A complete flask starter project is available on [GitHub](https://github.com/GitauHarrison/starting-a-flask-server). You will need to install and work with a database, `flask-wtf` and `flask-login` to complete the project.
 
-We will use this structure:
-
-```python
-project_folder
-    |------- .flaskenv
-    |------- .env
-    |------- .env.template
-    |------- config.py
-    |------- twilio_verify.py
-    |------- requirements.txt
-    |------- .gitignore
-    |------- app/
-              |------- __init__.py
-              |------- routes.py
-              |------- models.py
-              |------- forms.py
-              |------- errors.py
-              |------- email.py
-              |------- static/
-                        |------- images/
-                        |------- css/styles.css
-              |------- templates/
-                        |------- base.html
-                        |------- home.html
-                        |------- login.html
-                        |------- register.html
-                        |------- 404.html
-                        |------- 500.html
-                        |------- reset_password_request.html
-                        |------- reset_password.html
-                        |------- user.html
-                        |------- verify_2fa.html
-                        |------- edit_profile.html
-                        |------- enable_2fa.html
-                        |------- disable_2fa.html
-                        |------- email/
-                                   |----- reset_password.html
-                                   |----- reset_password.txt
-
-```
-
-You can create this structure using the `mkdir` and `touch` terminal commands:
+Once you have your project up and running, you will need to install `twilio` in your virtual environment.
 
 ```python
-$ mkdir project_folder # creates an empty directory called project_folder
-$ touch project_folder/config.py # creates an empty config.py file inside project_folder
+(venv) $ pip3 install "twilio>=6.17.0"
 ```
 
-Once you have completed creating this project structure, move into _project_folder_:
+## Integrate Twilio Verify with your flask application
 
-```python
-$ cd project_folder
-```
+When a user first creates an account, they will have the option to enable two-factor authentication in their profile page. When they click the "Enable 2FA" link, they will be requested to provide their phone number which will be used to get a verification code. Subsequent logins will require them to enter the verification code before they can access their accounts.
 
-## Create Virtual Environment
+### Integration table of contents
 
-Virtual environments allow you to isolate the project requirements from that of your Operating System. You need to create and activate it:
+1. [Testing](#testing)
+2. [Configure flask to use Twilio Verify](#configure-flask-to-use-twilio-verify)
+3. [Phone form](#phone-form)
+4. [Verify the client](#verify-the-client)
+5. [Disable 2FA](#disable-2fa)
+6. [Update login logic to include 2FA](#update-login-logic-to-include-2fa)
 
-```python
-$ mkvirtualenv twilio_verify 
-```
+#### Testing
 
-I have used the `virtualenvwrapper` to manage my virtualenv workflow. If you do not know what it is, learn more [here](virtualenvwrapper_setup.md).
-
-This application will use these dependencies:
-
-* [flask](https://flask.palletsprojects.com/en/1.1.x/)
-* [flask-sqlalchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/)
-* [flask-boostrap](https://pythonhosted.org/Flask-Bootstrap/)
-* [flask-login](https://flask-login.readthedocs.io/en/latest/)
-* [flask-wtf](https://flask-wtf.readthedocs.io/en/stable/)
-* [flask-mail](https://pythonhosted.org/Flask-Mail/)
-* [flask-migrate](https://flask-migrate.readthedocs.io/en/latest/)
-* [python-dotenv](https://pypi.org/project/python-dotenv/)
-* [pyjwt](https://pyjwt.readthedocs.io/en/stable/)
-* [pyngrok](https://pypi.org/project/pyngrok/)
-* [email-validator](https://pypi.org/project/email-validator/)
-
-To install all of them at once, run:
-
-```python
-(twilio_verify)$ pip3 install flask flask-sqlalchemy flask-bootstrap # Add all the other dependencies within this same line
-```
-
-To work with Twilio Verify, you will also need to install the Twilio Helper Library for Python:
-
-```python
-(twilio_verify)$ pip3 install "twilio>=6.17.0"
-```
-
-From your root directory (project_folder), update your `requirements.txt` to contain all the installed dependencies:
-
-```python
-(twilio_verify)$ pip3 freeze > requirements.txt
-```
-
-## Build Initial Project
-
-Let us make sure that the structure shown at the beginning of the article works by building a minimalist application:
-
-`__init__.py: Create application instance`
-```python
-from flask import Flask
-
-app = Flask(__name__)
-
-from app import routes, models, errors
-```
-
-We have created an instance of our flask application
-
-`routes.py: Handle app routeing`
-
-```python
-from app import app
-
-
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/home', methods=['GET', 'POST'])
-def home():
-    return 'This is a test!'
-
-```
-
-The application should eventually display "This is a test".
-
-`app.py: Create entry point to the applicaiton`
-
-```python
-from app import app
-
-```
-
-Flask expects this file at the top-level directory.
-
-`.flaskenv: Flask Environment Variables`
-
-```python
-FLASK_APP=app.py
-FLASK_ENV=development
-FLASK_DEBUG=True
-```
-
-Flask will use these variables to fire up our server. It will be a development server with Flask's hot auto-reload enabled.
-
-We can now fire up our Flask server from the terminal:
-
-```python
-(twilio_verify)$ flask run
-```
-
-You should see this:
-
-![Test](/images/twilio_verify/test.png)
-
-## Database Configuration
-
-Our application will allow new users to register and current users to login. Let us implement this now. This information will be hosted by our SQLite database. 
-
-`config.py: Database configuration`
-
-```python
-import os
-
-basedir = os.path.abspath(os.path.dirname(__file__))
-
-class Config(object):
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///' + os.path.join(basedir, 'app.db')
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-```
-
-Configure a path to our database and disable a feature of Flask-sqlalchemy that we do not need, which is to signal the application every time a change is about to be made in the database.
-
-`__init__.py: Initialize database`
-
-```python
-# ...
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import 
-from config import Config
-
-app = Flask(__name__)
-app.config.from_object(Config)
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-
-# ...
-```
-`flask-sqlalchemy` is an extension that provides a Flask-friendly wrapper to the popular [SQLAlchemy](http://www.sqlalchemy.org/) package. This package is an ORM which allows applications to manage a database using high-level entities such as classes, objects and methods instead of tables and SQL.
-
-`flask-migrate` will allow us to make changes to our database by handling migratrion.
-
-`models.py: Database schema to for a user`
-
-```python
-from app import db
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
-    email = db.Column(db.String(120), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
-
-    def __repr__(self):
-        return '<User: {}>'.formart(self.username)
-```
-
-With the database schema and configuration set up, let us apply those changes:
-
-```python
-(twilio_verify)$ flask db init
-
-# Output
-
-Creating directory /home/harry/verify_twilio/migrations ...  done
-  Creating directory /home/verify_twilio/migrations/versions ...  done
-  Generating /home/harry/verify_twilio/migrations/script.py.mako ...  done
-  Generating /home/harry/verify_twilio/migrations/alembic.ini ...  done
-  Generating /home/harry/verify_twilio/migrations/README ...  done
-  Generating /home/harry/verify_twilio/migrations/env.py ...  done
-  Please edit configuration/connection/logging settings in
-  '/home/harry/verify_twilio/migrations/alembic.ini' before proceeding.
-```
-
-A _migratitons_ repository will be created in the top-level directory. In it, there is a _versions_ sub-folder which will soon hold all the changes we make to our database.
-
-```python
-(twilio_verify)$ flask db migrate -m 'user table'
-
-# Output
-
-INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
-INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
-INFO  [alembic.autogenerate.compare] Detected added table 'user'
-INFO  [alembic.autogenerate.compare] Detected added index 'ix_user_email' on '['email']'
-INFO  [alembic.autogenerate.compare] Detected added index 'ix_user_username' on '['username']'
-  Generating
-  /home/harry/software_development/python/practice_projects/verify_twilio/migrations/versions/9d3452db7add_user_table.py ...  done
-```
-
-A migration script called `...user_table.py` has been created in _versions_ sub-folder.
-
-To apply the changes we have made, we will run:
-
-```python
-(twilio_verify)$ flask db upgrade
-
-# Output
-
-INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
-INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
-INFO  [alembic.runtime.migration] Running upgrade  -> 9d3452db7add, user table
-```
-
-These are the steps we will follow every time we want to make changes to our database.
-
-## User Login
-
-User login will involve finding an existing user in the database and retrieving that information. Flask provides `flask-login` which is responsible for handling all user login needs. 
-
-Right of the back, it is not recommended to store a user's password in the database. Rather, a long representation of itself which is hard to guess is often used. This is called password hashing. [Werkzeug](http://werkzeug.pocoo.org/) provides `generate_password_hash` and `check_password_hash` to handle password hashing.
-
-We will update our models to accommodate this feature.
-
-`models.py: Password hashing`
-
-```python
-# ...
-from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
-
-class User(UserMixin, db.Model):
-    # ...
-
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-```
-
-Keywords such as `is_authenticated`, `is_active`, `is_anonymous`, `get_d` are normally used to work with a user's login session. To implement them, we need to import the _mixin_ class from `flask-login` and pass it to our `User` model. Thereafter, we add password hashing.
-
-However, `flask-login` knows nothing about a user. We need to help it know which user has been connected to the application by configuring a user loader function that can be called to load a user using a user's given ID.
-
-`models.py: User loader`
-
-```python
-# ...
-from app import login
-
-
-@login.user_loader
-def load_user(id):
-    return User.query.get(int(id))
-
-```
-
-To complete the login view function, we will create a route called `/login`.
-
-`routes.py: User login`
-
-```python
-# ...
-from flask import render_template, redirect, url_for, flash, request
-from werkzeug.urls import url_parse
-from flask_login import login_user, current_user
-from app.forms import LoginForm
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('login'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
-            return redirect(url_for('login'))
-        login_user(user, remember=form.remember_me.data)
-        next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('home')
-        return redirect(next_page)
-    return render_template('login.html',
-                           title='Login',
-                           form=form
-                           )
-```
-
-We need to create the `LoginForm`
-
-```python
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
-
-
-class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember Me')
-    submit = SubmitField('Login')
-
-```
-
-Flask expects that we set a `SECRET_KEY` which will be used to protect our web forms against a nasty attack called  [CSRF](https://en.wikipedia.org/wiki/Cross-site_request_forgery). This should be done in the config file.
-
-`config.py: Set SECRET_KEY`
-
-```python
-# ...
-
-class Config(object):
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'extremely-difficult-to-guess'
-    # ...
-```
-
-Here is the login template. We will use `flask-bootstrap` to quickly create one.
-
-`login.html: Login template`
-
-```html
-{% extends 'base.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
-
-{% block app_content %}
-    <div class="row">
-        <div class="col-md-4">
-            <h1>Login</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <p>New Here? <a href="{{ url_for('register') }}">Register Here</a></p>
-            <p>Forgot Password? <a href="#">Reset Here</a></p>
-        </div>
-    </div>
-{% endblock %}
-
-```
-
-We are importing the base template using the keyword `extends` but it does not exist yet. Let us update it below:
-
-`base.html: Base template`
-
-```html
-{% extends 'bootstrap/base.html' %}
-
-<!-- Title Section -->
-{% block title %}
-    {% if title %}
-        2fa | {{ title }}
-    {% else %}
-        Flask Auth
-    {% endif %}
-{% endblock %}
-
-<!-- Head Section -->
-{% block head %}
-    {{ super() }}
-    <!-- Add your own image -->
-    <link rel="icon" type="image/png" href="{{url_for('static', filename = 'images/<choice-image.ext>')}}">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
-{% endblock %}
-
-<!-- Link Styles -->
-{% block styles %}
-    {{ super() }}
-    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename = 'css/styles.css') }}">
-{% endblock %}
-
-<!-- Navbar Section -->
-{% block navbar %}
-<nav class="navbar navbar-default">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="{{ url_for('home') }}">Twilio Verify</a>
-        </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">            
-            <ul class="nav navbar-nav navbar-right">  
-                {% if current_user.is_anonymous %}
-                    <li><a href=" {{ url_for('login') }} ">Login</a></li>
-                {% else %}                                      
-                <li><a href=" {{ url_for('logout') }} ">Logout</a></li>
-                {% endif %}
-            </ul>                       
-        </div>
-    </div>
-</nav>
-{% endblock %}
-
-<!-- Main Content Goes Here -->
-{% block content %}
-    <div class="container">
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-warning" role="alert"> {{ message }} </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        {% block app_content %}
-        
-        {% endblock %}
-    </div>
-{% endblock %}
-```
-
-To log a user out, we will create a separate route:
-
-`route.py: Log out a user`
-
-```python
-# ...
-from flask_login import logout_user
-
-
-@app.route('/logout')
-def logout():
-    logout_user()
-    return redirect(url_for('home'))
-
-```
-
-To require users to login in order to access the home page, we will use `@login_required` decorator. But first, we need our application to know what view function handles logins.
-
-`__init__.py: Register login required view function`
-
-```python
-# ...
-from flask_login import LoginManager
-from flask_botstrap import Bootstrap
-
-login = LoginManager(app)
-login.login_view = 'login'
-bootstrap = Bootstrap(app)
-
-```
-
-Pass the `@login_required` decorator to the home page.
-
-`routes.py: Require login to access home page`
-
-```python
-from flask_login import login_required
-
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/home', methods=['GET', 'POST'])
-@login_required
-def home():
-    return render_template('home.html',
-                           title='Home',
-                           )
-```
-![Login](/images/twilio_verify/login_required.png)
-
-## User Registration
- 
-Next, we well create a route that handles user registration:
-
-`routes.py: User registration`
-
-```python
-# ...
-from app import db
-from app.forms import RegisterForm
-
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
-    form = RegisterForm()
-    if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('You have successfully registerd. Login to continue')
-        return redirect(url_for('login'))
-    return render_template('register.html', 
-                           title='Register',
-                           form=form
-                           )
-
-```
-
-Here is the registration form:
-
-`forms.py: Create registration form`
-
-```python
-# ...
-from app.models import User
-
-
-class RegisterForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password',
-                                     validators=[DataRequired(),
-                                                 EqualTo('password')])
-    submit = SubmitField('Register')
-
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
-        if user is not None:
-            raise ValidationError('Please use a different username')
-
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user is not None:
-            raise ValidationError('Please use a different email address')
-
-```
-
-The register template will look like this:
-
-`register.html: Display registration template`
-
-```html
-{% extends 'base.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
-
-{% block app_content %}
-    <div class="row">
-        <div class="col-md-4">
-            <h1>Register</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
-        </div>
-    </div>
-{% endblock %}
-
-```
-![Register](/images/twilio_verify/register.png)
-
-After a successful registration and login, a user will be redirected to the home page. This is how the home page will look like:
-
-`home.html: Display home page`
-
-```html
-{% extends 'base.html' %}
-
-{% block app_content %}
-    <div class="row">
-        <div class="col-md-4">
-            <h1>Welcome home</h1>
-        </div>
-    </div>
-{% endblock %}
-```
-
-![Home Page](/images/twilio_verify/home.png)
-
-## User Profile Page
-
-![User Profile](/images/twilio_verify/better_user_profile.png)
-
-First thing, we will provide a link to a user's profile once they are logged in.
-
-`base.html: Profile page link`
-
-```html
-<!---Previous code-->
-            <ul class="nav navbar-nav navbar-right">  
-                {% if current_user.is_anonymous %}
-                    <li><a href=" {{ url_for('login') }} ">Login</a></li>
-                {% else %}
-                    <li><a href=" {{ url_for('user', username=current_user.username) }} ">Profile</a></li>
-                    <li><a href=" {{ url_for('logout') }} ">Logout</a></li>
-                {% endif %}
-            </ul>
-<!---Previous code-->
-```
-
-To make the profile page more interesting, we will add:
-
-* Last seen time
-* About Me 
-* User Avatar
-
-### User Avatar
-
-We will use the [Gravatar](http://gravatar.com/) service to provide user images. It is actually simple to use. To request an image for a given user, an email is required. 
-
-```python
-# Gravatar format
-
-https://www.gravatar.com/avatar/<hash>
-
-# hash is the md5 hash of a user's email address
-```
-
-Example on a Python shell:
-
-```python
->>> from hashlib import md5
->>> 'https://www.gravatar.com/avatar/' + md5(b'harry@email.com').hexdigest()
-'https://www.gravatar.com/avatar/3f4360b2a748228ba4f745a3ebd428dc'
-```
-If you follow that link, you will see a default gravatar image:
-
-![Default Gravatar Image](/images/twilio_verify/default_gravatar.png)
-
- Learn more from the [gravatar documentation](https://gravatar.com/site/implement/images).
-
-Since we want to add a custom avatar to an existing user, we will update our `User` model to accommodate this.
-
-`models.py: Add user avatar`
-
-```python
-# ...
-from hashlib import md5
-
-class User(UserMixin, db.Model):
-    # ...
-    def avatar(self, size):
-        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
-        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
-            digest, size)
-```
-
-Update the user template:
-
-`user.html`
-
-```html
-{% extends "base.html" %}
-
-{% block content %}
-    <table>
-        <tr valign="top">
-            <td><img src="{{ user.avatar(128) }}"></td>
-            <td><h1>User: {{ user.username }}</h1></td>
-        </tr>
-    </table>
-    <hr>
-{% endblock %}
-
-```
-
-Create a view function that maps the `user/<username>` route.
-
-`routes.py: Map user profile view function`
-
-```python
-# ...
-
-
-@app.route('/user/<username>')
-def user(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    return render_template('user.html',
-                           title='Profile'
-                           )
-
-```
-
-### Last Seen and About Me
-
-Let's extend out database to support this new feature:
-
-`models.py: Add new fields`
-
-```python
-# ...
-from flask import datetime
-
-
-class User(UserMixin, db.Model):
-    # ...
-    about_me = db.Column(db.String(140))
-    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
-```
-
-Since we have made changes to our database, we need to apply them:
-
-```python
-(twilio_verify)$ flask db migrate -m 'date and about me fields in user model'
-(twilio_verify)$ flask db upgrade
-```
-
-We can now reflect those changes in our `user.html` template:
-
-`user.html: More interesting profile`
-
-```html
-{% extends "base.html" %}
-
-{% block content %}
-<div class="row">
-    <div class="col-md-4">
-        <table class="table table-hover">
-            <tr valign="top">
-                <td width="70px">
-                    <img src="{{ user.avatar(128) }}">
-                </td>
-                <td>
-                    <h1>User: {{ user.username }}</h1>
-                    {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
-                    {% if user.last_seen %}<p>Last seen on: {{ user.last_seen }}</p>{% endif %}
-                </td>
-            </tr>
-        </table>
-        <hr>
-    </div>
-</div>    
-{% endblock %}
-```
-
-However, when you try reloading your profile page, nothing will show because we have not recorded the last time a user was seen nor edit the `about_me` content (it is currently empty).
-
-`routes.py: Records user's last seen time`
-
-```python
-# ...
-from datetime import datetime
-
-
-@app.before_request
-def before_request():
-    if current_user.is_authenticated:
-        current_user.last_seen = datetime.utcnow()
-        db.session.commit()
-
-```
-
-Editing the `about_me` section will involve the use of a form. We need to create one.
-
-`form.html: Edit about me`
-
-```python
-# ...
-from wtforms import TextAreaField
-from wtforms.validators import Length
-
-class EditProfileForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    about_me = TextAreaField('About me', validators=[Length(min=0, max=140)])
-    submit = SubmitField('Submit')
-
-```
-
-Display edit form:
-
-`edit_profile.html: Display edit profile form`
-
-```python
-{% extends 'base.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
-
-{% block app_content %}
-    <div class="row">
-        <div class="col-md-4">
-            <h1>Edit Profile</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
-        </div>
-    </div>
-{% endblock %}
-```
-
-Add a view function that binds everything together:
-
-`routes.py: Edit profile view function`
-
-```python
-# ...
-from app.forms import EditProfileForm
-
-
-@app.route('edit_profile', methods=['GET', 'POST'])
-@login_required
-def edit_profile():
-    form = EditProfileForm()
-    if form.validate_on_submit():
-        current_user.username = form.username.data
-        current_user.about_me = form.about_me.data
-        db.session.commit()
-        flash('Your profile has been updated')
-        return redirect(url_for('user', username=current_user.username))
-    elif request.method == 'GET':
-        form.username.data = current_user.username
-        form.about_me.data = current_user.about_me
-    return render_template('edit_profile.html',
-                           title='Edit Profile',
-                           form=form
-                           )
-
-```
-
-Add a link to update profile in the `user.html` template:
-
-`user.html: Add edit link`
-
-```python
-{% if user == current_user %}
-    <p><a href="{{ url_for('edit_profile') }}">Edit Profile</a></p>
-{% endif %}
-```
-
-![Edit Profile](/images/twilio_verify/edit_profile.png)
-
-## Integrate Twilio Verify
-
-Implementation of Twilio Verify works in two steps:
-
-1. Verification code is sent to your phone
-2. That code is verified by the application
-
-
-### Send Verification Code
-
-Hopefully you have your _Twilio Account SID_, _Twilio Auth Token_ and _Service SID_. To demonstrate how the Twilio Verify API works, we will run the commads below in our Python shell:
+From the terminal, let us see how the Twiilio Verify API works. Run the following commands in your Python interpreter:
 
 ```python
 >>> from twilio.rest import Client
->>> client = Client('<your_Twilio_Account_SID>', '<your_Twilio_Auth_Token>')
->>> verify = client.verify.services('<your_Twilio_Verify_Service_SID>')
->>> verify.verifications.create(to='<your_active_phone_number>', channel='sms')
+>>> client = Client('account_sid', 'auth_token')
+>>> service = client.verify.services(service_sid)
+>>> service.verifications.create(to='+254700111222', channel='sms')
 ```
 
-Check your phone. You should receive an text message notification.
+You should be able to see an AUTHMSG of "Your <application> verification code is: <verification_code>" in your phone.
 
-### Verify Code Received
-
-This is done on the flask application with another call into the Twilio Verify API.
+To confirm the verification code, let us run the following command in your Python interpreter:
 
 ```python
->>> result = verify.verification_checks.create(to='<your_phone_number>', code='123456')
+>>> result = service.verification_checks.create(to='+254700111222', code='000000')
 >>> result.status
-'pending'
->>> result = verify.verification_checks.create(to='<your_phone_number>', code='507296')
->>> result.status
-'approved'
+
+# Output
+'pending' or 'approved'
 ```
 
-### Add Twilio Credentials
 
-We will add the three Twilio credentials to our configuration file
+#### Configure flask to use Twilio Verify
 
-`config.py: Twilio configurations`
+As mention earlier, Twilio keys should remain private. You should not add them to your application. To do so, you will need to create a hidden environment variable file called `.env` in the project's top-level directory.
 
 ```python
-# ...
-
-
-class Config(object):
-    # ...
-    TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
-    TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_ACCOUNT_TOKEN')
-    TWILIO_VERIFY_SERVICE_ID = os.environ.get('TWILIO_VERIFY_SERVICE_ID')
-
+(venv) touch .env
 ```
 
-These keys are imported from environment variables. They are also private and should not be committed to version control. For this reason, we will add the actual keys to `.env` file which is located in the top-level directory.
+This file will contain the actual keys found in your Twilio Console.
 
-`.env: Add actual values to our credetials`
-
+`.env`: Secret Twilio keys
 ```python
-TWILIO_ACCOUNT_SID='your_twilio_account_sid'
-TWILIO_AUTH_TOKEN='your_twilio_auth_token'
-TWILIO_VERIFY_SERVICE_ID='your_twilio_verify_service_sid'
-```
-
-To load these environment variables, we will use `python-dotenv` package which imports environment variables from `.env` file.
-
-`config.py: Load environment variables`
-
-```python
-# ...
-from dotenv import load_dotenv
-
-basedir = os.path.abspath(os.path.dirname(__file__))
-load_dotenv(basedir, '.env')
-
-
-class Config(object):
-    # ...
-
-```
-
-To ignore these sensitive files from version control, we need to update our `.gitignore` file in the top-level directory by explicitly adding files we want ignored. Check what files to ignore [here](https://github.com/github/gitignore/blob/master/Python.gitignore).
-
-If another person tried to clone this project repository, say from [GitHub](https://github.com), they will not get the `.env` file. We can provide a template of our `.env` file to help guide future users:
-
-`.env-template: Environment variables template`
-
-```python
-# Exclude the actual values
+# Pass in the actual key values
 
 TWILIO_ACCOUNT_SID=
 TWILIO_AUTH_TOKEN=
 TWILIO_VERIFY_SERVICE_ID=
 ```
 
-### Access Twilio Verify API
+To access this file, we need to update the `config.py` file which is also found in the top-level directory of the project.
 
-We will handle the access to Twilio Verify API in a separate module called `twilio_verify_api.py` in the _app_ folder. Let us create this module:
-
-```python
-# make sure you are in the right working directory
-
-(twilio_verify)$ touch twilio_verify_api.py
-```
-
-This module will:
-
-* Verify the client trying to access the API
-* Request for a verification token
-* Verify the requested token
-
-`twilio_verify_api.py: Access Twilio Verify API`
+`config.py`: Environment variables
 
 ```python
-from app import app
-from twilio.rest import Client, TwilioException
+import os
 
 
-def _get_twilio_verify_client():
-    return Client(
-        app.config['TWILIO_ACCOUNT_SID'],
-        app.config['TWILIO_AUTH_TOKEN']).verify.services(
-            app.config['TWILIO_VERIFY_SERVICE_ID'])
-
-
-def request_verification_token(phone):
-    verify = _get_twilio_verify_client()
-    try:
-        verify.verifications.create(to=phone, channel='sms')
-    except TwilioException:
-        verify.verifications.create(to=phone, channel='call')
-
-
-def check_verification_token(phone, token):
-    verify = _get_twilio_verify_client()
-    try:
-        result = verify.verification_checks.create(to=phone, code=token)
-    except TwilioException:
-        return False
-    return result.status == 'approved'
-
-```
-
-`_get_twilio_verify_client()` function checks for the client based on the Twilio credentials used earlier and returns a `verify` object. Using this object, we use `verifications.create(to=phone, channel='sms')` to attempt seninding a verification code via sms. If this fails, we make a phone call instead. `check_verification_token()` function uses the `verify` object to check the verification token sent to the phone and returns `True` if the token is valid or `False` if it is invalid.
-
-
-Make sure to import this module in the application package:
-
-`__init__.py: Import Twilio Verify module`
-
-```python
-# ...
-
-from app import twilio_verify_api
-
-```
-
-### Add Phone Number To User Database
-
-Since we will be sending verification codes to a user's phone number, it needs to be stored in the database so that the tokens can be sent out every time they log in.
-
-`config.py: Add user phone number`
-
-```python
-# ...
-
-
-class User(UserMixin, PaginatedAPIMixin, db.Model):
+class Config(object):
     # ...
-    verification_phone = db.Column(db.String(16))
 
-    def two_factor_enabled(self):
-        return self.verification_phone is not None
-
+    # Twilio Verify
+    TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
+    TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
+    TWILIO_VERIFY_SERVICE_ID = os.environ.get('TWILIO_VERIFY_SERVICE_ID')
 ```
 
-The `two_factor_enabled` helper method checks whether the `verification_phone` attribute exists or not.
+The `python-dotenv` library is used to load the `.env` file. So, make sure that you also install it in your virtual environment.
 
-We need to apply this change to our database by running the commands:
 
 ```python
-(twilio_verify)$ flask db migrate -m 'Add phone number field'
-
-# Output
-
-INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
-INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
-INFO  [alembic.autogenerate.compare] Detected added column 'user.verification_phone'
-  Generating /home/verify_twilio/migrations/versions/49f34ca11d82_add_phone_number_field.py ...  done
+(venv) $ pip3 install python-dotenv
 ```
+
+To ensure that you do not accidentally commit this file to version control, create a `.gitignore` file in the top-level directory of the project and pass in `.env`. This will prevent `git` from tracking the `.env` file.
+
+`.gitignore`: Ignore files
 
 ```python
-(twilio_verify)$ flask db upgrade
-
-# Output
-INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
-INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
-INFO  [alembic.runtime.migration] Running upgrade 50b197ac3799 -> 49f34ca11d82, Add phone number field
+.env
 ```
 
-### Links to Enable/Disable Two-factor Authentication
 
-We can display the option to enable or disable two factor authentication on the user's _profile_ page.
+#### Phone form
 
-`user.html: Links to enable/disable 2fa`
+A user will be able to enter their phone number in a form once they click on the Enable 2FA link. To get started, we need to create a new page called `enable_2fa.html`.
 
-```html
-{# app/templates/user.html #}
-{% extends "base.html" %}
-
-{% block app_content %}
-    <table class="table table-hover">
-        <tr>
-            <td width="256px"><img src="{{ user.avatar(256) }}"></td>
-            <td>
-                ...
-                ...
-                {% if not user.two_factor_enabled() %}
-                    <p>
-                        <a href="#">Enable two-factor authentication</a>
-                    </p>
-                {% else %}
-                    <p>
-                        <a href="#">Disable two-factor authentication</a>
-                    </p>
-                {% endif %}
-            </td>
-        </tr>
-    </table>
-```
-
-![2fa Link](/images/twilio_verify/2fa_link.png)
-
-### Route to Handle Two-factor Authentication
-
-To access this feature from their profile, a user has to provide their phone number. We will therefore need a form to recieve a user's phone number. We will use the [`phonenumbers`](https://pypi.org/project/phonenumbers/) package to validate the phone number given by the user. Install it in your application and update `requirements.txt`.
-
-```python
-(twilio_verify)$ pip3 install phonenumbers
-(twilio_verify)$ pip3 freeze > requirements.txt
-```
-
-The main object that the library deals with is a `PhoneNumber` object. 
-
-```python
-# E164 format
-
->>> import phonenumbers
->>> kenya = phonenumbers.parse("+254720227267", 'KEN')
->>> print(kenya)
-Country Code: 254 National Number: 720227267
-
-# Invalid Country Code
->>> kenya = phonenumbers.parse("0720227267", 'KEN')
-Traceback (most recent call last):
-  File "<console>", line 1, in <module>
-  File "/home/harry/.virtualenvs/test_verify/lib/python3.8/site-packages/phonenumbers/phonenumberutil.py", line 2850, in parse
-    raise NumberParseException(NumberParseException.INVALID_COUNTRY_CODE,
-phonenumbers.phonenumberutil.NumberParseException: (0) Missing or invalid default region.
-```
-
-You can create this from a string representing a phone number using the `parse` function, but you also need to specify the country that the phone number is being dialled from (unless the number is in _E.164_ format, which is globally unique).
-
-
-`forms.py: Provide phone number`
-
-```python
-# ...
-import phonenumbers
-
-
-class Enable2faForm(FlaskForm):
-    verification_phone = StringField('Phone', validators=[DataRequired()])
-    submit = SubmitField('Enalble 2fa')
-
-    def validate_verification_number(self, verification_phone):
-        try:
-            p = phonenumbers.parse(verification_phone.data)
-            if not phonenumbers.is_valid_number(p):
-                raise ValueError
-        except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
-            raise ValidationError('Invalid phone number')
- 
-```
-
-When the user clicks on the _enable two-factor authentication_ link, they will be redirected to this form. Only after this initial verification is complete will their account be updated to use two-factor authentication.
-
-`routes.py: Update account with 2fa`
-
-```python
-# ...
-from app.forms import Enable2faForm
-
-
-@app.route('/enable_2fa', methods=['GET', 'POST'])
-@login_required
-def enable_2fa():
-    form = Enable2faForm()
-    if form.validate_on_submit():
-        session['phone'] = form.verification_phone.data
-        request_verification_token(session['phone'])
-        return redirect(url_for('verify_2fa'))
-    return render_template('enable_2fa.html',
-                           form=form,
-                           title='Enable 2fa'
-                           )
-
-```
-
-Display the phone form
-
-`enable_2fa.html: Dispaly phone verification phone`
+`enable_2fa.html`: Display phone form
 
 ```html
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <div class="row">
-        <div class="col-md-4">
-            <h1>Enable Two-factor Authentication</h1>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h1>Enable 2FA on your Account</h1>                                             
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
+        <div class="row">
+            <div class="col-md-12 text-center">
+                {{ wtf.quick_form(form) }}     
+            </div>
         </div>
-    </div>
 {% endblock %}
+```
+
+I am using `flask-bootstrap`'s `wtf` library to quickly create the form with all the nice validations and styling.  You can manually create your own form, though. 
+
+![Phone number form](/images/twilio_verify/enable_2fa_form.png)
+
+The next step would be to define the fields we want to use in the form. Here, we will only need a phone number.
+
+`app/forms.py`: Form definitions
+
+```python
+from flask_wtf import FlaskForm
+from wtforms import SubmitField, StringField
+from wtforms.validators import DataRequired, ValidationError
+import phonenumbers
+
+
+class PhoneForm(FlaskForm):
+    verification_phone = StringField('Phone', validators=[DataRequired()])
+    submit = SubmitField('Add Phone')
+
+    def validate_phone(self, phone):
+        p = phonenumbers.parse(phone.data)
+        try: 
+            if not phonenumbers.is_valid_number(p):
+                raise ValueError()
+        except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
+            raise ValidationError('Invalid phone number.')
 
 ```
 
-![Enable 2fa form](/images/twilio_verify/enable_2fa_form.png)
+Notice that I am using the `phonenumbers` library to validate the phone number. This library is used to validate phone numbers in the helper `validate_phone` method. Typically, its usage is as follows:
 
-To improve usability of the phone number form, considering that the users might be from different regions around the globe where different phone number formats are used, we will use the [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) JavaScript library.
+```python
+>>> import phonenumbers
+>>> p = phonenumbers.parse('+254700111222')
+>>> phonenumbers.is_valid_number(p)
+True
+```
 
-`base.html: Add Javascript code to handle international numbers`
+You can choose to format a given phonenumber to either E164 (+254700111222) or international format (+27 7 00 111 222) or national (0700111222).
 
+```python
+>>> phonenumbers.format_number(p, phonenumbers.PhoneNumberFormat.E164)
+'+254700111222'
+>>> phonenumbers.format_number(p, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+'+254 700 111 222'
+>>> phonenumbers.format_number(p, phonenumbers.PhoneNumberFormat.NATIONAL)
+'0700 111222'
+```
+
+You can learn more about the `phonenumbers` library from their [documentation](https://pypi.org/project/phonenumbers/). This form will be rendered by the `enable_2fa()` view functions.
+
+`app/routes.py`: Render phone number form
+
+
+```python
+from app.forms import PhoneForm
+from app.twilio_verify_api import request_verification_token
+# ...
+
+@app.route('/enable-2fa', methods=['GET', 'POST'])
+@login_required
+def enable_2fa():
+    """
+    Generate a one-time token
+    """
+    form = PhoneForm()
+    if form.validate_on_submit():
+        session['phone'] = form.verification_phone.data
+        request_verification_token(session['phone'])
+        return redirect(url_for('verify_2fa'))
+    return render_template('enable_2fa.html', form=form)
+```
+
+##### Improved phone number form
+
+Since users of the application may be from different nationalities, it would help improve their experience if they could enter their respective phone number in the international format.
+
+![Phone number form](/images/twilio_verify/better_phone_form.png)
+
+Using a little of JavaScript, we can update the `phone` field to accept international phone numbers. This change will apply to every instance of the phone form in the application, which currently is only used in the `enable_2fa.html` template.
+
+
+`app/templates/base.html`: Improved phone field
 ```html
-<!--Add intl tel input package CSS-->
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
 {% block styles %}
-    {{ super() }}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/css/intlTelInput.css">
 {% endblock %}
 
-
-<!--scripts block goes to the bottom-->
 {% block scripts %}
-    {{ super() }}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/js/intlTelInput-jquery.min.js"></script>
+    
     <script>
         $("#verification_phone").css({position: 'absolute', top: '-9999px', left: '-9999px'});
         $("#verification_phone").parent().append('<div><input type="tel" id="_verification_phone"></div>');
@@ -1273,103 +280,123 @@ To improve usability of the phone number form, considering that the users might 
     </script>
 {% endblock %}
 ```
+The JavaScript library used in this example is `intl-tel-input`. The library provides such wonderful user interface that allows a user to properly key in their phone numbers. Remember to add their CSS and JS links before targeting the `verification_phone` DOM. You can learn more about it from their [GitHub repo](https://github.com/jackocnr/intl-tel-input).
 
-![Improved Phone Form UI](/images/twilio_verify/better_phone_form.png)
 
-Country codes are shown; the phone number placeholder information is also displayed to help guide the user when they provide their phone numbers.
 
-### Expand Login Logic
 
-The login logic needs to be expanded to accomodate users with two-factor authentication enabled. 
+#### Verify the client
 
-`routes.py: Consider 2fa logic when loggin in`
+When the user submits their phone number, that data will be stored in a flask session and it will used as an argument to the `request_verification_token` function. We have not implemented the `request_verification_token` function, but we will do so now.
+
+Let's create a module called `twilio_verify_api.py` within the `app` directory. This module will contain all the logic used when working with the Twilio Verify API.
 
 ```python
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('login'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
-            return redirect(url_for('login'))
-        next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('home')
-        if user.two_factor_enabled():
-            request_verification_token(user.verification_phone)
-            session['username'] = user.username
-            session['phone'] = user.verification_phone
-            return redirect(url_for('verify_2fa',
-                                    next=next_page,
-                                    remember='1' if form.remember_me.data else '0'
-                                    )
-                            )
-        login_user(user, remember=form.remember_me.data)
-        return redirect(next_page)
-    return render_template('login.html',
-                           title='Login',
-                           form=form
-                           )
+(venv)$ touch app/twilio_verify_api.py
 ```
 
-We have postponed the login attempt to cater for users who have two-factor authentication enabled. For those users, they will be redirected to the `verify_2fa` view function as soon as they receive their verification tokens.
+##### Get twilio verify client
 
-The “remember me” flag from the login form and the "next page" are added to the redirect URL as query string arguments, while the username and phone number for the user are stored in the user session to protect them against tampering.
+We need to first get the API client from the Twilio Verify API. Using this client, we can then make calls to the Twilio Verify API service.
 
-### Token Verification Route
+`app/twilio_verify_api.py`: Twilio Verify API client
 
-The user needs to provide the token sent to their phone. This token will be captured by the application through a token verification form.
+```python
+from app import app
+from twilio.rest import Client, TwilioException
 
-`forms.py: Confirm token form`
+
+def _get_twilio_verify_client():
+    """
+    Get the Twilio Verify API client
+    """
+    return Client(
+        app.config['TWILIO_ACCOUNT_SID'],
+        app.config['TWILIO_AUTH_TOKEN']
+    ).verify.services(app.config['TWILIO_VERIFY_SERVICE_ID'])
+```
+
+
+##### Request verification token
+
+The client is sourced from environment variables as defined in the `config.py` file. To request a verification token, we need to make a call to the `request_verification_token` method.
+
+`app/twilio_verify_api.py`: Request verification token
 
 ```python
 # ...
 
-
-class Confirm2faForm(FlaskForm):
-    token = StringField('Token')
-    submit = SubmitField('Verify')
+def request_verification_token(phone):
+    """
+    Request a verification token
+    """
+    verify = _get_twilio_verify_client()
+    try:
+        verify.verifications.create(to=phone, channel='sms')
+    except TwilioException as e:
+        verify.verifications.create(to=phone, channel='call')
 
 ```
 
-Dispaly this form to the user to make it accessible
 
-`verify_2fa.html: Display token verification form`
+##### Verify the token
+
+
+Once the user has requested a verification token, they will be redirected to another page called `verify_2fa.html` where they need to confirm the token received. This page will have a form with a token field and a submit button. 
+
+![Phone number form](/images/twilio_verify/login_2fa_token.png)
+
+We can use same template as that of the `enable_2fa.html` page for verification.
+
+`app/verify_2fa.html`
 
 ```html
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <div class="row">
-        <div class="col-md-4">
-            <h1>Enter Token Received</h1>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h1>Verify Token Received</h1>                                             
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
+        <div class="row">
+            <div class="col-md-12 text-center">
+                {{ wtf.quick_form(form) }}     
+            </div>
         </div>
-    </div>
 {% endblock %}
-
 ```
 
-Once the token submission is made, `verify_2fa` function will handle it.
+We will need to create a new form called `VerifyForm` with only a token input field and a submit button.
 
-`routes.py: Verify token`
+`app/forms.py`: Verify form
 
 ```python
 # ...
-from app.forms import Confirm2faForm
+
+class VerifyForm(FlaskForm):
+    token = StringField('Token', validators=[DataRequired()])
+    submit = SubmitField('Verify')
+```
+
+The `verify_2fa` view function will be responsible for handling the form submission.
 
 
-@app.route('/verify_2fa', methods['GET', 'POST'])
+`app/routes.py`: Verify token received
+
+```python
+from app.forms import VerifyForm
+from app.twilio_verify_api import check_verification_token
+
+
+@app.route('/verify-2fa', methods=['GET', 'POST'])
+@login_required
 def verify_2fa():
-    form = Confirm2faForm()
+    """
+    Verify the token received
+    """
+    form = VerifyForm()
     if form.validate_on_submit():
         phone = session['phone']
         if check_verification_token(phone, form.token.data):
@@ -1377,99 +404,178 @@ def verify_2fa():
             if current_user.is_authenticated:
                 current_user.verification_phone = phone
                 db.session.commit()
-                flash('You have enabled two-factor authentication')
+                flash('You have enabled 2FA.', 'success')
                 return redirect(url_for('user', username=current_user.username))
             else:
-                username = session['username']
+                username = session.get('username')
                 del session['username']
                 user = User.query.filter_by(username=username).first()
                 next_page = request.args.get('next')
                 remember = request.args.get('remember', '0') == '1'
                 login_user(user, remember=remember)
-                return redirect(next_page)
-        form.token.errors.append('Invalid token')
-    return render_template('verify_2fa.html',
-                           form=form,
-                           title='Verify Token'
-                           )
-
+                return redirect(next_page or url_for('user', username=user.username))
+        form.token.errors.append('Invalid token.')
+    return render_template('verify_2fa.html', form=form)
 ```
 
-When a user requests for two-factor authentication, the phone number will be added to the database. In case of a normal login attempt, this route must log the user into the system, by invoking `login_user()` function using the data previously stored in the user session and the query string.
+The view function above handles two scenarios based on the logged in state of the user. In the event the user is already logged into their account, then, scenario #1 would be to enable 2FA. In this case, the user's phone number will be added to the database. This value in the database is used to determine if a user has enabled 2FA. The other scenario where a user will be required to confirm the verification token would be when they are trying to log into their account. In this case, they are anonymous. The logic used will automatically determine that the user is anonymous and will log them in once the token is verified.
 
-We have determined two states of a user:
+![Phone number form](/images/twilio_verify/invalid_login_token.png)
 
-* The current user is logged in and is trying to request for two-factor authentication
-* The user is not logged in and is trying to log in
+##### Update phone number field in database
 
-### Disable Two-factor Authentication
 
-In the user's profile page, once two-factor authentication is enabled, the _disable two-factor authentication_ link is displayed. When this link is clicked, a disable two-factor authentication button is displayed. We need to create this button form.
+Before we can implement the `check_verification_token` function, note that our database will need a column to store the phone number. An updated user model will look like this:
 
-`forms.py: Disable button`
+
+`app/models.py`: User model
 
 ```python
 # ...
 
 
-class Disable2faForm(FlaskForm):
-    submit = SubmitField('Disable 2fa')
+class User(UserMixin, db.Model):
+    # ...
+    verification_phone = db.Column(db.String(20))
 
+    def two_factor_enabled(self):
+        return self.verification_phone is not None
 ```
 
-The view function that handles this action is `disable_2fa`.
-
-`routes.py: Disable 2fa logic`
+Run your migrations to apply these new updates.
 
 ```python
-# ...
-from app.forms import Disable2faForm
+(venv)$ flask db migrate -m 'phone number field'
+(venv)$ flask db upgrade
+```
 
 
-@app.route('/disable_2fa', methods=['GET', 'POST'])
-@login_required
-def disable_2fa():
-    form = Disable2faForm()
+##### Display link based on state of 2FA
+
+
+The application can now use the `two_factor_enabled` method to determine if a user has enabled 2FA. This will be done in the user's profile page where the link exists.
+
+`app/templates/user.html`: Determine the state of 2FA
+
+```html
+{% extends 'base.html' %}
+
+{% block app_content %}
+<div class="row">
+    <div class="col-md-12 text-center">
+        <!-- title -->
+        <h1>Profile</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <p>Hi {{current_user.username}}, do you want to enable two-factor authentication?</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <!-- Two-factor authentication -->
+        {% if not user.two_factor_enabled() %}
+            <p>
+                <a href="{{ url_for('enable_2fa') }}">Enable 2FA</a>
+            </p>
+        {% else %}
+            <p>
+                <a href="{{ url_for('disable_2fa') }}">Disable 2FA</a>
+            </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+```
+
+
+##### Check verification token
+
+
+We can now update the function used to verify a user's token.
+
+`app/twilio_verify_api.py`: Check verification token
+
+```python
+def check_verification_token(phone, token):
+    """
+    Verify token received by user
+    """
+    verify = _get_twilio_verify_client()
+    try:
+        result = verify.verifications_check(to=phone, code=token)
+        return result.status == 'approved'
+    except TwilioException as e:
+        return False
+```
+
+#### Disable 2FA
+
+With the state of 2FA updated, we can now implement the `disable_2fa` view function. This will allow a user to disavle 2FA by removing his phone from the database.
+
+`app/routes.py`: Cancel 2FA
+
+```python
+from app.forms import DisableForm
+
+
+@app.route('/disable-2fa', methods=['GET', 'POST'])
+def diable_2fa():
+    form = DisableForm()
     if form.validate_on_submit():
         current_user.verification_phone = None
         db.session.commit()
-        flash('You have disabled two-factor authentication')
-        return redirect('user', username=current_user.username)
-    return render_template('disable_2fa.html',
-                           form=form,
-                           title='Disable 2fa'
-                           )
+        flash('You have disabled 2FA.', 'success')
+        return redirect(url_for('user', username=current_user.username))
+    return render_template('disable_2fa.html', form=form)
 ```
 
-We can now display this form to the user
+Just like the `enable_2fa` view function, this route will redirect the user to another page that has a form.
 
-`disable.html: Display Disable 2fa button`
+`app/templates/disable_2fa.html`: Disable 2FA
 
 ```html
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <div class="row">
-        <div class="col-md-4">
-            <h1>Disable Two-factor Authentication</h1>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h1>Disable 2FA on your Account</h1>                                             
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
+        <div class="row">
+            <div class="col-md-12 text-center">
+                {{ wtf.quick_form(form) }}     
+            </div>
         </div>
-    </div>
 {% endblock %}
-
 ```
 
-That's it!
+#### Update login logic to include 2FA
 
+We need to expand the basic login logic to include 2FA. When a user with two-factor enaled tried to access their account, they will be redirected to a verification page where they need to enter a token received on their phone.
 
-## Additional Concepts
+`app/routes.py`: Login with 2FA
 
-This application has both _email_ and _error_ modules. So far, we have not handled any of them. You can try to implement them in the application.
+```python
+@app.route('/login', methods=['GET', 'POST'])
+@login_required
+def login():
+    # ...
+    if user.two_factor_enabled():
+        request_verification_token(user.verification_phone)
+        session['username'] = user.username
+        session['phone'] = user.verification_phone
+        return redirect(url_for(
+            'verify_2fa',
+            next=next_page,
+            remember='1' if form.remember_me.data else '0'))
+    login_user(user, remember=form.remember_me.data)
+    return redirect(next_page)
+```
 
-* If a user forgets their account's password, a _Reset Password_ link is provided in the _Login_ page
-* If a non-existent page is requested from the server, the application should show a nicer looking error page with redirection to the home page rather than the scary and possibly too-revealing flask debug error page.
+All needed user information is stored in a flask session to preserve their data until their token is verified.
+
+I hope you enjoyed working with Twilio Verify API! In your next application, consider integrating two-factor authentication using Twilio Verify API.
