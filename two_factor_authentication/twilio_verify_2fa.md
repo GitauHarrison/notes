@@ -1,19 +1,19 @@
 # Two-factor Authentication Using Twilio Verify in Flask
 
-One of the most effective ways to reduce online identity theft of online accounts is to enable two-factor authentication (2FA) on an account. It adds an additional layer of security to the authentication process by making it harder for attackers to gain access to a person's devices or online accounts because, even if the victim's password is hacked, a password alone is not enough to pass the authentication check.
+One of the most effective ways to reduce online identity theft of online accounts is to enable two-factor authentication (2FA) on an account. It adds a layer of security to the authentication process by making it harder for attackers to gain access to a person's devices or online accounts because, even if the victim's password is hacked, a password alone is not enough to pass the authentication check.
 
 1. [Time-based two-factor authentication](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/2fa_flask.md)
 2. [SMS two-factor authentication](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/twilio_verify_2fa.md) (this article)
 3. [Push two-factor authentication](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/twilio_authy.md) 
 
-Twilio offers mulitple ways to implement two-factor authentication. In this article, you will learn how to enable optional two-factor authentication in your flask application. I say optional because a user can choose to not enable it and will still have access to their account. 
+Twilio offers multiple ways to implement two-factor authentication. In this article, you will learn how to enable optional two-factor authentication in your flask application. I say optional because a user can choose to not enable it and will still have access to their account. 
 
 ## Welcome to Twilio Verify
 
 ![Twilio Verify](/images/twilio_verify/twilio_verify.gif)
 
 
-Using the [Twilio Verify API](https://www.twilio.com/verify) allows you to authenticate users using verification codes over their preferred channels with a single API call. The available channels are SMS, Voice, email, push notification, WhatsApp an even time-based one-time password. A user will receive a verification code via their preferred channel. 
+Using the [Twilio Verify API](https://www.twilio.com/verify) allows you to authenticate users using verification codes over their preferred channels with a single API call. The available channels are SMS, Voice, email, push notification, WhatsApp, and even time-based one-time passwords. A user will receive a verification code via their preferred channel. 
 
 ## Things We Will Do
 
@@ -31,14 +31,14 @@ The completed and working project is available at [GitHub](https://github.com/Gi
 
 ## Set Up the Twilio Verify API
 
-1. Create a [free twilio account](https://www.twilio.com/try-twilio?promo=WNPWrR) now.
+1. Create a [free Twilio account](https://www.twilio.com/try-twilio?promo=WNPWrR) now.
 2. Once the account is created, navigate to the [Twilio Console](https://www.twilio.com/console)
 3. Click [Explore Products](https://console.twilio.com/develop/explore) on the left sidebar.
-4. Find and click on [Verify](https://console.twilio.com/us1/develop/verify?frameUrl=%2Fconsole%2Fverify%3Fx-target-region%3Dus1) in the _Account Security_ section (You can pinned for easy access).
+4. Find and click on [Verify](https://console.twilio.com/us1/develop/verify?frameUrl=%2Fconsole%2Fverify%3Fx-target-region%3Dus1) in the _Account Security_ section (You can pin for easy access).
 4. Create a new [service](https://console.twilio.com/us1/develop/verify/services) by clicking on the blue "Create new" button.
 5. Provide a friendly name for the service.
 6. Toggle the SMS channel on.
-6. Click "Create" button
+6. Click the "Create" button
 <br>
 
     ![Verify Service](/images/twilio_verify/create_new_verify_service.png)
@@ -46,12 +46,12 @@ The completed and working project is available at [GitHub](https://github.com/Gi
 
 7. You will be provided with a __Service SID__. This is a unique identifier for the service. You will also need your __Account SID__ and __Auth Token__. These are unique identifiers for your account. To find Account SID and Auth token, head over to your [Twilio Console](https://console.twilio.com/?frameUrl=%2Fconsole%3Fx-target-region%3Dus1). We will use it later in the article.
 
-Note that these keys ar private and should not be commited to version control. In the event the keys are exposed, you risk having someone else use your service. Rotate your keys immediately.
+Note that these keys are private and should not be committed to version control. In the event the keys are exposed, you risk having someone else use your service. Rotate your keys immediately.
 
 
 ## Create a simple flask application with basic form validation
 
-I will not go into the details of how to create a simple flask application. If you are new to flask, you can [learn how here](https://github.com/GitauHarrison/notes/blob/master/start_flask_server.md). A complete flask starter project is available on [GitHub](https://github.com/GitauHarrison/starting-a-flask-server). You will need to install and work with a database, `flask-wtf` and `flask-login` to complete the project.
+I will not go into the details of how to create a simple flask application. If you are new to Flask, you can [learn how here](https://github.com/GitauHarrison/notes/blob/master/start_flask_server.md). A complete flask starter project is available on [GitHub](https://github.com/GitauHarrison/starting-a-flask-server). You will need to install and work with a database, `flask-wtf` and `flask-login` to complete the project.
 
 Once you have your project up and running, you will need to install `twilio` in your virtual environment.
 
@@ -61,7 +61,7 @@ Once you have your project up and running, you will need to install `twilio` in 
 
 ## Integrate Twilio Verify with your flask application
 
-When a user first creates an account, they will have the option to enable two-factor authentication in their profile page. When they click the "Enable 2FA" link, they will be requested to provide their phone number which will be used to get a verification code. Subsequent logins will require them to enter the verification code before they can access their accounts.
+When a user first creates an account, they will have the option to enable two-factor authentication on their profile page. When they click the "Enable 2FA" link, they will be requested to provide their phone number which will be used to get a verification code. Subsequent logins will require them to enter the verification code before they can access their accounts.
 
 ### Integration table of contents
 
@@ -74,7 +74,7 @@ When a user first creates an account, they will have the option to enable two-fa
 
 #### Testing
 
-From the terminal, let us see how the Twiilio Verify API works. Run the following commands in your Python interpreter:
+From the terminal, let us see how the Twilio Verify API works. Run the following commands in your Python interpreter:
 
 ```python
 >>> from twilio.rest import Client
@@ -83,7 +83,7 @@ From the terminal, let us see how the Twiilio Verify API works. Run the followin
 >>> service.verifications.create(to='+254700111222', channel='sms')
 ```
 
-You should be able to see an AUTHMSG of "Your <application> verification code is: <verification_code>" in your phone.
+You should be able to see an AUTHMSG of "Your <application> verification code is: <verification_code>" on your phone.
 
 To confirm the verification code, let us run the following command in your Python interpreter:
 
@@ -98,7 +98,7 @@ To confirm the verification code, let us run the following command in your Pytho
 
 #### Configure flask to use Twilio Verify
 
-As mention earlier, Twilio keys should remain private. You should not add them to your application. To do so, you will need to create a hidden environment variable file called `.env` in the project's top-level directory.
+As mentioned earlier, Twilio keys should remain private. You should not add them to your application. To do so, you will need to create a hidden environment variable file called `.env` in the project's top-level directory.
 
 ```python
 (venv) touch .env
@@ -139,7 +139,7 @@ The `python-dotenv` library is used to load the `.env` file. So, make sure that 
 (venv) $ pip3 install python-dotenv
 ```
 
-To ensure that you do not accidentally commit this file to version control, create a `.gitignore` file in the top-level directory of the project and pass in `.env`. This will prevent `git` from tracking the `.env` file.
+To ensure that you do not accidentally commit this file to version control, create a `.gitignore` file in the top-level directory of the project and pass it in `.env`. This will prevent `git` from tracking the `.env` file.
 
 `.gitignore`: Ignore files
 
@@ -172,7 +172,7 @@ A user will be able to enter their phone number in a form once they click on the
 {% endblock %}
 ```
 
-I am using `flask-bootstrap`'s `wtf` library to quickly create the form with all the nice validations and styling.  You can manually create your own form, though. 
+I am using `flask-bootstrap`'s `wtf` library to quickly create the form with all the nice validations and styling.  You can manually create your form, though. 
 
 ![Phone number form](/images/twilio_verify/enable_2fa_form.png)
 
@@ -210,7 +210,7 @@ Notice that I am using the `phonenumbers` library to validate the phone number. 
 True
 ```
 
-You can choose to format a given phonenumber to either E164 (+254700111222) or international format (+27 7 00 111 222) or national (0700111222).
+You can choose to format a given phone number to either E164 (+254700111222) or international format (+254 700 111 222) or national (0700111222).
 
 ```python
 >>> phonenumbers.format_number(p, phonenumbers.PhoneNumberFormat.E164)
@@ -247,11 +247,11 @@ def enable_2fa():
 
 ##### Improved phone number form
 
-Since users of the application may be from different nationalities, it would help improve their experience if they could enter their respective phone number in the international format.
+Since users of the application may be from different nationalities, it would help improve their experience if they could enter their respective phone numbers in the international format.
 
 ![Phone number form](/images/twilio_verify/better_phone_form.png)
 
-Using a little of JavaScript, we can update the `phone` field to accept international phone numbers. This change will apply to every instance of the phone form in the application, which currently is only used in the `enable_2fa.html` template.
+Using a little JavaScript, we can update the `phone` field to accept international phone numbers. This change will apply to every instance of the phone form in the application, which currently is only used in the `enable_2fa.html` template.
 
 
 `app/templates/base.html`: Improved phone field
@@ -280,14 +280,14 @@ Using a little of JavaScript, we can update the `phone` field to accept internat
     </script>
 {% endblock %}
 ```
-The JavaScript library used in this example is `intl-tel-input`. The library provides such wonderful user interface that allows a user to properly key in their phone numbers. Remember to add their CSS and JS links before targeting the `verification_phone` DOM. You can learn more about it from their [GitHub repo](https://github.com/jackocnr/intl-tel-input).
+The JavaScript library used in this example is `intl-tel-input`. The library provides such a wonderful user interface that allows a user to properly key in their phone numbers. Remember to add their CSS and JS links before targeting the `verification_phone` DOM. You can learn more about it from their [GitHub repo](https://github.com/jackocnr/intl-tel-input).
 
 
 
 
 #### Verify the client
 
-When the user submits their phone number, that data will be stored in a flask session and it will used as an argument to the `request_verification_token` function. We have not implemented the `request_verification_token` function, but we will do so now.
+When the user submits their phone number, that data will be stored in a flask session and it will be used as an argument to the `request_verification_token` function. We have not implemented the `request_verification_token` function, but we will do so now.
 
 Let's create a module called `twilio_verify_api.py` within the `app` directory. This module will contain all the logic used when working with the Twilio Verify API.
 
@@ -346,7 +346,7 @@ Once the user has requested a verification token, they will be redirected to ano
 
 ![Phone number form](/images/twilio_verify/login_2fa_token.png)
 
-We can use same template as that of the `enable_2fa.html` page for verification.
+We can use the same template as that of the `enable_2fa.html` page for verification.
 
 `app/verify_2fa.html`
 
@@ -383,7 +383,7 @@ class VerifyForm(FlaskForm):
 The `verify_2fa` view function will be responsible for handling the form submission.
 
 
-`app/routes.py`: Verify token received
+`app/routes.py`: Verify the token received
 
 ```python
 from app.forms import VerifyForm
@@ -418,7 +418,7 @@ def verify_2fa():
     return render_template('verify_2fa.html', form=form)
 ```
 
-The view function above handles two scenarios based on the logged in state of the user. In the event the user is already logged into their account, then, scenario #1 would be to enable 2FA. In this case, the user's phone number will be added to the database. This value in the database is used to determine if a user has enabled 2FA. The other scenario where a user will be required to confirm the verification token would be when they are trying to log into their account. In this case, they are anonymous. The logic used will automatically determine that the user is anonymous and will log them in once the token is verified.
+The view function above handles two scenarios based on the logged-in state of the user. In the event the user is already logged into their account, then, scenario #1 would be to enable 2FA. In this case, the user's phone number will be added to the database. This value in the database is used to determine if a user has enabled 2FA. The other scenario where a user will be required to confirm the verification token would be when they are trying to log into their account. In this case, they are anonymous. The logic used will automatically determine that the user is anonymous and will log them in once the token is verified.
 
 ![Phone number form](/images/twilio_verify/invalid_login_token.png)
 
@@ -453,7 +453,7 @@ Run your migrations to apply these new updates.
 ##### Display link based on state of 2FA
 
 
-The application can now use the `two_factor_enabled` method to determine if a user has enabled 2FA. This will be done in the user's profile page where the link exists.
+The application can now use the `two_factor_enabled` method to determine if a user has enabled 2FA. This will be done on the user's profile page where the link exists.
 
 `app/templates/user.html`: Determine the state of 2FA
 
@@ -512,7 +512,7 @@ def check_verification_token(phone, token):
 
 #### Disable 2FA
 
-With the state of 2FA updated, we can now implement the `disable_2fa` view function. This will allow a user to disavle 2FA by removing his phone from the database.
+With the state of 2FA updated, we can now implement the `disable_2fa` view function. This will allow a user to disable 2FA by removing his phone from the database.
 
 `app/routes.py`: Cancel 2FA
 
@@ -555,7 +555,7 @@ Just like the `enable_2fa` view function, this route will redirect the user to a
 
 #### Update login logic to include 2FA
 
-We need to expand the basic login logic to include 2FA. When a user with two-factor enaled tried to access their account, they will be redirected to a verification page where they need to enter a token received on their phone.
+We need to expand the basic login logic to include 2FA. When a user with two-factor authentication enabled tries to access their account, they will be redirected to a verification page where they need to enter a token received on their phone.
 
 `app/routes.py`: Login with 2FA
 

@@ -47,6 +47,7 @@ You will need to create an account on the Twilio website. Do so now [here](https
 - On the pinned Authy product, click on [Applications](https://console.twilio.com/us1/develop/authy/applications?frameUrl=%2Fconsole%2Fauthy%2Fapplications%3Fx-target-region%3Dus1) link.
 - Click on the blue + (plus) icon to create a new application.
 - Provide a friendly name for your application.
+
 ![Create Authy Appilication](/images/twilio_authy/authy_app_name.png)
 
 
@@ -327,7 +328,7 @@ Polling is less efficient, but it is the easiest to implement. Additionally, it 
 <!-- Previous code remains -->
 
 {% block qrcode_script %}
-    <scritp>
+    <script>
         function check_registration() {
             $.ajax( " {{ url_for('enable_2fa_polling') }} ").done(function(data) {
                 if (data == 'pending') {
@@ -414,13 +415,13 @@ First, we obtain the Authy API client by instantiating the `AuthyApiClient` clas
 
 When the user scans the QR Code, the response will be a JSON object:
 
-```json
+```python
 {'status': 'compeleted', 'authy_id': 123456789}
 ```
 
 Otherwise, an unscanned response would look like this:
 
-```json
+```python
 {'status': 'pending'}
 ```
 Any other status value besides _pending_ and _completed_ indicates that an error has occurred, so the application should cancel the registration request.
