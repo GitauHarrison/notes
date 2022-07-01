@@ -1,15 +1,15 @@
 # Working with Twilio Authy's Push Notifications
 
 
-One of the most effective ways to reduce online identity theft of online accounts is to enable two-factor authentication (2FA) on an account. It adds an additional layer of security to the authentication process by making it harder for attackers to gain access to a person's devices or online accounts because, even if the victim's password is hacked, a password alone is not enough to pass the authentication check.
+One of the most effective ways to reduce online identity theft of online accounts is to enable two-factor authentication (2FA) on an account. It adds a layer of security to the authentication process by making it harder for attackers to gain access to a person's devices or online accounts because, even if the victim's password is hacked, a password alone is not enough to pass the authentication check.
 
 1. [Time-based two-factor authentication](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/2fa_flask.md)
 2. [SMS two-factor authentication](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/twilio_verify_2fa.md)
 3. [Push two-factor authentication](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/twilio_authy.md) (this article)
 
-Traditionally, applications require a user to key in a numeric code on their phone or an authenticator app to log in. Unfortunately, as you can tell, this process requires the active participation of a user. To an extend, this seems tedious and a bit inconvinient, hence the need to simplify a secure login process.
+Traditionally, applications require a user to key in a numeric code on their phone or an authenticator app to log in. Unfortunately, as you can tell, this process requires the active participation of a user. To an extent, this seems tedious and a bit inconvenient, hence the need to simplify a secure login process.
 
-To understand what a push notification is, let us first look at how it works. When a user tries to log into their account, an application's server will send notification to the user's phone. All  that a user needs to do is to tap on the dead simple notification message to either 'Accept' or 'Decline' the request.
+To understand what a push notification is, let us first look at how it works. When a user tries to log into their account, an application's server will send a notification to the user's phone. All that a user needs to do is to tap on the dead simple notification message to either 'Accept' or 'Decline' the request.
 
 The completed Twilio Authy project is available [here on GitHub](https://github.com/GitauHarrison/push-notification-2fa-in-python-and-flask). To test the live project, click [here](https://push-notifications-2fa.herokuapp.com/).
 
@@ -32,7 +32,7 @@ The completed Twilio Authy project is available [here on GitHub](https://github.
 
 ## Download and Install Authy
 
-I have chosen to use the Authy anthenticator app for this demostration. You will need to download the app from your applications' store:
+I have chosen to use the Authy authenticator app for this demonstration. You will need to download the app from your applications' store:
 
 - [Authy on Google Play Store](https://play.google.com/store/apps/details?id=com.authy.authy) (Android)
 - [Authy on the Apple App Store](https://apps.apple.com/us/app/twilio-authy/id494168017) (iPhone)
@@ -47,17 +47,14 @@ You will need to create an account on the Twilio website. Do so now [here](https
 - On the pinned Authy product, click on [Applications](https://console.twilio.com/us1/develop/authy/applications?frameUrl=%2Fconsole%2Fauthy%2Fapplications%3Fx-target-region%3Dus1) link.
 - Click on the blue + (plus) icon to create a new application.
 - Provide a friendly name for your application.
-<br>
-
-
-    ![Create Authy Appilication](/images/twilio_authy/authy_app_name.png)
+![Create Authy Appilication](/images/twilio_authy/authy_app_name.png)
 
 
 ## Create a simple flask app with password-based login
 
 I will not go into the details of creating a simple flask app with password-based login. The assumption here is that you already have a basic understanding of flask and how to create a flask app. If not, I recommend that you start [here](https://github.com/GitauHarrison/notes/blob/master/start_flask_server.md).
 
-You application should feature:
+Your application should feature:
 
 - A login page
 - A registration page
@@ -73,7 +70,7 @@ You application should feature:
 
 ### Overview
 
-Push notifications work in a similar way to numberic codes. To enable two-factor authentication, a user needs to click on the "Enable" button on the profile page. They will then be redirected to another page where a QR code, specifically designed for push authentication with the proprietary Authy service, will be displayed. Using Authy, the user will then need to scan the QR code to complete the process.
+Push notifications work in a similar way to numeric codes. To enable two-factor authentication, a user needs to click on the "Enable" button on the profile page. They will then be redirected to another page where a QR code, specifically designed for push authentication with the proprietary Authy service, will be displayed. Using Authy, the user will then need to scan the QR code to complete the process.
 
 The Authy service will poll the application regularly at intervals to find out if the QR code has been scanned. A bit of asynchronous Javascript logic will be added to enhance the polling process.
 
@@ -99,19 +96,19 @@ To enable push notifications using Twilio Authy, we will do the following:
 9. [Disable 2FA](#disable-2fa)
 
 
-You will need to download these two packages to get started:
+You will need to download these three packages to get started:
 
 ```python
 (venv)$ pip3 install "authy>=2.2.5" pyjwt qrcode
 ```
 
-The Twilio authy package needs to be greater than or equal to version 2.2.5. We will also make use of the [JSON Web Token](https://jwt.io/) package to create and verify tokens, as well as [QR Codes](https://en.wikipedia.org/wiki/QR_code).
+The Twilio Authy package needs to be greater than or equal to version 2.2.5. We will also make use of the [JSON Web Token](https://jwt.io/) package to create and verify tokens, as well as [QR Codes](https://en.wikipedia.org/wiki/QR_code).
 
 Moving forward, we will need to create a module called `authy.py` within our `app/` subfolder to handle all logic regarding the use of Authy.
 
 #### User clicks on the "Enable" button
 
-As soon as the "Enable/disable" link in the profile page is clicked, the user will be redirected to a page where their will be a link to enable or disable 2FA. You probably think this is an unnecessary repetition, but I it useful to allow the user to consider whether or not they really want to enable 2FA.
+As soon as the "Enable/disable" link on the profile page is clicked, the user will be redirected to a page where there will be a link to enable or disable 2FA. You probably think this is unnecessary repetition, but it is useful to allow the user to consider whether or not they want to enable 2FA.
 
 The view function handling this is straightforward:
 
@@ -133,7 +130,7 @@ Once the _Enable_ button is clicked, a JWT token will be generated. This token w
 
 #### Generate JWT token
 
-Authy app expects QR Codes with the folling URL:
+Authy app expects QR Codes with the following URL:
 
 ```python
 authy://authy/qr?token={JWT}
@@ -154,15 +151,13 @@ The dynamic `JWT` token will have the following payload:
 ```
 
 - `iss`: (issuer): must be the Authy application name you defined in the Twilio console
-- `iat`: (issued at) and exp (expiration) are integers
+- `iat` (issued at) and `exp` (expiration) are integers
 - `customer_user_id`: identifies the user of our application, typically the primary key assigned to a user in the database
 - `authy_app_id`: must be set to the identifier assigned by Authy to our application. To find this identifier, click on your Authy app name and find [Settings](https://www.twilio.com/console/authy/applications/388832/settings).
 - `authy_app_id`: is APPLICATION ID
-<br>
+![Application settings](/images/twilio_authy/authy_app_id.png)
 
-    ![Application settings](/images/twilio_authy/authy_app_id.png)
-
-To verify legitimate requests, you will sign to your application's JWT token with a secret key, Authy API Production key. Below is how your application can generate the JWT token:
+To verify legitimate requests, you will sign to your application's JWT token with a secret key, the Authy API Production key. Below is how your application can generate the JWT token:
 
 `app/authy.py`: Generate JWT token
 
@@ -191,7 +186,7 @@ def get_authy_registration_jwt(user_id, expires_in=5*60):
         payload, app.config['AUTHY_PRODUCTION_API_KEY'], algorithm='HS256')
 ```
 
-As you can notice, I am using environment variables to access sensitive API keys. This is a good practice to avoid hardcoding sensitive information in your code. You will need to update the current `config.py` file in the `app/` sub-folder.
+As you can notice, I am using environment variables to access sensitive API keys. This is a good practice to avoid hardcoding sensitive information in your application. You will need to update the current `config.py` file in the `app/` sub-folder to factor in Authy keys.
 
 ```python
 import os
@@ -206,7 +201,7 @@ class Config(obeject):
     AUTHY_PRODUCTION_API_KEY = os.environ.get('AUTHY_PRODUCTION_API_KEY')
 ```
 
-The values of the environment variables will be in `.env` file which SHOULD NOT be committed to your repository. Remember to gitignore the file!
+The values of the environment variables will be in the `.env` file which SHOULD NOT be committed to your repository. Remember to gitignore the file!
 
 `.env`: Actual values of environment variables
 
@@ -241,7 +236,7 @@ def get_authy_qrcode(jwt):
     return buffer.getvalue()
 ```
 
-As mentioned earlier, Authy expects the QR Code to be generated using a specific URL, where the JWT is passed as an argument. The image format used is an SVG image, though you can use other formats too. The image data is written to a buffer, and then returned as a byte string. An HTTP response is returned with the image data.
+As mentioned earlier, Authy expects the QR Code to be generated using a specific URL, where the JWT is passed as an argument. The image format used is an SVG image, though you can use other formats too. The image data is written to a buffer and then returned as a byte string. An HTTP response is returned with the image data.
 
 #### Display QR code
 
@@ -267,9 +262,9 @@ def enable_2fa_qrcode():
         'Expires': '0'}
 ```
 
-You can use this image to display a QR code to the user to scan. For your reference, you need to create a new template called `enable_2fa_qrcode.html` in the `app/templates/` folder.
+You can use this image to display a QR code for the user to scan. For your reference, you need to create a new template called `enable_2fa_qrcode.html` in the `app/templates/` folder.
 
-`app/templates/enable_2fa_qrcode.html`: Enable 2FA template
+`app/templates/enable_2fa_qrcode.html`: Enable QRCode on the 2FA template
 
 ```html
 {% extends 'base.html' %}
@@ -348,7 +343,7 @@ Polling is less efficient, but it is the easiest to implement. Additionally, it 
 {% endblock %}
 ```
 
-`check_registration()` function sends a request to the `enable_2fa_polling` view function. I have scheduled the fuction to be called every second after the page loads. If a user has not scanned the QR Code yet, the response data will be `pending`, hence the function will be called again. This will go on until the reponse changes, at which point the user will be redirected to their profile page.
+`check_registration()` function sends a request to the `enable_2fa_polling` view function. I have scheduled the function to be called every second after the page loads. If a user has not scanned the QR Code yet, the response data will be `pending`, hence the function will be called again. This will go on until the response changes, at which point the user will be redirected to their profile page.
 
 `app/routes.py`: Polling for scan status
 
@@ -366,9 +361,9 @@ def enable_2fa_polling():
     return jsonify(registration['status'])
 ```
 
-Once a user is succefully scanned, the response data will be `completed`. The user will be redirected to their profile page. At this point, we would want the link in the profile page to change from _Enable 2FA_ to _Disable 2FA_.
+Once a user is successfully scanned, the response data will be `completed`. The user will be redirected to their profile page. At this point, we would want the link on the profile page to change from _Enable 2FA_ to _Disable 2FA_.
 
-`app/templates/user.html`: Disable 2FA link
+`app/templates/user.html`: Disable the 2FA link
 
 ```html
 {% extends 'base.html' %}
@@ -443,7 +438,7 @@ class User(db.Model):
         return self.authy_id is not None
 ```
 
-If you do not have this column yet, add it and remember to run your migrations so that the changes apply. The `two_factor_enabled` helper method checks whether the `authy_id` attribute exists or not.
+If you do not have this column yet, add it, and remember to run your migrations so that the changes apply. The `two_factor_enabled` helper method checks whether the `authy_id` attribute exists or not.
 
 ####  Send push authentication
 
@@ -472,7 +467,7 @@ def send_push_authentication(user):
     return resp.get_uuid()
 ```
 
-Using a user's unique `authy_id`, Authy will initiate a push notification using the `one_touch.send_request` method. The `message` parameter is the text that will be displayed in the push notification. The `details` parameter is a dictionary with details that will be shown in the Authy app to help the user identify logins that are illegitimate. The `seconds_to_expire` parameter is the number of seconds that the push notification will be valid for. Find out what other parameters can be used from the [documentation](https://www.twilio.com/docs/authy/api/push-authentications#create-an-approval-request).
+Using a user's unique `authy_id`, Authy will initiate a push notification using the `one_touch.send_request` method. The `message` parameter is the text that will be displayed in the push notification. The `details` parameter is a dictionary with details that will be shown in the Authy app to help the user identify logins that are illegitimate. The `seconds_to_expire` parameter is the number of seconds that the push notification will be valid. Find out what other parameters can be used from the [documentation](https://www.twilio.com/docs/authy/api/push-authentications#create-an-approval-request).
 
 
 
@@ -490,7 +485,7 @@ def check_2fa():
     session['authy_push_uuid'] = authy.send_push_authentication(user)
     return render_template('check_2fa.html', next=request.args.get('next'))
 ```
-As the user awaits authentication, their username will be obtained in a flask session. The database will be querried to retrieve the first instance of that user's username. This user will then be used as an argument in `authy.send_push_authentication` method is to send the push notification. The response is a UUID that is stored in the session.
+As the user awaits authentication, their username will be obtained in a flask session. The database will be queried to retrieve the first instance of that user's username. This user will then be used as an argument in the `authy.send_push_authentication` method to send the push notification. The response is a UUID that is stored in the session.
 
 
 
