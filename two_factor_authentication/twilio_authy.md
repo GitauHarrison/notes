@@ -11,7 +11,7 @@ Traditionally, applications require a user to key in a numeric code on their pho
 
 To understand what a push notification is, let us first look at how it works. When a user tries to log into their account, an application's server will send notification to the user's phone. All  that a user needs to do is to tap on the dead simple notification message to either 'Accept' or 'Decline' the request.
 
-The completed Twilio Authy project is available [here on GitHub](https://github.com/GitauHarrison/push-notification-2fa-in-python-and-flask).
+The completed Twilio Authy project is available [here on GitHub](https://github.com/GitauHarrison/push-notification-2fa-in-python-and-flask). To test the live project, click [here](https://push-notifications-2fa.herokuapp.com/).
 
 ## Welcome to Twilio Authy Push Notification
 
