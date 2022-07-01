@@ -94,8 +94,8 @@ To enable push notifications using Twilio Authy, we will do the following:
 4. [Display QR code](#display-qr-code)
 5. [Poll for QR code scan](#poll-for-qr-code-scan)
 6. [Get user registrations status](#get-user-registrations-status)
-7. [Send push notification](#send-push-notification)
-8. [Verify push notification](#verify-push-notification)
+7. [Send push authentication](#send-push-authentication)
+8. [Verify push authentication](#verify-push-authentication)
 9. [Disable 2FA](#disable-2fa)
 
 
@@ -125,7 +125,7 @@ def enable_2fa():
         jwt = get_authy_registration_jwt(current_user.id)
         session['registration_jwt'] = jwt
         return render_template(
-            'enable_2fa_qrcode.html', jwt=jwt, title='Enable 2FA QR Code')
+            'enable_2fa_qrcode.html', title='Enable 2FA QR Code')
     return render_template('enable_2fa.html', form=form, title='Enable 2FA')
 ```
 
@@ -283,7 +283,7 @@ You can use this image to display a QR code to the user to scan. For your refere
         </div>
         <div class="row">
             <div class="col-md-6">                
-                 <h3>IOS Devices</h3>>
+                 <h3>IOS Devices</h3>
                  <ul>
                     <li>Open the Authy iOS app</li>
                     <li>
@@ -293,7 +293,7 @@ You can use this image to display a QR code to the user to scan. For your refere
                  </ul>
             </div>
             <div class="col-md-6">                                       
-                <h3>Android Devices</h3>>
+                <h3>Android Devices</h3>
                 <ul>
                    <li>Open the Authy iOS app</li>
                    <li>
@@ -430,7 +430,7 @@ Otherwise, an unscanned response would look like this:
 ```
 Any other status value besides _pending_ and _completed_ indicates that an error has occurred, so the application should cancel the registration request.
 
-The `authy_id` is an integer found in database once a user has successfully enabled 2FA. Ensure that you have an `authy_id` column in your database to store this data.
+The `authy_id` is an integer found in the database once a user has successfully enabled 2FA. Ensure that you have an `authy_id` column in your database to store this data.
 
 `app/models.py`: Add `authy_id` column to `User`
 
@@ -445,14 +445,14 @@ class User(db.Model):
 
 If you do not have this column yet, add it and remember to run your migrations so that the changes apply. The `two_factor_enabled` helper method checks whether the `authy_id` attribute exists or not.
 
-####  Send push notification
+####  Send push authentication
 
 To begin, you need to check if the user has enabled 2FA on their account. If they have, you can send a push notification to the user.
 
 `app/authy.py`: Send push notification
 
 ```python
-def send_push_notification(user):
+def send_push_authentication(user):
     """
     Identify the user using their unique authy_id
     Send a push authentication request to the user
@@ -464,10 +464,7 @@ def send_push_notification(user):
         message='Please scan this QR code to enable 2FA',
         details={
             'username': user.username,
-            'email': user.email,
-            'url': url_for('enable_2fa_qrcode', username=user.username, _external=True),
             'IP Address': request.remote_addr,
-            'User Agent': request.user_agent.string,
             },
             seconds_to_expire=120)
     if not resp.ok():
@@ -479,7 +476,7 @@ Using a user's unique `authy_id`, Authy will initiate a push notification using 
 
 
 
-#### Verify push notification
+#### Verify push authentication
 
 The application will wait for the user to accept or deny a request. Polling from the backend can be used here too. A `check_2fa` function can be used to check the status of the request.
 
@@ -561,7 +558,7 @@ The `check_push_authentication_status` method will be used to check the status o
 `app/authy.py`: Check 2FA status
 
 ```python
-def check_push_notification_status(uuid):
+def check_push_authentication_status(uuid):
     authy_api = AuthyApiClient(app.config['AUTHY_PRODUCTION_API_KEY'])
     resp = authy_api.one_touch.get_approval_status(uuid)
     if not resp.ok():
