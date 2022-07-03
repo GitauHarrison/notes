@@ -1,7 +1,7 @@
 # Working with Twilio Authy's Push Notifications
 
 
-One of the most effective ways to reduce online identity theft of online accounts is to enable two-factor authentication (2FA) on an account. It adds a layer of security to the authentication process by making it harder for attackers to gain access to a person's devices or online accounts because, even if the victim's password is hacked, a password alone is not enough to pass the authentication check.
+One of the most effective ways to reduce identity theft of online accounts is to enable two-factor authentication (2FA) on an account. It adds a layer of security to the authentication process by making it harder for attackers to gain access to a person's devices or online accounts because, even if the victim's password is hacked, a password alone is not enough to pass the authentication check. Below, you can choose what method you want to use to authenticate an account.
 
 1. [Time-based two-factor authentication](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/2fa_flask.md)
 2. [SMS two-factor authentication](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/twilio_verify_2fa.md)
@@ -39,7 +39,7 @@ I have chosen to use the Authy authenticator app for this demonstration. You wil
 
 ## Create a Twilio Authy App
 
-You will need to create an account on the Twilio website. Do so now [here](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/www.twilio.com/referral/WNPWrR) to continue. Once your account is created:
+To create an Authy service, you first need to create an account on the Twilio website. Do so now [here](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/www.twilio.com/referral/WNPWrR) to continue. Once your account is created:
 
 - Head over to the [Twilio Console](https://www.twilio.com/console)
 - Click on [Explore Products](https://console.twilio.com/develop/explore)
@@ -71,7 +71,7 @@ Your application should feature:
 
 ### Overview
 
-Push notifications work in a similar way to numeric codes. To enable two-factor authentication, a user needs to click on the "Enable" button on the profile page. They will then be redirected to another page where a QR code, specifically designed for push authentication with the proprietary Authy service, will be displayed. Using Authy, the user will then need to scan the QR code to complete the process.
+Push notifications work in a similar way to numeric codes. To enable two-factor authentication, a user needs to click on the "Enable" button on the profile page. They will then be redirected to another page where a QR code, specifically designed for push authentication with the proprietary Authy service, will be displayed. Using the Authy app on their smartphone, the user will then need to scan the QR code to complete the process.
 
 The Authy service will poll the application regularly at intervals to find out if the QR code has been scanned. A bit of asynchronous Javascript logic will be added to enhance the polling process.
 
@@ -97,7 +97,7 @@ To enable push notifications using Twilio Authy, we will do the following:
 9. [Disable 2FA](#disable-2fa)
 
 
-You will need to download these three packages to get started:
+You will need to download these three packages in your virtual environment to get started integrating push notifications on your Flask app with Authy:
 
 ```python
 (venv)$ pip3 install "authy>=2.2.5" pyjwt qrcode
@@ -202,7 +202,7 @@ class Config(obeject):
     AUTHY_PRODUCTION_API_KEY = os.environ.get('AUTHY_PRODUCTION_API_KEY')
 ```
 
-The values of the environment variables will be in the `.env` file which SHOULD NOT be committed to your repository. Remember to gitignore the file!
+The values of the environment variables will be in the hidden `.env` file which SHOULD NOT be committed to your repository. Add it to your `.gitignore` file (located in the top-level directory) to keep it untracked by `git`!
 
 `.env`: Actual values of environment variables
 
@@ -211,6 +211,8 @@ AUTHY_APP_NAME=
 AUTHY_APP_ID=
 AUTHY_PRODUCTION_API_KEY=
 ```
+
+Enviroment variables within Flask can be accessed by the help of the `python-dotenv` package. It reads key-value pairs from a `.env` file and makes them available as environment variables. Remember to install it into your virtual environment too. For more information about the package, read more from its [documentation](https://pypi.org/project/python-dotenv/).
 
 #### Generate QR code
 
