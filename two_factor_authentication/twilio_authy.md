@@ -212,7 +212,7 @@ AUTHY_APP_ID=
 AUTHY_PRODUCTION_API_KEY=
 ```
 
-Enviroment variables within Flask can be accessed by the help of the `python-dotenv` package. It reads key-value pairs from a `.env` file and makes them available as environment variables. Remember to install it into your virtual environment too. For more information about the package, read more from its [documentation](https://pypi.org/project/python-dotenv/).
+Enviroment variables within Flask can be accessed by the help of the `python-dotenv` package. It reads key-value pairs from a `.env` file and makes them available as environment variables. Remember to install this package into your virtual environment too. For more information about it, read more from its [documentation](https://pypi.org/project/python-dotenv/).
 
 #### Generate QR code
 

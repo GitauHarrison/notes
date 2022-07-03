@@ -1,6 +1,6 @@
 # Two-factor Authentication Using Twilio Verify in Flask
 
-One of the most effective ways to reduce online identity theft of online accounts is to enable two-factor authentication (2FA) on an account. It adds a layer of security to the authentication process by making it harder for attackers to gain access to a person's devices or online accounts because, even if the victim's password is hacked, a password alone is not enough to pass the authentication check.
+One of the most effective ways to reduce identity theft of online accounts is to enable two-factor authentication (2FA) on an account. It adds a layer of security to the authentication process by making it harder for attackers to gain access to a person's devices or online accounts because, even if the victim's password is hacked, a password alone is not enough to pass the authentication check. Below, you can choose what method you want to use to authenticate an account.
 
 1. [Time-based two-factor authentication](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/2fa_flask.md)
 2. [SMS two-factor authentication](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/twilio_verify_2fa.md) (this article)
