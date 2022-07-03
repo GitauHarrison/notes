@@ -264,6 +264,17 @@ def enable_2fa_qrcode():
         'Pragma': 'no-cache',
         'Expires': '0'}
 ```
+ 
+This route serves extra headers that tell the browser to not do any caching. Why? To avoid any unauthorized access and use of the QR code.
+
+- `Content-Type`: sets the content type of the response to `image/svg+xml`
+- `Cache-Control`: sets the cache control headers to `no-cache, no-store, must-revalidate`
+    - `no-cache`:  indicates that the response can be stored in caches, but the response must be validated with the origin server before each reuse, even when the cache is disconnected from the origin server. Note that `no-cache` does not mean "don't cache". 
+    - `no-store`:  indicates that any caches of any kind (private or shared) should not store this response. 
+    - `must-revalidate`: indicates that the response can be stored in caches and can be reused while fresh. If the response becomes stale, it must be validated with the origin server before reuse.
+- `Pragma`: Same as `Cache-Control: no-cache`. Forces caches to submit the request to the origin server for validation before a cached copy is released.
+- `Expires`: this header contains the date/time after which the response is considered expired.
+- Learn more about HTTP headers [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers).
 
 You can use this image to display a QR code for the user to scan. For your reference, you need to create a new template called `enable_2fa_qrcode.html` in the `app/templates/` folder.
 
