@@ -25,9 +25,9 @@ One-time passwords are used to generate a one-time token that is used to authent
 ## What We Will Do
 
 
-1. [Install an authenticator app of choice](#install-an-authenticator-apps-of-choice)
+1. [Install an authenticator app of choice](#install-an-authenticator-app-of-choice)
 2. [Create a simple password-based flask application](#create-a-simple-password-based-flask-application)
-3. [Integrate TOTP into the application](#integrate-TOTP-into-the-application)
+3. [Integrate TOTP into the application](#integrate-totp-into-the-application)
 
 The completed project is publicly available and application files are on [GitHub](https://github.com/GitauHarrison/how-to-implement-time-based-two-factor-auth-in-flask). You can refer to the repo as you build your own. If you would like to test the live application, here is the [link](https://simple-2fa.herokuapp.com/).
 
