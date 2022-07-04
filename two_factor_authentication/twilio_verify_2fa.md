@@ -39,10 +39,8 @@ The completed and working project is available at [GitHub](https://github.com/Gi
 5. Provide a friendly name for the service.
 6. Toggle the SMS channel on.
 6. Click the "Create" button
-<br>
 
-    ![Verify Service](/images/twilio_verify/create_new_verify_service.png)
-<br>
+![Verify Service](/images/twilio_verify/create_new_verify_service.png)
 
 7. You will be provided with a __Service SID__. This is a unique identifier for the service. You will also need your __Account SID__ and __Auth Token__. These are unique identifiers for your account. To find Account SID and Auth token, head over to your [Twilio Console](https://console.twilio.com/?frameUrl=%2Fconsole%3Fx-target-region%3Dus1). We will use it later in the article.
 
