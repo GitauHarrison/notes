@@ -39,7 +39,7 @@ I have chosen to use the Authy authenticator app for this demonstration. You wil
 
 ## Create a Twilio Authy App
 
-To create an Authy service, you first need to create an account on the Twilio website. Do so now [here](https://github.com/GitauHarrison/notes/blob/master/two_factor_authentication/www.twilio.com/referral/WNPWrR) to continue. Once your account is created:
+To create an Authy service, you first need to create an account on the Twilio website. It is free. Do so now [here](https://www.twilio.com/try-twilio?promo=WNPWrR) to continue. Once your account is created:
 
 - Head over to the [Twilio Console](https://www.twilio.com/console)
 - Click on [Explore Products](https://console.twilio.com/develop/explore)
