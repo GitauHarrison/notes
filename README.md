@@ -41,6 +41,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 35. [Integrate ChartJS in Flask](chartjs.md)
 36. [Create a YouTube Video Downloader](youtube_video_downloader.md)
 37. [Beautiful flask tables with Grid.js](flask_tables/gridjs.md)
+38. [Download Encrypted PDF Copy of Db Data](download_encrypted_pdf.md)
 
 ## Demo Projects
 
