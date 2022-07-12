@@ -78,7 +78,7 @@ We will need to install it in our virtual environment. A virtual environment hel
 (venv)$ pip3 install flask-sqlalchemy
 ```
 
-Once the schema is developed, we will need to create a database by applying the necessary migrations. Since this is the first time we are creating our database, we will need to make only one migration. If we want to add more data to our database, we will need to update the schema and apply the new changes. `flask-migrate` is another useful package we can utilize to create database migrations.
+Once the schema is developed, we will need to create a database by applying the necessary migrations. Since this is the first time we are creating our database, only one migration will be made. If we want to add more fields to the schema, we will be required to update the schema and apply the new changes. `flask-migrate` is another useful package we can utilize to create database migrations.
 
 ```python
 (venv)$ pip3 install flask-migrate
@@ -134,7 +134,7 @@ class User(db.Model):
     email = db.Column(db.String(120), index=True)
 
     def __repr__(self):
-        return f'User {self.username}'
+        return f'User {self.name}'
 
 
 ```
@@ -492,7 +492,7 @@ The document is finally closed using the `output()` method. This method takes tw
 
 ### Creating a PDF file
 
-Now what we know how to utilize PyPDF2 to create a PDF file, let us update our `download_users_data()` function.
+Now what we know how to utilize `fpdf` to create a PDF file, let us update our `download_users_data()` function.
 
 ```python
 from fpdf import FPDF
