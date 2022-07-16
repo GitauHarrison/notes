@@ -28,7 +28,7 @@ This tutorial does not intend to reproduce a clone of the MPesa statement, but r
 The completed project used to demonstrate the above steps is available [here on GitHub](https://github.com/GitauHarrison/download-encrypted-pdf-copy-of-user-data).
 ## Create a simple flask application
 
-To begin, we can utilize a minimalist flask structure such as this:
+The assumption here is that you at least understand the basic concepts of HTML and Flask. I will not be going through every detail of setting up a simple flask application. To begin, we can utilize a minimalist flask structure such as this:
 
 ```python
 project
