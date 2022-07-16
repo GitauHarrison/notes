@@ -400,7 +400,6 @@ from app.twilio_verify_api import check_verification_token
 
 
 @app.route('/verify-2fa', methods=['GET', 'POST'])
-@login_required
 def verify_2fa():
     """
     Verify the token received
@@ -416,7 +415,7 @@ def verify_2fa():
                 flash('You have enabled 2FA.', 'success')
                 return redirect(url_for('user', username=current_user.username))
             else:
-                username = session.get('username')
+                username = session['username']
                 del session['username']
                 user = User.query.filter_by(username=username).first()
                 next_page = request.args.get('next')
