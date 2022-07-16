@@ -49,17 +49,18 @@ Note that these keys are private and should not be committed to version control.
 
 ## Create a simple flask application with basic form validation
 
-I will not go into the details of how to create a simple flask application. If you are new to Flask, you can [learn how here](https://github.com/GitauHarrison/notes/blob/master/start_flask_server.md). A complete flask starter project is available on [GitHub](https://github.com/GitauHarrison/starting-a-flask-server). You will need to install and work with a database, `flask-wtf` and `flask-login` to complete the project.
+I will not go into the details of how to create a simple flask application. If you are new to Flask, I recommend that you begin [here](https://github.com/GitauHarrison/notes/blob/master/start_flask_server.md). A complete flask starter project is available on [GitHub](https://github.com/GitauHarrison/starting-a-flask-server). You will also need to learn how to create and work with web forms, a database, and user sessions to complete this project.
+
+
+## Integrate Twilio Verify with your flask application
+
+When a user first creates an account, they will have the option to enable two-factor authentication on their profile page. When they click the "Enable 2FA" link, they will be requested to provide their phone number which will be used to get a verification code. Subsequent logins will require them to enter the verification code before they can access their accounts.
 
 Once you have your project up and running, you will need to install `twilio` in your virtual environment.
 
 ```python
 (venv) $ pip3 install "twilio>=6.17.0"
 ```
-
-## Integrate Twilio Verify with your flask application
-
-When a user first creates an account, they will have the option to enable two-factor authentication on their profile page. When they click the "Enable 2FA" link, they will be requested to provide their phone number which will be used to get a verification code. Subsequent logins will require them to enter the verification code before they can access their accounts.
 
 ### Integration table of contents
 
@@ -199,7 +200,15 @@ class PhoneForm(FlaskForm):
 
 ```
 
-Notice that I am using the `phonenumbers` library to validate the phone number. This library is used to validate phone numbers in the helper `validate_phone` method. Typically, its usage is as follows:
+Notice that I am using the `phonenumbers` library to validate the phone number. This library is used to validate phone numbers in the helper `validate_phone` method. Before you can use it, you have to install it in your virtual environment.
+
+
+```python
+(venv) $ pip3 install phonenumbers
+```
+
+
+Typically, its usage is as follows:
 
 ```python
 >>> import phonenumbers
@@ -242,6 +251,8 @@ def enable_2fa():
         return redirect(url_for('verify_2fa'))
     return render_template('enable_2fa.html', form=form)
 ```
+
+The `request_verification_token` function is used to generate a one-time token. A call to this function is defined below. For now, let us focus on creating this template.
 
 ##### Improved phone number form
 
@@ -502,7 +513,7 @@ def check_verification_token(phone, token):
     """
     verify = _get_twilio_verify_client()
     try:
-        result = verify.verifications_check(to=phone, code=token)
+        result = verify.verification_checks.create(to=phone, code=token)
         return result.status == 'approved'
     except TwilioException as e:
         return False
@@ -510,9 +521,9 @@ def check_verification_token(phone, token):
 
 #### Disable 2FA
 
-With the state of 2FA updated, we can now implement the `disable_2fa` view function. This will allow a user to disable 2FA by removing his phone from the database.
+With the state of 2FA updated, we can now implement the `disable_2fa` view function. This will allow a user to disable 2FA by removing his phone number from the database.
 
-`app/routes.py`: Cancel 2FA
+`app/routes.py`: Disable 2FA
 
 ```python
 from app.forms import DisableForm
@@ -527,6 +538,19 @@ def diable_2fa():
         flash('You have disabled 2FA.', 'success')
         return redirect(url_for('user', username=current_user.username))
     return render_template('disable_2fa.html', form=form)
+```
+
+We will need to define the `DisableForm` class in the `forms.py` module.
+
+
+`app/forms.py`: Disable form
+
+```python
+# ...
+
+
+class DisableForm(FlaskForm):
+    submit = SubmitField('Disable')
 ```
 
 Just like the `enable_2fa` view function, this route will redirect the user to another page that has a form.
