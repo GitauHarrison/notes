@@ -634,13 +634,14 @@ I am passing in the password as a simple string. In a production environment, yo
 Notice that the downloaded file is saved in the `app/static/files` directory. Over time, this directory will grow to contain a lot of files. This will quickly create a storage problem, especially if you are using a cloud storage service. A better solution would be to save the file in a user's local computer storage.
 
 
-The pdf file will be stored in the `app/static/files` directory as expected. This is important because `encrypt_pdf()` depends on the availability of the downloaded file as input. The file will also be sent to a user's browser as an attachment. However, what we want is the file to be saved only in the user's local computer storage.
-
 ### Understanding the `send_file()` function
 
 Flask provides a way to do this. The `send_file()` function is used to send a file to the browser. From the [flask documentation](https://flask.palletsprojects.com/en/2.1.x/api/#flask.send_file), we can see that the `send_file()` function primarily sends the contents of a file to a client. 
 
 > flask.send_file(path_or_file, mimetype=None, as_attachment=False, download_name=None, attachment_filename=None, conditional=True, etag=True, add_etags=None, last_modified=None, max_age=None, cache_timeout=None)
+
+
+The first argument is preferably a path to a file or a file-like object. This object requires that the file is opened in binary mode, especially when building a file in memory using a `BytesIO` object. You want to make sure that the file pointer is seeked to the the start of the data. The `as_attachment` argument is used to specify that the file should be offered for saving instead of displaying it. The `attachment_filename` argument is used to specify the name of the file that the user will see when they save the file.
 
 
 Let us look at this simple example here:
@@ -657,7 +658,7 @@ def download_users():
                      as_attachment=True)
 ```
 
-The first argument is preferably a path to a file or a file-like object. This object requires that the file is opened in binary mode, especially when building a file in memory using a `BytesIO` object. You want to make sure that the file pointer is seeked to the the start of the data. The `as_attachment` argument is used to specify that the file should be offered for saving instead of displaying it. The `attachment_filename` argument is used to specify the name of the file that the user will see when they save the file.
+The pdf file will be stored in the `app/static/files` directory as expected. This is important because `encrypt_pdf()` depends on the availability of the downloaded file as input. The file will also be sent to a user's browser as an attachment. However, what we want is the file to be saved only in the user's local computer storage.
 
 ### Implementing the `send_file()` function
 
