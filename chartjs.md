@@ -4,13 +4,13 @@ You can tell very powerful stories using data.
 
 ![ChartJS Demo](images/data_visualization/chartjs/data_stories.gif)
 
-Should you want to 'see' or understand deeply the data generated in your application, there are a handful of libraries that can help. One of them is ChartJS, the focus of this article. [ChartJs](https://www.chartjs.org/docs/latest/) is a free JavaScript library for creating charts in the browser (HTML-based charts). It is very easy to use, though basic understanding of JavaScript is required.
+Should you want to 'see' or understand deeply the data generated in your application, there are a handful of libraries that can help. One of them is ChartJS, the focus of this article. [ChartJs](https://www.chartjs.org/docs/latest/) is a free JavaScript library for creating charts in the browser (HTML-based charts). It is very easy to use, though a basic understanding of JavaScript is required.
 
 ## What We Will Do?
 
 We will build a simple flask application for a class teacher to record the mean scores of all the subjects in a class throughout a 3-term year. Example data we will need may include the following:
 
-* **Subjects**: Math, English, Science, History, and Computer Science
+* **Subjects**: Maths, English, Science, History, and Computer Science
 * **Mean Scores**: [70, 80, 90, 100, 95]
 * **Term**: [1, 2, 3]
 
@@ -26,7 +26,7 @@ The completed application can be found in this [GitHub repository](https://githu
 4. [Enable user login](#enable-user-login)
 5. [Improve user experience](#improve-user-experience)
 6. [Display the mean scores of each subject per term](#display-the-mean-scores-of-each-subject-per-term)
-7. [Show meanscore chart](#show-meanscore-chart)
+7. [Show mean score chart](#show-mean-score-chart)
 
 ### Create a simple flask app
 
@@ -35,9 +35,9 @@ I have already created a simple flask app for you. You can refer to it in [this 
 
 ### Add web forms to the app
 
-Flask provides the [wtf](https://flask-wtf.readthedocs.io/en/latest/) library for creating web forms. This library is helps create forms that are used to collect data from a user, in our case, it will be the classroom teacher. To create a form, we will need to:
+Flask provides the [wtf](https://flask-wtf.readthedocs.io/en/latest/) library for creating web forms. This library helps create forms that are used to collect data from a user, in our case, it will be the classroom teacher. To create a form, we will need to:
 
-- Create a _forms_ module to define all the forms we will need (login, register and meanscore)
+- Create a _forms_ module to define all the forms we will need (login, register, and mean score)
 - Create templates for each form (login.html, register.html)
 - Create a _views_ module to render our forms
 
@@ -78,12 +78,12 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Register')
 ```
 
-Here, we want to capture a teacher's email, username and their password to protect their account. A few arguments are used to validate a teacher's credentials. For example:
+Here, we want to capture a teacher's email, username, and password to protect their account. A few arguments are used to validate a teacher's credentials. For example:
 
 - `DataRequred` ensures that the field is not empty. 
 - `Length` ensures that the field is at least 1 character long and at most 64 characters long. 
 - `Email` ensures that the field has a valid email address. 
-- `Regexp` ensures that the field only contains letters, numbers, dots or underscores. 
+- `Regexp` ensures that the field only contains letters, numbers, dots, or underscores. 
 - `EqualTo` ensures that the password fields match.
 
 `Email()` requires that we install `email-validator`, so remember to do so in the terminal (`pip3 install email-validator`).
@@ -106,7 +106,7 @@ This variable will be sourced from the environment. In the event the variable do
 
 ### Add data to the app
 
-Just like web forms, we will also use classes to create a database model to store a user's data. `flask-sqlalchemy`, a flask-friendly wrapper to SQLAlchemy, will translate the classes, objects and methods to tables and SQL. Intentionally, I will use the SQLite database since it does not require a server to run.
+Just like web forms, we will also use classes to create a database model to store a user's data. `flask-sqlalchemy`, a flask-friendly wrapper to SQLAlchemy, will translate the classes, objects, and methods to tables and SQL. Intentionally, I will use the SQLite database since it does not require a server to run.
 
 To install Flask-SQLAlchemy, run:
 
@@ -114,7 +114,7 @@ To install Flask-SQLAlchemy, run:
 (venv)$ pip3 install flask-sqlalchemy
 ```
 
-Every time we create a new model, we need apply those changes to our database. Same goes to when we update the structure/schema of our database. This action is called `migrating` the database. Database migrations are easily handled by `flask-migrate`.
+Every time we create a new model, we need to apply those changes to our database. The same goes for when we update the structure/schema of our database. This action is called `migrating` the database. Database migrations are easily handled by `flask-migrate`.
 
 To install Flask-Migrate, run:
 
@@ -185,7 +185,7 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
 ```
 
-We have created three columns in our table. The columns will store every user's username, email and password. The `password_hash` column will store the hashed version of the user's password. This is an additional security measure to secure users' data in the event the database is compromised.
+We have created three columns in our table. The columns will store every user's username, email, and password. The `password_hash` column will store the hashed version of the user's password. This is an additional security measure to secure users' data in the event the database is compromised.
 
 This is a new structure. We need to apply these changes and create a brand new database table. To do so, we will run the commands below:
 
@@ -221,13 +221,13 @@ def register():
     return render_template('register.html', title='Register', form=form)
 ```
 
-We store a user's information in a variable called `user`. Of interest her is to note that we do not pass a user's password data into this variable. Instead, we hash the password using the helper function `set_password()` as seen in `models.py`. Thereafter, we add the user to the database.
+We store a user's information in a variable called `user`. Of interest, here is to note that we do not pass a user's password data into this variable. Instead, we hash the password using the helper function `set_password()` as seen in `models.py`. Thereafter, we add the user to the database.
 
 ### Enable user login
 
 After a user has registered, we redirect them to the login page. This is a good way to ensure that the user has successfully registered. To add this functionality, we will need to add some login logic to the `login()` view functions.
 
-User login in flask is easily handled by `flask-login` package. We need to first install it and then create an instance of it in the app.
+User login in Flask is easily handled by `flask-login` package. We need to first install it and then create an instance of it in the app.
 
 ```python
 (venv)$ pip3 install flask-login
@@ -242,7 +242,7 @@ User login in flask is easily handled by `flask-login` package. We need to first
 login = LoginManager()
 ```
 
-Since our database has no clue about user sessions, we need to modily it slightly. 
+Since our database has no clue about user sessions, we need to modify it slightly. 
 
 `app/models.py: Modify the User table`
 ```python
@@ -320,7 +320,7 @@ We will then update our _base.html_ template to include a conditional statement 
 
 A quick reload will reveal the state of a user. If the user is logged in, then the link will change to _logout_. Upon logout, the user will be redirected to the login page.
 
-### Improve user experience
+### Improve the user experience
 
 __Flash Message__
 
@@ -378,7 +378,7 @@ def RegistrationForm(FlaskForm):
 
 ```
 
-Every time a new user tries to user an already existing email address or username, we will raise a validation error and provide useful information as to why the registration process does not work.
+Every time a new user tries to use an already existing email address or username, we will raise a validation error and provide useful information as to why the registration process does not work.
 
 ![Ux registration](images/data_visualization/chartjs/ux_registration.png)
 
@@ -416,7 +416,7 @@ class MeanScore(FlaskForm):
     submit = SubmitField('Submit')
 ```
 
-We will show this form in the index page. So, let us update the index template to include this form.
+We will show this form on the index page. So, let us update the index template to include this form.
 
 `app/templates/index.html: Display Mean Score Per Term Form`
 
@@ -439,7 +439,7 @@ We will show this form in the index page. So, let us update the index template t
 
 We need to update the `index()` view function to accommodate this form.
 
-`app/routes.py: Handling the meanscore form`
+`app/routes.py: Handling the mean score form`
 
 ```python
 from app.forms import MeanScore
@@ -454,7 +454,7 @@ def index():
     return render_template('index.html', form=form)
 ```
 
-The form should be on display in the index template after refreshing the page. To story the data, we need to create a MeanScore model. This model will store the following data: term, math, english, science, ict, and history.
+The form should be on display in the index template after refreshing the page. To store the data, we need to create a MeanScore model. This model will store the following data: term, math, english, science, ict, and history.
 
 `app/models.py: MeanScore Model`
 
@@ -475,14 +475,14 @@ class Meanscore(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 ```
 
-The _User_ and the _Meanscore_ tables are related by the _user_id_ column. This means that each user will have a list of meanscores. To apply the changes we need to once again run the commands below:
+The _User_ and the _Meanscore_ tables are related by the _user_id_ column. This means that each user will have a list of mean scores. To apply the changes we need to once again run the commands below:
 
 ```python
-(venv)$ flask db migrate -m 'meanscore table'
+(venv)$ flask db migrate -m 'mean score table'
 (venv)$ flask db upgrade
 ```
 
-Finally, we need to add a bit of logic on the form to ensure that the data is processed and stored in the new database.
+Finally, we need to add a bit of logic to the form to ensure that the data is processed and stored in the new database.
 
 `app/routes.py: Meanscore Form Logic`
 
@@ -538,9 +538,9 @@ To display the results, we will need to update the index template.
 
 Every time new data is entered, the output will be updated.
 
-### Show meanscore chart
+### Show mean score chart
 
-A [quick overview of ChartJS](https://www.chartjs.org/docs/latest/) reveals that in order for us to use this library, we need to get the latest version. We will add the line below in our base template to get started.
+A [quick overview of ChartJS](https://www.chartjs.org/docs/latest/) reveals that for us to use this library, we need to get the latest version. We will add the line below in our base template to get started.
 
 `app/templates/base.html: Add ChartJS`
 
@@ -611,11 +611,11 @@ A simple chart can be created as follows:
 </script>
 ```
 
-The most important elements for our chart will be the label, and the datasets. The label will be the lesson meanscores in any given term, and the datasets will be the actual mean scores. You can get the graph as a bar chart, a line chart, a pie chart, or a radar chart. We will stick with the basic line chart.
+The most important elements for our chart will be the label and the datasets. The label will be the lesson mean scores in any given term, and the datasets will be the actual mean scores. You can get the graph as a bar chart, a line chart, a pie chart, or a radar chart. We will stick with the basic line chart.
 
-As you can see, the values needed for the chart are primarily sourced from a list. We need to figure out a logic to get the data from the database and dislplay it in a simple list. This changes will be applied to the `index()` view function.
+As you can see, the values needed for the chart are primarily sourced from a list. We need to figure out the logic to get the data from the database and display it in a simple list. These changes will be applied to the `index()` view function.
 
-`app/routes.py: List meanscores`
+`app/routes.py: List mean scores`
 
 ```python
 @app.route('/', methods=['GET', 'POST'])
@@ -647,7 +647,7 @@ def index():
         history=history)
 ```
 
-Here, I have looped through the results stored in the database as filled by a particular teacher. The `teacher.meanscores.all()` method returns a list of all the meanscores for a particular teacher. The result is subsequrently appended to relevant lists. This lists will then be used in the index template to display the results.
+Here, I have looped through the results stored in the database as filled by a particular teacher. The `teacher.meanscores.all()` method returns a list of all the mean scores for a particular teacher. The result is subsequently appended to relevant lists. These lists will then be used in the index template to display the results.
 
 `app/templates/index.html: Display Mean Score Per Term`
 
@@ -725,7 +725,7 @@ Here, I have looped through the results stored in the database as filled by a pa
 {% endblock %}
 ```
 
-Notice how I once again loop through individual meanscore lists to retrieve the data we want. Intentionally, we use several dictionaries in our dataset list to display all the meanscores in one graph. Background color and border color are used to differentiate the different datasets.
+Notice how I once again loop through individual mean score lists to retrieve the data we want. Intentionally, we use several dictionaries in our dataset list to display all the mean scores in one graph. Background color and border color are used to differentiate the different datasets.
 
 ![Final chartjs demo](images/data_visualization/chartjs/final_chartjs_demo.png)
 
