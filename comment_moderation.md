@@ -1,6 +1,6 @@
 # Moderate User Comments in Flask
 
-As an administrator of a website, one of the things you would really want to do is to moderate what users say publicly to each other. This is a very common task, and having it implemented in your Flask website can really help sanitize the contents. In this tutorial, I will show you how you can implement this feature.
+As an administrator of a website, one of the things you would want to do is to moderate what users say publicly to each other. This is a very common task, and having it implemented in your Flask website can help sanitize the contents. In this tutorial, I will show you how you can implement this feature.
 
 ![Comment Moderation](images/comment_moderation/comment_moderation.gif)
 
@@ -12,7 +12,7 @@ We will need a simple application to test the Flask server. I have created one a
 
 ## Application Configurations
 
-To receive comments in our application, we need to provided forms that users can fill. The information that users pass through the forms will be used to populate our comments section. So, how can we make forms in Flask?
+To receive comments on our application, we need to provide forms that users can fill. The information that users pass through the forms will be used to populate our comments section. So, how can we make forms in Flask?
 
 Flask provides the `flask-wtf` extension, a wrapper around the [WTForms](https://wtforms.readthedocs.io/en/3.0.x/) package. Let us install it in our virtual environment:
 
@@ -20,7 +20,7 @@ Flask provides the `flask-wtf` extension, a wrapper around the [WTForms](https:/
 (comment_moderation)$ pip3 install flask-wtf
 ```
 
-As our application grows, certain configurations will be needed. So far, we have had no need to use any configuration in our application. However, most Flask applications expect certain configurations to be set. One such configuration is the `SECRET_KEY`. It is a variable whose value is a cryptographic key useful in the generation of signatures and tokens. Flask-WTF uses it to protect web forms against a nasty attack called [Cross Site Request Forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery) or CSRF (pronounced as 'sea-surf'). This value, as the name suggests, is meant to be a secret.
+As our application grows, certain configurations will be needed. So far, we have not needed to use any configuration in our application. However, most Flask applications expect certain configurations to be set. One such configuration is the `SECRET_KEY`. It is a variable whose value is a cryptographic key useful in the generation of signatures and tokens. Flask-WTF uses it to protect web forms against a nasty attack called [Cross Site Request Forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery) or CSRF (pronounced as 'sea-surf'). This value, as the name suggests, is meant to be a secret.
 
 If you look carefully, I have a module called `config` in the top-level directory. Following the principle of _separtion of concerns_, all the configurations that our application will need will be added here.
 
@@ -59,7 +59,7 @@ SECRET_KEY=b'\x1eh\xfcIWC\x91\xd7\xb3\xfd\x02dK\xe0\xb5z'
 
 With the variable set, we can now update our application instance to read and apply our configurations.
 
-`__init__.py`: Regiser the config module in application instance
+`__init__.py`: Register the config module in the application instance
 ```python
 from flask import Flask
 from flask_bootstrap import Bootstrap
@@ -74,7 +74,7 @@ from app import routes, errors
 
 ```
 
-I have began by importing the `Config` class from the top-level directory. I have used the `app.config.from_object(Config)` to create an instance of our `Config` class. The lower name `config` comes from python to indicate the `config` module whereas the upper case is the actual `Config` class.
+I began by importing the `Config` class from the top-level directory. I have used the `app.config.from_object(Config)` to create an instance of our `Config` class. The lower name `config` comes from python to indicate the `config` module whereas the upper case is the actual `Config` class.
 
 ## Flask Web Forms
 
@@ -82,7 +82,7 @@ Another extension that we will use in our application is the `Flask-WTF`. It use
 
 ### Define Comment Form
 
-Let us begin by creating a simple comment form. The information we want from a user of our application are their username, their email addresses and the content they would like to share on our application. We will begin by creating an empty `forms` module in the `app/` sub-directory.
+Let us begin by creating a simple comment form. The information we want from a user of our application are their username, their email addresses, and the content they would like to share on our application. We will begin by creating an empty `forms` module in the `app/` sub-directory.
 
 ```python
 (comment_moderation)$ touch app/forms.py 
@@ -136,7 +136,7 @@ The next step is to display this form in our templates. We will use the `index.h
 {% endblock %}
 ```
 
-I have used Bootstrap to quicky display my comment form, though you can manually display the same form using raw HTML. 
+I have used Bootstrap to quickly display my comment form, though you can manually display the same form using raw HTML. 
 
 With the form ready to be displayed, we will now update our `index()` view function to render it.
 
@@ -162,11 +162,11 @@ Start your flask server in the terminal by running the command `flask run`. Navi
 
 ## Working with a Database
 
-After a user clicks the `Post` button, we will need to store the user data in a database. This data will should persist even if a user closes the application. The database will also allow us to retrieve all the data about our users. 
+After a user clicks the `Post` button, we will need to store the user data in a database. This data will persist even if a user closes the application. The database will also allow us to retrieve all the data about our users. 
 
-Since should this application is small in nature, we will use a SQLite database. That does not mean that as the project grows and becomes bigger SQLite will not be a suitable choice. It is still a great choice for bigger applications. Typically, SQLite stores data in a file on the disk, and there is no need to run a datbase server like MySQL and PostreSQL.
+Since this application is small, we will use an SQLite database. That does not mean that as the project grows and becomes bigger SQLite will not be a suitable choice. It is still a great choice for bigger applications. Typically, SQLite stores data in a file on the disk, and there is no need to run a database server like MySQL and PostgreSQL.
 
-Flask provides the `Flask-SQLAlchemy` extension to help us manage our database. It is a Flask-friendly wrapper around the popular SQLAlchemy package. As an [Object Relational Mapper](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping), SQLAlchemy is a Python library that allows us to manage our database using classes, objects and methods instead of tables and SQL. The aim of an ORM is to translate these high level operations into database commands.
+Flask provides the `Flask-SQLAlchemy` extension to help us manage our database. It is a Flask-friendly wrapper around the popular SQLAlchemy package. As an [Object Relational Mapper](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping), SQLAlchemy is a Python library that allows us to manage our database using classes, objects, and methods instead of tables and SQL. An ORM aims to translate these high-level operations into database commands.
 
 To install the `Flask-SQLAlchemy` extension, run the following command in the terminal:
 
@@ -176,7 +176,7 @@ To install the `Flask-SQLAlchemy` extension, run the following command in the te
 
 ### Database Migrations
 
-Continued use of a database may result in the need to modify the original database schema. We may need to add a new field in the database to now collect users' email addressing, data that originally did not exist. So, when the structure of the database changes, we need to update the database schema by _migrating_ to the modified schema.
+Continued use of a database may result in the need to modify the original database schema. We may need to add a new field in the database to now collect users' email addresses, data that originally did not exist. So, when the structure of the database changes, we need to update the database schema by _migrating_ to the modified schema.
 
 We will use `flask-migrate` to perform this migration. Install it in the virtual environment by running the following command in the terminal:
 
@@ -187,7 +187,7 @@ We will use `flask-migrate` to perform this migration. Install it in the virtual
 
 ### Database Configuration
 
-SQLite, being the most convinient choice in developing small applications, expects certain configurations from `Flask-SQLAlchemy`. We first provide the location of the database in the application through `SQLALCHEMY_DATABASE_URI` configuration variable. This variable will source its value from the `DATABASE_URL` environment variable.
+SQLite, being the most convenient choice in developing small applications, expects certain configurations from `Flask-SQLAlchemy`. We first provide the location of the database in the application through the `SQLALCHEMY_DATABASE_URI` configuration variable. This variable will source its value from the `DATABASE_URL` environment variable.
 
 `config.py`: Database Configuration
 ```python
@@ -205,7 +205,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 ```
 
-If `DATABASE_URL` does not exist, then I have provided a fallback value where I am configuring a database called `app.db` in the top-level directory. The `SQLALCHEMY_TRACK_MODIFICATIONS` configuration option is set to `False` to disable a feature of Flask-SQLAlchemy that tracks every modifications to the database.
+If `DATABASE_URL` does not exist, then I have provided a fallback value where I am configuring a database called `app.db` in the top-level directory. The `SQLALCHEMY_TRACK_MODIFICATIONS` configuration option is set to `False` to disable a feature of Flask-SQLAlchemy that tracks every modification on the database.
 
 ### Database Instance
 
@@ -232,9 +232,9 @@ from app import routes, errors, models # < ---- update
 
 ### Database Models
 
-Our model will contain columns that will store a user's name, email address and comment. All these data are of type `VARCHAR` (in database jargon) and are limited to a specified number of characters. They are basically strings.
+Our model will contain columns that will store a user's name, email address, and comment. All these data are of type `VARCHAR` (in database jargon) and are limited to a specified number of characters. They are strings.
 
-Let is create a new module called `models.py` that will contain our database models.
+Let's create a new module called `models.py` that will contain our database models.
 
 ```python
 (comment_moderation)$ touch  app/models.py
@@ -265,7 +265,7 @@ I have added a `timestamp` column to the schema of the `Comment` model. This col
 
 ### Database Migration
 
-With every change we might make to the database schema, we would like the flexibility of applying the new changes and work with the modified schema. Also, if we change our mind about the database structure, we should be able to easily roll back to the previous version. As seemingly difficult as it is, we can use the `flask-migrate` extension to do this. `Alembic` maintains a history of the changes that have been made to the database in a _migrations repository_. 
+With every change we might make to the database schema, we would like the flexibility of applying the new changes and work with the modified schema. Also, if we change our minds about the database structure, we should be able to easily roll back to the previous version. As seemingly difficult as it is, we can use the `flask-migrate` extension to do this. `Alembic` maintains a history of the changes that have been made to the database in a _migrations repository_. 
 
 To create a migrations repository, run the following command in the terminal:
 
@@ -282,7 +282,7 @@ To create a migrations repository, run the following command in the terminal:
   Please edit configuration/connection/logging settings in '/home/harry/software_development/python/practice_projects/comment_moderation/migrations/alembic.ini' before proceeding.
 ```
 
-Remember that the `flask` command relies on the environment variable `FLASK_APP` to determine where our applciation is located. In the top-level directory, you should be able to see a _migrations repository_ which has a _versions_ subdirectory. This folder and all its files are now part of our applications, and should be committed our version control along with all other code.
+Remember that the `flask` command relies on the environment variable `FLASK_APP` to determine where our application is located. In the top-level directory, you should be able to see a _migrations repository_ which has a _versions_ subdirectory. This folder and all its files are now part of our applications and should be committed to our version control along with all other code.
 
 To create our first migrations script, which will include the comments from our application users, run the following command in the terminal:
 
@@ -376,13 +376,13 @@ def index():
 {% endblock %}
 ```
 
-Try post a comment. If all goes well, then you should be able to see the flash message.
+Try to post a comment. If all goes well, then you should be able to see the flash message.
 
 ![Flash Message](images/comment_moderation/flash_message.png)
 
 ## Display Comments
 
-We will display the comments in the index page. So, let us update our `index()` view function to display the comments.
+We will display the comments on the index page. So, let us update our `index()` view function to display the comments.
 
 `app/routes.py`: Display comments
 ```python
@@ -417,7 +417,7 @@ def index():
 
 ```
 
-We query our `UserComment` database using the `UserComment.query.all()` function. This function returns a list of all the comments made by users in the database. We can then loop through the list and display the comments in the `index.html` page.
+We query our `UserComment` database using the `UserComment.query.all()` function. This function returns a list of all the comments made by users in the database. We can then loop through the list and display the comments on the `index.html` page.
 
 `index.html`: Display comments
 ```html
@@ -471,7 +471,7 @@ def avatar(self, size):
 
 ```
 
-Here, I am making use of the [gravatar](https://en.gravatar.com/) service to generate an avatar for each user using the `avatar()` functio. This function takes two arguments:
+Here, I am making use of the [gravatar](https://en.gravatar.com/) service to generate an avatar for each user using the `avatar()` function. This function takes two arguments:
 
 * `self`: The current user object.
 * `size`: The size of the avatar.
@@ -495,11 +495,11 @@ We then need to update our table to ensure that a user's avatar is displayed alo
 
 ## Create An Admin User
 
-Obviously, it is the admin of the website who will have the ability to delete comments. Just as we created the anonymous user, we will create an admin user. But before we do that, I would like to ensure that the admin page is inaccessible to the anonymous user. To do so, I will implement another feature in the application which will allow us to manage user sessions.
+It is the admin of the website who will have the ability to delete comments. Just as we created the anonymous user, we will create an admin user. But before we do that, I would like to ensure that the admin page is inaccessible to the anonymous user. To do so, I will implement another feature in the application which will allow us to manage user sessions.
 
 ### Admin Model
 
-We want to collect an admin's username, email address and the password to their accounts. Our model will define these columns and store the relevant data in the database.
+We want to collect an admin's username, email address, and password while they create their accounts. Our model will define these columns and store the relevant data in the database.
 
 `models.py`: Admin model
 
@@ -524,11 +524,11 @@ class Admin(db.Model):
         return check_password_hash(self.password_hash, password)
 ```
 
-If there is anything that is not clear, please take some time to understand the code above. What I will point out here is the `password_hash` field. It is advised to NEVER store a user's password in the database. Instead, store a representation of it in the form of a hash. This is because a user's password is a sensitive piece of information and we do not want to expose our users to an attacker in the event that the database is compromised.
+If there is anything that is not clear, please take some time to understand the code above. What I will point out here is the `password_hash` field. It is advised to NEVER store a user's password in the database. Instead, store a representation of it in the form of a hash. This is because a user's password is a sensitive piece of information and we do not want to expose our users to an attacker if the database is compromised.
 
 I am using the `generate_password_hash` to generate a hash of the user's password. This function takes a password as an argument and returns a hash of the password. The `check_password_hash` function is used to check whether a user's password is correct. This function takes a hash and a password as arguments and returns a boolean value. 
 
-Create an admin migration script and apply these changes to our databae.
+Create an admin migration script and apply these changes to our database.
 
 ```python
 (comment_moderation) $ flask db migrate -m 'admin table'
@@ -555,7 +555,7 @@ class AdminRegistrationForm(FlaskForm):
 
 ```
 
-With the form created, we will now create a view function which will handle the registration of an admin user.
+With the form created, we will now create a view function that will handle the registration of an admin user.
 
 `routes.py`: Admin Registration
 ```python
@@ -570,7 +570,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Congratulations, you are now a registered user! Login to contunue.')
+        flash('Congratulations, you are now a registered user! Login to continue.')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 ```
@@ -608,9 +608,9 @@ Navigate to http://127.0.0.1:5000/register to see the registration form.
 
 ### Admin Login
 
-Once the admin has been registered, he should be able to login to access their account. This means we need to create a login form and a view function which will handle the login of an admin.
+Once the admin has been registered, he should be able to log in to access their account. This means we need to create a login form and a view function that will handle the login of an admin.
 
-Flask provides the `flask-login` package which we will use to help us manage our user sessions. We will begin by first installing it to our virtual environment.
+Flask provides the `flask-login` package which we will use to help us manage our user sessions. We will begin by first installing it in our virtual environment.
 
 ```python
 (comment_moderation) $ pip3 install flask-login
@@ -768,7 +768,7 @@ def logout():
 
 We will create a condition in our base template to display the logout link only if the user is logged in.
 
-`base.html`: Display logout link
+`base.html`: Display the logout link
 ```html
 {% block navbar %}
 <nav class="navbar navbar-default">
@@ -803,9 +803,9 @@ I have added the admin link to the navigation bar. This link will redirect an ad
 
 ### Admin Dashboard
 
-As soon as a new admin has registered, they will access their account by passing in their credentials. If successful, they will be redirected to the admin dashboard. The dashboard will basically have all the posts made by anonymous users of our application together with two _action_ links to _allow_ or _delete_ each comment.
+As soon as a new admin has registered, they will access their account by passing in their credentials. If successful, they will be redirected to the admin dashboard. The dashboard will have all the posts made by anonymous users of our application together with two _action_ links to _allow_ or _delete_ each comment.
 
-For now, we will display all the user comments just as they can be seen in the index page.
+For now, we will display all the user comments just as they can be seen on the index page.
 
 ```python
 (comment_moderation) $ touch app/templates/admin_dashboard.html # create empty admin_dashboard template
@@ -904,7 +904,7 @@ def admin_allow(id):
 
 ```
 
-I am identifying each comment by its ID. First, I query the database for first instance of a comment. Once retrieved the `admin_delete()` view function will delete the comment. The `admin_allow()` view function, on the other hand, updates the `allowed_comment` field to `True`. This action changes the status of a comment. Approved comments are those whose status is `True`, and they will be displayed in the `index` page.
+I am identifying each comment by its ID. First, I query the database for the first instance of a comment. Once retrieved the `admin_delete()` view function will delete the comment. The `admin_allow()` view function, on the other hand, updates the `allowed_comment` field to `True`. This action changes the status of a comment. Approved comments are those whose status is `True`, and they will be displayed on the `index` page.
 
 To make it work, let us update the admin's dashboard links to include the links to the `admin_delete()` and `admin_allow()` view functions.
 
@@ -969,11 +969,11 @@ def index():
                            )
 ```
 
-If you navigate to the index page, you will notice that no comments are being displayed. This is because, at this point, all comments have a default value of `False` for the `allowed_comment` field. To show comments in this page, you will need to _allow_ them from the admin dashboard.
+If you navigate to the index page, you will notice that no comments are being displayed. This is because, at this point, all comments have a default value of `False` for the `allowed_comment` field. To show comments on this page, you will need to _allow_ them from the admin dashboard.
 
 ![Display Approved Comments](images/comment_moderation/display_approved_comments.png)
 
-Notice how only one comment appears in the index page whereas the admin dashboard shows all comments.
+Notice how only one comment appears on the index page whereas the admin dashboard shows all comments.
 
 ### Comment Moderation Complete
 
@@ -998,4 +998,4 @@ I have created a condition that checks if the `allowed_comment` field is `True`.
 
 ## Conclusion
 
-That is how you can add comment moderation to your flask application. I hope you enjoyed this tutorial and found it useful. Do you have any project where you have implemented comment moderation? If so, I will be glad to check it out.
+That is how you can add comment moderation to your flask application. I hope you enjoyed this tutorial and found it useful. Do you have any projects where you have implemented comment moderation? If so, I will be glad to check it out.
