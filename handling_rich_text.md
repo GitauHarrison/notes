@@ -157,6 +157,10 @@ First, we need to add a `html` field to the table. We can do this by adding the 
 
 `app/models.py`: Add html field
 ```python
+import bleach
+from markdown import markdown
+
+
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
