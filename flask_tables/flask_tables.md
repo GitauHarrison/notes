@@ -148,7 +148,7 @@ FLASK_DEBUG=1
 
 In the terminal, we can run the command `flask run` to start our flask server. You should be able to access the application at the following URL: http://127.0.0.1:5000/.
 
-![Hello Flask World](images/flask_tables/hello-world.png)
+![Hello Flask World](/images/flask_tables/hello-world.png)
 
 The `errors` module generally handles errors that come about as a result of using the application. We will use the `errorhandler` decorator to handle errors. Let us create two templates called `404.html` and `500.html`. These templates will be used to display the error messages. They will also allow the user to safely navigate back to the home page of the application.
 
@@ -214,7 +214,7 @@ The error templates will contain the following error messages:
 
 If you try to access a page that does not exist, you will be redirected to the `404.html` page. For example, if you try to access the following URL: http://127.0.0.1:5000/index1, you will get:
 
-![404 Page Not Found](images/flask_tables/error-msg.png)
+![404 Page Not Found](/images/flask_tables/error-msg.png)
 
 
 ## Bootstrap Table
@@ -326,7 +326,7 @@ def index():
     return render_template('bootstrap-table.html', users=users, title='Bootstrap Table')
 ```
 
-![Bootstrap Table](images/flask_tables/render-table.png)
+![Bootstrap Table](/images/flask_tables/render-table.png)
 
 ### Generate Content for the Table
 
@@ -394,7 +394,7 @@ The function `create_fake_users()` will create `total` number of users and add t
 
 Then you can reload your flask application on http://127.0.0.1:5000/ to see the fake users displayed in the table.
 
-![Display Fake Users](images/flask_tables/fake-users.png)
+![Display Fake Users](/images/flask_tables/fake-users.png)
 
 ### Improving the UX of the Table
 
