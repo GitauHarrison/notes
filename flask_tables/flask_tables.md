@@ -400,7 +400,7 @@ Then you can reload your flask application on http://127.0.0.1:5000/ to see the 
 
 The table we have created looks nice, but with 100 fake users, it is hard to see the table. We can improve the UX of the table by adding interactive features such as pagination, sorting and searching. **Imagine if you had thousands of users do display**. This page would be a nightmare to navigate.
 
-Welcome to [dataTable.js](https://datatables.net/). It is a great tool to create a table with a lot of features. To use it, we will update our `base.html` template to include the `dataTable.js` script.
+Welcome to [dataTable.js](https://datatables.net/). It is a great tool to create a table with a lot of features. To use it, we will update our `base.html` template to include both the dataTable CSS and JavaScript files.
 
 `base.html: Add dataTables.js library`
 ```html
@@ -458,7 +458,7 @@ Welcome to [dataTable.js](https://datatables.net/). It is a great tool to create
 {% endblock %}
 ```
 
-There are three scripts I have added:
+In the `head` block, I have linked to the dataTable CSS file. There are also three scripts I have added:
 - `jquery-3.6.0.min.js`: jQuery library
 - `jquery.dataTables.js`: jQuery dataTables library
 - `dataTables.bootstrap5.js`: jQuery dataTables library (custom logic for Bootstrap)
