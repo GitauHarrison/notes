@@ -187,12 +187,12 @@ class Config(object):
 Flask expects these configurations to be registered in the application's instance. We can do this by instantiating the `Config` class in the `__init__.py` file.
 
 
-`app/__init__.py`: Instantiate packages
+`app/__init__.py`: Add configurations
 
 ```python
 
 # ...
-from Config import Config
+from config import Config
 
 
 app = Flask(__name__)
@@ -493,6 +493,10 @@ The document is finally closed using the `output()` method. This method takes tw
 ### Creating a PDF file
 
 Now what we know how to utilize `fpdf` to create a PDF file, let us update our `download_users_data()` function.
+
+`app/download_users_pdf.py`: Create PDF file
+
+
 
 ```python
 from fpdf import FPDF
