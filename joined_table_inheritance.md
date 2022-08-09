@@ -12,6 +12,45 @@ from app import login
 @login.user_loader
 def load_user(id):
     return Student.query.get(int(id))
+
+
+class Student(UserMixin, db.Model):
+    __tablename__ = 'student'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(64), index=True, unique=True)
+    password = db.Column(db.String(64))
+    age = db.Column(db.Integer)
+    school = db.Column(db.String(64))
+
+
+class Teacher(UserMixin, db.Model):
+    __tablename__ = 'teacher'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(64), index=True, unique=True)
+    password = db.Column(db.String(64))
+    course = db.Column(db.String(64))
+
+
+class Parent(UserMixin, db.Model):
+    __tablename__ = 'parent'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(64), index=True, unique=True)
+    password = db.Column(db.String(64))
+    child = db.Column(db.String(64))
+
+
+class Admin(UserMixin, db.Model):
+    __tablename__ = 'admin'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(64), index=True, unique=True)
+    password = db.Column(db.String(64))
+    residence = db.Column(db.String(64))
+
 ```
 
-The `load_user` function is a callback that Flask-Login calls when a user logs in. The function takes the user's id as an argument and returns the user object. Flask-Login then stores the user object in the session. However, as you can see, we are only loading a user from the `Student` table. What about the other tables? 
+
+The `load_user` function is a callback that Flask-Login calls when a student logs in. The function takes the user's id as an argument and returns the user object. Flask-Login then stores the student object in the session. However, as you can see, we are only loading a user from the `Student` table. What about the other tables? 
