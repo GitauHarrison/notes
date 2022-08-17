@@ -64,3 +64,9 @@ SQLAlchemy supports three types of inheritance hierarchies:
 * **Single Table Inheritance**: several types of classes are represented by a single table
 * **Concrete Table Inheritance**: each type of class is represented by independent tables
 * **Joined Table Inheritance**: the class hierarchy is broken up among dependent tables, each class represented by its own table that only includes those attributes local to that class.
+
+
+## Joined Table Inheritance
+
+Here, distinct table is used to represent each class along a hierarchy of classes. When you query a particular subclass in the hierarchy, an SQL JOIN is rendered in its inheritance path.
+
