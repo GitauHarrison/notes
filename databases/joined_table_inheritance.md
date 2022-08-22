@@ -68,5 +68,57 @@ SQLAlchemy supports three types of inheritance hierarchies:
 
 ## Joined Table Inheritance
 
-Here, distinct table is used to represent each class along a hierarchy of classes. When you query a particular subclass in the hierarchy, an SQL JOIN is rendered in its inheritance path.
+From the simple description above, we can see that the concept of joined table inheritance is the most suitable for our scenario. So what exactly happens in a joined table inheritance? Here, a distinct table is used to represent each class along a hierarchy of classes. When you query a particular subclass in the hierarchy, an SQL JOIN is rendered in its inheritance path. The default behavior when querying the base class is to include only the base table in the SELECT statement. The subclasses will be instantiated against the the base class using a discriminator column. 
 
+If you are not familiar with SQL queries, you can read more about this in the [Getting Started with PostreSQL tutorial](getting_started_with_postgresql.md).
+
+
+```python
+
+class User(db.Model):
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(64), index=True, unique=True)
+    password_hash = db.Column(db.String(64))
+    type = db.Column(db.String(64))
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'user',
+        'polymorphic_on': 'type'
+    }
+
+class Student(User):
+    __tablename__ = 'student'
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    age = db.Column(db.Integer)
+    school = db.Column(db.String(64))
+    __mapper_args__ = {
+        'polymorphic_identity': 'student',
+    }
+
+
+class Teacher(User):
+    __tablename__ = 'teacher'
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    course = db.Column(db.String(64))
+    __mapper_args__ = {
+        'polymorphic_identity': 'teacher'
+    }
+
+
+class Parent(User):
+    __tablename__ = 'parent'
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    child = db.Column(db.String(64))
+    __mapper_args__ = {
+        'polymorphic_identity': 'parent'
+    }
+
+```
+
+The base class is `User` and the subclasses are `Student`, `Teacher`, and `Parent`. The `__mapper_args__` dictionary is used to specify the polymorphic identity and the polymorphic on column. The base class in a joined table inheritance hierarchy is configured  with additional arguments that will refer to the polymorphic discriminator column as the identifier for the base class.
+
+From the base class example above, an additional column `type` is established to act as the discriminator. It is configured using the `mapper.polymorphic_on` parameter. This column will store a value which will be used to indicate the type of object represented within the row. This column's value may be of any datatype, though string and integer are the most common.  The `polymorphic_identity` parameter is used to specify the value or the actual data that will be stored in the `type` column when an instance of the base class is created.
+
+Something to note here is that a polymorphic discriminator expression is not strictly necessary, though it is required if polymorphic inheritance is to be used. All you need to do is to establish a simple column on the base table that will store the polymorphic identity.
