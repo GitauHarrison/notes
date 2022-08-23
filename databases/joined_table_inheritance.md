@@ -122,3 +122,33 @@ The base class is `User` and the subclasses are `Student`, `Teacher`, and `Paren
 From the base class example above, an additional column `type` is established to act as the discriminator. It is configured using the `mapper.polymorphic_on` parameter. This column will store a value which will be used to indicate the type of object represented within the row. This column's value may be of any datatype, though string and integer are the most common.  The `polymorphic_identity` parameter is used to specify the value or the actual data that will be stored in the `type` column when an instance of the base class is created.
 
 Something to note here is that a polymorphic discriminator expression is not strictly necessary, though it is required if polymorphic inheritance is to be used. All you need to do is to establish a simple column on the base table that will store the polymorphic identity.
+
+> As of this writing, only one discriminator column or SQL expression may be configured for the entire inheritance hierarchy, typically on the base-most class in the hierarchy.
+
+With the base class in place, we can now proceed to define the `Student`, `Teacher` and `Parent` child classes. Each of these subclasses contain columns that represent the attributes unique to the subclass they represent. Each table is also expected to contain a primary key column as well as a foreign key reference to the parent table.
+
+The `polymorphic_identity` parameter is specified within the mapper arguments of each subclass. This value, which should be unique to each mapped class across the whole hierarchy, is used to populate the column designated by the `mapper.polymorphic_on` parameter established in the base mapper. Only one 'identity' per mapped class is allowed. The Object Relational Mapper (ORM) uses the value of the `polymorphic_identity` to determine which class a row belongs to when loading rows polymorphically. In our examples above, every row which represents a `Student` will have the value `student` in its `type` row. The same applies to the `Teacher` and `Parent` subclasses.
+
+Notice that both the primary key and the foreign key which references the parent class both belong to the same column. You may be familiar with this kind of setup when dealing with multiple tables:
+
+
+```python
+
+class Student(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
+
+
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(140))
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
+```
+
+Above, we are using a foreign key to reference the `id` column in the `Student` table. Both the `id` column and the foreign key column are separate. There is absolutely nothing wrong with this design. In a polymorphic setup, it is very common that the foreign key constraint is established on the same column as the primary key itself, even though this is not required.
+
+> Naturally, when dealing with joined inheritance primary keys, the `id` columns of the subclasses are not used to locate the individual objects of the subclasses, in this case the `Student`, the `Teacher` and the `Parent`. Only the value in the `user.id` is considered. `student.id`, among the others, are still valid and can be used to locate the joined row once the parent row has been determined within an SQL statement.
+
+When you query against the `User`, a combination of the `User`, `Student`, `Teacher` and `Parent` objects are returned. They will automatically populate the `user.type` column with the correct discriminator value as is appropriate. 
