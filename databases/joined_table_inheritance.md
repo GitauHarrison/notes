@@ -203,7 +203,14 @@ When classes are mapped in inheritance hierarchies using the 'joined', 'single',
 
 Polymorphic loading comes with an additional problem of _which subclass attributes are to be queried upfront_, and _which are to be loaded later_. When an attribute of a particular subclass is queried up front, it can be used in the query as something to filter on, and it will be loaded when we get our objects back. On the other hand, if it is not queried up front, it gets loaded later when we first need to need to acceess it.
 
-The `with_polymorphic()` function is used to provide a means of specifying which specific subclasses of a particular base class should be included in the query, which implies what columns and tablse will be avaliable in the SELECT.
+The `with_polymorphic()` function is used to provide a means of specifying which specific subclasses of a particular base class should be included in the query, which implies what columns and tables will be avaliable in the SELECT.
+
+There are two variants to this functions:
+
+- `mapper.with_polymorphic` in conjunction with `mapper.polymorphic_load` option. See [Setting `with_polymorphic` at mapper configuration time](#setting-with_polymorphic-at-mapper-configuration-time).
+- Query-level such that we have `query.with_polymorphic()`. See [Using `with_polymorphic`](#using-with_polymorphic) subsection.
+
+To understand the difference between `with_polymorphic()` function and the `query.with_polymorphic()` function, see [Setting `with_polymorphic` against a query](#setting-`with_polymorphic`-against-a-query) section.
 
 
 ## Using `with_polymorphic`
@@ -256,3 +263,59 @@ entity = with_polymorphic(User, Student)
 # Include all mappped sub-classes
 entity = with_polymorphic(User, '*')
 ```
+
+## Using aliases with `with_polymorphic`
+
+The function also provides 'aliasing
+
+
+## Setting with_polymorphic at mapper configuration time
+
+We have learnt that the `with_polymorphic()` function serves to load attributes from subclasses, as well as the ability to refer to the attributes from subclasses at query time. This can be referred to as 'eager loading'. When using the `with_polymorphic()` function, we would do this:
+
+```python
+from sqlalchemy.orm import with_polymorphic
+
+student_plus_user = with_polymorphic(User, Student)
+result = db.session.query(student_plus_user)
+result.all()
+```
+
+We do have the option of configuring this function as an optional mapper argument. This will allow an entity to use a polymorphic load by default.
+
+```python
+class User(UserMixin, db.Model):
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(64), index=True, unique=True)
+    password_hash = db.Column(db.String(64))
+    type = db.Column(db.String(64))
+
+    __mapper__args__ = {
+        'polymorphic_identity': 'user',
+        'polymorphic_on': type,
+        'with_polymorphic': '*'
+    }
+```
+
+We have used the asterisk to load all subclasses columns. It is recommended that this option be used sparingly in joined table inheritance as it implies that the mapping will always emit an often large series of LEFT OUTER JOIN to many tables, which from an SQL perspective is not efficient. However, if you use the `with_polymorphic()` or `query.with_polymorphic()` will override the settings at the mapper level.
+
+You can also polymorphically load a list of subset classes  using the `mapper.with_polymorphic`, just as you would with `query.with_polymorphic`. All you need to do is specify on each class that they should individually participate in the polymorphic loading by default using the `mapper.polymorphic_load` parameter.
+
+
+```python
+class Student(User):
+    __tablename__ = 'student'
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    age = db.Column(db.Integer)
+    school = db.Column(db.String(64))
+    __mapper_args__ = {
+        'polymorphic_identiy': 'student',
+        'polymorphic_load': 'inline'
+    }
+```
+
+`mapper.polymorphic_load` paramater has been set to the value 'inline' which means that the `Student` class is part of the polymorphic load of the `User` class by default, exactly as though it had been appended to the `mapper.with_polymorphic` list of classes.
+
+
