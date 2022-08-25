@@ -195,3 +195,14 @@ class School(db.Model):
 ```
 
 If the foreign key is on a table corresponding to a subclass, the relationship should target the subclass. Above we have created a relationship between the `Student` and the `School`. The `Student` will have a `Student.school` attribute; the `School` will have the `School.learners` attribute that always loads against the join of the `user` and the `student` tables together.
+
+
+## Loading Inheritance Hierarchies
+
+When classes are mapped in inheritance hierarchies using the 'joined', 'single', or 'concrete' table inheritance styles, the usual behavior is that a query for a particular base class will also yield objects corresponding to  subclasses as well, hence the term 'polymorphic loading'.
+
+Polymorphic loading comes with an additional problem of _which subclass attributes are to be queried upfront_, and _which are to be loaded later_. When an attribute of a particular subclass is queried up front, it can be used in the query as something to filter on, and it will be loaded when we get our objects back. On the other hand, if it is not queried up front, it gets loaded later when we first need to need to acceess it.
+
+The `with_polymorphic()` function is used to provide a means of specifying which specific subclasses of a particular base class should be included in the query, which implies what columns and tablse will be avaliable in the SELECT.
+
+
