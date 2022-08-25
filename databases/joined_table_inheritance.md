@@ -179,7 +179,7 @@ class Student(User):
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     age = db.Column(db.Integer)
 
-    school_id = db.Column(db.Integer, db.ForeignKey('school.id'))
+    school_id = db.Column(db.Integer, demployeeb.ForeignKey('school.id'))
     school = db.relationship('School', backref='student', lazy='dynamic')
 
     __mapper_args__ = {
@@ -206,3 +206,53 @@ Polymorphic loading comes with an additional problem of _which subclass attribut
 The `with_polymorphic()` function is used to provide a means of specifying which specific subclasses of a particular base class should be included in the query, which implies what columns and tablse will be avaliable in the SELECT.
 
 
+## Using `with_polymorphic`
+
+
+Normally, when a Query specifies the base class of an inheritance hierarchy, only the columns that are local to that base class are queried:
+
+
+```python
+db.session.query(User).all()
+```
+
+In single and joined table inheritance, only the columns local to `User` will be present in the SELECT statement. It is possible to get back instances of `Student`, `Teacher`, and `Parent` but they will not have the additional attributes loaded until we first access them, at which a point a lazy load is emitted. If we want to refer to columns mapped to `Student` or `Teacher` in our query that's against `User`, these columns are not directly available in both the single and joined table inheritance cases. This is because the `User` entity does not refer to these columns.
+
+To solve this issues, the `with_polymorphic()` function provides a special `AliasedClass` that represents a range of columns across subclasses. This object can be used in a query like any other alias. When querried, it represents all the columns present in classes given.
+
+
+```python
+from sqlalchemy.orm import with_polymorphic
+
+student_plus_teacher = with_polymorphic(User, [Student, Teacher])
+result = db.session.query(student_plus_teacher)
+result.all()
+```
+
+This is similar to using the SELECT statement below:
+
+```python
+SELECT user.id AS user_id,
+       student.id AS student_id,
+       teacher.id AS teacher_id,
+       user.name AS user_name,
+       user.email AS user_email,
+       user.type AS user_type,
+       student.age AS student_age,
+       teacher.course AS teacher_course
+FROM user
+       LEFT OUTER JOIN student
+       ON user.id = student.id
+       LEFT OUTER JOIN teacher
+       ON user.id = teacher.id
+```
+
+You can see that the additional columns for `Student` and `Teacher` are included. This is also the case when you are useing single table inheritance. You can also use the asterisk to indicate the inclusion of all subclasses.
+
+```python
+# Include column for Student
+entity = with_polymorphic(User, Student)
+
+# Include all mappped sub-classes
+entity = with_polymorphic(User, '*')
+```
