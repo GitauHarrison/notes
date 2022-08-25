@@ -319,3 +319,13 @@ class Student(User):
 `mapper.polymorphic_load` paramater has been set to the value 'inline' which means that the `Student` class is part of the polymorphic load of the `User` class by default, exactly as though it had been appended to the `mapper.with_polymorphic` list of classes.
 
 
+## Setting `with_polymorphic` against a query
+
+The function `with_polymorphic()` is an upgrade to the query_level method `query.with_polymorphic()`. They both have the same purpose with the exception that the latter is not as flexible in its usage in that it only applies to the first entity fo the query.. It then takes effect for all occurences fo that entity, so that the entity and its subclasses can be referred to directly, rathar than using an alias.
+
+
+```python
+db.session.query(User).with_polymorphic([Student, Teacher])
+```
+
+The `query.with_polymorphic()` mehtod has a more complicated job than the `with_polymorphic()` function, as it needs to correctly transform entities like `Student` and `Teacher` appropriately, but not interfere with other entities. It is recommended that you switcht o `with_polymorphic()` if its flexibility is lacking.
