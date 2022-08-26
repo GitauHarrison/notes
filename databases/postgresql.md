@@ -52,3 +52,14 @@ Today, with the growth of Internet of Things, businesses are able to collect mas
 ## History of PostgreSQL
 
 PostgreSQL started as a project in 1986 at Berkeley Computer Science Department, University of California. It was originally referred to as Postgres whose inspiration came from the Ingres database. They main goal was simply to add support for multiple datatypes. In 1996, Postgres was renamed to PostgreSQL to clearly show support for the Structured Query Language (SQL). 
+
+
+## Advantages of Using PostgreSQL
+
+One of the main reasons you would want to consider using PostgreSQL is its large set of features. It possess an incredibly large number of featueres related to performance, security, programming extensions, configurations among others. 
+
+- For example, you can use a vast number of programming languages to write database functions. Example languages include Python, Java, SQL, JavaScript etc. 
+- A host of data types are also supported by PostgreSQL. Priimitive datatypes such as Strings, Booleans, Numeric types are fully supported. Other datatypes that are supported include network addresses, geometric types, monetary types, multi-dimensional arrays among others.
+- PostgreSQL allows you to define your own complex types so that you can align your data closely to your needs
+- Full-text search feature is available in PostgreSQL. Search can be fine-tuned to match your expectations for relevancy.
+- PostgreSQL has robust authentication, access control and privilege management systems suitable for organizations of any size. It helps define who can use the system and what each user is allowed to see or do.
