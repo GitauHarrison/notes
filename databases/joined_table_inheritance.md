@@ -70,7 +70,7 @@ SQLAlchemy supports three types of inheritance hierarchies:
 
 From the simple description above, we can see that the concept of joined table inheritance is the most suitable for our scenario. So what exactly happens in a joined table inheritance? Here, a distinct table is used to represent each class along a hierarchy of classes. When you query a particular subclass in the hierarchy, an SQL JOIN is rendered in its inheritance path. The default behavior when querying the base class is to include only the base table in the SELECT statement. The subclasses will be instantiated against the the base class using a discriminator column. 
 
-If you are not familiar with SQL queries, you can read more about this in the [Getting Started with PostreSQL tutorial](getting_started_with_postgresql.md).
+If you are not familiar with SQL queries, you can read more about this in the [PostreSQL tutorial](postgresql.md).
 
 
 ```python
@@ -210,7 +210,7 @@ There are two variants to this functions:
 - `mapper.with_polymorphic` in conjunction with `mapper.polymorphic_load` option. See [Setting `with_polymorphic` at mapper configuration time](#setting-with_polymorphic-at-mapper-configuration-time).
 - Query-level such that we have `query.with_polymorphic()`. See [Using `with_polymorphic`](#using-with_polymorphic) subsection.
 
-To understand the difference between `with_polymorphic()` function and the `query.with_polymorphic()` function, see [Setting `with_polymorphic` against a query](#setting-`with_polymorphic`-against-a-query) section.
+To understand the difference between `with_polymorphic()` function and the `query.with_polymorphic()` method, see [Setting `with_polymorphic` against a query](#setting-`with_polymorphic`-against-a-query) section.
 
 
 ## Using `with_polymorphic`
@@ -225,7 +225,7 @@ db.session.query(User).all()
 
 In single and joined table inheritance, only the columns local to `User` will be present in the SELECT statement. It is possible to get back instances of `Student`, `Teacher`, and `Parent` but they will not have the additional attributes loaded until we first access them, at which a point a lazy load is emitted. If we want to refer to columns mapped to `Student` or `Teacher` in our query that's against `User`, these columns are not directly available in both the single and joined table inheritance cases. This is because the `User` entity does not refer to these columns.
 
-To solve this issues, the `with_polymorphic()` function provides a special `AliasedClass` that represents a range of columns across subclasses. This object can be used in a query like any other alias. When querried, it represents all the columns present in classes given.
+To solve these issues, the `with_polymorphic()` function provides a special `AliasedClass` that represents a range of columns across subclasses. This object can be used in a query like any other alias. When querried, it represents all the columns present in classes given.
 
 
 ```python
@@ -321,7 +321,7 @@ class Student(User):
 
 ## Setting `with_polymorphic` against a query
 
-The function `with_polymorphic()` is an upgrade to the query_level method `query.with_polymorphic()`. They both have the same purpose with the exception that the latter is not as flexible in its usage in that it only applies to the first entity fo the query.. It then takes effect for all occurences fo that entity, so that the entity and its subclasses can be referred to directly, rathar than using an alias.
+The function `with_polymorphic()` is an upgrade to the query_level method `query.with_polymorphic()`. They both have the same purpose with the exception that the latter is not as flexible in its usage in that it only applies to the first entity of the query. It then takes effect for all occurences of that entity, so that the entity and its subclasses can be referred to directly, rathar than using an alias.
 
 
 ```python
