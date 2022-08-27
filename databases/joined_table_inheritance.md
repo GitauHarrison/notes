@@ -259,7 +259,7 @@ result.all()
 
 This is similar to using the SELECT statement below:
 
-```python
+```sql
 SELECT user.id AS user_id,
        student.id AS student_id,
        teacher.id AS teacher_id,
@@ -350,3 +350,113 @@ db.session.query(User).with_polymorphic([Student, Teacher])
 ```
 
 The `query.with_polymorphic()` mehtod has a more complicated job than the `with_polymorphic()` function, as it needs to correctly transform entities like `Student` and `Teacher` appropriately, but not interfere with other entities. It is recommended that you switch to `with_polymorphic()` if its flexibility is lacking.
+
+
+## Polymorphic `Selectin` loading
+
+There is an alternative to the `with_polymorphic` functions to eagerly load the additional subclasses on an inheritance mapping, especially when using the joined table inheritance. This is the use of polymorphic 'selectin' loading. It works similar to the `Select In` loading feature of relationship loading.
+
+> Select In loading: the emitted SELECT statement has a much simpler structure than that of the subquery eager loading. It is the most simple and efficient way to eagerly load collections of objects.
+
+```python
+from sqlalchemy.orm import selectin_polymorphic
+
+result = session.query(User).options(
+    selectin_polymorphic(User, [Student, Teacher])
+)
+result.all()
+```
+
+Above, we have instructed a load of `User` to emit an extra SELECT per subclass by using `selectin_polymorphic` loader option. When the query is run, two additional SELECT statements will be emitted:
+
+```sql
+SELECT 
+    user.id AS user_id,
+    user.name AS user_name,
+    user.email AS user_email,
+    user.type AS user_type
+FROM user
+()
+
+SELECT 
+    student.id AS student_id,
+    user.id AS user_id,
+    user.type AS user_type,
+    student.age AS student_Age,
+    student.school AS student_school
+FROM user JOIN student ON user.id = student.id
+WHERE user.id IN (?, ?) ORDER BY user.id
+(1, 2)
+
+SELECT
+    teacher.id as teacher_id,
+    user.id As user_id,
+    user.type AS user_type,
+    teacher.course AS teacher_course
+FROM user JOIN teacher ON user.id = teacher.id
+WHERE user.id IN (?, ?) ORDER BY user.id
+(3,)
+```
+
+Just like `with_polymorphic` function, we can configure `selectin_polymorphic` at mapper time for loading to take place by default.
+
+
+```python
+class User(db.Model):
+    # ...
+    type = db.Column(db.String(64))
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'user',
+        'polymorphic_on': 'type'
+    }
+
+
+class Student(User):
+    # ...
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'student',
+        'polymorphic_load': 'selectin'
+    }
+
+
+class Teacher(User):
+    # ...
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'teacher',
+        'polymorphic_load': 'selectin'
+    }
+```
+
+Let us assume that `Student` has an additional relationship called `Student.homework`, that we would eagerly like to load. Unfortunately, `selectin_polymorphic` style of loading does not have the ability to refer to  the`Student` entity within the main query as filter, order by or other criteria, since this entity is not present in the initial query that is used to locate results. A walkaround we can employ to solve this is to apply loader options toward the `Student` which will take effect when the secondary SELECT is emitted.
+
+```python
+from sqlalchemy.orm import joinedload, selectin_polymorphic
+
+result = session.query(User).options(
+    selectin_polymorphic(User, Student),
+    joinedload(Student.homework)
+)
+result.all()
+```
+
+The outcome of running the query above will emit three SELECT statements, though the one against `Student` will be as follows:
+
+```sql
+SELECT
+    student.id as studentid,
+    user.id AS user_id,
+    user.type AS user_type,
+    student.age AS student_age,
+    student.school AS student_school,
+    homework.id AS homework_id,
+    homework.student_id AS homework_student_id,
+    homework.data AS homework_data
+FROM user JOIN student ON user.id = student.id
+LEFT OUTER JOIN homework as ON student.id = h.student_id
+WHERE user.id IN (?) ORDER BY user.id
+(3,)
+
+```
