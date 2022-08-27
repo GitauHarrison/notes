@@ -196,6 +196,27 @@ class School(db.Model):
 
 If the foreign key is on a table corresponding to a subclass, the relationship should target the subclass. Above we have created a relationship between the `Student` and the `School`. The `Student` will have a `Student.school` attribute; the `School` will have the `School.learners` attribute that always loads against the join of the `user` and the `student` tables together.
 
+How about the relationship between two parent tables? 
+
+```python
+class User(db.Model):
+    __tablename__ = 'user
+    # ...
+
+    school_id = db.Column(db.ForeignKey('school.id'))
+    school = db.relationship('School', back_populates='user')
+
+
+
+class School(db.Model):
+    __tablename__ = 'school'
+    # ...
+
+    learners = db.relationship('User', back_populates='school')
+```
+
+Above, the `user` table has a foreign key constraint back to the `school` table, hence this relationship is set up between `User` and `School`. The idea is to target the class in the hierarchy that also corresponds to the foreign key constraint.
+
 
 ## Loading Inheritance Hierarchies
 
@@ -254,7 +275,7 @@ FROM user
        ON user.id = teacher.id
 ```
 
-You can see that the additional columns for `Student` and `Teacher` are included. This is also the case when you are useing single table inheritance. You can also use the asterisk to indicate the inclusion of all subclasses.
+You can see that the additional columns for `Student` and `Teacher` are included. This is also the case when you are using single table inheritance. You can also use the asterisk to indicate the inclusion of all subclasses.
 
 ```python
 # Include column for Student
@@ -269,7 +290,7 @@ entity = with_polymorphic(User, '*')
 The function also provides 'aliasing
 
 
-## Setting with_polymorphic at mapper configuration time
+## Setting `with_polymorphic` at mapper configuration time
 
 We have learnt that the `with_polymorphic()` function serves to load attributes from subclasses, as well as the ability to refer to the attributes from subclasses at query time. This can be referred to as 'eager loading'. When using the `with_polymorphic()` function, we would do this:
 
@@ -299,7 +320,7 @@ class User(UserMixin, db.Model):
     }
 ```
 
-We have used the asterisk to load all subclasses columns. It is recommended that this option be used sparingly in joined table inheritance as it implies that the mapping will always emit an often large series of LEFT OUTER JOIN to many tables, which from an SQL perspective is not efficient. However, if you use the `with_polymorphic()` or `query.with_polymorphic()` will override the settings at the mapper level.
+We have used the asterisk to load all subclasses' columns. It is recommended that this option be used sparingly in joined table inheritance as it implies that the mapping will always emit an often large series of LEFT OUTER JOIN to many tables, which from an SQL perspective is not efficient. However, if you use the `with_polymorphic()` or `query.with_polymorphic()` will override the settings at the mapper level.
 
 You can also polymorphically load a list of subset classes  using the `mapper.with_polymorphic`, just as you would with `query.with_polymorphic`. All you need to do is specify on each class that they should individually participate in the polymorphic loading by default using the `mapper.polymorphic_load` parameter.
 
@@ -321,11 +342,11 @@ class Student(User):
 
 ## Setting `with_polymorphic` against a query
 
-The function `with_polymorphic()` is an upgrade to the query_level method `query.with_polymorphic()`. They both have the same purpose with the exception that the latter is not as flexible in its usage in that it only applies to the first entity of the query. It then takes effect for all occurences of that entity, so that the entity and its subclasses can be referred to directly, rathar than using an alias.
+The function `with_polymorphic()` is an upgrade to the query-level method `query.with_polymorphic()`. They both have the same purpose with the exception that the latter is not as flexible in its usage in that it only applies to the first entity of the query. It then takes effect for all occurences of that entity, so that the entity and its subclasses can be referred to directly, rathar than using an alias.
 
 
 ```python
 db.session.query(User).with_polymorphic([Student, Teacher])
 ```
 
-The `query.with_polymorphic()` mehtod has a more complicated job than the `with_polymorphic()` function, as it needs to correctly transform entities like `Student` and `Teacher` appropriately, but not interfere with other entities. It is recommended that you switcht o `with_polymorphic()` if its flexibility is lacking.
+The `query.with_polymorphic()` mehtod has a more complicated job than the `with_polymorphic()` function, as it needs to correctly transform entities like `Student` and `Teacher` appropriately, but not interfere with other entities. It is recommended that you switch to `with_polymorphic()` if its flexibility is lacking.
