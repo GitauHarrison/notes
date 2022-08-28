@@ -56,6 +56,17 @@ class Admin(UserMixin, db.Model):
 
 The `load_user` function is a callback that Flask-Login calls when a student logs in. The function takes the student's id as an argument and returns the user object. Flask-Login then stores the student object in the session. However, as you can see, we are only loading a user from the `Student` table. What about the other tables? 
 
+## Table of Contents
+
+These are the items we will look at in detail as we try to understand the concept of joined table inheritance.
+
+1. [Types of Inheritance Hierarchies](#types-of-inheritance-hierarchies)
+2. [Joined Table Inheritance](#joined-table-inheritance)
+3. [Relationships with Joined Inheritance](#relationships-with-joined-inheritance)
+4. [Loading Inheritance Hierarchies](#loading-inheritance-hierarchies)
+5. [Referring to Specific Subtypes on Relationships](#referring-to-specific-subtypes-on-relationships)
+6. [Loading Objects with Joined Table Inheritance](#loading-objects-with-joined-table-inheritance)
+
 
 ## Types of Inheritance Hierarchies
 
@@ -234,7 +245,7 @@ There are two variants to this functions:
 To understand the difference between `with_polymorphic()` function and the `query.with_polymorphic()` method, see [Setting `with_polymorphic` against a query](#setting-`with_polymorphic`-against-a-query) section.
 
 
-## Using `with_polymorphic`
+### Using `with_polymorphic`
 
 
 Normally, when a Query specifies the base class of an inheritance hierarchy, only the columns that are local to that base class are queried:
@@ -285,12 +296,12 @@ entity = with_polymorphic(User, Student)
 entity = with_polymorphic(User, '*')
 ```
 
-## Using aliases with `with_polymorphic`
+### Using aliases with `with_polymorphic`
 
 The function also provides 'aliasing
 
 
-## Setting `with_polymorphic` at mapper configuration time
+### Setting `with_polymorphic` at mapper configuration time
 
 We have learnt that the `with_polymorphic()` function serves to load attributes from subclasses, as well as the ability to refer to the attributes from subclasses at query time. This can be referred to as 'eager loading'. When using the `with_polymorphic()` function, we would do this:
 
@@ -340,7 +351,7 @@ class Student(User):
 `mapper.polymorphic_load` paramater has been set to the value 'inline' which means that the `Student` class is part of the polymorphic load of the `User` class by default, exactly as though it had been appended to the `mapper.with_polymorphic` list of classes.
 
 
-## Setting `with_polymorphic` against a query
+### Setting `with_polymorphic` against a query
 
 The function `with_polymorphic()` is an upgrade to the query-level method `query.with_polymorphic()`. They both have the same purpose with the exception that the latter is not as flexible in its usage in that it only applies to the first entity of the query. It then takes effect for all occurences of that entity, so that the entity and its subclasses can be referred to directly, rathar than using an alias.
 
@@ -352,7 +363,7 @@ db.session.query(User).with_polymorphic([Student, Teacher])
 The `query.with_polymorphic()` mehtod has a more complicated job than the `with_polymorphic()` function, as it needs to correctly transform entities like `Student` and `Teacher` appropriately, but not interfere with other entities. It is recommended that you switch to `with_polymorphic()` if its flexibility is lacking.
 
 
-## Polymorphic `Selectin` loading
+### Polymorphic `Selectin` loading
 
 There is an alternative to the `with_polymorphic` functions to eagerly load the additional subclasses on an inheritance mapping, especially when using the joined table inheritance. This is the use of polymorphic 'selectin' loading. It works similar to the `Select In` loading feature of relationship loading.
 
@@ -493,3 +504,5 @@ You can also join from `School` to the polymorphic entity that includes both `St
 student_and_teacher = with_polymorphic(User, [Student, Teacher])
 result = db.session.query(School).join(School.user.of_type(student_and_teacher))
 ```
+
+## Loading Objects with Joined Table Inheritance
