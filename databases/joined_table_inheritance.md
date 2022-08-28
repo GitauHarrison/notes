@@ -506,3 +506,89 @@ result = db.session.query(School).join(School.user.of_type(student_and_teacher))
 ```
 
 ## Loading Objects with Joined Table Inheritance
+
+When using joined table inheritance, if we query for a specific subclass that represents a join of two tables such as `Student` from our example, the SQL emitted is a join:
+
+```python
+result = db.session.query(Student).all()
+```
+
+This query is similar to the SQL below:
+
+```sql
+SELECET 
+    student.id AS student_id,
+    user.name AS user_name,
+    user.email AS user_email,
+    user.type AS user_type,
+    student.age AS student_age,
+    student.school AS student_school
+FROM user JOIN student
+ON user.id = student.id
+```
+
+This will give us a collection of `Student` objects containing all the columns of `User` and `Student` loaded. Though, when emitting a query against a base class, the behaviour is to load only from the base table.
+
+```python
+base_result = db.session.query(User).all()
+```
+
+The SELECT statement similar to the query above would by default be to load from `User` table excluding the subclasses.
+
+```sql
+SELECT
+    user.id AS user_id,
+    user.name AS user_name,
+    user.email AS user_email,
+    user.type AS user_type
+FROM user
+```
+
+If entities from the subclasses are requessted after a collection of `User` objects have been returned, a second load is issued for the columns in that related row, if the data was not already loaded.
+
+```sql
+SELECT
+    student.id AS student_id,
+    student.age AS student_age,
+    student.school AS student_school
+FROM student
+WHERE ? = student.id
+[5]
+
+SELECT 
+    teacher.id AS teacher_id,
+    teacher.course AS teacher_course
+FROM teacher
+WHERE ? = teacher.id
+[2]
+```
+
+The `with_polymorphic()` function and related configuration options allow us to emit a JOIN upfront which will conditionally load against `User`, `Student` and `Teacher`, similar to how joined eager loading works for relationships, therefore, removing the need for a second per-entity load.
+
+```python
+from sqlalchemy.orm import with_polymorphic
+
+student_and_teacher = with_polymorphic(User, [Student, Teacher])
+result = db.session.query(student_and_teacher)
+```
+
+The outcome of the query above would emit the following SQL:
+
+```sql
+SELECT
+    user.id AS user_id,
+    student.id AS student_id,
+    teacher.id AS teacher_id,
+    user.name AS user_name,
+    user.email As user_email,
+    user.type AS user_type,
+    student.age AS student_age,
+    student.school AS student_school,
+    teacher.course AS teacher_course
+FROM user
+    LEFT OUTER JOIN student
+    ON user.id = student.id
+    LEFT OUTER JOIN teacher
+    ON user.id = teacher.id
+[]
+```
