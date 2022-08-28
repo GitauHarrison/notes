@@ -460,3 +460,36 @@ WHERE user.id IN (?) ORDER BY user.id
 (3,)
 
 ```
+
+## Referring to Specific Subtypes on Relationships
+
+Relationships are used to create a linkage between two mappings. When using `relationship()` where the target class is an inheritance hierarchy, the API allows that the join, eager load or any other linkage should target a specific subclass, alias, or `with_polymorphic` alias of that class hierarchy, rather than the class directly targeted by the `relationship()`.
+
+```python
+class User(db.Model):
+    __tablename__ = 'user
+    # ...
+
+    school_id = db.Column(db.ForeignKey('school.id'))
+
+
+
+class School(db.Model):
+    __tablename__ = 'school'
+    # ...
+
+    learners = db.relationship('User', backref='school')
+```
+
+Above, you can see how a relationship has been constructed. A foreign key is used on the `User` to refer to the `School`. The `of_type` method allows the construction of joins along a `relationship()` path while narrowing the criterion to specific derived aliases or subclasses.
+
+```python
+result = db.session.query(School).join(School.learners.of_type(Student).filter(Student.name=='rahima'))
+```
+
+You can also join from `School` to the polymorphic entity that includes both `Student` and `Teacher` columns.
+
+```python
+student_and_teacher = with_polymorphic(User, [Student, Teacher])
+result = db.session.query(School).join(School.user.of_type(student_and_teacher))
+```
