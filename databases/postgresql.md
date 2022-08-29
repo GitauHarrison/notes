@@ -11,7 +11,7 @@ For reference, these are the topics we will cover in this tutorial:
 
 ## What is a Database
 
-Before we can dive into PostgreSQL, let us begin by understanding what a database is. A database is an organized collection of structured information (processed) or data (raw) that is typically stored electronically, say in a computer. Anyone can work with a database. The tool used to control a database is referred to as a database management system (DBMS). A DBMS serves as an interface between the database and its end users or programs, allowing users to retrieve, update or manage how the information is organized and optimized. The DBMS acronym is sometimes extended to indicate the underlying database model. Examples of popular DBMS include PostreSQL, MySQL, Microsoft SQL Server, Oracle Database, SQLite among others
+Before we can dive into PostgreSQL, let us begin by understanding what a database is. A database is an organized collection of structured information (processed) or data (raw) that is typically stored electronically, say in a computer. Anyone can work with a database. The tool used to control a database is referred to as a database management system (DBMS). A DBMS serves as an interface between the database and its end users or programs, allowing users to retrieve, update or manage how the information is organized and optimized. The DBMS acronym is sometimes extended to indicate the underlying database model. Examples of popular DBMS include PostreSQL, MySQL, Microsoft SQL Server, Oracle Database, SQLite among others.
 
 
 ## Types of Databases Models
