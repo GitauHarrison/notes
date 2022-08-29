@@ -11,12 +11,12 @@ For reference, these are the topics we will cover in this tutorial:
 
 ## What is a Database
 
-Before we can dive into PostgreSQL, let us begin by understanding what a database is. A database is an organized collection of structured information (processed) or data (raw) that is typically stored electronically, say in a computer. Anyone can work with a database. The tool used to control a database is referred to as a database management system (DBMS). A DBMS serves as an interface between the database and its end users or programs, allowing users to retrieve, update or manage how the information is organized an optimized. Examples of popular DBMS include PostreSQL, MySQL, Microsoft SQL Server, Oracle Database, SQLite among others
+Before we can dive into PostgreSQL, let us begin by understanding what a database is. A database is an organized collection of structured information (processed) or data (raw) that is typically stored electronically, say in a computer. Anyone can work with a database. The tool used to control a database is referred to as a database management system (DBMS). A DBMS serves as an interface between the database and its end users or programs, allowing users to retrieve, update or manage how the information is organized and optimized. The DBMS acronym is sometimes extended to indicate the underlying database model. Examples of popular DBMS include PostreSQL, MySQL, Microsoft SQL Server, Oracle Database, SQLite among others
 
 
-## Types of Databases
+## Types of Databases Models
 
-The main four types of database management systems are:
+The main four types of database models are:
 
 1. Hierarchical database
 2. Network database
@@ -46,7 +46,7 @@ Here, data is created and modelled as objects. It offers support for classes of 
 
 ## Why Use a Database
 
-Today, with the growth of Internet of Things, businesses are able to collect massive amounts of data. Forward-thinking organizations are making use of databases to go beyond basic data storage and transactions to analyze vast quantities of data. As a result, they are able to make better business decisions and become more agile and scalable.
+Today, with the growth of Internet of Things, businesses are able to collecting massive amounts of data. Forward-thinking organizations are making use of databases to go beyond basic data storage and transactions to analyze vast quantities of data. As a result, they are able to make better business decisions and become more agile and scalable.
 
 
 ## History of PostgreSQL
@@ -63,3 +63,5 @@ One of the main reasons you would want to consider using PostgreSQL is its large
 - PostgreSQL allows you to define your own complex types so that you can align your data closely to your needs
 - Full-text search feature is available in PostgreSQL. Search can be fine-tuned to match your expectations for relevancy.
 - PostgreSQL has robust authentication, access control and privilege management systems suitable for organizations of any size. It helps define who can use the system and what each user is allowed to see or do.
+
+Are you uncertain on why you should chose PostgreSQL coming from SQLite? Take some time to [review these arguments](https://www.twilio.com/blog/sqlite-postgresql-complicated).
