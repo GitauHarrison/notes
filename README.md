@@ -45,6 +45,10 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 38. [Getting starated with PostgreSQL](databases/postgresql.md)
 39. [Joined Table Inheritance](databases/joined_table_inheritance.md)
 
+## Additional Articles
+
+1. [Getting started with the Windows subsystem for Linux](wsl.md)
+
 ## Demo Projects
 
 The articles above are great, though I think that seeing demos of the projects which integrate the concepts is a good way to learn. Check a few below:
