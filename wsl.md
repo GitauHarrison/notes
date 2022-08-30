@@ -167,7 +167,7 @@ Install it or configure it using 'git.path' setting. You need to install `Git` t
 
 ![Download Git for Windows](images/wsl/git_for_windows.png)
 
-Suppose you are not sure how to install `Git`, double-click on the downloaded file to start the installation process. Alternatively, you can right-click then select "Run as Administrator" to start.
+Suppose you are not sure how to install `Git`, double-click on the downloaded file to start the installation process. Alternatively, you can right-click and then select "Run as Administrator" to start.
 
 ![Install Git on Windows](images/wsl/install_git.png)
 
@@ -224,7 +224,7 @@ It is now time to test our setup and configuration thus far. Begin by creating a
 mkdir software_development
 ```
 
-Change directory into the new folder:
+Change the directory into the new folder:
 
 ```python
 cd software_development
@@ -288,7 +288,7 @@ You will see that the file changes from "red" to "green".
 
 ![Add Changes to Version Control](images/wsl/git_add.png)
 
-Before we can make any more changes to this file, we need to commit it to version control, and describe what the change is all about.
+Before we can make any more changes to this file, we need to commit it to version control and describe what the change is all about.
 
 ```python
 git commit -m 'Create a new python file used to display some text'
