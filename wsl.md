@@ -2,7 +2,7 @@
 
 ![Profile picture](images/wsl/profile.jpeg)
 
-In this tutorial, you will learn how to enable the Windows Subsystem for Linux (WSL), install your favorite Linux distribution, set up an integrated dev environment with Visual Studio Code, and more.
+In this tutorial, you will learn how to enable the Windows Subsystem for Linux (WSL), install your favorite Linux distribution, set up an integrated development environment with Visual Studio Code, and more.
 
 ### Objectives
 
