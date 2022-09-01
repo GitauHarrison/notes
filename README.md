@@ -47,7 +47,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 
 ## Additional Articles
 
-1. [Getting started with the Windows subsystem for Linux](wsl.md)
+1. [Getting started with the Windows subsystem for Linux](non_technical_articles/wsl.md)
 
 ## Demo Projects
 

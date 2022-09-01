@@ -1,6 +1,6 @@
 # Get started with the Windows Subsystem for Linux
 
-![Profile picture](images/wsl/profile.jpeg)
+![Profile picture](/images/wsl/profile.jpeg)
 
 In this tutorial, you will learn how to enable the Windows Subsystem for Linux (WSL), install your favorite Linux distribution, set up an integrated development environment with Visual Studio Code, and more.
 
@@ -46,7 +46,7 @@ If you are a Windows user, you will need to learn some basic Linux commands to g
 
 On the Start menu, type PowerShell to pull up the desktop app.
 
-![Search for PowerShell](images/wsl/search_for_powershell.png)
+![Search for PowerShell](/images/wsl/search_for_powershell.png)
 
 You need to run the app as an administrator. To do this, you can either:
 - Select "Run as Administrator" as seen in the image above or
@@ -54,7 +54,7 @@ You need to run the app as an administrator. To do this, you can either:
 
 After running as an administrator, the Windows PowerShell command window opens.
 
-![PowerShell App](images/wsl/powershell_app.png)
+![PowerShell App](/images/wsl/powershell_app.png)
 
 Copy and paste this script below onto PowerShell to enable the WSL feature:
 
@@ -64,11 +64,11 @@ Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-L
 
 Press "Enter" to run the command above.
 
-![Enable WSL on PowerShell](images/wsl/enable_wsl_on_powershell.png)
+![Enable WSL on PowerShell](/images/wsl/enable_wsl_on_powershell.png)
 
 Once the feature has been enabled, you will see something similar to the image below:
 
-![WSL Enabled](images/wsl/wsl_enabled.png)
+![WSL Enabled](/images/wsl/wsl_enabled.png)
 
 Restart your computer when prompted.
 
@@ -79,23 +79,23 @@ Linux has several flavors of operating systems you can choose from. They are ref
 
 Begin by searching for "Microsoft Store" in the search bar, then click "Open".
 
-![Search for Microsoft Store](images/wsl/search_for_microsoft_store.png)
+![Search for Microsoft Store](/images/wsl/search_for_microsoft_store.png)
 
 Search for Linux (You will see a list Linux distributions in the apps sections).
 
-![Search for Linux](images/wsl/search_for_linux.png)
+![Search for Linux](/images/wsl/search_for_linux.png)
 
 Find Ubuntu 20.04.4 LTS and click on it.
 
-![Find Ubuntu 20.04 LTS](images/wsl/get_ubuntu.png)
+![Find Ubuntu 20.04 LTS](/images/wsl/get_ubuntu.png)
 
 Click on "Get" as seen in the image above to begin the download process. This file is large and will, therefore, take some time to fully download. After the installation, open Ubuntu 20.04.4. You will automatically get a prompt after the install, but if you missed it, such for Ubuntu in the Start Menu.
 
-![Open Ubuntu 20.04 LTS](images/wsl/run_ubuntu.png)
+![Open Ubuntu 20.04 LTS](/images/wsl/run_ubuntu.png)
 
 You will be prompted to create an account name and password when you run this distribution for the first time. Thereafter, you will be signed in as a non-admin user by default.
 
-![Create user and password](images/wsl/ubuntu_username_and_password.png)
+![Create user and password](/images/wsl/ubuntu_username_and_password.png)
 
 If you are not prompted, then run the command below (even in PowerShell) to check your username:
 
@@ -103,7 +103,7 @@ If you are not prompted, then run the command below (even in PowerShell) to chec
 whoami
 ```
 
-![whoami command](images/wsl/whoami_command.png)
+![whoami command](/images/wsl/whoami_command.png)
 
 Now that you know your username, by default, your password is your username. If you would like to change this password, you can do so by running:
 
@@ -156,7 +156,7 @@ Check out [Learn Enough CommandLine to Be Dangerous](https://medium.com/r/?url=h
 
 Download Visual Studio Code for Windows: https://code.visualstudio.com. Visual Studio Code is also available for Linux, but we want to install the Windows version so we can edit project files from the Windows OS. You'll still be able to integrate with your Linux distribution's command line and tools.
 
-![Visual Studio Code](images/wsl/vs_code.png)
+![Visual Studio Code](/images/wsl/vs_code.png)
 
 When you open Visual Studio Code for the first time, you'll probably get an error: Git not found.
 
@@ -165,11 +165,11 @@ When you open Visual Studio Code for the first time, you'll probably get an erro
 
 Install it or configure it using 'git.path' setting. You need to install `Git` to power the Source Control panel in the Visual Studio Code workspace. Download and install Git for Windows from the git-scm website by using the included Install Wizard: https://git-scm.com/download/win.
 
-![Download Git for Windows](images/wsl/git_for_windows.png)
+![Download Git for Windows](/images/wsl/git_for_windows.png)
 
 Suppose you are not sure how to install `Git`, double-click on the downloaded file to start the installation process. Alternatively, you can right-click and then select "Run as Administrator" to start.
 
-![Install Git on Windows](images/wsl/install_git.png)
+![Install Git on Windows](/images/wsl/install_git.png)
 
 Follow the prompts until it is fully installed in your machine.
 
@@ -178,11 +178,11 @@ Follow the prompts until it is fully installed in your machine.
 
 In Visual Studio Code, open the Extensions view (select View > Extensions or Ctrl+Shift+X).
 
-![VS Code Extensions](images/wsl/vs_code_extension.png)
+![VS Code Extensions](/images/wsl/vs_code_extension.png)
 
 Search for "wsl". Choose the Remote - WSL extension as seen below (it should be at the top of the list) and press Install.
 
-![Search for wsl](images/wsl/remote_wsl_extension.png)
+![Search for wsl](/images/wsl/remote_wsl_extension.png)
 
 The Remote - WSL extension lets you use the Visual Studio Code editor in the context of WSL with full support for language features such as IntelliSense, code navigation, debugging, and more. You can also choose to install the [Remote Development extension pack](https://medium.com/r/?url=https%3A%2F%2Fmarketplace.visualstudio.com%2Fitems%3FitemName%3Dms-vscode-remote.vscode-remote-extensionpack), which bundles all three Visual Studio Code remote extensions to support working over SSH and inside Docker containers in addition to WSL.
 
@@ -190,31 +190,31 @@ The Remote - WSL extension lets you use the Visual Studio Code editor in the
 
 The default terminal is PowerShell. To change it, select View > Terminal (or select Ctrl+`, using the backtick character).
 
-![Open Terminal](images/wsl/start_terminal.png)
+![Open Terminal](/images/wsl/start_terminal.png)
 
 A command-line (or terminal shell) window will open at the bottom of your Visual Studio Code window. This window lets you run your command-line tools without leaving Visual Studio Code.
 
-![Open Terminal in PowerShell](images/wsl/see_terminal_shell.png)
+![Open Terminal in PowerShell](/images/wsl/see_terminal_shell.png)
 
 To change the default Visual Studio Code terminal shell, open the terminal dropdown and pick Select Default Shell. A settings window with a list of available shells will open. Select WSL Bash in the list. _(You can also open the default terminal picker from the Command Palette, select the F1 key and enter Terminal: Select Default Shell.)_
 
 If you cannot see this
 
-![Select Default Shell](images/wsl/default_terminal_profile.png)
+![Select Default Shell](/images/wsl/default_terminal_profile.png)
 
 Then you can go to View > Command Palette
 
-![Command Palette](images/wsl/command_palette.png)
+![Command Palette](/images/wsl/command_palette.png)
 
 Search for "Terminal default profile"
 
-![Search for Default Terminal Profile](images/wsl/search_for_default_terminal_profile.png)
+![Search for Default Terminal Profile](/images/wsl/search_for_default_terminal_profile.png)
 
 You will see a list of terminal profiles. Select "Ubuntu 20.04-WSL", or something similar.
 
 Close VS Code and restart it. You should see that the default terminal profile has changed to "wsl" and Ubuntu is loaded on startup.
 
-![Default WSL Terminal Profile](images/wsl/wsl_terminal_profile.png)
+![Default WSL Terminal Profile](/images/wsl/wsl_terminal_profile.png)
 
 ### Create Sample Program
 
@@ -264,7 +264,7 @@ git init
 
 You will see the text _Initialized empty Git repository in /mnt/c/Users/harri/software_development/.git/_.
 
-![Initialize Git Repository](images/wsl/initialize_git.png)
+![Initialize Git Repository](/images/wsl/initialize_git.png)
 
 We can now track any changes that will be made on _hello_world.py_. To see that the file is actually being tracked, run this other command in the terminal:
 
@@ -272,7 +272,7 @@ We can now track any changes that will be made on _hello_world.py_. To see that 
 git status
 ```
 
-![See Tracked Files](images/wsl/git_status.png)
+![See Tracked Files](/images/wsl/git_status.png)
 
 The "redness" of our file means that git is tracking it. We can add the new changes we have made in the file by running:
 
@@ -286,7 +286,7 @@ git status
 
 You will see that the file changes from "red" to "green".
 
-![Add Changes to Version Control](images/wsl/git_add.png)
+![Add Changes to Version Control](/images/wsl/git_add.png)
 
 Before we can make any more changes to this file, we need to commit it to version control and describe what the change is all about.
 
@@ -296,7 +296,7 @@ git commit -m 'Create a new python file used to display some text'
 
 You will notice that the terminal will return an error.
 
-![Git Error](images/wsl/git_commit_error_message.png)
+![Git Error](/images/wsl/git_commit_error_message.png)
 
 This does not mean that the command we have run is wrong. Git requires us to do a bit more configuration before proceeding. If you would like to learn more on how to use Git, check out these two resources:
 - [Install and Configure Git In Ubuntu](https://medium.com/r/?url=https%3A%2F%2Fwww.gitauharrison.com%2Farticles%2Fgithub-ssh)
