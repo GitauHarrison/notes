@@ -2,7 +2,7 @@
 
 This repository holds all the notes of the things I have learnt. Anyone else can use it to learn the very same things. 
 
-## Articles
+## Flask-focused Articles
 
 1. [How to deploy to Heroku](deploy_to_heroku.md)
 2. [How to use GitHub SSH](github_ssh.md)
@@ -45,9 +45,10 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 38. [Getting starated with PostgreSQL](databases/postgresql.md)
 39. [Joined Table Inheritance](databases/joined_table_inheritance.md)
 
-## Additional Articles
+## General Articles
 
 1. [Getting started with the Windows subsystem for Linux](non_technical_articles/wsl.md)
+2. [Integer conversion to binary using Python](non_technical_articles/convert_integers_to_binary_using_python.md)
 
 ## Demo Projects
 
