@@ -11,7 +11,7 @@ There are the two ways you can connect to PostreSQL:
 
 For reference, these are the topics we will cover in the entire database tutorial:
 
-- [PostgreSQL Overview](postgresql.md) (this article)
+- [PostgreSQL Overview](postgresql.md)
 - [Install PostgreSQL](install_postgresql.md)
 - [Getting Started with PostgreSQL](getting_started_with_postgresql.md)
 
@@ -65,7 +65,7 @@ postgres=# CREATE USER muthoni;
 CREATE ROLE
 ```
 
-The CREATE USER query is an alias (which means "an assumed identity") of CREATE ROLE <name> WITH LOGIN; If you are curious how many users you have in the database, you can run this command:
+The `CREATE USER` query is an alias (which means "an assumed identity") of `CREATE ROLE <name> WITH LOGIN;` If you are curious how many users you have in the database, you can run this command:
 
 ```python
 postgres=# \du
@@ -77,11 +77,9 @@ postgres=# \du
  postgres    |               Superuser, Create role, Create DB, Replication, Bypass RLS | {}
 ```
 
-From a security stanpoint, it is very dangerous to have a user with superuser privileges because this user is able to bypass all checks. You are advised to avoid the superuser unless it is necessary or be VERY careful.
-
 ## Create a Super User
 
-Let us create another user with superuser privileges:
+From a security stanpoint, it is very dangerous to have a user with superuser privileges because this user is able to bypass all checks. You are advised to avoid the superuser unless it is necessary or be VERY careful when working with this user. Let us create another user with superuser privileges:
 
 ```python
 postgres=# CREATE USER wangare SUPERUSER;

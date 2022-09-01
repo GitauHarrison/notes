@@ -17,6 +17,6 @@ There are the two ways you can connect to PostreSQL:
 
 For reference, these are the topics we will cover in the entire database tutorial:
 
-- [PostgreSQL Overview](postgresql.md) (this article)
+- [PostgreSQL Overview](postgresql.md)
 - [Install PostgreSQL](install_postgresql.md)
 - [Getting Started with PostgreSQL](getting_started_with_postgresql.md)
