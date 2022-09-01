@@ -4,9 +4,9 @@ Now that you have a brief understanding of what a database is, you know the hist
 
 For reference, these are the topics we will cover in the entire database tutorial:
 
-- [PostgreSQL Overview](postgresql.md)
-- [Install PostgreSQL and DBeaver](install_postgresql_and_dbeaver.md) (this article)
-- [Getting Started with PostgreSQL](getting_started_with_postgresql.md)
+- [PostgreSQL Overview](/databases/postgresql.md)
+- [Install PostgreSQL and DBeaver](/databases/install_postgresql.md) (this article)
+- [Getting Started with PostgreSQL](/databases/getting_started_with_postgresql.md)
 
 ### Table of Contents
 

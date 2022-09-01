@@ -11,9 +11,9 @@ There are two ways you can connect to PostgreSQL:
 
 For reference, these are the topics we will cover in the entire database tutorial:
 
-- [PostgreSQL Overview](postgresql.md)
-- [Install PostgreSQL](install_postgresql.md)
-- [Getting Started with PostgreSQL](getting_started_with_postgresql.md)
+- [PostgreSQL Overview](/databases/postgresql.md)
+- [Install PostgreSQL](/databases/install_postgresql.md)
+- [Getting Started with PostgreSQL](/databases/getting_started_with_postgresql.md)
 
 
 ## Connecting to the PostgreSQL Server Using `psql`
