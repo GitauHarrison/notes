@@ -16,7 +16,18 @@ For reference, these are the topics we will cover in the entire database tutoria
 - [Getting Started with PostgreSQL](/databases/getting_started_with_postgresql.md)
 
 
-## Connecting to the PostgreSQL Server Using `psql`
+### Table of Contents
+
+Throughout this article, we will look at how to:
+
+1. [Connect to the PostgreSQL Server Using `psql`](#connect-to-the-postgresql-server-using-psql)
+2. [Create Another User](#create-another-user)
+3. [Create A Super User](#create-a-super-user)
+4. [Create User Password](#create-user-password)
+5. [Change User Password](#change-user-password)
+6. [Connect to PostgreSQL As Another User](#connect-to-postgresql-as-another-user)
+
+## Connect to the PostgreSQL Server Using `psql`
 
 Now that you have installed postgreSQL, the first thing you want to do is to connect to its server. Every installation creates a default user called `postgres` who is associated with the default Postgres role. We will begin by connecting to the server using this user.
 
@@ -147,3 +158,17 @@ You can then restart your PostgreSQL server:
 ```python
 $ sudo service postgresql restart
 ```
+
+## Connect to PostgreSQL As Another User
+
+So far, we have been using the default `postgres` user to access `psql`. Now that we have other users created and their passwords set up, let us try to log in as these users.
+
+```python
+$ sudo -u muthoni psql
+
+# Output
+sudo: unknown user: muthoni
+sudo: unable to initialize policy plugin
+```
+
+Apparently, _muthoni_ is not recognized from the attempt above.
