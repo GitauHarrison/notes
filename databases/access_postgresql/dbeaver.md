@@ -10,7 +10,7 @@ These are software applications that help users to manage SQL server infrastruct
 
 It is therefore important to choose and have the right tool that can speed up database-related tasks and make you more productive. There are many tools available in the market that can be used to work with a database. To name two, we have [pgAdmin](https://www.pgadmin.org/) and [DBeaver](https://dbeaver.io). I will use DBeaver throughout the subsquent articles as we strive to understand SQL in-depth.
 
-There are the two ways you can connect to PostreSQL:
+There are the two ways you can connect to PostgreSQL:
 
 1. [Using `psql`](databases/access_postgresql/psql.md)
 2. [Using SQL client software application and database administration tool](databases/access_postgresql/dbeaver.md) (this article)

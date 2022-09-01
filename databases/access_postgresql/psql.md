@@ -4,7 +4,7 @@
 
 **Psql** is a terminal-based front-end for PostgreSQL. It allows you to issue queries interactively. Once you have connected to the PostgreSQL server, you can begin querying immediately. Besides basic querries, you can also issue certain commands such as `\d` to list all tables in the database, `\c dbname` to connect to another database and `\q` to quit from the postgres shell. You can access a text editor inside `psql` using `\e`. Run `\?` to see what other commands are available for use.
 
-There are the two ways you can connect to PostreSQL:
+There are the two ways you can connect to PostgreSQL:
 
 1. [Using `psql`](databases/access_postgresql/psql.md) (this article)
 2. [Using SQL client software application and database administration tool](databases/access_postgresql/dbeaver.md)
