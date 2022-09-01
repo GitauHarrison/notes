@@ -46,8 +46,8 @@ From the [PostgreSQL Overview](postgresql.md) article, you may have noticed that
 
 There are two ways we can access PostgreSQL. Check them using the links below:
 
-1. [Using `psql`](databases/access_postgresql/psql.md)
-2. [Using SQL client software application and database administration tool](databases/access_postgresql/dbeaver.md)
+1. [Using `psql`](/databases/access_postgresql/psql.md)
+2. [Using SQL client software application and database administration tool](/databases/access_postgresql/dbeaver.md)
 
 You can choose one over the other based on your personal preferrance, but it is good to know of both ways.
 
