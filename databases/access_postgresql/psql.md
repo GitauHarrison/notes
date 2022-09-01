@@ -4,10 +4,10 @@
 
 **Psql** is a terminal-based front-end for PostgreSQL. It allows you to issue queries interactively. Once you have connected to the PostgreSQL server, you can begin querying immediately. Besides basic querries, you can also issue certain commands such as `\d` to list all tables in the database, `\c dbname` to connect to another database and `\q` to quit from the postgres shell. You can access a text editor inside `psql` using `\e`. Run `\?` to see what other commands are available for use.
 
-There are the two ways you can connect to PostgreSQL:
+There are two ways you can connect to PostgreSQL:
 
-1. [Using `psql`](databases/access_postgresql/psql.md) (this article)
-2. [Using SQL client software application and database administration tool](databases/access_postgresql/dbeaver.md)
+1. [Using `psql`](/databases/access_postgresql/psql.md) (this article)
+2. [Using SQL client software application and database administration tool](/databases/access_postgresql/dbeaver.md)
 
 For reference, these are the topics we will cover in the entire database tutorial:
 
@@ -18,7 +18,7 @@ For reference, these are the topics we will cover in the entire database tutoria
 
 ## Connecting to the PostgreSQL Server Using `psql`
 
-Now that you have installed postgreSQL, that first thing you want to do is to connect to its server. Every installation creates a default user called `postgres` who is associated with the default Postgres role. We will begin by connecting to the server using this user.
+Now that you have installed postgreSQL, the first thing you want to do is to connect to its server. Every installation creates a default user called `postgres` who is associated with the default Postgres role. We will begin by connecting to the server using this user.
 
 ```python
 $ psql
@@ -41,13 +41,13 @@ $ sudo service postgresql restart
 * Restarting PostgreSQL 14 database server
 ```
 
-With the connection created, we can now access the `psql` command to access the interactive terminal for PostgreSQL. This command is normally used in conjunction with a user.
+With the connection created, we can now use the `psql` command to access the interactive terminal for PostgreSQL. This command is normally used in conjunction with a user.
 
 ```python
 $ sudo -u postgres psql
 ```
 
-We are using the default `postgres` user to access PostgreSQL terminal. You will be asked to provide a password to continue since you are using `sudo` command. When you do so, your terminal will change to this:
+We are using the default `postgres` user to access PostgreSQL terminal. You will be asked to provide a password to continue since you are using the `sudo` command. When you do so, your terminal will change to this:
 
 ```python
 psql (14.4 (Ubuntu 14.4-1.pgdg20.04+1))
@@ -65,7 +65,9 @@ postgres=# CREATE USER muthoni;
 CREATE ROLE
 ```
 
-The `CREATE USER` query is an alias (which means "an assumed identity") of `CREATE ROLE <name> WITH LOGIN;` If you are curious how many users you have in the database, you can run this command:
+The `CREATE USER` query is an alias (which means "an assumed identity") of `CREATE ROLE <name> WITH LOGIN;`. 
+
+If you are curious how many users you have in the database, you can run this command:
 
 ```python
 postgres=# \du
@@ -95,7 +97,7 @@ CREATE ROLE
 
 The query above is the same as `CREATE ROLE <name> LOGIN SUPERUSER;`.
 
-Alternatively, you can simple create a superuser from the default Ubuntu terminal:
+Alternatively, you can quickly create a superuser from the default Ubuntu terminal:
 
 ```python
 $ sudo -u postgres createuser --superuser <name>
@@ -103,14 +105,14 @@ $ sudo -u postgres createuser --superuser <name>
 
 ## Create User Password
 
-With the uses in place, the next step would be to create passwords for them. This is to ensure that only them, and those privy to the credential, will be able to access the database. From `psql`, we can do this:
+With the users in place, the next step would be to create passwords for them. This is to ensure that only them, and those privy to the credential, will be able to access the database. From `psql`, we can do this:
 
 ```python
 postgres=# CREATE USER chico WITH PASSWORD 'hard-to-guess';
 CREATE ROLE
 ```
 
-If the user already exists, we can the ALTER command:
+If the user already exists, we can use the `ALTER` command:
 
 ```python
 postgres=# ALTER USER muthoni WITH PASSWORD 'difficult-password';
@@ -119,7 +121,7 @@ ALTER ROLE
 
 ## Change User Password
 
-You may forget your user password, or you would simple want to modify it as a good security practice. Let us do this:
+In the event you forget the password used by a given user, or you would simply want to modify it as a good security practice, PostgreSQL provides a way to recover your account:
 
 ```python
 $ sudo -u postgres psql
@@ -131,6 +133,8 @@ Enter new password for user "muthoni":
 Enter it again:
 postgres=#
 ```
+
+You begin by accessing the default `postgres` user, then issue the command `\password` followed by the _name_ of a user. You will be prompted to enter and confirm a new password.
 
 Or you may do everything from the default Ubuntu terminal as follows:
 
