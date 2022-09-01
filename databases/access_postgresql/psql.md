@@ -9,7 +9,7 @@ There are the two ways you can connect to PostreSQL:
 1. [Using `psql`](databases/access_postgresql/psql.md) (this article)
 2. [Using SQL client software application and database administration tool](databases/access_postgresql/dbeaver.md)
 
-For reference, these are the topics we will cover in this tutorial:
+For reference, these are the topics we will cover in the entire database tutorial:
 
 - [PostgreSQL Overview](postgresql.md) (this article)
 - [Install PostgreSQL](install_postgresql.md)

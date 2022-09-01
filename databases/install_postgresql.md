@@ -2,7 +2,7 @@
 
 Now that you have a brief understanding of what a database is, you know the history of PostgreSQL, and are familiar with some of the advantages of using PostgreSQL, you are ready to start using it. We will begin by learning how to install it in our operating system. We will also be using the DBeaver client software to help us get off the ground quickly.
 
-For reference, these are the topics we will cover in this tutorial:
+For reference, these are the topics we will cover in the entire database tutorial:
 
 - [PostgreSQL Overview](postgresql.md)
 - [Install PostgreSQL and DBeaver](install_postgresql_and_dbeaver.md) (this article)

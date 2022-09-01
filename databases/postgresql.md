@@ -2,7 +2,7 @@
 
 Welcome to the PostgreSQL tutorial! This tutorial will walk you through the basics of using PostgreSQL, relational database concepts and the SQL language. The only prerequisite for you to follow along is basic ability to use a computer.
 
-For reference, these are the topics we will cover in this tutorial:
+For reference, these are the topics we will cover in the entire database tutorial:
 
 - [PostgreSQL Overview](postgresql.md) (this article)
 - [Install PostgreSQL](install_postgresql.md)
