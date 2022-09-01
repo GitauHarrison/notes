@@ -5,7 +5,7 @@ Welcome to the PostgreSQL tutorial! This tutorial will walk you through the basi
 For reference, these are the topics we will cover in this tutorial:
 
 - [PostgreSQL Overview](postgresql.md) (this article)
-- [Install PostgreSQL and DBeaver](install_postgresql_and_dbeaver.md)
+- [Install PostgreSQL](install_postgresql.md)
 - [Getting Started with PostgreSQL](getting_started_with_postgresql.md)
 
 

@@ -89,7 +89,7 @@ Find Ubuntu 20.04.4 LTS and click on it.
 
 ![Find Ubuntu 20.04 LTS](/images/wsl/get_ubuntu.png)
 
-Click on "Get" as seen in the image above to begin the download process. This file is large and will, therefore, take some time to fully download. After the installation, open Ubuntu 20.04.4. You will automatically get a prompt after the install, but if you missed it, such for Ubuntu in the Start Menu.
+Click on "Get" as seen in the image above to begin the download process. This file is large and will, therefore, take some time to fully download. After the installation, open Ubuntu 20.04.4. You will automatically get a prompt after the install, but if you missed it, search for Ubuntu in the Start Menu.
 
 ![Open Ubuntu 20.04 LTS](/images/wsl/run_ubuntu.png)
 
