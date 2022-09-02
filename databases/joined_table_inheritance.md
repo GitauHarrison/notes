@@ -128,7 +128,7 @@ class Parent(User):
 
 ```
 
-The base class is `User` and the subclasses are `Student`, `Teacher`, and `Parent`. The `__mapper_args__` dictionary is used to specify the polymorphic identity and the polymorphic on column. The base class in a joined table inheritance hierarchy is configured  with additional arguments that will refer to the polymorphic discriminator column as well as Pthe identifier for the base class.
+The base class is `User` and the subclasses are `Student`, `Teacher`, and `Parent`. The `__mapper_args__` dictionary is used to specify the polymorphic identity and the polymorphic on column. The base class in a joined table inheritance hierarchy is configured  with additional arguments that will refer to the polymorphic discriminator column as well as the identifier for the base class.
 
 From the base class example above, an additional column `type` is established to act as the discriminator. It is configured using the `mapper.polymorphic_on` parameter. This column will store a value which will be used to indicate the type of object represented within the row. This column's value may be of any datatype, though string and integer are the most common.  The `polymorphic_identity` parameter is used to specify the value or the actual data that will be stored in the `type` column when an instance of the base class is created.
 
@@ -190,7 +190,7 @@ class Student(User):
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     age = db.Column(db.Integer)
 
-    school_id = db.Column(db.Integer, demployeeb.ForeignKey('school.id'))
+    school_id = db.Column(db.Integer, db.ForeignKey('school.id'))
     school = db.relationship('School', backref='student', lazy='dynamic')
 
     __mapper_args__ = {
@@ -240,9 +240,7 @@ The `with_polymorphic()` function is used to provide a means of specifying which
 There are two variants to this functions:
 
 - `mapper.with_polymorphic` in conjunction with `mapper.polymorphic_load` option. See [Setting `with_polymorphic` at mapper configuration time](#setting-with_polymorphic-at-mapper-configuration-time).
-- Query-level such that we have `query.with_polymorphic()`. See [Using `with_polymorphic`](#using-with_polymorphic) subsection.
-
-To understand the difference between `with_polymorphic()` function and the `query.with_polymorphic()` method, see [Setting `with_polymorphic` against a query](#setting-`with_polymorphic`-against-a-query) section.
+- Query-level such that we have `query.with_polymorphic()`. See [Setting `with_polymorphic` against a query](#setting-`with_polymorphic`-against-a-query) section.
 
 
 ### Using `with_polymorphic`
