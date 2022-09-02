@@ -240,7 +240,7 @@ The `with_polymorphic()` function is used to provide a means of specifying which
 There are two variants to this functions:
 
 - `mapper.with_polymorphic` in conjunction with `mapper.polymorphic_load` option. See [Setting `with_polymorphic` at mapper configuration time](#setting-with_polymorphic-at-mapper-configuration-time).
-- Query-level such that we have `query.with_polymorphic()`. See [Setting `with_polymorphic` against a query](#setting-`with_polymorphic`-against-a-query) section.
+- Query-level such that we have `query.with_polymorphic()`. See [Setting `with_polymorphic` against a query](#setting-with_polymorphic-against-a-query) section.
 
 
 ### Using `with_polymorphic`
