@@ -161,7 +161,7 @@ $ sudo service postgresql restart
 
 ## Connect to PostgreSQL As Another User
 
-So far, we have been using the default `postgres` user to access `psql`. Now that we have other users created and their passwords set up, let us try to log in as these users.
+So far, we have been using the default `postgres` user to access the interactive SQL terminal. Now that we have other users created and their passwords set up, let us try to log in as these users.
 
 ```python
 $ sudo -u muthoni psql
