@@ -92,7 +92,7 @@ postgres=# \du
 
 ## Create a Super User
 
-From a security stanpoint, it is very dangerous to have a user with superuser privileges because this user is able to bypass all checks. You are advised to avoid the superuser unless it is necessary or be VERY careful when working with this user. Let us create another user with superuser privileges:
+From a security standpoint, it is very dangerous to have a user with superuser privileges because this user is able to bypass all checks. You are advised to avoid the superuser unless it is necessary or be VERY careful when working with this user. Let us create another user with superuser privileges:
 
 ```python
 postgres=# CREATE USER wangare SUPERUSER;
