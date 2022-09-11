@@ -294,10 +294,6 @@ entity = with_polymorphic(User, Student)
 entity = with_polymorphic(User, '*')
 ```
 
-### Using aliases with `with_polymorphic`
-
-The function also provides 'aliasing
-
 
 ### Setting `with_polymorphic` at mapper configuration time
 
