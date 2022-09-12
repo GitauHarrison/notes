@@ -177,9 +177,7 @@ Apparently, _muthoni_ is not recognized from the attempt above. What we are tryi
 $ sudo -u <database> psql
 ```
 
-What we need to do is to connect to an existing database using an existing user. Two things are needed: database and user for a connection to be established.
-
-Below, I will show you two approaches to Access and Authenticate users when working with postgreSQL. If you would like to gain some background knowledge on the two methods, read [How to Secure PostgreSQL](/databases/02_how_to_secure_postgresql.md).
+What we need to do is to connect to an existing database using an existing user. Two things are needed: database and user for a connection to be established. Below, I will show you two approaches to Access and Authenticate users when working with postgreSQL. If you would like to gain some background knowledge on the two methods, read [How to Secure PostgreSQL](/databases/02_how_to_secure_postgresql.md).
 
 
 ### Approach 1: Machine Access
@@ -200,14 +198,6 @@ testdb=>
 ```
 
 I also have another user called _muthoni_. If I try to access an existing database using this user, access is denied:
-
-```python
-$ sudo psql -u muthoni testdb
-
-# Output
-sudo: unknown user: muthoni
-sudo: unable to initialize policy plugin
-```
 
 ```python
 $ psql -d <database> -U muthoni
