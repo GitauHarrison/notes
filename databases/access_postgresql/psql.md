@@ -177,11 +177,142 @@ Apparently, _muthoni_ is not recognized from the attempt above. What we are tryi
 $ sudo -u <database> psql
 ```
 
+What we need to do is to connect to an existing database using an existing user. Two things are needed: database and user for a connection to be established.
+
 Below, I will show you two approaches to Access and Authenticate users when working with postgreSQL. If you would like to gain some background knowledge on the two methods, read [How to Secure PostgreSQL](how_to_secure_postgresql.md).
 
-### Approach 1: Socket Connection
 
-If you would like to change to another user, run the command:
+### Approach 1: Machine Access
+
+The idea here is to connect to postgreSQL just as you would any other file in your Unix machine, since postgreSQL is a special file within the local file system. This means that whoever wants to access them has to have the access rights just as any other user of the machine.
+
+The default user of my machine is _harry_. Therefore, running `sudo psql -u harry <database>` will take me directly to the said database without asking for a password.
+
+```python
+$ sudo psql -u harry testdb
+
+# No password asked
+
+psql (14.5 (Ubuntu 14.5-1.pgdg20.04+1))
+Type "help" for help.
+
+testdb=> 
+```
+
+I also have another user called _muthoni_. If I try to access an existing database using this user, access is denied:
+
+```python
+$ sudo psql -u muthoni testdb
+
+# Output
+sudo: unknown user: muthoni
+sudo: unable to initialize policy plugin
+```
+
+```python
+$ psql -d <database> -U muthoni
+
+# Output
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  Peer authentication failed for user "muthoni"
+```
+
+This is a problem with the `pg_hba.conf` file. We need to locate this file since we will be making changes to it to fix the "Peer" error.
+
+Run this command to see where it is located:
+
+```python
+$ locate pg_hba.conf
+
+# Output
+/etc/postgresql/14/main/pg_hba.conf
+/usr/share/postgresql/14/pg_hba.conf.sample
+```
+
+Two locations have been found. We now need to make some changes in the file. Open the file using `nano`:
+
+```python
+$ sudo nano /etc/postgresql/14/main/pg_hba.conf
+```
+
+The contents of the file is largely commented out. Scrol to the bottom of the file until you get to "Database administrative login by Unix domain socket".
+
+You will see these two lines:
+
+```python
+# Line 1
+local      all      postgres      peer
+
+# Line 2
+local      all      all           peer
+```
+
+The general format of the `pg_hba.conf` file is a set of records, one per line. Blank lines are ignored, as is any text after the # comment character. Each record specifies a:
+- connection type,
+- client IP address range (if relevant for the connection type),
+- database name,
+- user name,
+- authentication method to be used for connections matching these parameters. 
+
+What we want to do is to change the authentication method from _peer_ to _md5_ (which enforces passwords). In line 1, all users can access the postgres database throught the peer method. In line 2, all users can access all databases using the peer method.
+
+Using your direction keys on your keyboard, navigate to where "peer" is and change these two instances to "md5". The new lines will become:
+
+```python
+# Line 1
+local      all      postgres      md5
+
+# Line 2
+local      all      all           md5
+```
+
+With these changes, we need to restart the postgreSQL server:
+
+```python
+$ sudo service postgresql restart
+```
+
+Let us try login as postgres user:
+
+```python
+$ psql -U postgres
+
+# Enter your postgres password.
+# Here, we are connecting to the postgres database as postgres user
+
+Password for user postgres: 
+psql (14.5 (Ubuntu 14.5-1.pgdg20.04+1))
+Type "help" for help.
+
+postgres=# 
+```
+
+We can also login as _muthoni_:
+
+```python
+$ psql -d testdb -U muthoni
+
+# Enter "muthoni"'s password
+# We are accessing the testdb using muthoni
+
+Password for user muthoni: 
+psql (14.5 (Ubuntu 14.5-1.pgdg20.04+1))
+Type "help" for help.
+
+testdb=> 
+```
+
+If you are wondering what "peer" or "md5" means, these authentication methods are used to provide various levels of access.
+
+- **Trust**: anyone who can connect to the server is authorized to access the database
+- **Peer**: user a client's OS user name as database user name to access it
+- **md5**: password-based authentication
+
+The `pg_hba.conf` file [documentation](https://www.postgresql.org/docs/current/auth-pg-hba-conf.html) provides great insight.
+
+### Approach 2: Remote Access Using TCP/IP
+
+
+If you would like to change to another user, run the command below in the default terminal prompt:
 
 ```python
 $ psql -h localhost -d <database> <user> -p 5234
@@ -193,7 +324,7 @@ Take this example:
 $ psql -h localhost testdb muthoni -p 5234
 ```
 
-I will be asked to enter _muthoni_'s password. Once accepted, the terminal will switch to testdb prompt:
+I will be asked to enter _muthoni_'s password. Once accepted, the terminal will switch to _testdb_ prompt:
 
 ```python
 psql (14.5 (Ubuntu 14.5-1.pgdg20.04+1))
@@ -214,7 +345,7 @@ You are now connected to database "anotherdb" as user "muthoni".
 anotherdb=> 
 ```
 
-The 'c' stands for 'connect'. We are connecting to `anotherdb` as _muthoni_. If you would like to switch to another database as another user, not _muthoni_, then you need to append the user's name to `\c`.
+The 'c' stands for 'connect'. We are connecting to `anotherdb` as user _muthoni_. If you would like to switch to another database as another user, not _muthoni_, then you need to append the user's name to `\c`.
 
 ```python
 testdb=> \c testdb harry
