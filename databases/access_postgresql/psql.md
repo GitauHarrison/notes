@@ -156,7 +156,7 @@ $ sudo - postgres psql -c "ALTER USER muthoni PASSWORD 'new-password';"
 You can then restart your PostgreSQL server:
 
 ```python
-$ sudo service postgresql restart
+$ sudo service postgresql start
 ```
 
 ## Connect to PostgreSQL As Another User
@@ -171,4 +171,53 @@ sudo: unknown user: muthoni
 sudo: unable to initialize policy plugin
 ```
 
-Apparently, _muthoni_ is not recognized from the attempt above.
+Apparently, _muthoni_ is not recognized from the attempt above. What we are trying to do here is actually to connect to a database called _muthoni_ which at the moment does not exist. Note that when we run `sudo -u postgres psql` the psql prompt changes to `postgres=#` meaning we have connected to the `postgres` database using the default `postgres` user. The format used above is:
+
+```python
+$ sudo -u <database> psql
+```
+
+Below, I will show you two approaches to Access and Authenticate users when working with postgreSQL. If you would like to gain some background knowledge on the two methods, read [How to Secure PostgreSQL](how_to_secure_postgresql.md).
+
+### Approach 1: Socket Connection
+
+If you would like to change to another user, run the command:
+
+```python
+$ psql -h localhost -d <database> <user> -p 5234
+```
+
+Take this example:
+
+```python
+$ psql -h localhost testdb muthoni -p 5234
+```
+
+I will be asked to enter _muthoni_'s password. Once accepted, the terminal will switch to testdb prompt:
+
+```python
+psql (14.5 (Ubuntu 14.5-1.pgdg20.04+1))
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
+Type "help" for help.
+
+testdb=> 
+```
+
+If you would like to switch to another database using _muthoni_, simply run:
+
+```python
+testdb=> \c anotherdb
+
+# Output
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
+You are now connected to database "anotherdb" as user "muthoni".
+anotherdb=> 
+```
+
+The 'c' stands for 'connect'. We are connecting to `anotherdb` as _muthoni_. If you would like to switch to another database as another user, not _muthoni_, then you need to append the user's name to `\c`.
+
+```python
+testdb=> \c testdb harry
+```
+
+I will be asked to provide _harry_'s password since this user is password-protected. A successful login will connect _harry_ to _test_db_.
