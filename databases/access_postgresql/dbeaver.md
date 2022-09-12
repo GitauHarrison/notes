@@ -19,7 +19,7 @@ For reference, these are the topics we will cover in the entire database tutoria
 
 - [PostgreSQL Overview](/databases/00_postgresql_overview.md)
 - [Install PostgreSQL](/databases/01_install_postgresql.md)
-- [Getting Started with PostgreSQL](/02_databases/getting_started_with_postgresql.md)
+- [Getting Started with PostgreSQL](/03_databases/getting_started_with_postgresql.md)
 
 ### Table of Contents
 

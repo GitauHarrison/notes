@@ -6,7 +6,7 @@ For reference, these are the topics we will cover in the entire database tutoria
 
 - [PostgreSQL Overview](00_postgresql_overview.md) (this article)
 - [Install PostgreSQL](01_install_postgresql.md)
-- [Getting Started with PostgreSQL](02_getting_started_with_postgresql.md)
+- [Getting Started with PostgreSQL](03_getting_started_with_postgresql.md)
 
 
 ## What is a Database

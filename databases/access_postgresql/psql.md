@@ -13,7 +13,7 @@ For reference, these are the topics we will cover in the entire database tutoria
 
 - [PostgreSQL Overview](/databases/00_postgresql_overview.md)
 - [Install PostgreSQL](/databases/01_install_postgresql.md)
-- [Getting Started with PostgreSQL](/databases/02_getting_started_with_postgresql.md)
+- [Getting Started with PostgreSQL](/databases/03_getting_started_with_postgresql.md)
 
 
 ### Table of Contents
@@ -179,7 +179,7 @@ $ sudo -u <database> psql
 
 What we need to do is to connect to an existing database using an existing user. Two things are needed: database and user for a connection to be established.
 
-Below, I will show you two approaches to Access and Authenticate users when working with postgreSQL. If you would like to gain some background knowledge on the two methods, read [How to Secure PostgreSQL](how_to_secure_postgresql.md).
+Below, I will show you two approaches to Access and Authenticate users when working with postgreSQL. If you would like to gain some background knowledge on the two methods, read [How to Secure PostgreSQL](/databases/02_how_to_secure_postgresql.md).
 
 
 ### Approach 1: Machine Access
