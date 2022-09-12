@@ -319,7 +319,7 @@ postgres=# SHOW port
 Take this example:
 
 ```python
-$ psql -h localhost testdb muthoni -p 5234
+$ psql -h localhost testdb muthoni -p 5432
 ```
 
 I will be asked to enter _muthoni_'s password. Once accepted, the terminal will switch to _testdb_ prompt:
