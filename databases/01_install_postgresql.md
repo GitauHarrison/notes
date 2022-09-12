@@ -74,7 +74,7 @@ The command above will list all dependant packages of postgres (or postgresql). 
 $ sudo apt --purge remove package_name package_name
 ```
 
-`purge` completely erases traces of the configuration files of a program from the system. It is particularly useful when you want to "start all over again" with an application because you messed up the configuration. See this discussion on [StackOverfolow](https://askubuntu.com/a/187891/789542).
+`purge` completely erases traces of the configuration files of a program from the system. It is particularly useful when you want to "start all over again" with an application because you messed up the configuration. See this discussion on [StackExchange (askubuntu)](https://askubuntu.com/a/187891/789542).
 
 Now that everything has been uninstalled, you can verify the uninstallation process by running:
 

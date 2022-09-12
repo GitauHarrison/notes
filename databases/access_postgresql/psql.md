@@ -46,7 +46,7 @@ psql: error: connection to the server on socket "/var/run/posgresql..." failed: 
 What this means is that our server is currently not running. To start it, we will run:
 
 ```python
-$ sudo service postgresql restart
+$ sudo service postgresql start
 
 # Output
 * Restarting PostgreSQL 14 database server
@@ -58,7 +58,7 @@ With the connection created, we can now use the `psql` command to access the int
 $ sudo -u postgres psql
 ```
 
-We are using the default `postgres` user to access PostgreSQL terminal. You will be asked to provide a password to continue since you are using the `sudo` command. When you do so, your terminal will change to this:
+We are using the default `postgres` user to access PostgreSQL terminal. We will be asked to provide a password to continue since we are using the `sudo` command. When we do so, our terminal will change to this:
 
 ```python
 psql (14.4 (Ubuntu 14.4-1.pgdg20.04+1))
@@ -177,7 +177,7 @@ Apparently, _muthoni_ is not recognized from the attempt above. What we are tryi
 $ sudo -u <database> psql
 ```
 
-What we need to do is to connect to an existing database using an existing user. Two things are needed: database and user for a connection to be established. Below, I will show you two approaches to Access and Authenticate users when working with postgreSQL. If you would like to gain some background knowledge on the two methods, read [How to Secure PostgreSQL](/databases/02_how_to_secure_postgresql.md).
+What we need to do is to connect to an existing database using an existing user. Two things are needed: a database and a user for a connection to be established. Below, I will show you two approaches to Access and Authenticate users when working with postgreSQL. If you would like to gain some background knowledge on the two methods, read [How to Secure PostgreSQL](/databases/02_how_to_secure_postgresql.md).
 
 
 ### Approach 1: Machine Access
@@ -222,7 +222,7 @@ Two locations have been found. We now need to make some changes in the file. Ope
 $ sudo nano /etc/postgresql/14/main/pg_hba.conf
 ```
 
-The contents of the file is largely commented out. Scroll to the bottom of the file until you get to "Database administrative login by Unix domain socket". You will see these two lines:
+The content of the file is largely commented out. Scroll to the bottom of the file until you get to "Database administrative login by Unix domain socket". You will see these two lines:
 
 ```python
 # Line 1
