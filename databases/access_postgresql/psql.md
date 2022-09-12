@@ -11,9 +11,9 @@ There are two ways you can connect to PostgreSQL:
 
 For reference, these are the topics we will cover in the entire database tutorial:
 
-- [PostgreSQL Overview](/databases/postgresql.md)
-- [Install PostgreSQL](/databases/install_postgresql.md)
-- [Getting Started with PostgreSQL](/databases/getting_started_with_postgresql.md)
+- [PostgreSQL Overview](/databases/00_postgresql_overview.md)
+- [Install PostgreSQL](/databases/01_install_postgresql.md)
+- [Getting Started with PostgreSQL](/databases/02_getting_started_with_postgresql.md)
 
 
 ### Table of Contents
@@ -305,7 +305,7 @@ If you are wondering what "peer" or "md5" means, these authentication methods ar
 
 - **Trust**: anyone who can connect to the server is authorized to access the database
 - **Peer**: user a client's OS user name as database user name to access it
-- **md5**: password-based authentication
+- **md5**: password-based authentication, hashed using md5
 
 The `pg_hba.conf` file [documentation](https://www.postgresql.org/docs/current/auth-pg-hba-conf.html) provides great insight.
 

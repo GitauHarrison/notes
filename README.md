@@ -42,8 +42,8 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 36. [Create a YouTube Video Downloader](youtube_video_downloader.md)
 37. [Beautiful flask tables with Grid.js](flask_tables/gridjs.md)
 38. [Download Encrypted PDF Copy of Db Data](download_encrypted_pdf.md)
-38. [Getting starated with PostgreSQL](databases/postgresql.md)
-39. [Joined Table Inheritance](databases/joined_table_inheritance.md)
+38. [Getting starated with PostgreSQL](databases/00_postgresql_overview.md)
+39. [Joined Table Inheritance](databases/99_joined_table_inheritance.md)
 
 ## General Articles
 
