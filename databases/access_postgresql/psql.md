@@ -206,9 +206,7 @@ $ psql -d <database> -U muthoni
 psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  Peer authentication failed for user "muthoni"
 ```
 
-This is a problem with the `pg_hba.conf` file. We need to locate this file since we will be making changes to it to fix the "Peer" error.
-
-Run this command to see where it is located:
+This is a problem with the `pg_hba.conf` file. We need to locate this file since we will be making changes to it to fix the "Peer" error. Run this command to see where it is located:
 
 ```python
 $ locate pg_hba.conf
@@ -224,9 +222,7 @@ Two locations have been found. We now need to make some changes in the file. Ope
 $ sudo nano /etc/postgresql/14/main/pg_hba.conf
 ```
 
-The contents of the file is largely commented out. Scrol to the bottom of the file until you get to "Database administrative login by Unix domain socket".
-
-You will see these two lines:
+The contents of the file is largely commented out. Scroll to the bottom of the file until you get to "Database administrative login by Unix domain socket". You will see these two lines:
 
 ```python
 # Line 1
@@ -243,9 +239,9 @@ The general format of the `pg_hba.conf` file is a set of records, one per line. 
 - user name,
 - authentication method to be used for connections matching these parameters. 
 
-What we want to do is to change the authentication method from _peer_ to _md5_ (which enforces passwords). In line 1, all users can access the postgres database throught the peer method. In line 2, all users can access all databases using the peer method.
+What we want to do is to change the authentication method from _peer_ to _md5_ (which enforces passwords). In line 1, all users can access the postgres database through the peer method. In line 2, all users can access all databases using the peer method.
 
-Using your direction keys on your keyboard, navigate to where "peer" is and change these two instances to "md5". The new lines will become:
+Using the direction keys on your keyboard, navigate to where "peer" is and change these two instances to "md5". The new lines will become:
 
 ```python
 # Line 1
@@ -305,7 +301,19 @@ The `pg_hba.conf` file [documentation](https://www.postgresql.org/docs/current/a
 If you would like to change to another user, run the command below in the default terminal prompt:
 
 ```python
-$ psql -h localhost -d <database> <user> -p 5234
+$ psql -h localhost -d <database> <user> -p 5432
+```
+
+The `-h` option stands for host, `-d` for database and `-p` for port. Port 5432 is the default port. To know what port you would like to connect to, simply run:
+
+```python
+postgres=# SHOW port
+
+# Output
+ port 
+------
+ 5432
+(1 row)
 ```
 
 Take this example:
