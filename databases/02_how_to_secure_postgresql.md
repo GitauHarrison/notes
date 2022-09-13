@@ -33,6 +33,15 @@ It is necessary that both cloud providers as well as co-location facilities have
 
 ### Connection
 
+We will look at two ways to connect to the PostgreSQL server: through a [Unix Domain Socket (UDS)](#unix-domain-socket) or a [TCP/IP Socket](#tcpip-socket).
+
+#### Unix Domain Socket
+
+UDS are the default method to connect to a Postgres database on Unix-like platforms. These sockets are only accessible from the machine on which they are present, making them safer from remote attacks. These sockets appear as special files on the file system. Access is subject to the same access controls as other files, even though only write permissions are needed to use the socket. Sockets are always owned by the user that the postgres server is running as.
+
+For more flexibility, Postgres can create multiple sockets, though one is created by default. Configuration is done using the unix socket directories option, each of which directories can have different permissions so as to segregate users or applications and help to apply the principle of least privilege.
+
+#### TCP/IP Socket
 
 
 
