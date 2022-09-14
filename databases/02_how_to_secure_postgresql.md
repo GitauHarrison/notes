@@ -72,11 +72,73 @@ It's important to ensure that your use of TLS is secure as well. There are a num
 
 ## Authentication
 
+This comes after access, how we control users and how can or cannot connect to the server successfully using _pg_hba.conf_ configuration file. This file, found in the postgresql data directory, defines the access rules and authentication methods for the data server. The lines in this file are sequentially processed when a connection is being established. The first line that produces a match is usually used to dertermine the authentication method.
 
+### Example lines
+
+There are multiple formats for the lines in _pg_hba.conf_ file.
+
+```python
+local        test_db        sample_user        scram-sha-256
+```
+
+The line above will allow a _sample_user_ to connect to _test_db_ over a local UDS using the scram-sha-256.
+
+```python
+host        another_db        another_user        172.217.170.174        md5
+```
+
+This second line attempts to connect _another_user_ to _another_db_ from the address 172.217.170.174 using the md5 authentication method. The line formart usually is:
+
+- the connection type
+- the database name
+- the user name
+- the client network address/subnet (where needed)
+- the authentication method
+
+To ensure that the connection is encrypted, the network connections should use either the _hostssl_ or the _hostgssenc_ connection types. Below are some common authenitication types:
+
+#### Trust
+
+This method should be used with caution. It allows a matching client to connect to the server with no further authentication. This method is especially useful for testing and development on a local machine through UDS connection and where authorised users have access to the machine. In the event there is no other way to reset a server password, it is a useful mechanism. Once granted, the user is to be allowed to reset the password and the privilege revoked or disabled again.
+
+#### Peer and Ident
+
+Both are methods used to allow users to be authenticated by the underlying Operating System. PostgreSQL typically comes pre-configured to use peer authentication. The peer method is only available for local connections. When used, the server gets the user name from the operating system and checks that it matches the requested database user name.
+
+The ident method is available only for network connections. It works similarly to peer authentication, except that it relies on an ident server running on the client to confirm the user name. Both peer and ident allow the use of connection maps to handle acceptable mismatches between the username known to the client and that known to the database server.
+
+#### md5 and scram
+
+The preferred hashing mechanism for use with PostgreSQL has been, and still is, `md5`. It is, however, recommended that users move to the `scram-sha-256` where password authentication is required.
+
+Both md5 and scram-sha-256 use a challenge response mechanism to prevent sniffing, and store hashed passwords on the server, however, scram-sha-256 stores the hashes in what is currently considered to be a cryptographically secure form to avoid issues if an attacker gains access to the hash.
+
+If you need to support password authentication with a standalone Postgres server, you should be using scram-sha-256 as the authentication method. Do not use md5 in new deployments!
 
 
 ## Roles
 
+Roles are used to limit database access for specified users. A role can be a member of other roles, or have other roles that are members of it. This can be referred to as granting a role another role. See the example below:
+
+```sql
+GRANT my_super_users TO harry;
+```
+
+Here, _harry_ is being made a member of the _my_super_users_ group, which gives him access to the extended functionality reserved for super users and members of the _my_super_users_ role.
+
+### Role attributes
+
+- LOGIN - can this role be used to login to the database server?
+- SUPERUSER - is this role a superuser?
+- CREATEDB - can this role create databases?
+- CREATEROLE - can this role create new roles?
+- REPLICATION - can this role initiate streaming replication?
+- PASSWORD - the password for the role, if set.
+- BYPASSRLS - can this role bypass Row Level Security checks?
+- VALID UNTIL - an optional timestamp after which time the password will no longer be valid.
+
+A `SUPERUSER` flagged role is set bypass all checks except the right to login. It is highly recommended to use this role with extreme caution.
 
 ## Data Access Control
 
