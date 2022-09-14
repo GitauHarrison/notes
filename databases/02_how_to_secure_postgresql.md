@@ -138,8 +138,3 @@ Here, _harry_ is being made a member of the _my_super_users_ group, which gives 
 
 A `SUPERUSER` flagged role is set bypass all checks except the right to login. It is highly recommended to use this role with extreme caution.
 
-## Data Access Control
-
-
-## Encryption
-
