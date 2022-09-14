@@ -7,8 +7,6 @@ Data safety is at the center of all concerns a company may have. The impact of a
 - [Access](#access)
 - [Authentication](#authentication)
 - [Roles](#roles)
-- [Data Access Control](#data-access-control)
-- [Encryption](#encryption)
 
 
 ## Access
