@@ -43,9 +43,36 @@ For more flexibility, Postgres can create multiple sockets, though one is create
 
 #### TCP/IP Socket
 
+This is used when you want to access the Postgresql server from a remote system. Database administration tools such as DBeaver and pgAdmin use the TCP/IP network socket. Given that this is remote access, what we want to do is to minimize the potential risk for anyone attempting to gain access to the system. You implement this when hosting an application on a network. The system should be configured to listen to and accept connections only to required networks. During installation, use the _listen_addresses_ configuration parameter in _postgresql.conf_ to ensure Postgres only listens and accepts connections on the required network addresses, thus preventing access from, say, the storage network.
 
+### Firewall
+
+They are used to prevent access to network ports from unauthorized sources. Most modern operating systems include firewalls. They are used to allow inbound and outbound rules which specify what traffic is allowed. Some of the common parameters used are:
+
+- the protocal (TCP or IPv6)
+- the local port (5432, the default for PostgreSQL)
+- the source address (where the attempt to connect is coming from)
+
+As always, we want to minimize access to Postgres, so it would be quite normal to create a rule for TCP (and/or IPv6) traffic arriving on port 5432 to be rejected (or black-holed) unless it's coming from the address of our application server. 
+
+Cloud providers usually recommend the use of in-built firewals of their network infrastructure, which generally works the same way as local firewalls.
+
+#### Transport Encryption
+
+If traffic to the database server is flowing across the network, it is good practice (arguably essential practice) to encrypt that traffic. Postgres uses OpenSSL to provide transport security. To encrypt connections in Postgres you will need at least a server certificate and key, ideally protected with a passphrase that can be securely entered at server startup either manually or using a script that can retrieve the passphrase on behalf of the server, as specified using the _ssl_passphrase_command_ configuration parameter.
+
+If you have an existing Certification Authority (CA) in use you can use certificates provided from that with Postgres. The configuration parameters ssl_ca_file and ssl_crl_file allow you to provide the CA (and intermediate) certificates and the certificate revocation list to the server. This gives you the flexibility to revoke certificates in response to security incidents and have the server reject client certificates or the client reject server certificates. It also allows you to configure the client and server to reject each other if the identity of either cannot be verified through the chain of trust to prevent as-yet undetected spoofing.
+
+It's important to ensure that your use of TLS is secure as well. There are a number of configuration parameters that can be set to ensure that you're not using ciphers or other options that may no longer be considered secure. It is recommended that you check and appropriately configure the following configuration parameters in your postgresql.conf configuration file:
+
+- ssl_ciphers
+- ssl_ecdh_curve
+- ssl_dh_params_file
+- ssl_min_protocol_version
 
 ## Authentication
+
+
 
 
 ## Roles
