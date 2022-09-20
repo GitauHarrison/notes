@@ -287,6 +287,8 @@ Type "help" for help.
 testdb=> 
 ```
 
+Notice that all users, including `postgres`, will now require a password before accessing the postgres terminal. By default, before switching to `md5`, the `postgres` user does not require a password. So, should you want to update user password, refer to the [change user password](#change-user-password) section.
+
 If you are wondering what "peer" or "md5" means, these authentication methods are used to provide various levels of access.
 
 - **Trust**: anyone who can connect to the server is authorized to access the database
