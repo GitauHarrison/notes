@@ -29,7 +29,7 @@ Throughout this article, we will look at how to:
 
 ## Connect to the PostgreSQL Server Using `psql`
 
-Now that you have installed postgreSQL, the first thing you want to do is to connect to its server. Every installation creates a default user called `postgres` who is associated with the default Postgres role. We will begin by connecting to the server using this user.
+Now that you have installed postgreSQL, the first thing you want to do is to connect to its server. Every installation creates a default password-less user called `postgres` who is associated with the default Postgres role. We will begin by connecting to the server using this user.
 
 ```python
 $ psql
@@ -49,7 +49,7 @@ What this means is that our server is currently not running. To start it, we wil
 $ sudo service postgresql start
 
 # Output
-* Restarting PostgreSQL 14 database server
+* Starting PostgreSQL 14 database server
 ```
 
 With the connection created, we can now use the `psql` command to access the interactive terminal for PostgreSQL. This command is normally used in conjunction with a user.
@@ -287,7 +287,8 @@ Type "help" for help.
 testdb=> 
 ```
 
-Notice that all users, including `postgres`, will now require a password before accessing the postgres terminal. By default, before switching to `md5`, the `postgres` user does not require a password. So, should you want to update user password, refer to the [change user password](#change-user-password) section.
+Notice that all users, including `postgres`, will now require a password before accessing the postgres terminal. By default, before switching to `md5`, the `postgres` user does not require a password. Should you encounter the error `Error: 
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  password authentication failed for user "postgres"` consider to update the user's password by referring to the [change user password](#change-user-password) section.
 
 If you are wondering what "peer" or "md5" means, these authentication methods are used to provide various levels of access.
 
