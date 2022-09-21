@@ -15,10 +15,10 @@ The focus here is to understand how the PostgreSQL server is connected to and ac
 
 These are the things we will be looking at regarding the access to PostgreSQL server:
 
-- Physical access
-- Connection
-- Firewall
-- Transport Encryption
+- [Physical access](#physical-access)
+- [Connection](#connection)
+- [Firewall](#firewall)
+- [Transport Encryption](#transport-encryption)
 
 
 ### Physical Access
@@ -55,7 +55,7 @@ As always, we want to minimize access to Postgres, so it would be quite normal t
 
 Cloud providers usually recommend the use of in-built firewals of their network infrastructure, which generally works the same way as local firewalls.
 
-#### Transport Encryption
+### Transport Encryption
 
 If traffic to the database server is flowing across the network, it is good practice (arguably essential practice) to encrypt that traffic. Postgres uses OpenSSL to provide transport security. To encrypt connections in Postgres you will need at least a server certificate and key, ideally protected with a passphrase that can be securely entered at server startup either manually or using a script that can retrieve the passphrase on behalf of the server, as specified using the _ssl_passphrase_command_ configuration parameter.
 
