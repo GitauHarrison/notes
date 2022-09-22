@@ -30,7 +30,12 @@ Throughout this article, we will look at how to:
 
 ## Install DBeaver
 
-DBeaver is free and open source universal database tool for developers and database administrators. It supports several databases including MySQL, Oracle and Postgresql. It can be used as an alternative of MySQL-Workbench and PGAdmin. It has a user-friendly interface that makes it more useful for its new users. Using DBeaver, you can create local databases and also configure the maximum result size to avoid session hanging issues in case the query results take time to process big queries. The community edition of DBeaver is free, though if you'd like to do NoSQL then you may opt for the enterprise version.
+DBeaver is a free and open source universal database tool for developers and database administrators. It supports several databases including MySQL, Oracle and Postgresql. It can be used as an alternative of MySQL-Workbench and PGAdmin. It has a user-friendly interface that makes it more useful for its new users. Using DBeaver, you can create local databases and also configure the maximum result size to avoid session hanging issues in case the query results take time to process big queries. The community edition of DBeaver is free, though if you'd like to do NoSQL then you may opt for the enterprise version.
+
+Below, I will show you two methods you can use to install DBeaver:
+
+- [Using the terminal](#using-the-terminal)
+- [Using the installer](#using-the-installer)
 
 ### Using the Terminal
 
