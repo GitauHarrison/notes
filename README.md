@@ -42,12 +42,13 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 36. [Create a YouTube Video Downloader](youtube_video_downloader.md)
 37. [Beautiful flask tables with Grid.js](flask_tables/gridjs.md)
 38. [Download Encrypted PDF Copy of Db Data](download_encrypted_pdf.md)
-38. [Getting starated with PostgreSQL](databases/00_postgresql_overview.md)
+38. [Getting started with PostgreSQL](databases/00_postgresql_overview.md)
 39. [Joined Table Inheritance](databases/99_joined_table_inheritance.md)
+40. [Object-Oriented Programming in Python](oop_python.md)
 
 ## General Articles
 
-1. [Getting started with the Windows subsystem for Linux](non_technical_articles/wsl.md)
+1. [Getting started with the Windows Subsystem for Linux](non_technical_articles/wsl.md)
 2. [Integer conversion to binary using Python](non_technical_articles/convert_integers_to_binary_using_python.md)
 
 ## Demo Projects
