@@ -226,7 +226,7 @@ class Parent():
         return f'Parent: {self.username}'
 ```
 
-In order for us to access any information about a parent, we will have to use the `Parent` class. We will instantiate an object, then call use it to access whatever data we want.
+In order for us to access any information about a parent, we will have to use the `Parent` class. We will instantiate an object, then use it to access whatever data we want.
 
 Besides restricting access to the class data, we can more specifically limit access to individual variables and methods to prevent accidental data modification. Whenever we are working with the class and dealing with sensitive data, providing access to all variables used within the class is not a good choice.
 
@@ -262,7 +262,8 @@ Parent: harry
 harry
 ```
 
-- **Protected members**: The variable `phone` is a protected member and can only be accessed within the class. We know it is a protected member because it begins with a single underscore.
+- **Protected members**: The variable `phone` is a protected member and can only be accessed within the class and its subclasses. We know it is a protected member because it begins with a single underscore.
+
 ```python
 class Parent():
     def __init__(self, username, email, phone):
@@ -286,7 +287,7 @@ class Child(Parent):
 123
 ```
 
-- **Private member**: The variable `salary` is said to be private and can only be accessed  within the class and its subclasses. It has two underscores.
+- **Private member**: The variable `salary` is said to be private and can only be accessed within the class. It has two preceding underscores.
 
 ```python
 class Parent():
@@ -314,7 +315,147 @@ Traceback (most recent call last):
 AttributeError: 'Parent' object has no attribute '__salary'
 ```
 
-Notice that we can easily access the public members of the `Parent` class. But the private member `__salary` (with double preceding underscores), we get the error `AttributeError: 'Parent' object has no attribute '__salary'`.
+Notice that we can easily access the public members of the `Parent` class. But the private member `__salary` (with double preceding underscores), we get the error `AttributeError: 'Parent' object has no attribute '__salary'`. 
+
+How can we access a private variable?
+
+- [Using public methods](#using-public-methods)
+- [Name mangling](#name-mangling)
+- [Getter and setter methods](#getter-and-setter-methods)
+
+### Using public methods
+
+Here, we can define an instance method which will have access to the private variable. Remember, we said that a private variable can only be accessed within its own class.
+
+```python
+class Parent():
+    def __init__(self, username, email, phone):
+        self.username = username
+        self.email = email
+        self.__phone = phone
+
+    def __repr__(self):
+        return f'Parent: {self.username}, {self.email}, {self.__phone}'
+
+    def show_phone(self):
+        print(f'Parent phone number is ', self.__phone)
+
+# On an active Python interpreter
+>>> parent = Parent('harry', 'harry@email.com', 123)
+>>> parent.show_phone()
+Parent phone number is  123
+```
+
+The method `show_phone()` in an instance method of the `Parent` class. In it, we pass the private variable `__phone`.
+
+
+### Name mangling
+
+
+To 'mangle' means to destroy or to severely damage by tearing or crushing. Other words used to mean mangle include mutilate, crush, disfigure etc. In OOP, name mangling is used to cleverly overcome the restriction of ecapsulation.
+
+```python
+class Parent():
+    def __init__(self, username, email, salary):
+        self.username = username
+        self.email = email
+        self.__salary = salary
+
+    def __repr__(self):
+        return f'Parent: {self.username}, {self.email}, {self.__salary}'
+
+
+# On an active Python interpreter
+>>> parent = Parent('harry', 'harry@email.com', 123)
+>>> parent
+Parent: harry, harry@email.com, 123
+
+>>> parent.email
+harry@email.com
+
+>>> parent._Parent__salary
+123
+```
+Typically, name mangling involves adding a preceding underscore to a class name then appending the double underscore private variable to it in order to gain access the variable's data. The format used is:
+
+```python
+object._classname__privateVariable
+```
+
+Above, we have run `parent._Parent__phone` to gain access to a parent's private phone number.
+
+### Getter and setter methods
+
+Proper encapsulation in python is normally implemented using getters and setters. Getter methods access data while setter methods are used to modify the data in private members.
+
+```python
+class Parent():
+    def __init__(self, username, email, phone):
+        self.username = username
+        self.email = email
+        self.get_phone = phone
+
+    def __repr__(self):
+        return f'Parent: {self.username}, {self.email}, {self.get_phone}'
+
+    @property
+    def get_phone(self):
+        return self.__get_phone
+
+    @get_phone.setter
+    def get_phone(self, phone):
+        self.__get_phone = phone
+
+# On an active Python interpreter
+>>> parent = Parent('harry', 'harry@email.com', 123)
+>>> parent.get_phone
+123
+
+# New phone value
+>>> parent.get_phone = 100
+>>> parent
+Parent: harry, harry@email.com, 100
+```
+
+When defining the `Parent` class, we add two special methods, both of which have similar names. The first method has a decorator called `@property`. Whenever this decorator is used, we know that it is an accessor or a getter method. It is used to access the value of the private variable `phone`.
+
+```python
+@property
+    def get_phone(self):
+        return self.__get_phone
+```
+
+You might be wondering how `phone` has become private yet when defining the class attributes, we defined it as public (without underscores). Well, intentionally, when you want to encapsulate data using getter and setter methods, it is recommended that you pass class attributes as public members. Within the getter method (in our case it is the method `get_phone`), the returned value has two leading underscores. This makes it private. 
+
+> It is important to note that the value `get_phone` among the class attributes is not an assignment operation (`self.get_phone = phone`). Rather, we are calling our getter method so that it makes the `phone` variable private.
+
+Now that `phone` is private by the help of our getter method, we can focus on setting its value. A setter method uses a decorator whose name is similar to the getter method, then append the word `setter`. 
+
+```python
+@get_phone.setter
+    def get_phone(self, phone):
+        self.__get_phone = phone
+```
+
+Again, the naming of the setter method is similar to that of the getter method. We know that it is a setter method because (1) it has the `setter` decorator, (2) we are assigning `phone` to `__get_phone`, our getter method. This method takes additional argurments compared to that of the getter method.
+
+In an active Python interpreter, you will notice that the value of `phone` can only be accessed using the getter method which has been set using the setter method. It is only possible to alter the value of `phone` using the `get_phone` setter method. 
+
+It is also possible to delete the value of a protect member. All that needs to be done is to define a `deleter` method.
+
+```python
+@get_phone.deleter
+    def get_phone(self):
+        del self.__get_phone
+
+
+# In an active Python interpreter
+>>> del parent.get_phone
+>>> parent
+AttributeError: 'Parent' object has no attribute '_Parent__get_phone'
+```
+
+The deletion format is `del object.deleterMethod`.
 
 ## Abstraction
 
