@@ -13,9 +13,9 @@ Object Oriented programming (OOP) is a programming paradigm that relies on the c
 
 ## Overview of Classes and Objects
 
-A class is an abstract blueprint used to create more specific, concrete objects. Classes often represent broad categories, like Car or Dog that share attributes. These classes define what attributes an instance of this type will have, like color, but not the value of those attributes for a specific object.
+A class is an **abstract** blueprint used to create more specific, concrete objects. Classes often represent broad categories, like Car or Dog that share attributes. These classes define what attributes an instance of this type will have, like color, but not the value of those attributes for a specific object.
 
-Classes can also contain functions, called methods available only to objects of that type. These functions are defined within the class and perform some action helpful to that specific type of object. 
+Classes can also contain functions, called methods, available only to objects of that type. These functions are defined within the class and perform some action helpful to that specific type of object. 
 
 Class templates are used as a blueprint to create individual objects. These represent specific examples of the abstract class, like myCar or goldenRetriever. Each object can have unique values to the properties defined in the class.
 
@@ -27,7 +27,7 @@ Class templates are used as a blueprint to create individual objects. These repr
 
 Let us look at this example below:
 
-![Class](images/oop/Class.png)
+![Class](images/oop/class.png)
 
 
 The "Car" class has been used to create two car type objects, rissyCar and jeffCar. The class has provided abstract definition of what a car should have, and the objects provide the actual values specific to them.
@@ -111,7 +111,7 @@ print(kiki.career('Teacher'))
 
 | Classes | Objects | Attributes | Methods |
 | ------- | ------- | ---------- | ------- |
-| As we have seen above, classes are essentially blueprints that define abstract ideas of an object. Individual objects are instatiated or created from this blueprint.  | These are instances of a class, created with specific data. You can have multiple objects that use the same class. | These are the features of a class. They define the data that we would want an object to have. The state of an object is defined by the data in the object’s attributes fields. | Methods are used to represent behaviours. They perform actions are might return information about an object. When individual objects are instantiated, these objects can call the methods defined in the class. | 
+| As we have seen above, classes are essentially blueprints that define abstract ideas of an object. Individual objects are instantiated or created from this blueprint.  | These are instances of a class, created with specific data. You can have multiple objects that use the same class. | These are the features of a class. They define the data that we would want an object to have. The state of an object is defined by the data in the object’s attributes fields. | Methods are used to represent behaviours. They perform actions that might return information about an object. When individual objects are instantiated, these objects can call the methods defined in the class. | 
 
 
 ## The Four Principles of Object-oriented Programming
@@ -235,14 +235,14 @@ class Parent():
     def __init__(self, username, email, phone, salary):
         self.username = username
         self.email = email
-        self.phone = _phone
-        self.salary = __salary
+        self.phone = _phone # < ----------- single preceding underscore
+        self.salary = __salary # < ------------- double preceding underscores
 
     def __repr__(self):
         return f'Parent: {self.username}'
 ```
 
-Encapsulation offers a way for us to access the required variable without providing the program full-fledged access to all variables of a class. This mechanism is used to protect the data of an object from other objects.
+Encapsulation offers a way for us to access the required variable(s) without providing the program full-fledged access to all variables of a class. This mechanism is used to protect the data of an object from other objects.
 
 - **Public members**: The variables `username` and `email` are public members because they can be easily accessed within and outside the `Parent` class. 
 ```python
@@ -271,7 +271,7 @@ class Parent():
     def __init__(self, username, email, phone):
         self.username = username
         self.email = email
-        self._phone = phone
+        self._phone = phone # < ------------ protected variable
 
     def __repr__(self):
         return f'Parent: {self.username}'
@@ -280,7 +280,7 @@ class Parent():
 class Child(Parent):
     def __init__(self, username, email, phone, age):
         super().__init__(username, email, phone)
-        self._age = age
+        self._age = age # < ------------ protected variable
 
 
 # On an active Python interpreter
@@ -321,12 +321,12 @@ Traceback (most recent call last):
 AttributeError: 'Parent' object has no attribute '__salary'
 ```
 
-Notice that we can easily access the public members of the `Parent` class. But the private member `__salary` (with double preceding underscores), we get the error `AttributeError: 'Parent' object has no attribute '__salary'`. 
+Notice that we can easily access the public members of the `Parent` class. But the private member `__salary` (with double preceding underscores), we get the error `AttributeError: 'Parent' object has no attribute '__salary'`. This is so despite knowing that this variable can be accessed only within the `Parent` class. 
 
 
 ### Accessing Private Variables
 
-How can we access a private variable?
+How can we access a private variable? We will look at three ways:
 
 - [Using public methods](#using-public-methods)
 - [Name mangling](#name-mangling)
@@ -464,7 +464,7 @@ In an active Python interpreter, you will notice that the value of `phone` can o
 
 ### Deleter Method
 
-It is also possible to delete the value of a protect member. All that needs to be done is to define a `deleter` method.
+It is also possible to delete the value of a private member. All that needs to be done is to define a `deleter` method.
 
 ```python
 @get_phone.deleter
