@@ -7,6 +7,7 @@ Object Oriented programming (OOP) is a programming paradigm that relies on the c
 #### Table of Contents
 
 - [Overview of Classes and Objects](#overview-of-classes-and-objects)
+- [Real-life Application of OOP](#real-life-application-of-oop)
 
 
 ## Overview of Classes and Objects
@@ -25,29 +26,101 @@ Class templates are used as a blueprint to create individual objects. These repr
 
 Let us look at this example below:
 
-**Example Car Class**:
-[Attributes]: color, brand, model
-[Methods]: repaint()
-
-**Sample object 1: rissyCar**
-[Attributes]:
-- color: Red
-- brand: Toyota
-- model: Harrier
-
-[Methods]:
-- repaint()
+![Class](images/oop/Class.png)
 
 
-**Sample object 1: jeffCar**
-
-[Attributes]:
-- color: White
-- brand: Hyundai
-- model: Santa Fe
-
-[Methods]:
-- repaint()
+The "Car" class has been used to create two car type objects, rissyCar and jeffCar. The class has provided abstract definition of what a car should have, and the objects provide the actual values specific to them.
 
 
-The "Car" class has been used to create two car type objects, rissyCar and jeffCar.
+## Real-life Application of OOP
+
+Imagine running an education center with hundreds of students. During registration, you will need to capture all necessary information about a particular student. How would you design a simple and reusable software to model the students? 
+
+It would be very inefficient to write unique code specific for each student as follows:
+
+```python
+ambrose = {
+    name: 'Ambrose',
+    age: 10,
+    course: 'Scratch',
+    parent: 'Esther'
+}
+
+emilly = {
+    name: 'Emilly',
+    age: 13,
+    course: 'Python',
+    parent: 'Muthui'
+}
+
+kiki = {
+    name: 'Kiki',
+    age: 4,
+    course: 'Scratch Jr',
+    parent: 'Alfred'
+}
+```
+
+Above, you can see whe have three objects, `ambrose`, `emilly` and `kiki` with duplicated code. Instead of repeating ourselves each time a new object is created, we can create a class that defines abstract information about a student, then instantiate an object of that class type.
+
+```python
+class Student():
+    name = '<student name>'
+    age = '<student age>'
+    course = '<student course>'
+    parent = '<parent name>'
+
+
+abrose = Student('Ambrose', 10, 'Scratch', 'Esther')
+emily = Student('Emilly', 13, 'Python', 'Muthui')
+kiki = Student('Kiki', 4, 'Scratch Jr', 'Alfred')
+```
+
+## Building Block of OOP
+
+There are four fundamental building blocks of object-oriented programming:
+
+- Classes
+- Objects
+- Attributes
+- Methods
+
+### Example
+
+```python
+class User():
+    # Instance attributes
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
+    
+    # Instance method
+    def career(self, occupation):
+        return f'{self.name} is a {occupation}'
+
+# Instantiate an object
+kiki = User('kiki', 'kiki@email.com')
+
+# Test the new object
+print('My name is ', kiki.name, ' and my email is ', kiki.email)
+
+# Call instance methods
+print(kiki.career('Teacher'))
+```
+
+### Classes
+
+As we have seen above, classes are essentially blueprints that define abstract ideas of an object. Individual objects are instatiated or created from this blueprint. 
+
+### Objects
+
+These are instances of a class, created with specific data. You can have multiple objects that use the same class.
+
+### Attributes
+
+These are the features of a class. They define the data that we would want an object to have. The state of an object is defined by the data in the object’s attributes fields.
+
+### Methods
+
+Methods are used to represent behaviours. They perform actions are might return information about an object. When individual objects are instantiated, these objects can call the methods defined in the class.
+
