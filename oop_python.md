@@ -77,7 +77,7 @@ emily = Student('Emilly', 13, 'Python', 'Muthui')
 kiki = Student('Kiki', 4, 'Scratch Jr', 'Alfred')
 ```
 
-## Building Block of OOP
+## Building Blocks of OOP
 
 There are four fundamental building blocks of object-oriented programming:
 
@@ -109,21 +109,9 @@ print('My name is ', kiki.name, ' and my email is ', kiki.email)
 print(kiki.career('Teacher'))
 ```
 
-### Classes
-
-As we have seen above, classes are essentially blueprints that define abstract ideas of an object. Individual objects are instatiated or created from this blueprint. 
-
-### Objects
-
-These are instances of a class, created with specific data. You can have multiple objects that use the same class.
-
-### Attributes
-
-These are the features of a class. They define the data that we would want an object to have. The state of an object is defined by the data in the object’s attributes fields.
-
-### Methods
-
-Methods are used to represent behaviours. They perform actions are might return information about an object. When individual objects are instantiated, these objects can call the methods defined in the class.
+| Classes | Objects | Attributes | Methods |
+| ------- | ------- | ---------- | ------- |
+| As we have seen above, classes are essentially blueprints that define abstract ideas of an object. Individual objects are instatiated or created from this blueprint.  | These are instances of a class, created with specific data. You can have multiple objects that use the same class. | These are the features of a class. They define the data that we would want an object to have. The state of an object is defined by the data in the object’s attributes fields. | Methods are used to represent behaviours. They perform actions are might return information about an object. When individual objects are instantiated, these objects can call the methods defined in the class. | 
 
 
 ## The Four Principles of Object-oriented Programming
@@ -135,7 +123,7 @@ The four pillars of OOP in python are:
 - [Encapsulation](#encapsulation)
 - [Abstraction](#abstraction)
 
-### Inheritance
+## Inheritance
 
 This principle allows other classes to acquire the features of other classes. In other words, one class extends its attributes and behaviours to another class. The class in which the basic attributes and behaviours are defined is called the 'parent' class or the 'base' class. The class that inherits (or acquires) the attributes and behaviours of the parent class is called the 'child' class or the 'subclass'. The essence of inheritance is to promote code reusability.
 
@@ -182,7 +170,7 @@ Parent: muthoni
 `parent` and `child` are objects of their respective classes. Instantiating these objects give data relevant to them. Notice that when you call the child object the output is "Parent: muthoni". This is because the child has inherited the in-built `__repr__()` function from the parent which has the string "Parent".
 
 
-### Polymorphism
+## Polymorphism
 
 Polymorphism is the ability to take many(poly) forms(morphism). Polymorphism in Python allows us to define methods that do not exist in the parent class or modify these methods if they exist in the parent class.
 
@@ -222,7 +210,7 @@ Child: muthoni, 3
 Notice that the parent's `__repr__()` function has been overriden by the child's. This is because the child defined its own `__repr__()` function. Additionally, the `age` attribute is only present in the child class.
 
 
-### Encapsulation
+## Encapsulation
 
 This principle promotes the need to hide data. From the word 'encapsulate', we learn that it means to 'enclose something in or as if in a capsule'. Synonyms associated with encapsulate are enclose, encase, confine, envelop etc. I hope you get the idea. 
 
@@ -328,7 +316,7 @@ AttributeError: 'Parent' object has no attribute '__salary'
 
 Notice that we can easily access the public members of the `Parent` class. But the private member `__salary` (with double preceding underscores), we get the error `AttributeError: 'Parent' object has no attribute '__salary'`.
 
-### Abstraction
+## Abstraction
 
 
 
