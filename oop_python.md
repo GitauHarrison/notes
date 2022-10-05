@@ -8,6 +8,7 @@ Object Oriented programming (OOP) is a programming paradigm that relies on the c
 
 - [Overview of Classes and Objects](#overview-of-classes-and-objects)
 - [Real-life Application of OOP](#real-life-application-of-oop)
+- [The Four Principles of OOP](#the-four-principles-of-object-oriented-programming)
 
 
 ## Overview of Classes and Objects
@@ -61,7 +62,7 @@ kiki = {
 }
 ```
 
-Above, you can see whe have three objects, `ambrose`, `emilly` and `kiki` with duplicated code. Instead of repeating ourselves each time a new object is created, we can create a class that defines abstract information about a student, then instantiate an object of that class type.
+Above, you can see we have three objects, `ambrose`, `emilly` and `kiki` with duplicated code. Instead of repeating ourselves each time a new object is created, we can create a class that defines abstract information about a student, then instantiate an object of that class type.
 
 ```python
 class Student():
@@ -123,4 +124,73 @@ These are the features of a class. They define the data that we would want an ob
 ### Methods
 
 Methods are used to represent behaviours. They perform actions are might return information about an object. When individual objects are instantiated, these objects can call the methods defined in the class.
+
+
+## The Four Principles of Object-oriented Programming
+
+The four pillars of OOP in python are: 
+
+- [Inheritance](#inheritance)
+- [Encapsulation](#encapsulation)
+- [Abstraction](#abstraction)
+- [Polymorphism](#polymorphism)
+
+### Inheritance
+
+This principle allows other classes to acquire the features of other classes. In other words, one class extends its attributes and behaviours to another class. The class in which the basic attributes and behaviours are defined is called the 'parent' class or the 'base' class. The class that inherits (or acquires) the attributes and behaviours of the parent class is called the 'child' class or the 'subclass'. The essence of inheritance is to promote code reusability.
+
+
+```python
+class Parent():
+    def __init__(self, username, email):
+        self.username = username
+        self.email = email
+
+    def __repr__(self):
+        return f'Parent: {self.username}'
+
+
+class Child(Parent):
+    pass
+
+```
+
+We have defined two classes: `Parent` and `Child`. The `Parent` class has the attributes `username` and `email`. This class is passed as a parameter in the `Child` class which, at the moment, has no attributes. To test how inheritance works, run the following in an active Python interpreter:
+
+```python
+$ python3
+
+>>> parent = Parent('harry', 'harry@email.com')
+>>> parent
+# Output
+Parent: harry
+
+>>> parent.username, parent.email
+# Output
+('harry', 'harry@email.com')
+
+>>> child = Child('muthoni', 'muthoni@email.com')
+>>> child
+# Output
+Parent: muthoni
+
+>>> child.username
+# Output
+'muthoni'
+```
+
+`parent` and `child` are objects of their respective classes. Instantiating these objects give data relevant to them. Notice that when you call the child object the output is "Parent: muthoni". This is because the child has inherited the in-built `__repr__()` function from the parent which has the string "Parent".
+
+
+
+
+
+### Encapsulation
+
+
+
+### Abstraction
+
+
+
 
