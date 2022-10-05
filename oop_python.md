@@ -131,9 +131,9 @@ Methods are used to represent behaviours. They perform actions are might return 
 The four pillars of OOP in python are: 
 
 - [Inheritance](#inheritance)
+- [Polymorphism](#polymorphism)
 - [Encapsulation](#encapsulation)
 - [Abstraction](#abstraction)
-- [Polymorphism](#polymorphism)
 
 ### Inheritance
 
@@ -224,7 +224,109 @@ Notice that the parent's `__repr__()` function has been overriden by the child's
 
 ### Encapsulation
 
+This principle promotes the need to hide data. From the word 'encapsulate', we learn that it means to 'enclose something in or as if in a capsule'. Synonyms associated with encapsulate are enclose, encase, confine, envelop etc. I hope you get the idea. 
 
+The creation of classes is by default encapsulation. This is because we are limiting access to the data from the outside world. This data can only be accessed using the said class. The entire process of encapsulation is also called 'information hiding'. 
+
+```python
+class Parent():
+    def __init__(self, username, email):
+        self.username = username
+        self.email = email
+
+    def __repr__(self):
+        return f'Parent: {self.username}'
+```
+
+In order for us to access any information about a parent, we will have to use the `Parent` class. We will instantiate an object, then call use it to access whatever data we want.
+
+Besides restricting access to the class data, we can more specifically limit access to individual variables and methods to prevent accidental data modification. Whenever we are working with the class and dealing with sensitive data, providing access to all variables used within the class is not a good choice.
+
+```python
+class Parent():
+    def __init__(self, username, email, phone, salary):
+        self.username = username
+        self.email = email
+        self.phone = _phone
+        self.salary = __salary
+
+    def __repr__(self):
+        return f'Parent: {self.username}'
+```
+
+Encapsulation offers a way for us to access the required variable without providing the program full-fledged access to all variables of a class. This mechanism is used to protect the data of an object from other objects.
+
+- **Public members**: The variables `username` and `email` are public members because they can be easily accessed within and outside the `Parent` class. 
+```python
+class Parent():
+    def __init__(self, username, email):
+        self.username = username
+        self.email = email
+
+    def __repr__(self):
+        return f'Parent: {self.username}'
+
+# On an active Python interpreter
+>>> parent = Parent('harry', 'harry@email.com')
+Parent: harry
+
+>>> parent.username
+harry
+```
+
+- **Protected members**: The variable `phone` is a protected member and can only be accessed within the class. We know it is a protected member because it begins with a single underscore.
+```python
+class Parent():
+    def __init__(self, username, email, phone):
+        self.username = username
+        self.email = email
+        self._phone = phone
+
+    def __repr__(self):
+        return f'Parent: {self.username}'
+
+
+class Child(Parent):
+    def __init__(self, username, email, phone, age):
+        super().__init__(username, email, phone)
+        self._age = age
+
+
+# On an active Python interpreter
+>>> child = Child('rahima', 'rahima@email.com', 123, 12)
+>>> child._phone
+123
+```
+
+- **Private member**: The variable `salary` is said to be private and can only be accessed  within the class and its subclasses. It has two underscores.
+
+```python
+class Parent():
+    def __init__(self, username, email, salary):
+        self.username = username
+        self.email = email
+        self.__salary = salary
+
+    def __repr__(self):
+        return f'Parent: {self.username}, {self.email}, {self.__salary}'
+
+
+# On an active Python interpreter
+>>> parent = Parent('harry', 'harry@email.com', 123)
+>>> parent
+Parent: harry, harry@email.com, 123
+
+>>> parent.email
+harry@email.com
+
+>>> parent.__salary
+Traceback (most recent call last):
+  File "oop.py", line 19, in <module>
+    print(parent.__salary)
+AttributeError: 'Parent' object has no attribute '__salary'
+```
+
+Notice that we can easily access the public members of the `Parent` class. But the private member `__salary` (with double preceding underscores), we get the error `AttributeError: 'Parent' object has no attribute '__salary'`.
 
 ### Abstraction
 
