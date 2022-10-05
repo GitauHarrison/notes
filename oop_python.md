@@ -182,7 +182,44 @@ Parent: muthoni
 `parent` and `child` are objects of their respective classes. Instantiating these objects give data relevant to them. Notice that when you call the child object the output is "Parent: muthoni". This is because the child has inherited the in-built `__repr__()` function from the parent which has the string "Parent".
 
 
+### Polymorphism
 
+Polymorphism is the ability to take many(poly) forms(morphism). Polymorphism in Python allows us to define methods that do not exist in the parent class or modify these methods if they exist in the parent class.
+
+```python
+class Parent():
+    def __init__(self, username, email):
+        self.username = username
+        self.email = email
+
+    def __repr__(self):
+        return f'Parent: {self.username}'
+
+
+class Child(Parent):
+    def __init__(self, username, email, age):
+        super().__init__(username, email)
+        self.age = age
+
+    def __repr__(self):
+        return f'Child: {self.username}, {self.age}''
+```
+
+We have modified the `__repr__()` function for the `Child` class to have its own string besides the dynamic `username` and `email` values. The `Child` class has an additional `age` attribute that does not exist in the parent. Let us see how polymorphism works.
+
+```python
+$ python
+
+>>> parent = Parent('harry', 'harry@email.com')
+# Output
+Parent: harry
+
+>>> child = Child('muthoni', 'muthoni@email.com', 3)
+# Output
+Child: muthoni, 3
+```
+
+Notice that the parent's `__repr__()` function has been overriden by the child's. This is because the child defined its own `__repr__()` function. Additionally, the `age` attribute is only present in the child class.
 
 
 ### Encapsulation
