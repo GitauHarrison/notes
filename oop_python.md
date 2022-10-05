@@ -255,6 +255,8 @@ class Parent():
         return f'Parent: {self.username}'
 
 # On an active Python interpreter
+$ python3
+
 >>> parent = Parent('harry', 'harry@email.com')
 Parent: harry
 
@@ -282,6 +284,8 @@ class Child(Parent):
 
 
 # On an active Python interpreter
+$ python3
+
 >>> child = Child('rahima', 'rahima@email.com', 123, 12)
 >>> child._phone
 123
@@ -301,6 +305,8 @@ class Parent():
 
 
 # On an active Python interpreter
+$ python3
+
 >>> parent = Parent('harry', 'harry@email.com', 123)
 >>> parent
 Parent: harry, harry@email.com, 123
@@ -316,6 +322,9 @@ AttributeError: 'Parent' object has no attribute '__salary'
 ```
 
 Notice that we can easily access the public members of the `Parent` class. But the private member `__salary` (with double preceding underscores), we get the error `AttributeError: 'Parent' object has no attribute '__salary'`. 
+
+
+### Accessing Private Variables
 
 How can we access a private variable?
 
@@ -341,6 +350,8 @@ class Parent():
         print(f'Parent phone number is ', self.__phone)
 
 # On an active Python interpreter
+$ python3
+
 >>> parent = Parent('harry', 'harry@email.com', 123)
 >>> parent.show_phone()
 Parent phone number is  123
@@ -356,16 +367,18 @@ To 'mangle' means to destroy or to severely damage by tearing or crushing. Other
 
 ```python
 class Parent():
-    def __init__(self, username, email, salary):
+    def __init__(self, username, email, phone):
         self.username = username
         self.email = email
-        self.__salary = salary
+        self.__phone = phone
 
     def __repr__(self):
-        return f'Parent: {self.username}, {self.email}, {self.__salary}'
+        return f'Parent: {self.username}, {self.email}, {self.__phone}'
 
 
 # On an active Python interpreter
+$ python3
+
 >>> parent = Parent('harry', 'harry@email.com', 123)
 >>> parent
 Parent: harry, harry@email.com, 123
@@ -373,7 +386,7 @@ Parent: harry, harry@email.com, 123
 >>> parent.email
 harry@email.com
 
->>> parent._Parent__salary
+>>> parent._Parent_phone
 123
 ```
 Typically, name mangling involves adding a preceding underscore to a class name then appending the double underscore private variable to it in order to gain access the variable's data. The format used is:
@@ -407,6 +420,8 @@ class Parent():
         self.__get_phone = phone
 
 # On an active Python interpreter
+$ python3
+
 >>> parent = Parent('harry', 'harry@email.com', 123)
 >>> parent.get_phone
 123
@@ -416,6 +431,8 @@ class Parent():
 >>> parent
 Parent: harry, harry@email.com, 100
 ```
+
+### Getter Method
 
 When defining the `Parent` class, we add two special methods, both of which have similar names. The first method has a decorator called `@property`. Whenever this decorator is used, we know that it is an accessor or a getter method. It is used to access the value of the private variable `phone`.
 
@@ -429,7 +446,10 @@ You might be wondering how `phone` has become private yet when defining the clas
 
 > It is important to note that the value `get_phone` among the class attributes is not an assignment operation (`self.get_phone = phone`). Rather, we are calling our getter method so that it makes the `phone` variable private.
 
-Now that `phone` is private by the help of our getter method, we can focus on setting its value. A setter method uses a decorator whose name is similar to the getter method, then append the word `setter`. 
+
+### Setter Method
+
+Now that `phone` is private by the help of our getter method, we can focus on setting its value. A setter method uses a decorator whose name is similar to the getter method, then append the word `setter`. The method name is also similar to the getter method.
 
 ```python
 @get_phone.setter
@@ -441,6 +461,9 @@ Again, the naming of the setter method is similar to that of the getter method. 
 
 In an active Python interpreter, you will notice that the value of `phone` can only be accessed using the getter method which has been set using the setter method. It is only possible to alter the value of `phone` using the `get_phone` setter method. 
 
+
+### Deleter Method
+
 It is also possible to delete the value of a protect member. All that needs to be done is to define a `deleter` method.
 
 ```python
@@ -450,6 +473,8 @@ It is also possible to delete the value of a protect member. All that needs to b
 
 
 # In an active Python interpreter
+$ python3
+
 >>> del parent.get_phone
 >>> parent
 AttributeError: 'Parent' object has no attribute '_Parent__get_phone'
@@ -459,6 +484,58 @@ The deletion format is `del object.deleterMethod`.
 
 ## Abstraction
 
+Abstraction is used to hide the internal functionality of a process from the users. The users only interact with the basic implementation of the function, but inner working is hidden. For example, we mostly know that to increase the volume of a TV using a remote control, all we need to do is press the "+" button and the volume will go up. We do not know HOW the volume goes up, because that process has been hidden from us.
+
+In Python, an abstract class can be considered as a blueprint for other classes. It allows one to create a set of methods that MUST be created within any child classes built from the abstract class.
+
+```python
+from abc import ABC, abstractmethod
 
 
+class Parent(ABC):
+    @abstractmethod
+    def about_me(self):
+        print('I am Harry')
 
+
+class Child(Parent):
+    def about_me(self):
+        print('I am Muthoni')
+
+
+# In an active Python interpreter
+$ python3
+
+>>> child = Child()
+>>> child.about_me()
+I am Muthoni
+```
+
+We begin by first importing the ABC from the Abstract Base Class (ABC) because Python does  not provide abstract classes. ABC works by decorating methods of the base class as abstract. A method becomes abstract when decorated with the keyword `@abstractmethod`. This method MUST then be used by all child classes.
+
+In our example above, the `Parent` class defines an abstract method called `about_me` with its own custom `print()` statement. The `Child` class inherits the `Parent` class and overrides the `print()` statement with its own. If the child class tries not to use the defined abstract method, then an error is raised.
+
+```python
+from abc import ABC, abstractmethod
+
+
+class Parent(ABC):
+    @abstractmethod
+    def about_me(self):
+        pass
+
+
+class Child(Parent):
+
+    def something_else(self):
+        print('I am Muthoni Gitau')
+
+
+# In an active Python interpreter
+$ python3
+
+>>> child = Child()
+>>> child.something_else()
+TypeError: Can't instantiate abstract class Child with abstract methods about_me
+```
+The `Child` class is required to have its own implememtation of the abstract method.
