@@ -1,8 +1,8 @@
 # Create A Flask App Using PostgreSQL Database
 
-You have now decided to use the postgresql database to manage you data. Given all the features that come with it, as discussed in [Postgres Overview](00_postgresql_overview), you may be ready to start using it. Throughout this tutorial, I will show you how to create a password-based user authentication system that utilized the postgresql database.
+You have now decided to use the PostgreSQL database to manage your data. Given all the features that come with it, as discussed in [Postgres Overview](00_postgresql_overview), you may be ready to start using it. Throughout this tutorial, I will show you how to create a password-based user authentication system that utilized the PostgreSQL database.
 
-If you are new to postgresql, I recommend that you start from these tutorials, in their order:
+If you are new to PostgreSQL, I recommend that you start from these tutorials, in their order:
 
 1. [Postgres Overview](databases/00_postgresql_overview)
 2. [Install Postgres](databases/01_install_postgresql.md)
@@ -14,7 +14,7 @@ If you are new to postgresql, I recommend that you start from these tutorials, i
 
 ## Project Overview
 
-The project we will create features a login page and registration page that allows users to create an account before accessing their profiles. We won't make the application more robust by adding extra features because the goal is to learn how to use postgreSQL database ONLY.
+The project we will create features a login page and registration page that allows users to create an account before accessing their profiles. We won't make the application more robust by adding extra features because the goal is to learn how to use the postgreSQL database ONLY.
 
 ![Postgres Demo Project App](/images/databases/postgres_demo_project/postgres_demo_app.gif)
 
@@ -50,7 +50,7 @@ Before we can start building the project, it is always advisable to set things u
 
 ### Step 1: Navigate To Your Project Directory
 
-You have to make sure you are in your current project folder before issuing further commands. To change directory, run:
+You have to make sure you are in your current project folder before issuing further commands. To change the directory, run:
 
 ```python
 $ cd project_folder
@@ -61,7 +61,7 @@ $ cd project_folder
 
 ### Step 2: Create A Virtual Environment
 
-A virtual environment is a copy of your Operating System, used to isolate the needs of one application from another and keep your system clean and clutter free. In Python, this can be done using the command below:
+A virtual environment is a copy of your Operating System, used to isolate the needs of one application from another and keep your system clean and clutter-free. In Python, this can be done using the command below:
 
 ```python
 $ python3 -m venv venv
@@ -74,7 +74,7 @@ The first `venv` is the command used to create a virtual environment. The second
 
 ### Step 3: Fix Failing Command
 
-Notice that the terminal return an 'error' telling us we need to fix the failing command. It provides us with the actual command we need to use:
+Notice that the terminal returns an 'error' telling us we need to fix the failing command. It provides us with the actual command we need to use:
 
 ```python
 $ sudo apt install python3.8-venv
@@ -92,7 +92,7 @@ $ python3 -m venv venv
 
 ### Step 5: Activate Virtual Environment
 
-At this stage we can now activate our virtual environment. Run this command in the terminal:
+At this stage, we can now activate our virtual environment. Run this command in the terminal:
 
 ```python
 $ source venv/bin/activate
@@ -105,9 +105,9 @@ You will see `(venv)` at the beginning of your terminal, meaning the virtual env
 
 ## Building The Application
 
-The first task we will do is to fire up the flask server. It does not work magically. We have to set things up.
+The first task we will do is to fire up the flask server. It does not work magically. We have to set things up. If you would like to refer to the completed project, you can find it in the repository [configure flask to use postgresql](https://github.com/GitauHarrison/configure-flask-to-use-postgresql).
 
-### Step 1: Install Project Dependancies
+### Step 1: Install Project Dependencies
 
 To create the demo app, we need to install the following extensions and packages within our active virtual environment. Run these commands:
 
@@ -115,7 +115,7 @@ To create the demo app, we need to install the following extensions and packages
 (venv)$ pip3 install flask flask-sqlalchemy flask-migrate flask-bootstrap flask-wtf flask-login python-dotenv psycopg2
 ```
 
-Notice that we are installing `psycopg2`, an extension needed when working with postgreSQL. On many distros, the development headers needed for compiling against libraries are not installed by default. For psycopg2 on Ubuntu you'll need the python3 and postgresql headers:
+Notice that we are installing `psycopg2`, an extension needed when working with PostgreSQL. On many distros, the development headers needed for compiling against libraries are not installed by default. For psycopg2 on Ubuntu you'll need the python3 and PostgreSQL headers:
 
 ```python
 # Install necessary headers
@@ -127,13 +127,13 @@ Notice that we are installing `psycopg2`, an extension needed when working with 
 
 ### Step 2: Update Project Requirements File
 
-Should you want to share your project with anyone else, it is recommended you list all the project dependancies. `requirements.txt` (as the name suggests) is used to show what dependancies have been used to build an application. To update it, run:
+Should you want to share your project with anyone else, it is recommended you list all the project dependencies. `requirements.txt` (as the name suggests) is used to show what dependencies have been used to build an application. To update it, run:
 
 ```python
 (venv)$ pip3 freeze > requirements.txt
 ```
 
-You need to be in the top-level directory where this file is located before running this command. You will notice that it will be populated with all the installed project dependancies.
+You need to be in the top-level directory where this file is located before running this command. You will notice that it will be populated with all the installed project dependencies.
 
 ### Step 3: Register Extensions in Application Instance
 
@@ -190,16 +190,16 @@ class Config(object):
 
 ```
 
-We are sourcing the postgreSQL database file from an environment variable called `DATABASE_URL`. If this file does not exist (at this point it doesn't), then the application will fall back to a file-based database called `app.db` to be found in the top-level directory of the application.
+We are sourcing the PostgreSQL database file from an environment variable called `DATABASE_URL`. If this file does not exist (at this point it doesn't), then the application will fall back to a file-based database called `app.db` to be found in the top-level directory of the application.
 
 The `SECRET_KEY` environment variable is required by the application to protect the login and registration forms from a nasty attack called [Cross-site Request Forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery).
 
 
 ### Step 5: Create Environment Variables
 
-Environment variables are used to hide sensitive data you do not want exposed to anyone else except the maintainer(s) of the application. Otherwise, we would have passed the actual value of these keys in the `config.py` file. For example, we would done `SECRET_KEY = '1234' `.
+Environment variables are used to hide sensitive data you do not want to be exposed to anyone else except the maintainer(s) of the application. Otherwise, we would have passed the actual value of these keys in the `config.py` file. For example, we would done `SECRET_KEY = '1234' `.
 
-The reason the formart of the postgreSQL database file is hidden is because it also contains sensitive data we do not want to expose as you will see in the section [PostgreSQL URL Format](#postgresql-url-format).
+The reason the format of the PostgreSQL database file is hidden is because it also contains sensitive data we do not want to expose as you will see in the section [PostgreSQL URL Format](#postgresql-url-format).
 
 Environment variables are created in a hidden text file called `.env`, as seen in the project structure. The dot (`.`) means "hidden". Let us update this file with the following information"
 
@@ -212,7 +212,7 @@ DATABASE_URL=postgresql://muthoni:muthoni@localhost:5432/demo_postgres_app
 
 ### Step 6: PostgreSQL URL Format
 
-The following format is used to access postgreSQL
+The following format is used to access PostgreSQL
 
 ```python
 DATABASE_URL=[engine]://[user name]:[user password]@[host]:[port]/[database]
@@ -221,7 +221,7 @@ DATABASE_URL=[engine]://[user name]:[user password]@[host]:[port]/[database]
 
 ### Step 7: Add View Functinos
 
-Now that we have the configurations properly set, we can create view functions to handle specific endpoints. This is done in `routes.py` file.
+Now that we have the configurations properly set, we can create view functions to handle specific endpoints. This is done in the `routes.py` file.
 
 ```python
 # app/routes.py
@@ -269,7 +269,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Registered successfully. Please log in to continue')
+        flash('Registered successfully. Please log in to continue)
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
@@ -295,7 +295,7 @@ The package we installed earlier called `flask-login` is used to the state of us
 
 ### Step 8: Create User Model
 
-If you have noticed, both the `login()` and `register()` view functions use the class `User` from `app.models` to update the database file. However, at this point, this `User` schema does not exist. So we need to create it. A schema is used to define how a database table will look like, and what information goes where.
+If you have noticed, both the `login()` and `register()` view functions use the class `User` from `app.models` to update the database file. However, at this point, this `User` schema does not exist. So we need to create it. A schema is used to define how a database table will look, and what information goes where.
 
 ```python
 # app/models.py
@@ -331,7 +331,7 @@ class User(db.Model, UserMixin):
 
 ```
 
-We begin my loading a user from the database using the `flask-login` package. This package also has the attribute `UserMxin` that help the application to know if the user is authenticated, is anonymous or is active.
+We begin by loading a user from the database using the `flask-login` package. This package also has the attribute `UserMixin` that helps the application to know if the user is authenticated, anonymous or active.
 
 As a security precaution, a user's password is never stored in its original form. Instead, it is hashed into some cryptographic value using the methods `generate_password_hash`,  and `check_password_hash` before being stored. This is to help secure user data in the unfortunate event the database becomes compromised through an attack.
 
@@ -348,7 +348,7 @@ What we have done above was simply to define the structure of our database. The 
 
 ### Step 10: Define Forms
 
-The two forms used by our application are the login form and the registration form. This is easily done by the help of `flask-wtf` package we installed ealier. Let us update `forms.py` to define our form fields.
+The two forms used by our application are the login form and the registration form. This is easily done with the help of `flask-wtf` package we installed earlier. Let us update `forms.py` to define our form fields.
 
 ```python
 from flask_wtf import FlaskForm
@@ -456,7 +456,7 @@ We are using Bootstrap to enforce responsiveness and cross-browser compatibility
 
 ### Step 12: Define Child Templates
 
-The base template defines reusable elements such as the title, the navbar, the styles and the flash messages. The elements can be inherited by other templates (ie profile, login, and register) using the keyword `extends`. The Jinja templating engine allows for inheritance using this keyword.
+The base template defines reusable elements such as the title, the navbar, the styles, and the flash messages. The elements can be inherited by other templates (ie profile, login, and register) using the keyword `extends`. The Jinja templating engine allows for inheritance using this keyword.
 
 ```html
 <!-- app/templates/profile.html -->
@@ -490,7 +490,7 @@ The base template defines reusable elements such as the title, the navbar, the s
             </p>
         </div>
         <div class="col-md-4">
-            <!-- Emtpy column -->
+            <!-- Empty column -->
         </div>
     </div>
 {% endblock %}
@@ -504,25 +504,25 @@ The base template defines reusable elements such as the title, the navbar, the s
 {% block app_context %}
     <div class="row">
         <div class="col-md-4">
-            <!-- Emtpy column -->
+            <!-- Empty column -->
         </div>
         <div class="col-md-4">
             {{ wtf.quick_form(form) }}
         </div>
         <div class="col-md-4">
-            <!-- Emtpy column -->
+            <!-- Empty column -->
         </div>
     </div>
 {% endblock %}
 
 ```
 
-Flask-bootstrap allows for the integration of our forms using the macro `wtf`. All form features such as styling and security are automatically included, releaving us of this responsibility.
+Flask-bootstrap allows for the integration of our forms using the macro `wtf`. All form features such as styling and security are automatically included, relieving us of this responsibility.
 
 
 ### Step 13: Ignore Both The Sensitive and The Unnecessary Files
 
-In the event you want to push your code to a version control platform such as GitHub, you will definitely need to ignore certain files. You can file Python-specific files to ignore in [this link](https://github.com/github/gitignore/blob/main/Python.gitignore).
+In the event you want to push your code to a version control platform such as GitHub, you will need to ignore certain files. You can file Python-specific files to ignore in [this link](https://github.com/github/gitignore/blob/main/Python.gitignore).
 
 Paste the contents of the files and folders you want to ignore in the hidden file `.gitignore` within the top-level directory of the project.
 
@@ -536,7 +536,7 @@ The file `.env` and the folder `venv` will be ignored by the version control sys
 
 ### Step 14: Create An Entry Point
 
-There needs to be an entry point to the application. Flask will use this entry point access our code. Intentionally, we can update the `main.py` file to act as an entry point.
+There needs to be an entry point to the application. Flask will use this entry point to access our code. Intentionally, we can update the `main.py` file to act as an entry point.
 
 ```python
 # main.py
@@ -552,7 +552,7 @@ def make_shell_context():
 
 ```
 
-We are importing our application's instance before passing the values of our database as well as the `User` model to the flask shell. Flask shell allows us to access the application's context from the terminal. This is normally achieved by simply running `(venv)$ flask shell` in the terminal.
+We are importing our application's instance before passing the values of our database as well as the `User` model to the flask shell. The Flask shell allows us to access the application's context from the terminal. This is normally achieved by simply running `(venv)$ flask shell` in the terminal.
 
 
 ### Step 15: Update Environment Variables
@@ -588,20 +588,20 @@ Press CTRL+C to quit
  * Debugger PIN: 485-335-726
 ```
 
-Paste the URL http://127.0.0.1:5000 on your favourite browser to see the application.
+Paste the URL http://127.0.0.1:5000 on your favorite browser to see the application.
 
 ![Final Application](/images/databases/postgres_demo_project/final_app.png)
 
 
 ## Configure PostgreSQL Database
 
-Our Application is now functional, but before we can start populating our postgreSQL database, let us set up a few things.
+Our Application is now functional, but before we can start populating our PostgreSQL database, let us set up a few things.
 
 ### Step 1: Access PostgreSQL from PSQL
 
-PSQL is a terminal front-end tool used to access the postgreSQL database. If you have reviewed the lesson [Access PostgreSQL using `psql`](databases/access_postgresql/psql.md), this will be quite easily. If not, I recommend that you start there.
+PSQL is a terminal front-end tool used to access the PostgreSQL database. If you have reviewed the lesson [Access PostgreSQL using `psql`](databases/access_postgresql/psql.md), this will be quite easy. If not, I recommend that you start there.
 
-Log into postgreSQL as the postgres user by running this command in the terminal:
+Log into PostgreSQL as the Postgres user by running this command in the terminal:
 
 ```sql
 (venv)$ sudo -u postgres psql
@@ -613,7 +613,7 @@ Type "help" for help.
 postgres=# 
 ```
 
-You can split your VS Code terminal into two so that one window runs the flask server, while the other allows you to access the postgreSQL database. Alternatively, you can stop the flask server by pressing "Ctrl + C" before running the command above.
+You can split your VS Code terminal into two so that one window runs the flask server, while the other allows you to access the PostgreSQL database. Alternatively, you can stop the flask server by pressing "Ctrl + C" before running the command above.
 
 ### Step 2: Create a New User
 
@@ -641,7 +641,7 @@ postgres=# \du
 postgres=# 
 ```
 
-You can see that `muthoni` is now a super user. A super user by-passes all database checks, so you should be VERY CAREFULL when doing this.
+You can see that `muthoni` is now a super user. A super user bypasses all database checks, so you should be VERY CAREFULL when doing this.
 
 
 ### Step 4: Add User Password
@@ -672,7 +672,7 @@ Remember our `DATABASE_URL` environment variable earlier?
 DATABASE_URL=postgresql://muthoni:muthoni@localhost:5432/demo_postgres_app
 ```
 
-Be sure to update it accordingly if your user and database are named differently. Refer to this [postgreSQL formart](#step-6-postgresql-url-format).
+Be sure to update it accordingly if your user and database are named differently. Refer to this [postgreSQL format](#step-6-postgresql-url-format).
 
 ### Step 6: See All Your Databases
 
@@ -699,4 +699,4 @@ postgres=# \l
 
 You can see that `muthoni` is the owner of `demo_postgres_app` database.
 
-And, that is it! Your Flask Application is now ready to use the postgreSQL database. 
+And, that is it! Your Flask Application is now ready to use the PostgreSQL database. 
