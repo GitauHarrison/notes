@@ -23,7 +23,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 17. [Simple 2FA in flask](two_factor_authentication/2fa_flask.md)
 18. [Enable/disable 2fa in flask using Twilio Verify API](two_factor_authentication/twilio_verify_2fa.md)
 19. [Push Notication 2fa in flask using Python](two_factor_authentication/twilio_authy.md)
-20. [How to send emails from your flask app using Twilio SendGrid](twilio_sendgrid/overview.md)
+20. [How to send emails from your flask app using Twilio SendGrid](twilio_sendgrid/00_overview.md)
 21. [Third party authentication in Flask](two_factor_authentication/third_party_auth.md)
 22. [Live Traffic WhatsApp chatbot](/whatsapp_chatbots/live_traffic_whatsapp_chatbot.md)
 23. [Beautiful flask table with DataTableJS](flask_tables/flask_tables.md)
