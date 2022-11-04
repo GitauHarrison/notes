@@ -29,7 +29,7 @@ At this point you should have a SendGrid account. If not, review [how to create 
 
 - Click on the template name, and you can add a version of it. Feel free to create one for yourself, or use SendGrid's Email Designs.
 
-- Add the dynamic `{{ twilio_message }}` variable anywhere within your template. You can add it within a `p` element as follows: `<p>{{ twilio_message }}</p>`. In my case above, added the variable within the orange button. You will not see any data shown at the moment.
+- Add the dynamic `{{ twilio_message }}` variable anywhere within your template. You can add it within a `p` element as follows: `<p>{{ twilio_message }}</p>`. In my case above, added the variable within the orange button. You will not see any data shown at the moment. If you would like to learn more about available dynamic data that can be used with the templates, please check the [docs](https://www.twilio.com/docs/verify/email).
 ![Demo template](/images/sendgrid/send_emails/demo_template.png)
 
 - Once happy with the template, click on "Settings" within the HTML editor to provide a _version name_ and a _subject_.
