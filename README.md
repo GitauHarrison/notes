@@ -45,6 +45,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 38. [Getting started with PostgreSQL](databases/00_postgresql_overview.md)
 39. [Joined Table Inheritance](databases/99_joined_table_inheritance.md)
 40. [Object-Oriented Programming in Python](oop_python.md)
+41. [Email Support in Flask](email_support_in_flask.md)
 
 ## General Articles
 
