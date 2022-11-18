@@ -13,6 +13,11 @@ The approach I will take is to divide the entire process into three:
 - **The application context**: allows for access to all application features
 - **The scheduling**: time to send
 
+1. [Creating Tasks](#creating-tasks)
+2. [Application Context](#application-context)
+3. [Scheduling](#scheduling)
+
+
 
 ## Email Configurations
 
