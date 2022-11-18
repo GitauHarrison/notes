@@ -59,7 +59,7 @@ ADMINS=
 With the configurations in place, we can now create a function that will be responsible for sending emails. All the codes can be in an `email` module.
 
 ```python
-# email.py
+# app/email.py
 
 from flask_mail import Message
 from app import mail
@@ -81,17 +81,17 @@ def send_email(subject, sender, recipients, text_body, html_body):
 
 ```
 
-The helper function `send_email()` is a generic way of sending emails. It will be used below when we want to send actual emails. The entire email feature is added as a thread to ensure that the flask application does not slow down due to the execution of this function. Typically, sending emails will take a few seconds to complete.
+The helper function `send_email()` is a generic way of sending emails. It will be used below when we want to send actual emails. The entire email feature is added as a thread to ensure that the flask application does not slow down due to the execution of this function. Typically, sending an email takes a few seconds to complete.
 
 
 ## Creating Tasks
 
-Now that email support is in place, we can create a task that we can schedule to happen at period intervals. 
+Now that email support is in place, we can create a task that we can schedule to happen at periodic intervals. 
 
 
 ### Updating the Database To Support Cronjobs
 
-A user's model could define only their email address. All that an application accepts is a user's email address.
+A user's model could define only their email address. All that this application accepts is a user's email address.
 
 ```python
 # app/models.py
