@@ -349,6 +349,8 @@ The `flask` command is immediately followed by my custom CLI commands. As soon a
 
 The last part involves applying the same redirection for `stderr` that was configured for `stdout`.The "2" and the "1" reference the file handle numbers for `stderr` and `stdout` respectively.
 
+Ensure you save the changes by pressing "Ctrl + X" then type "y" for "yes" before pressing "Enter".
+
 Once this job is executed, there will be a new file inside the `logs` sub-folder to show the status of the execution.
 
 |        Task         | Description   |
