@@ -7,6 +7,8 @@ In this tutorial, I will walk you through the steps you can follow to deploy you
 3. [Buy a domain name for your deployed application](/linode/buy_domain.md)
 4. [Secure your domain with SSL](/linode/secure_domain_with_ssl.md)
 
+The flask application demonstrated in the tutorials uses the file-based SQLite database. However, if you would like to know how to use PostgreSQL on a live Linux server, you can learn more by visiting [Configure PostgreSQL in a Live Linux Server](/linode/configure_postgresql.md).
+
 ## Table of Contents
 
 If you would like to skip to a particular section within this tutorial, you can click on any of these links below:

@@ -6,18 +6,25 @@ As wonderful as these platforms are, using them causes us to lose the experience
 
 ### Table of Contents
 
-1. [Getting Started]()
-2. [PostgreSQL Overview]()
-3. [Deployment to a Virtual Machine]()
-4. [Configuring PostgreSQL in Linode]()
+1. [Getting Started](#getting-started)
+2. [PostgreSQL Overview](#postgresql-overview)
+3. [Deployment to a Virtual Machine](#deployment-to-a-virtual-machine)
+4. [Configuring PostgreSQL in Linode](#configuring-postgresql-in-linode)
+
+This tutorial is a continuation of how to deploy a flask application on Linode. For your reference, here are the other parts of the deployment process:
+
+1. [Welcome to Linode](/deploy_to_linode.md)
+2. [Deploy your flask app on Linode](/linode/deploy_on_linode.md)
+3. [Buy a domain name for your deployed application](/linode/buy_domain.md)
+4. [Secure your domain with SSL](/linode/secure_domain_with_ssl.md)
 
 ## Getting Started
 
 This article presumes that you already have an application built, and ready for deployment. I will be using a [pre-built flask application](https://github.com/GitauHarrison/configure-flask-to-use-postgresql) to demonstrate how to configure PostgreSQL. Also, it is presumed you are already familiar with using PostgreSQL. For example, you know how to create a user and add a database. If you are not familiar with any of these, I recommend that you start here before proceeding:
 
-- [Start a Flask Server]() (getting started with Flask)
-- [Install PostgreSQL]() (install and set up PostgreSQL in Linux)
-- [Accessing PostgreSQL using psql]() (Working with the PostgreSQL database)
+- [Start a Flask Server](https://github.com/GitauHarrison/notes/blob/master/start_flask_server.md) (getting started with Flask)
+- [Install PostgreSQL](https://github.com/GitauHarrison/notes/blob/master/databases/01_install_postgresql.md) (install and set up PostgreSQL in Linux)
+- [Accessing PostgreSQL using psql](https://github.com/GitauHarrison/notes/blob/master/databases/access_postgresql/psql.md) (Working with the PostgreSQL database)
 
 
 ## PostgreSQL Overview
