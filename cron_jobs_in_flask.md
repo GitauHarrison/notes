@@ -42,7 +42,7 @@ class Config(object):
 
 My configurations above utilize Twilio's SendGrid API to work with emails, especially on a production server. It still works locally though. If you are not familiar with Twilio SendGrid, check out [this tutorial](/twilio_sendgrid/00_overview.md) to learn more. Alternatively, you can use Google's `smtp` for this. Learn how to work with Google's `smtp` [here](email_support_in_flask.md).
 
-Since these variables are sourced from the environemnt, it is best practice to add them in a secret `.env` file which should never be committed to version control.
+Since these variables are sourced from the environment, it is best practice to add them in a secret `.env` file which should never be committed to version control.
 
 ```python
 # .env
@@ -111,9 +111,9 @@ class Client(db.Model):
 
 The model has an additional column called `num_newsletter` whose integer values will be used to determine if a user has received an email newsletter or not. Additionally, this column will be used to determine what email newsletter needs to be sent out.
 
-It is good practice to respect user's contact information. The fact that a user has shared an email address with us does not give the opportunity to spam them. Hence, if a user wishes to opt out of the subscription, they can do so. The application will remember their subscription state using the value in `active` column. 
+It is good practice to respect users' contact information. The fact that a user has shared an email address with us does not give us the opportunity to spam them. Hence, if a user wishes to opt-out of the subscription, they can do so. The application will remember their subscription state using the value in `active` column. 
 
-### Email template
+### Email Template
 
 Here is a sample method used to send out an email.
 
@@ -144,7 +144,7 @@ def send_week1newsletter(client_email, client_username):
             client_username=client_username))
 ```
 
-The `send_week1_newsletter()` function uses both text and HTML content to send out the email. This is similar to the `render_template()` function from flask. It is always advisable to have the text template in the event the email server does not entirely parse the HTML content or there is an unexpected issue.
+The `send_week1_newsletter()` function uses both text and HTML content to send out the email. This is similar to the `render_template()` function from the flask. It is always advisable to have the text template in the event the email server does not entirely parse the HTML content or there is an unexpected issue.
 
 
 ### Sending An Email
@@ -193,7 +193,7 @@ def week2_newsletter():
                 db.session.commit()
 ```
 
-Notice that the two functions begin by checking of a user is still subscribed to receive emails. The starting value to know what email needs to be sent out is 0. This value is added to the database when the user is being registered.
+Notice that the two functions begin by checking of a user is still subscribed to receive emails. The starting value to know what email needs to be sent out is 0. This value is added to the database when the user is registered.
 
 ```python
 if form.validate_on_submit():
@@ -202,19 +202,19 @@ if form.validate_on_submit():
     db.session.commit()
 ```
 
-0 means that this user is newly registered. If so, then week 1 email newsletter will be sent out to them. As soon as this email is sent out, their status changes to 1, meaning, they should not receive any week 1 newsletter. They are now qualified to receive week 2 newsletter.
+0 means that this user is newly registered. If so, then the week 1 email newsletter will be sent out to them. As soon as this email is sent out, their status changes to 1, meaning, they should not receive any week 1 newsletter. They are now qualified to receive the week 2 newsletter.
 
 
 ## Application Context
 
-You have probably come across the command `flask shell`. "Shell" is a command from flask. There is also `flask run` which is used to start the flask server. And many more. It is also possible to create custom commandline operations that suite our needs. 
+You have probably come across the command `flask shell`. "Shell" is a command from flask. There is also `flask run` which is used to start the flask server. And many more. It is also possible to create custom command-line operations that suit our needs. 
 
-In the context of sending periodic email newsletters, we are going to create a command which will run in the application's context such that every time it is invoked, not only will it send out an email, but it will also allow for access to the application's resources such as the database, which me mostly need here.
+In the context of sending periodic email newsletters, we are going to create a command which will run in the application's context such that every time it is invoked, not only will it send out an email, but it will also allow for access to the application's resources such as the database, which we most need here.
 
 
 ### Create a Custom Command
 
-Following the principle of separation of concerns, a new module called `cli` will define all that we need for our commandline operations.
+Following the principle of separation of concerns, a new module called `cli` will define all that we need for our command-line operations.
 
 ```python
 # app/cli.py
@@ -244,7 +244,7 @@ def register(app):
         print(str(datetime.utcnow()), 'Week 2 emails sent to all subscribed clients\n\n')
 ```
 
-Flask uses [Click](https://click.palletsprojects.com/) for all commandline operations. In the example above, I have created a root command called `send-newsletter-email` from whom subcommands are derived. These sub-commands are created via `app.cli.group` decorator. All that the subcommands do is to invoke the necessary functions used to send out an email. To ensure that I know when the emails were sent out, I have added a `print()` statement.
+Flask uses [Click](https://click.palletsprojects.com/) for all command-line operations. In the example above, I have created a root command called `send-newsletter-email` from whom subcommands are derived. These sub-commands are created via the `app.cli.group` decorator. All that the subcommands do is invoke the necessary functions used to send out an email. To ensure that I know when the emails were sent out, I have added a `print()` statement.
 
 
 ### Test Access to Custom Commands
@@ -310,7 +310,7 @@ Once the job is written and tested, we can now implement the scheduling part. He
 
 Here, I am running the `crontab` command under my computer's user, who is typically the same user that runs the flask application. This ensures that the task runs with the correct permissions. It is advisable to not run this command as a root user.
 
-Once the file is opened, you will notice that it comes with commented out instructions. These instructions offer guidance on how to go about scheduling a task.
+Once the file is opened, you will notice that it comes with commented-out instructions. These instructions offer guidance on how to go about scheduling a task.
 
 ```python
 # ┌───────────── minute (0 - 59)
@@ -324,7 +324,7 @@ Once the file is opened, you will notice that it comes with commented out instru
 # * * * * * <command to execute>
 ```
 
-Each line in a crontab file represents a job in the syntax `* * * * * <command to execute>`. There are five fields which represent the time to execute a command, followed by a shell command itself.
+Each line in a crontab file represents a job in the syntax `* * * * * <command to execute>`. There are five fields that represent the time to execute a command, followed by a shell command itself.
 
 
 ### Understanding A Cron Expression
@@ -339,8 +339,8 @@ In our case, we want to run `flask send-newsletter-email week1`. As a command li
 
 - **Current directory**: We need to `cd` into the project's specific directory in the cronjob, by specifying its absolute path.
 - **Environment variables**: Flask uses the `.env` and the `.flaskenv` files to automatically access an application's environment variables
-- **Virtual environment**: Because it is a flask command, it is best to activate a virtual envronment in the process, or else, run a Python executable located inside the virtualenv directory.
-- **Logging**: It is best to ensure that by sending the output to a logfile.
+- **Virtual environment**: Because it is a flask command, it is best to activate a virtual environment in the process, or else, run a Python executable located inside the virtualenv directory.
+- **Logging**: It is best to ensure that by sending the output to a log file.
 
 To configure the `flask send-newsletter-email week1` command as a cron service, I can schedule week 1 emails to be sent out once every minute as follows:
 
@@ -348,7 +348,7 @@ To configure the `flask send-newsletter-email week1` command as a cron service, 
 * * * * * cd /home/harry/newsletter_app && venv/bin/flask send-newsletter-email week1 >> logs/scheduled_email.log 2>&1
 ```
 
-I have used `&&` to include multiple commands in a single line. I have began by navigating into the directory containing the project. Instead of activating a virtual environment, I decided to locate the `flask` command inside the `venv/bin/` subdirectory which achieves the same effect as activating the environment.
+I have used `&&` to include multiple commands in a single line. I began by navigating into the directory containing the project. Instead of activating a virtual environment, I decided to locate the `flask` command inside the `venv/bin/` subdirectory which achieves the same effect as activating the environment.
 
 The `flask` command is immediately followed by my custom CLI commands. As soon as that is executed, the output is redirected and appended to the file `scheduled_email.log` for logging purposes. This helps to know if the job was done successfully or if there was an error. Otherwise, it would be very difficult to know what happened, especially in the event there is an unexpected error.
 
@@ -365,7 +365,7 @@ Once this job is executed, there will be a new file inside the `logs` sub-folder
 | 5 4 * * * command   | Run the command daily at 4.05 am    |
 | 5 16 * * * command  | Run the command daily at 4.05 pm   |
 | 5 4 * * 2 command   | Run the command every Tuesday at 4.05 am   |
-| 5 4 * * 1-5 command   | Run the command every weekday at 4.05 am  except the weekends |
+| 5 4 * * 1-5 command   | Run the command every weekday at 4.05 am except the weekends |
 | 0-59/2 * * * command   | Run the command daily every even minute of the hour   |
 | 1-59/2 * * * command   | Run the command daily every odd minute of the hour   |
 
