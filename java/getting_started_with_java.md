@@ -107,4 +107,25 @@ class QuickStart {
 
 To run the program, press `f5`. You  should see text "Hello World" displayed in the terminal.
 
+
+## Creat a Java Project
+
 When working with Java Projects, VS Code does not offer core support the way IntelliJ IDE or NetBeans do. You must have the necessary extensions installed to work with those project files.
+
+At this point, you should already have the [Extension pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) installed. To create a Java Project, open VS Code.
+
+![Open VS Code](/images/java/getting_started/open_vs_code.png)
+
+Select on "File Explorer" to access the "Create Java Project" button. Click on it. 
+
+![No build tools](/images/java/getting_started/no_build_tools.png)
+
+Select the "No build tools" option. This will open the location you want to create your project. Choose an appropriate location in your system. 
+
+![Name project](/images/java/getting_started/create_project.png)
+
+Once you have selected a location, give your project a name as seen in the input box. Press "Enter" to confirm.
+
+![Java Project](/images/java/getting_started/java_project.png)
+
+Notice that the project comes with a structure already. In the example above, I have already clicked on the `App.java` file. You can do the same. To run it, you can press the "play" button on the top-right, or `f5`. Alternatively, you can right-click on the file to access the command "Run Java". Select it and you will see the text "Hello World" displayed on the terminal.
