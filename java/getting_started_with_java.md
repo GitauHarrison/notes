@@ -68,7 +68,7 @@ We will need to use an Integrated Development Environment when working with Java
     $ java -version
 
 
-    # Output
+    // Output
 
     openjdk version "17.0.5" 2022-10-18 LTS
     OpenJDK Runtime Environment Corretto-17.0.5.8.1 (build 17.0.5+8-LTS)
@@ -82,21 +82,21 @@ For more installation details, you can refer to the [Corretto documentation](htt
 
 Let us create a new Java program as follows:
 
-```python
-# Create project folder
+```java
+// Create project folder
 $ mkdir hello_world && cd hello_world
 
-# Create java file
+// Create java file
 $ touch QuickStart.java
 
-# Open project n VS Code
+// Open project file in VS Code
 $ code .
 ```
 
 This will open `QuickStart.java` file in VS Code. Update the file with this code:
 
-```python
-# QuickStart.java
+```java
+// QuickStart.java
 
 class QuickStart {
     public static void main (String[] args) {
