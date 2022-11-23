@@ -47,6 +47,10 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 40. [Object-Oriented Programming in Python](oop_python.md)
 41. [Email Support in Flask](email_support_in_flask.md)
 
+## Java Articles
+
+1. [Getting Started With Java](/java/getting_started_with_java.md)
+
 ## General Articles
 
 1. [Getting started with the Windows Subsystem for Linux](non_technical_articles/wsl.md)
