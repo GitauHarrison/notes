@@ -2,13 +2,15 @@
 
 The approach we shall use to learn Django is project-based. We shall create a sample application, and in the process learn the different aspects of using Django to build a robust web application.
 
-If you would like to skip to a particular section in this tutorial, you can do so by clicking on any of the links below:
+If you would like to skip to a particular section in the entire Django tutorial, you can do so by clicking on any of the links below:
 
 - [Django Overview](00_overview.md)
 - [Getting Started With Django](01_getting_started.md) (this article)
 
 
 ### Table of Contents
+
+This article is broken down into the following subsections:
 
 1. [Installation](#installation)
 2. [Create Django Project](#create-django-project)
