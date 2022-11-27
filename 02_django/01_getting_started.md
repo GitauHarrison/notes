@@ -10,6 +10,10 @@ If you would like to skip to a particular section in this tutorial, you can do s
 
 ### Table of Contents
 
+1. [Installation](#installation)
+2. [Create Django Project](#create-django-project)
+3. [Overview Of Django Project Files](#overview-of-django-project-files)
+4. [Run The Application](#run-the-application)
 
 
 ## Installation
