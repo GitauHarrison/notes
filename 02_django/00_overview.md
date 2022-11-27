@@ -19,3 +19,9 @@ Django is partly opinionated and partly unopinionated. It provides a set of comp
 ## How Django Compares to Flask
 
 Flask, on contrast, does not provide components or preferred ways of handling a task. It is intentionally referred to as a micro-framework because it only provides the core functionality to run an application. Anything beyond that is achieved by the help of extensions that support the framework.
+
+### Table of Contents
+
+- [Django Overview](01_getting_started.md) (this article)
+- [Getting Started With Django](01_getting_started.md)
+
