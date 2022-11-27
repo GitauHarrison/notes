@@ -1,6 +1,6 @@
 # Getting Started With Django
 
-The approach we shall use to learn Django is project-based. We shall create a sample application, and in the process learn the different parts of Django.
+The approach we shall use to learn Django is project-based. We shall create a sample application, and in the process learn the different aspects of using Django to build a robust web application.
 
 If you would like to skip to a particular section in this tutorial, you can do so by clicking on any of the links below:
 
@@ -64,7 +64,7 @@ This creates a virtual environment called `venv` in `demo_project`. Thereafter, 
 $ source venv/bin/activate
 ```
 
-You will notice that your terminal changes to `(venv)demo_project$ `. Alternatively, we can use `virtualenvwrapper` to not only create but activate a virtual environment for us.
+You will notice that your terminal changes to `(venv)demo_project$ `. Alternatively, we can use `virtualenvwrapper` to not only create but also to activate a virtual environment for us.
 
 ```python
 $ mkvirtualenv venv
@@ -117,21 +117,24 @@ Django has some commands we can use to create and manage our project. One of the
 
 ![Django admin command](/02_django/images/getting_started/djajngo_admin_command.png)
 
-You can see that we have a list of sub-commands. The one we are most interested in currently is the `startproject` command. It creates a complete project for us, with the proper structure and all files we need to get started. Let us use it below:
+You can see that when we run the `django-admin` command we get a list of sub-commands. The one we are most interested in at the moment is the `startproject` command. It creates a complete project for us, with the proper structure and all the files we will need to get started. Let us use it below:
 
 ```python
 (venv)$ django-admin startproject blog_app
 ```
 
-This command creates a project called `blog_app` within our current directory. You can run the command `ls` in your terminal to see it. Let us change directory to the project to see what structure it has.
+This command creates a project called `blog_app` within our current directory. You can run the command `ls` in your terminal to see it. We will need to change the directory to the new project to see what structure it has.
 
 ```python
 (venv)$ cd blog_app
 ```
 
-This only navigates us to the new folder, but does not show us the project's structure. Since we want to see this new project's structure, we can do the following:
+This only navigates us to the new folder, but does not show us the project's structure. Since we want to see this new project's structure, we can do either of the following:
 
-### Run the Tree Command
+- [Run the `tree` command](#run-the-tree-command)
+- [Use VS Code's file explorer](#vs-code-file-explorer)
+
+### Run the `tree` Command
 
 In the terminal, I will run the command `tree` to see the project's structure.
 
@@ -151,7 +154,9 @@ In the terminal, I will run the command `tree` to see the project's structure.
 1 directory, 6 files
 ```
 
-You may not have this command installed. To use it, you will need to install it first. Thankfully, there is some instruction on the terminal on how to do the installation. Follow it and you will be able to use the `tree` command.
+You may not have this command installed. To use it, you will need to install it first. Thankfully, there is some instruction on the terminal on how to do the installation. Follow it and then re-run the `tree` command.
+
+Above, you can see that we are currently in our initial project directory, denoted by the `.`. Our actual project is called `blog_app` and it has a few more files in it. In the top-level directory. There is also the `manage.py` file which acts as the entry point to the application.
 
 ### VS Code File Explorer
 
