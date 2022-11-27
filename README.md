@@ -47,21 +47,40 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 40. [Object-Oriented Programming in Python](oop_python.md)
 41. [Email Support in Flask](email_support_in_flask.md)
 
+## Django Articles
+
+1. [Getting Started with Django](/02_django/01_getting_started.md)
+
 ## Java Articles
 
-1. [Getting Started With Java](/java/getting_started_with_java.md)
+1. [Getting Started With Java](/03_java/01_getting_started_with_java.md)
 
 ## General Articles
 
 1. [Getting started with the Windows Subsystem for Linux](non_technical_articles/wsl.md)
 2. [Integer conversion to binary using Python](non_technical_articles/convert_integers_to_binary_using_python.md)
 
-## Demo Projects
+## Flask Demo Projects
 
-The articles above are great, though I think that seeing demos of the projects which integrate the concepts is a good way to learn. Check a few below:
+The [flask articles above](#flask-focused-articles) are great, though I think that seeing demos of the projects which integrate the concepts is a good way to learn. Check a few below:
 
 |  Project Name |  Description | Source Code | Demo Video |  Live Link |
 | ------------- | ------------ | ----------- | ---------- | ---------- |
-| Bold YouTube Video Downloader | Easily download videos from YouTube to local machine | [byvd on gitHub](https://github.com/GitauHarrison/youtube-video-downloader) | [byvd on YouTube](https://www.youtube.com/watch?v=GEYWpVBGsM0) | [byvd on Heroku](https://byvd-app.herokuapp.com/) |
-| Mbeca Ciaku | A data visualization app for personal finances | [Mbeca Ciaku on GitHub](https://github.com/GitauHarrison/mbeca-ciaku) | [Mbeca Ciaku on YouTube](https://www.youtube.com/watch?v=qzvHaOdsNsU) | [Mbeca Ciaku Live Link](https://mbecaciaku.herokuapp.com/) |
+| Bold YouTube Video Downloader | Easily download videos from YouTube to local machine | [byvd on gitHub](https://github.com/GitauHarrison/youtube-video-downloader) | [byvd on YouTube](https://www.youtube.com/watch?v=GEYWpVBGsM0) | [byvd on Render](https://bold-youtube-video-downloader.onrender.com/) |
+| Mbeca Ciaku | A data visualization app for personal finances | [Mbeca Ciaku on GitHub](https://github.com/GitauHarrison/mbeca-ciaku) | [Mbeca Ciaku on YouTube](https://www.youtube.com/watch?v=qzvHaOdsNsU) | [Mbeca Ciaku on Render](https://mbeca-ciaku.onrender.com/) |
+| Newsletter App | Pre-launch interest registration| [Newsletter App on GitHub]() (private) | [Newsletter App on YouTube]() (n/a) | [Newsletter App on Linode](https://www.bolderlearner.com) |
 | eLearning App | An online learning platform for students| [eLearning App on GitHub]() (in progress) | [eLearning App on YouTube]() (in progress) | [eLearning App Live Link]() (in progress) |
+
+
+## Django Demo Projects
+
+|  Project Name |  Description | Source Code | Demo Video |  Live Link |
+| ------------- | ------------ | ----------- | ---------- | ---------- |
+|      App      |    App desc  |   GitHub    |    YouTube |    Live    |
+
+
+## Java Demo Projects
+
+|  Project Name |  Description | Source Code | Demo Video |  Live Link |
+| ------------- | ------------ | ----------- | ---------- | ---------- |
+|      App      |    App desc  |   GitHub    |    YouTube |    Live    |
