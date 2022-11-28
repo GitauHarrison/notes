@@ -1,8 +1,8 @@
-# Email Verification Using SendGrid, Verify and Flask
+# Email Verification Using SendGrid, Verify, and Flask
 
-When you search how to send emails in flask, you will come across a ton of content on how to do so. Below, you will learn how to utilize Twilio SendGrid to send emails from a flask application.
+When you search for how to send emails in Flask, you will come across a ton of content on how to do so. Below, you will learn how to utilize Twilio SendGrid to send emails from a flask application.
 
-One possible use case of sending emails is when you want to enforce the authenticity of user emails in your application. A user who keys in their email address will be required to prove that they have access to the email by retrieving a token sent to their inbox.
+One possible use case for sending emails is when you want to enforce the authenticity of user emails in your application. A user who keys in their email address will be required to prove that they have access to the email by retrieving a token sent to their inbox.
 
 ### Table of Contents
 
@@ -16,7 +16,7 @@ If you would like to browse the completed project, you can check out the [Email 
 
 ## Working With SendGrid
 
-At this point you should have a SendGrid account. If not, review [how to create a free account](/twilio_sendgrid/01_create_acccount.md) now. The first step would be to come up with a template for our email. Twilio Verify Service will use this template when emailing verification codes to users. 
+At this point, you should have a SendGrid account. If not, review [how to create a free account](/twilio_sendgrid/01_create_acccount.md) now. The first step would be to come up with a template for our email. Twilio Verify Service will use this template when emailing verification codes to users. 
 
 - From the [SendGrid dashboard](https://app.sendgrid.com/), click on "Email API" located in the sidebar, then select "Dynamic Templates"
 ![Dynamic templasts](/images/sendgrid/send_emails/dynamic_templates.png)
@@ -54,16 +54,16 @@ When you click the "Create and View" button, an API key will be created. Make su
 
 ### Create Email Integration
 
-From now, we will move to our Twilio account to complete the configuration and link it to SendGrid. From the [Twilio Console](https://console.twilio.com/), click on "Verify" Service to access [Email Integration](https://console.twilio.com/us1/develop/verify/settings/email) found in .
+From now, we will move to our Twilio account to complete the configuration and link it to SendGrid. From the [Twilio Console](https://console.twilio.com/), click on "Verify" Service to access [Email Integration](https://console.twilio.com/us1/develop/verify/settings/email) found in.
 
 ![Email Integration](/images/sendgrid/send_emails/new_api.png)
 
-For the SendGrid API key, you will need to retrieve the earlier copy saved in the `.env` file. The template key is found in your SendGrid Dynamic templates page. Click Save to store the email integration.
+For the SendGrid API key, you will need to retrieve the earlier copy saved in the `.env` file. The template key is found on your SendGrid Dynamic templates page. Click Save to store the email integration.
 
 
 ### Create A Verify Service
 
-Explore Twilio's products catalogue to Find "Verify" within the Account Security section. You can pin this to access is easily in future.
+Explore Twilio's products catalog to Find "Verify" within the Account Security section. You can pin this to access it easily in the future.
 
 ![Explore Products catalogue](/images/sendgrid/send_emails/product_catalogue.png)
 
@@ -87,7 +87,7 @@ I have already created a sample application we can use to build our project. You
 
 ### Install Twilio
 
-Besides the dependancies installed through the _requirements.txt_ file, we will need to also install `twilio` within our active virtual environment. Run this command below:
+Besides the dependencies installed through the _requirements.txt_ file, we will need to also install `twilio` within our active virtual environment. Run this command below:
 
 ```python
 (venv)$ pip3 install twilio
@@ -126,12 +126,12 @@ class EmailForm(FlaskForm):
 
 ```
 
-We have used the class `EmailForm()` to define what fields we want, in this case it is only the `email` field together with a `submit` button.
+We have used the class `EmailForm()` to define what fields we want, in this case, it is only the `email` field together with a `submit` button.
 
 
 ### Web Form Configuration
 
-To help protect our form from a nasty attack called Cross Site Request Forgery (Csrf in short), Flask expects us to initialize a `SECRET_KEY` configuration. We can do so by creating a `config` module in the top-level directory.
+To help protect our form from a nasty attack called Cross-Site Request Forgery (Csrf in short), Flask expects us to initialize a `SECRET_KEY` configuration. We can do so by creating a `config` module in the top-level directory.
 
 ```python
 (venv)$ touch config.py
@@ -155,7 +155,7 @@ class Config(object):
 
 ```
 
-The value  is located in another top-level file called `.env` which should not be commited to version control. Its content should remain a secret. Ensure you add it to a `.gitignore` file.
+The value is located in another top-level file called `.env` which should not be committed to version control. Its content should remain a secret. Ensure you add it to a `.gitignore` file.
 
 ```python
 #.env
@@ -218,7 +218,7 @@ The dynamic data `{{ title }}` comes from the title passed when the template is 
 
 ### Render The Email Form
 
-The routes module is used to combine all logic related to view functions. We will need to update in order for our form to be displayed.
+The routes module is used to combine all logic related to view functions. We will need to update it for our form to be displayed.
 
 ```python
 # app/routes.py
@@ -236,7 +236,7 @@ def index():
 
 ```
 
-We begin by importing our `EmailForm` from the forms module, then instantiate it using the variable `form`. It is this variable that is passed,the template, that is used to render our form. If your application is still running, you can refresh the home/index page to see the email form.
+We begin by importing our `EmailForm` from the forms module, then instantiate it using the variable `form`. It is this variable that is passed, the template, that is used to render our form. If your application is still running, you can refresh the home/index page to see the email form.
 
 ![Email form](/images/sendgrid/send_emails/email_page.png)
 
@@ -287,9 +287,9 @@ def check_email_verification_token(email, token):
 
 ```
 
-To use the Verify API, we first need to get our service's client. This is done handled by our helper method `_get_twilio_verify_client()`. You will need your Twilio account's SID and Auth token seen in your [console](https://console.twilio.com/). You will also need the Verify Service SID as discussed in the section [Create a Verify Service](#create-a-verify-service).
+To use the Verify API, we first need to get our service's client. This is handled by our helper method `_get_twilio_verify_client()`. You will need your Twilio account's SID and Auth token seen in your [console](https://console.twilio.com/). You will also need the Verify Service SID as discussed in the section [Create a Verify Service](#create-a-verify-service).
 
-Notice that they are all environment variables. So, we need to update our configurations file.
+Notice that they are all environment variables. So, we need to update our configuration file.
 
 ```python
 # config.py
@@ -318,7 +318,7 @@ TWILIO_VERIFY_SERVICE_ID=
 SENDGRID_API_KEY=
 ```
 
-The `request_email_verification_token()` method contacts Twilio Verify to request for a verification token. A user's email is passed as an argument so that the email can be sent to their inbox.
+The `request_email_verification_token()` method contacts Twilio Verify to request a verification token. A user's email is passed as an argument so that the email can be sent to their inbox.
 
 The request process is handled by the `index()` view function as seen below:
 
@@ -363,9 +363,9 @@ def verify_token():
 
 ```
 
-In the token verification page, there will be another simple form with only one field that accepts the numeric code received by a client. Once this form is submited with the code, a call to the method `check_email_verification_token()` is made. If the token is verified, then the user will be redirected to the index page.
+On the token verification page, there will be another simple form with only one field that accepts the numeric code received by a client. Once this form is submitted with the code, a call to the method `check_email_verification_token()` is made. If the token is verified, then the user will be redirected to the index page.
 
-Let us begin by creating this new template. We can copy the content of the `index.html` and paste into `verify.html`.
+Let us begin by creating this new template. We can copy the content of the `index.html` and paste it into `verify.html`.
 
 ```html
 <!-- app/templates/verify.html -->

@@ -15,7 +15,7 @@ In the event you fail to use the account for some time and it becomes inactive, 
 - Uncheck the box "User email address as username"
 - You can use the same email address (name@email.com) when creating this new account.
 ![Create a new account again](/images/sendgrid/create_account/new_account_again.png)
-- You will be asked to provide more details about your self
+- You will be asked to provide more details about yourself
 ![About yourself](/images/sendgrid/create_account/your_info.png)
 - Once the details are sent, you will be asked to provide further information by contacting the [Support team](support@twilio.zendesk.com).
 ![Contact Support](/images/sendgrid/create_account/contact_support.png)
