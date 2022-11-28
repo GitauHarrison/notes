@@ -54,7 +54,7 @@ $ cd demo_project
 ```
 ![Change Directory](/02_django/images/getting_started/cd_demo_folder.png)
 
-It is recommended to install Django in a virtual environment. You can run:
+It is recommended to install Django in a virtual environment. Virtual environments are used to isolate the needs of one application from another, or from cluttering the OS. You can run the command below in your terminal:
 
 ```python
 $ python3 -m venv venv
@@ -158,7 +158,7 @@ In the terminal, I will run the command `tree` to see the project's structure.
 
 You may not have this command installed. To use it, you will need to install it first. Thankfully, there is some instruction on the terminal on how to do the installation. Follow it and then re-run the `tree` command.
 
-Above, you can see that we are currently in our initial project directory, denoted by the `.`. Our actual project is called `blog_app` and it has a few more files in it. In the top-level directory. There is also the `manage.py` file which acts as the entry point to the application.
+Above, you can see that we are currently in our initial project directory, denoted by the `.`. Our actual project is called `blog_app` and it has a few more files in it. In the top-level directory, there is also the `manage.py` file which acts as the entry point to the application.
 
 ### VS Code File Explorer
 
