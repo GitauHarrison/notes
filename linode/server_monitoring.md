@@ -272,7 +272,7 @@ Once the button is clicked, you will notice that an entry will appear displaying
 
 ![New client](/images/linode/server_monitoring/new_client.png)
 
-The long string appended to the URL `https://lv.linode.com/` is my Linode's Longview Client's instance globally unique identifier (GUID).
+The long string appended to the URL `https://lv.linode.com/`, currently blurred out, is the globally unique identifier (GUID) of a Linode's Longview Client instance.
 
 
 ### Install the Longview Agent
@@ -287,7 +287,7 @@ $ ssh user@IP_address
 user@project:~$ 
 ```
 
-I have logged into my Linode over SSH. You will need to `user` with your actual Linode's user and `IP_address` with your Linode's IP address. I have chosen to log in as a non-root user because it is always advisable not to use root. My `user` has root privileges. If you are familiar with these, I'd recommend you check out the tutorial [Deploy Your Flask App on Linode](/linode/deploy_on_linode.md).
+I have logged into my Linode over SSH. You will need to replace `user` with your actual Linode's user and `IP_address` with your Linode's IP address. I have chosen to log in as a non-root user because it is always advisable not to use root. My `user` has root privileges. If you are not familiar with these, I'd recommend you check out the tutorial [Deploy Your Flask App on Linode](/linode/deploy_on_linode.md).
 
 Back to the Linode Cloud Manager, we need to copy the `curl` command seen in the new Longview client we have just created and paste it into our Linode's terminal.
 
@@ -335,7 +335,7 @@ user@project~$ sudo systemctl status longview
        Docs: man:systemd-sysv-generator(8)
 ```
 
-This agent is not running. To start it, we use the following:
+This agent is not running. The status is indicated `inactive (dead)`. To start it, we can use the following command:
 
 ```python
 user@project~$ sudo systemctl start longview
@@ -343,7 +343,7 @@ user@project~$ sudo systemctl start longview
 # Nothing will be seen
 ```
 
-We need to rerun the previous command once again.
+We need to rerun the previous command once again. At this point, the status should change to `active(running)`.
 
 ```python
 user@project~$ sudo systemctl status longview
@@ -404,7 +404,7 @@ Back to the Linode Cloud Manager Dashboard, we need to click on the "Longview" l
 
 On the top-right corner of each client instance, there is an ellipsis button. Once clicked, we can see "Delete". At your discretion, you can click on "Delete" to delete the Longview client.
 
-On our Linode, we can run the following command:
+On our Linode, we can run the following command to complete the uninstallation process:
 
 ```python
 user@project~$ sudo apt-get remove linode-longview
