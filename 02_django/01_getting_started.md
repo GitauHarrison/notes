@@ -46,14 +46,14 @@ My OS currently has Python3.8.10. In your terminal, I will be on VS Code's termi
 $ mkdir demo_project
 ```
 
-![Create Project](/02_django/images/getting_started/django_project.png)
+![Create Project](/02_django/images/01_getting_started/django_project.png)
 
 Navigate into the new folder:
 
 ```python
 $ cd demo_project
 ```
-![Change Directory](/02_django/images/getting_started/cd_demo_folder.png)
+![Change Directory](/02_django/images/01_getting_started/cd_demo_folder.png)
 
 It is recommended to install Django in a virtual environment. Virtual environments are used to isolate the needs of one application from another, or from cluttering the OS. You can run the command below in your terminal:
 
@@ -81,7 +81,7 @@ Now, we are ready to install Django. Let us run this command in our active virtu
 (venv)$ pip3 install django
 ```
 
-![Install django](/02_django/images/getting_started/install_django2.png)
+![Install django](/02_django/images/01_getting_started/install_django2.png)
 
 Verify that Django has been install by running this command in your terminal:
 
@@ -118,7 +118,7 @@ Django has some commands we can use to create and manage our project. One of the
 (venv)$ django-admin
 ```
 
-![Django admin command](/02_django/images/getting_started/djajngo_admin_command.png)
+![Django admin command](/02_django/images/01_getting_started/djajngo_admin_command.png)
 
 You can see that when we run the `django-admin` command we get a list of sub-commands. The one we are most interested in at the moment is the `startproject` command. It creates a complete project for us, with the proper structure and all the files we will need to get started. Let us use it below:
 
@@ -169,11 +169,11 @@ We can visualize the project' structure using VS Code's file explorer. First, le
 (venv)blog_app $ code .
 ```
 
-![Open vs code](/02_django/images/getting_started/open_vs_code.png)
+![Open vs code](/02_django/images/01_getting_started/open_vs_code.png)
 
 You will see the full project structure such as the one below.
 
-![Project structure](/02_django/images/getting_started/project_structure.png)
+![Project structure](/02_django/images/01_getting_started/project_structure.png)
 
 
 ## Overview of Django Project Files
@@ -213,10 +213,10 @@ To start the Django server, run:
 (venv)$ python3 manage.py runserver
 ```
 
-![Run server](/02_django/images/getting_started/run_server.png)
+![Run server](/02_django/images/01_getting_started/run_server.png)
 
 We do not have to worry about the warnings in the terminal at this point, because we have not finished setting up the application. What we are interested in at the moment is the localhost URL. It is currently running on port 8000. Paste the link in a new tab on your favourite browser to see the application. 
 
-![Django Live](/02_django/images/getting_started/django_live.gif)
+![Django Live](/02_django/images/01_getting_started/django_live.gif)
 
 To stop the server, you can press "Ctrl + C" in the terminal running the application.
