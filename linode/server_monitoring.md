@@ -10,6 +10,17 @@ Multiple things go into monitoring a server. For example, we might be interested
 
 It is therefore important to first assess what needs we have before embarking on a server monitoring mission.
 
+This article is a continuation of how to deploy a flask application on a Linode server. For your reference, these are the other sections in the series:
+
+1. [Welcome to Linode](/deploy_to_linode.md)
+2. [Deploy your flask app on Linode](/linode/deploy_on_linode.md)
+3. [Buy a domain name for your deployed application](/linode/buy_domain.md)
+4. [Secure your domain with SSL](/linode/secure_domain_with_ssl.md)
+5. [Monitor your server](/linode/server_monitoring.md) (this article)
+
+As a bonus, I have shared a how to [Configure PostgreSQL in a Live Linux Server](/linode/configure_postgresql.md) article if your application makes use of the PostgreSQL database.
+
+
 ## Availability of the Server
 
 Not everyone needs to monitor the availability of their server. If you are running a very basic application such as a morning quote website, you may not necessarily need to worry about service interruptions. Occassional inconviniences of the website going offline for a few minutes may not justify the time it takes to set up and configure an availability monitoring tool. 
@@ -365,7 +376,7 @@ To see the metrics, let us switch back to the Linode Cloud Manager and reload th
 ![Longview data](/images/linode/server_monitoring/double_longview_agents2.png)
 
 
-# Longview Data Explained
+### Longview Data Explained
 
 
 To view the details of a Longview client, let us click the link "View Details".

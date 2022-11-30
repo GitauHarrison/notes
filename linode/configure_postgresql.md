@@ -11,12 +11,14 @@ As wonderful as these platforms are, using them causes us to lose the experience
 3. [Deployment to a Virtual Machine](#deployment-to-a-virtual-machine)
 4. [Configuring PostgreSQL in Linode](#configuring-postgresql-in-linode)
 
+
 This tutorial is a continuation of how to deploy a flask application on Linode. For your reference, here are the other parts of the deployment process:
 
 1. [Welcome to Linode](/deploy_to_linode.md)
 2. [Deploy your flask app on Linode](/linode/deploy_on_linode.md)
 3. [Buy a domain name for your deployed application](/linode/buy_domain.md)
 4. [Secure your domain with SSL](/linode/secure_domain_with_ssl.md)
+5. [Monitor your server](/linode/server_monitoring.md)
 
 ## Getting Started
 

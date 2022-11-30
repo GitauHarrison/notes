@@ -28,11 +28,12 @@ Let us say you have completed building your application and you have hosted it i
 
 The services above are all hosted on the cloud and are designed to scale, be secure and stable. They are characterized by lifting the burden of setting up, configuring and maintaining the server from the developer.
 
-Alternatively, you can choose to host a flask application yourself. This approach will allow you to learn the technical details that go into web hosting and server configuration and maintainance. During this tutorial, I will show how you can manually deploy your flask application on [Linode](https://linode.gvw92c.net/15oBBg/). In particular, I will show you three things:
+Alternatively, you can choose to host a flask application yourself. This approach will allow you to learn the technical details that go into web hosting and server configuration and maintainance. During this tutorial, I will show how you can manually deploy your flask application on [Linode](https://linode.gvw92c.net/15oBBg/). In particular, I will show you four things:
 
 1. [How to deploy your flask app on Linode](/linode/deploy_on_linode.md)
 2. [How to buy a domain name for your deployed application](/linode/buy_domain.md)
 3. [How to secure your domain with SSL](/linode/secure_domain_with_ssl.md)
+4. [How to monitor your server](linode/server_monitoring.md)
 
 I won't lie to you, deploying an application can be overwhelming because there are a lot of different ways to do it. Knowing what is best for your specific application can also be difficult. Here, you will learn how to deploy your flask application to a Linux server using NGINX and GUNICORN.
 

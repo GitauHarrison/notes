@@ -4,8 +4,9 @@ During this tutorial, I will show you how you can purchase a domain name for you
 
 1. [Welcome to Linode](/deploy_to_linode.md)
 2. [Deploy your flask app on Linode](/linode/deploy_on_linode.md)
-3. [Buy a domain name for your deployed application](/linode/buy_domain.md)
+3. [Buy a domain name for your deployed application](/linode/buy_domain.md) (this article)
 4. [Secure your domain with SSL](/linode/secure_domain_with_ssl.md)
+5. [Monitor your server](/linode/server_monitoring.md)
 
 The flask application demonstrated in the tutorials uses the file-based SQLite database. However, if you would like to know how to use PostgreSQL on a live Linux server, you can learn more by visiting [Configure PostgreSQL in a Live Linux Server](/linode/configure_postgresql.md).
 
