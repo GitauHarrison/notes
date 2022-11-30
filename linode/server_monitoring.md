@@ -32,16 +32,19 @@ Log in to your Linode to see available Linodes:
 
 Notice that I have 2 linodes on my account, _official_personal_website_ and _tinkereducationnewsletter_. I will show you how to configure Lassie using the _official_personal_website_ linode.
 
-I will click on it to access more data on the linode. What I am interested in is the "Settings" tab.
+I will click on this linode to see more data about it. What I am interested in is the "Settings" tab.
 ![Settings Tab](/images/linode/server_monitoring/settings.png)
 
 Scroll to the bottom of the "Settings" tab to see the "Shutdown Watchdog" section. Toggle the key to enable this feature.
 ![Lassie](/images/linode/server_monitoring/lassie.png)
 
+Now, everytime the linode unexpectedly goes offline, then Lassie can return it online automatically.
+
 
 ## Performance of the Server
 
-For vital server and service performance metrics, performance monitoring tools are used. These tools can be equated to a car's dashboard which shows all car performance details such as speed and fuel consumption. We will begin by first looking at the default tools that monitor performance of a server then gradually check out a few more technical tools we can use.
+For vital server and service performance metrics, performance monitoring tools are used. These tools can be equated to a car's dashboard which shows all car performance details such as speed and fuel consumption. We will begin by first looking at the [default tools that monitor performance of a server](#linode-cloud-manager) then gradually check out [a few more technical tools](#linux-system-monitoring-fundamentals) we can use.
+
 
 
 ### Linode Cloud Manager
@@ -79,9 +82,14 @@ Monitoring tools help to reassure us when things are working right, they help us
 - Provide administrative data
 - Sometimes automate responses to anomalies
 
-Data on each key performance indicator (KPI), network connectivity and application availability is collected and used for analysis. For example, working hardware, available server, server resources are sufficient, no bottlenecks are slowing things down and visualization of data.
+Data on each key performance indicator (KPI), network connectivity and application availability is collected and used for analysis. For example, data on working hardware, availability of a server, server resources are sufficient, no bottlenecks are slowing things down and visualization of data.
 
 Thankfully, we have dozens of server system monitoring tools built into Linux. I will show you how to use the `top` command to see avaiable Linux processes in CPU activity order. Understandably, there are a dozen more such as [System Activity Report (sar)](https://linux.die.net/man/1/sar), [Vmstat](https://linux.die.net/man/8/vmstat), [Monitorix](https://www.monitorix.org/), [Nethogs](https://github.com/raboof/nethogs), [Glance](https://nicolargo.github.io/glances/), [htop](https://htop.dev/) and [Netdata](https://www.netdata.cloud/).
+
+The main tools we shall look at in great detail are:
+
+- [Using `top`](#monitor-server-performance-using-top) (Linux)
+- [Using LongView](#monitor-server-performance-using-longview) (Linode)
 
  
 ### Monitor Server Performance using `top`
@@ -102,7 +110,7 @@ top - 14:56:17 up 127 days, 22:19,  2 users,  load average: 0.01, 0.01, 0.00
 ```
 
 - The first line contains the **time, the uptime and load averages of the server**. The load average is displayed over 1, 5, and 15 minutes to provide a better overall look at the load my server has undertaken. 
-- To properly read the load average, we need to know how many CPUs our Linode has. If there is 1 CPU, then a load average of 1.00 eans that the server is operating at its capacity. This number increases to 2 if the number of CPUs is 2, etc.
+- To properly read the load average, we need to know how many CPUs our Linode has. If there is 1 CPU, then a load average of 1.00 means that the server is operating at its capacity. This number increases to 2.00 if the number of CPUs is 2, etc.
 - A load average of 0.70 for a Linode with 1 core is generally considered a threshold. Anything higher requires reconfiguration of resources or the need to upgrade.
 
 
@@ -119,7 +127,7 @@ Tasks: 118 total,   1 running, 117 sleeping,   0 stopped,   0 zombie
 - The third line is the **CPU percentages**:
   - user CPU time (`us`)
   - System CPU time (`sy`)
-  - Nice time (`ni`) - time spend on low prioity processes
+  - Nice time (`ni`) - time spent on low prioity processes
   - Idle time (`id`)
   - Time spent on wait I/O processes (`wa`)
   - Time handling hardware interruptions (`hi`)
@@ -209,7 +217,7 @@ Interactively, we can issue the following commands in an active `top` session:
 
 There is [htop](http://hisham.hm/htop/), which is similar to `top`, but offers an easier interface with color, mouse operations, and horizontal and vertical scrolling, making it more intuitive.
 
-To use it, we first need to install it by running th command:
+To use it, we first need to install it by running the command:
 
 ```python
 $ sudo apt install htop
@@ -224,3 +232,169 @@ $ htop
 ![htop](/images/linode/server_monitoring/htop.png)
 
 You can use your mouse to scroll the interactive process viewer. You can click on a process using yoru mouse to highlight it then press `k`, for example, to kill it. At the bottom, you will notice a few buttons that you can click on.
+
+
+### Monitor Server Performance using Longview
+
+Linode provides a data graphing service called Longview. It does an excellent job of tracking metrics for CPU, memory and network bandwidth, and offers real-timie graphs tha can help expose performance problems. In the following sections, we shall learn how to:
+
+- [Add a Longview Client](#add-a-longview-client)
+- [Install the Longview agent](#install-the-longview-client)
+- [Access and view our Longview client's data and graphs](#access-and-view-our-longview-clients-data-and-graphs)
+- [Longview Data Explained](#longview-data-explained)
+- [Uninstall the Longview client](#uninstall-the-longview-client)
+
+
+### Add a Longview Client
+
+Ensure that you are logged in to your [Linode Cloud Manager](https://cloud.linode.com/dashboard). On the left sidebar, click on the Longview link.
+
+![Longview link](/images/linode/server_monitoring/longview_link.png)
+
+The longview dashboard has two tabs, the Clients tab and the Plan Details tab. Ensure you have selected the Clients tab. Click on the blue "Add Client" button to add a new client.
+
+![Add client](/images/linode/server_monitoring/add_client.png)
+
+I currently have one client installed for my _official_personal_website_ linode. I will be creating a new client for the second linode _tinkereducationnewsletter_. 
+
+Once the button is clicked, you will notice that a entry will appear displaying your Longview Client instance along with its auto-generated label, its current status, installation instructions, and API key. Its status will display as "Waiting for data", since we have not yet installed the Longview agent on a running Linode.
+
+![New client](/images/linode/server_monitoring/new_client.png)
+
+The long string appended to the URL `https://lv.linode.com/` is my Linode's Longview Client's instance globally unique identifier (GUID).
+
+
+### Install the Longview Agent
+
+Now, we need to navigate to our Linode to install the Longview agent to monitor and visualize our system.
+
+```python
+$ ssh user@IP_address
+
+# Output
+
+user@project:~$ 
+```
+
+I have logged into my Linode over SSH. You will need to `user` with your actual Linode's user and `IP_address` with your Linode's IP address. I have chosen to log in as a non-root user because it is always advisable not to use root. My `user` has root priviledges. If you are familiar with these, I'd recommend you check out the tutorial [Deploy Your Flask App on Linode](/linode/deploy_on_linode.md).
+
+Back to the Linode Cloud Manager, we need to copy the `curl` command seen in the new Longview client we have just created and paste it on our Linode's terminal.
+
+```python
+user@project:~$ curl -s https://lv.linode.com/long-string-url | sudo bash
+```
+
+Press "Enter" on your keyboard to execute the command. It will take a few minutes for the installation to complete. You may be asked to accept or deny the autoconfiguration of longview during the installation process. Select "Yes" and press "Enter" to continue with the process. 
+
+![Longview autoconguration](/images/linode/server_monitoring/longview_autoconfiguration.png)
+
+This popup occurs when Longview can’t locate the NGINX status page. In turn, this could indicate that the status page is in an unusual and unspecified location, or that the status module isn’t enabled, or that NGINX itself is misconfigured. 
+
+Because we clicked "Yes", the Longview tool will attempt to enable the status module, set the status page location in a new vhost configuration file, and restart NGINX. This option is easier, but has the potential to disrupt your current NGINX configuration.
+
+The file can be found in `/etc/nginx/sites-enabled`. Opening this file, we can see the following:
+
+```python
+user@project~$ sudo nano /etc/nginx/sites-enabled/longview
+
+# Output
+
+server {
+        listen 127.0.0.2:80;
+        server_name 127.0.0.2;
+
+        location /nginx_status {
+                stub_status on;
+                allow 127.0.0.1;
+                deny all;
+        }
+}
+```
+
+With the installation complete, we can verify that the Longview agent is running:
+
+```python
+user@project~$ sudo systemctl status longview
+
+# Output
+
+● longview.service - LSB: Longview Monitoring Agent
+     Loaded: loaded (/etc/init.d/longview; generated)
+     Active: inactive (dead)
+       Docs: man:systemd-sysv-generator(8)
+```
+
+This agent is not running. To start it, we use the following:
+
+```python
+user@project~$ sudo systemctl start longview
+
+# Nothing will be seen
+```
+
+We need to rerun the previous command once again.
+
+```python
+user@project~$ sudo systemctl status longview
+
+# Output
+
+● longview.service - LSB: Longview Monitoring Agent
+     Loaded: loaded (/etc/init.d/longview; generated)
+     Active: active (running) since Wed 2022-11-30 06:36:43 UTC; 10s ago
+       Docs: man:systemd-sysv-generator(8)
+    Process: 634744 ExecStart=/etc/init.d/longview start (code=exited, status=0/SUCCESS)
+      Tasks: 1 (limit: 1066)
+     Memory: 205.6M
+     CGroup: /system.slice/longview.service
+             └─634749 linode-longview
+
+Nov 30 06:36:43 tinkereducationnewsletter systemd[1]: Starting LSB: Longview Monitoring Agent...
+Nov 30 06:36:43 tinkereducationnewsletter longview[634744]:  * Starting Longview Agent longview
+Nov 30 06:36:43 tinkereducationnewsletter longview[634744]:    ...done.
+Nov 30 06:36:43 tinkereducationnewsletter systemd[1]: Started LSB: Longview Monitoring Agent.
+
+```
+
+
+### Access and View Longview Client's Data and Graphs
+
+
+To see the metrics, let us switch back to the Linode Cloud Manager and reload the Longview page. Occassionally, it may take several minutes for data to load and display in the Cloud Manager. 
+
+![Longview data](/images/linode/server_monitoring/double_longview_agents2.png)
+
+
+# Longview Data Explained
+
+
+To view the details of a Longview client, let us click the link "View Details".
+
+![View details link](/images/linode/server_monitoring/view_details_link.png)
+
+We will be redirected to the Longview Client's "Overview" tab
+
+![Longview client data](/images/linode/server_monitoring/longview_client.gif)
+
+- The "Overview" tab shows all of your system’s most important statistics in one place
+
+- The "Processes" tab lists all the process currently running on my Linode, along with additional statistics.
+- The "Network" tab sorts traffic statistics by network interface available on my Linode.
+- The "Disks" tab shows data on the disk Input Output (I/O), the disk space usage and [inode](https://en.wikipedia.org/wiki/Inode) over time.
+- The "Nginx" tab (I used Nginx on my Linode) keeps track of NGinx settings, workers and requests, system resource consumption, etc.
+- The "Installation" tab has instructions on how to install the Longview agent on a Linode and the client instance API key.
+
+
+### Uninstall the Longview Client
+
+Back to the Linode Cloud Manager Dashboard, we need to click on the "Longview" link on the left sidebar to list all available client instances. 
+
+![Delete client instance](/images/linode/server_monitoring/delete_longview_client_instance2.png)
+
+On the top-right corner of each client instance, there is an ellipsis button. Once clicked, we can see "Delete". At your discretion, you can click on "Delete" to delete the Longview client.
+
+On our Linode, we can run the following command:
+
+```python
+user@project~$ sudo apt-get remove linode-longview
+```
