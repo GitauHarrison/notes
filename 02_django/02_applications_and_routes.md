@@ -7,13 +7,17 @@ For your reference, if you would like to skip to a particular section in the ent
 - [Django Overview](00_overview.md)
 - [Getting Started With Django](01_getting_started.md)
 - [Applications and routes](02_applications_and_routes.md) (this article)
+- [Templates in Django](03_templates.md)
 
 
 ### Table of Contents
 
 This article has the following sections:
 
-- [Create an app](#create-an-app)
+- [Views](#views)
+- [Application URLs](#application-urls)
+- [Project URLs](#project-urls)
+- [Additional routes](#additional-routes)
 
 
 

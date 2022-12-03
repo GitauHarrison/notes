@@ -7,6 +7,7 @@ If you would like to skip to a particular section in the entire Django tutorial,
 - [Django Overview](00_overview.md)
 - [Getting Started With Django](01_getting_started.md) (this article)
 - [Applications and routes](02_applications_and_routes.md)
+- [Templates in Django](03_templates.md)
 
 
 ### Table of Contents

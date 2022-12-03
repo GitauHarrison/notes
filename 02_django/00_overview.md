@@ -25,3 +25,4 @@ Flask, on contrast, does not provide components or preferred ways of handling a 
 - [Django Overview](01_getting_started.md) (this article)
 - [Getting Started With Django](01_getting_started.md)
 - [Applications and routes](02_applications_and_routes.md)
+- [Templates in Django](03_templates.md)
