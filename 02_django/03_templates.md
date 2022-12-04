@@ -1,6 +1,6 @@
 # Templates in Django
 
-In this tutorial, we are going to learn how to return more complex HTML code. We will also learn how to pass Python variables to these templates. In the [application and routes article](02_applications_and_routes.md), we saw how to return basic text in a HTTP Response. Most templates, though, contain full HTML structures. 
+In this tutorial, we are going to learn how to return more complex HTML code. We will also learn how to pass Python variables to these templates. In the [application and routes article](02_applications_and_routes.md), we saw how to return basic text in an HTTP Response. Most templates, though, contain full HTML structures. 
 
 ### Table of Contents
 
@@ -12,6 +12,8 @@ If you wish to skip to a particular section within this tutorial, you can do so 
 - [Working With Templates](#working-with-templates)
 - [Template Inheritance](#template-inheritance)
 - [Bootstrap Templates](#bootstrap-templates)
+- [Improved Links to View](#improved-links-to-views)
+
 ## Update File Structure
 
 By default, Django looks for a `templates` sub-directory in each of our installed apps. Within the `blog` app, let us go ahead and create a `templates` directory, which will contain all our HTML files.
@@ -20,13 +22,13 @@ By default, Django looks for a `templates` sub-directory in each of our installe
 (venv)$ mkdir demo_project/blog/templates
 ```
 
-Now, since Django will be looking in all applications for the `templates` subdirectory, it is a convention to create another sub-directory within the `blog` app's templates folder called `blog`. If we create anther application, then its templates subdirectory will contain another directory by its name to house all its HTML files. I hope it makes sense.
+Now, since Django will be looking in all applications for the `templates` subdirectory, it is a convention to create another sub-directory within the `blog` app's templates folder called `blog`. If we create another application, then its templates subdirectory will contain another directory by its name to house all its HTML files. I hope it makes sense.
 
 ```python
 (venv)$ mkdir demo_project/blog/templates/blog
 ```
 
-Now, we can create the `home.html` and `about.html` files withing `templates/blog` folder.
+Now, we can create the `home.html` and `about.html` files within `templates/blog` folder.
 
 ```python
 (venv)$ cd demo_project/blog/templates/blog
@@ -93,7 +95,7 @@ With individual files in place, we can add a bit of content to our HTML files.
 </html>
 ```
 
-Now that we have this template ready, we need to add our `blog` application to the list of installed apps so that Django knows it needs to look there for the templates directory. To do this, it is recommended to add a our app configurations to our project's `settings.py` module. The app configurations is located inside `apps.py` module within the `blog` app.
+Now that we have this template ready, we need to add our `blog` application to the list of installed apps so that Django knows it needs to look there for the templates directory. To do this, it is recommended to add our app configurations to our project's `settings.py` module. The app configurations are located inside `apps.py` module within the `blog` app.
 
 ![App configurations](/02_django/images/03_templates/app_config.png)
 
@@ -151,13 +153,13 @@ To make sure that everything is working, it is best practice to test every littl
 (venv)$ python manage.py runserver
 ```
 
-Copy the URL http://127.0.0.1:8000/ and paste it in the browser. You may see the following page.
+Copy the URL http://127.0.0.1:8000/ and paste it into the browser. You may see the following page.
 
 ![Page Not found](/02_django/images/03_templates/404.png)
 
-This is an issue with how we configured our project's URL patters. In the [previous article](/02_django/02_applications_and_routes.md#project-urls), we pointed out that if we would like the root URL to point to the the home page of our `blog` app, then we need to make the first argument of the `path()` function an empty string. Otherwise, we will need to append `/blog` to the root URL to access the home page of our blog.
+This is an issue with how we configured our project's URL patterns. In the [previous article](/02_django/02_applications_and_routes.md#project-urls), we pointed out that if we would like the root URL to point to the home page of our `blog` app, then we need to make the first argument of the `path()` function an empty string. Otherwise, we will need to append `/blog` to the root URL to access the home page of our blog.
 
-As soon as you make the changes, the text "Blog Home" should show up. It looks exactly the same as before, but if you inspect the source code, you will notice that the file structure has changed.
+As soon as you make the changes, the text "Blog Home" should show up. It looks the same as before, but if you inspect the source code, you will notice that the file structure has changed.
 
 ![Blog home source code](/02_django/images/03_templates/blog_home_source_code.gif)
 
@@ -180,7 +182,7 @@ We can do the same for our `about.html` template. Back to our application on VS 
 </html>
 ```
 
-The next step is to render this update template.
+The next step is to render this updated template.
 
 ```python
 # demo_project/blog_app/blog/view.py
@@ -245,7 +247,7 @@ def home(request):
 
 Above, I have created dummy posts that I intend they be displayed in the `home.html` template. This is achieved by creating a dictionary in the `home()` view function whose key would be used to access the `posts` list.
 
-The templating engine that Django usese is very similar to Flask's Jinja2. We can loop through the `posts` list to access individual data and display them on the home template.
+The templating engine that Django uses is very similar to Flask's Jinja2. We can loop through the `posts` list to access individual data and display them on the home template.
 
 ```html
 <!-- demo_project/blog_app/blog/templates/blog/home.html -->
@@ -269,7 +271,7 @@ The templating engine that Django usese is very similar to Flask's Jinja2. We ca
 </html>
 ```
 
-The `posts` variable that we are looping through using the `for` loop is the key of the `context` dictionary in the home view function. To access a particular item on a list, the templating engine allows us to use the double curly braces `{{  }}` for dynamic content (this is content that can easily change). For example, to print all the post titles, we can simple use `{{ post.title }}`. Notice that the `for` loop has the `endfor` block. We need to use it to ensure that the templating engine understand the scope of the loop.
+The `posts` variable that we are looping through using the `for` loop is the key of the `context` dictionary in the home view function. To access a particular item on a list, the templating engine allows us to use the double curly braces `{{  }}` for dynamic content (this is content that can easily change). For example, to print all the post titles, we can simply use `{{ post.title }}`. Notice that the `for` loop has the `endfor` block. We need to use it to ensure that the templating engine understands the scope of the loop.
 
 On our browser, we can see that the three posts have been displayed.
 
@@ -282,7 +284,7 @@ Within the `head` element of every HTML structure is the `title` element. As see
 
 ![Page titles](/02_django/images/03_templates/page_titles.png)
 
-So far, we have been modifying the `title` element manually on each template. In the `home.html` file, we have the line `<title>Blog home</title>` while in the `about.html` we have `<title>Blog about</title>`. Imaging having several templates in an application. This will mean that we have to manually provide a title to each template, a repetitive task that quicky gets cumbersome. Thankfully, Django's templating engine allows us to pass in dynamic titles in each template. 
+So far, we have been modifying the `title` element manually on each template. In the `home.html` file, we have the line `<title>Blog home</title>` while in the `about.html` we have `<title>Blog about</title>`. Imagine having several templates in an application. This will mean that we have to manually provide a title to each template, a repetitive task that quickly gets cumbersome. Thankfully, Django's templating engine allows us to pass in dynamic titles in each template. 
 
 ```html
 <!-- demo_project/blog_app/blog/templates/blog/about.html -->
@@ -325,9 +327,9 @@ Back to our browser, you will notice that the titles change dynamically dependin
 
 ## Template Inheritance
 
-Notice that a lot of code in our templates are repetitive. The only part in the templates that are unique to a page is the `body` content. To help make our work easier especially when dealing with multiple templates, we can use the concept of template inheritance. 
+Notice that a lot of code in our templates is repetitive. The only part in the templates that are unique to a page is the `body` content. To help make our work easier, especially when dealing with multiple templates, we can use the concept of template inheritance. 
 
-Template Inheritance is the where  the base structure of an application is defined in a parent template and the children inherit this structure without redefining it. Child templates instead focus on displaying content that is unique to them. 
+Template Inheritance is the where the base structure of an application is defined in a parent template and the children inherit this structure without redefining it. Child templates instead focus on displaying content that is unique to them. 
 
 To achieve this, we can modify the structure of our templates subfolder in the `app` blog to define a `base` template. Let us create a new file called `base.html`.
 
@@ -375,11 +377,11 @@ The block `content` has been used to allow child templates to pass in their uniq
 {% endblock %}
 ```
 
-The child template makes use of the keyword `extends` to inherit the base template. Its content are then wrapped in the block `content` earlier defined in `base.html`. Just like it was done for the `for` loop, a block needs to be closed too. You can optionally choose to say `{% endblock %}` as seen above, or you can say `{% endblock content %}`. 
+The child template makes use of the keyword `extends` to inherit the base template. Its content is then wrapped in the block `content` earlier defined in `base.html`. Just like it was done for the `for` loop, a block needs to be closed too. You can optionally choose to say `{% endblock %}` as seen above, or you can say `{% endblock content %}`. 
 
 # Bootstrap Templates
 
-[Bootstrap](https://getbootstrap.com/) is a powerful, feature-packed frontend kit that allows us to not only prototype but also to build to production quicky. If we navigate to the [Bootstrap documenation](https://getbootstrap.com/docs/5.2/getting-started/introduction/), we can see how to get started. We will copy the sample template and use it in our `base.html` file.
+[Bootstrap](https://getbootstrap.com/) is a powerful, feature-packed frontend kit that allows us to not only prototype but also to build to production quickly. If we navigate to the [Bootstrap documentation](https://getbootstrap.com/docs/5.2/getting-started/introduction/), we can see how to get started. We will copy the sample template and use it in our `base.html` file.
 
 ```html
 <!-- blog/templates/blog/base.html -->
@@ -428,7 +430,7 @@ This change allows us to use Bootstrap's classes to style our pages and make the
 </body>
 ```
 
-Now, if we reload any of our pages, we should be able to see that significt whitespaces have been created to the left and right of the children templates.
+Now, if we reload any of our pages, we should be able to see that significant whitespaces have been created to the left and right of the children templates.
 
 ![Bootstrap templates](/02_django/images/03_templates/bootstrap_template.png)
 
@@ -512,11 +514,11 @@ With the navigation bar in place, and the links to the home and about pages work
 </body>
 ```
 
-Our unique page's content will be in a column whose size uses Bootstrap's class `col-md-8`. I have added a sidebar section to allow for quick navigations in the blog.
+Our unique page's content will be in a column whose size uses Bootstrap's class `col-md-8`. I have added a sidebar section to allow for quick navigation in the blog.
 
 ### Adding Custom Styles
 
-Django allows us to create our own styles. This is achieved by adding a CSS file, such as `main.css`, in a `static` directory in our `blog` application. The `static` directory lives in the root directory of our `blog` app.
+Django allows us to create our styles. This is achieved by adding a CSS file, such as `main.css`, in a `static` directory in our `blog` application. The `static` directory lives in the root directory of our `blog` app.
 
 ```python
 (venv)$ mkdir blog/static && cd blog/static
@@ -625,7 +627,7 @@ a.article-title:hover {
 }
 ```
 
-In order to use the custom styles in our base template, we need to load our static files.
+To use the custom styles in our base template, we need to load our static files.
 
 ```html
 <!-- blog/templates/blog/base.html -->
@@ -659,7 +661,7 @@ To load a static file in Django, we generate an absolute URL that links to the e
 
 ### Further Page Improvements
 
-We can improve the appearance of the `home` page a bit more. At the moment, it is not attractive. We have already defined custom styles that includes visual improvements to the home page in `main.css`. We now need to use them by making slight modifications to the `home.html` file.
+We can improve the appearance of the `home` page a bit more. At the moment, it is not attractive. We have already defined custom styles that include visual improvements to the home page in `main.css`. We now need to use them by making slight modifications to the `home.html` file.
 
 ```html
 <!-- blog/templates/blog/home.html -->
@@ -689,7 +691,7 @@ Our application now should look a lot nicer. If the changes do not reflect on yo
 
 ## Improved Links to Views
 
-If you look carefully in our `base.html`, we have linked the base template to the _home_ and _about_  pages by passing in `/blog/` and `/blog/about` respetively. If at any one point we decide that we no longer want to use these links, let us say we now want to use the links `/blog/home/` for our _home_ page and `/blog/about-us` for the _about_ page, we will be forced to manually go into each template file and make those changes. If the application grows and become bigger, the likelihood of us making errors on page links is quite high. To mitigate such a scenario, we can instead point our links to a specific view function rather than the view function's URL.
+If you look carefully in our `base.html`, we have linked the base template to the _home_ and _about_  pages by passing in `/blog/` and `/blog/about` respectively. If at any one point we decide that we no longer want to use these links, let us say we now want to use the links `/blog/home/` for our _home_ page and `/blog/about-us` for the _about_ page, we will be forced to manually go into each template file and make those changes. If the application grows and becomes bigger, the likelihood of us making errors on page links is quite high. To mitigate such a scenario, we can instead point our links to a specific view function rather than the view function's URL.
 
 ```html
 <!-- blog/templates/blog/base.html -->
