@@ -12,8 +12,6 @@ If you wish to skip to a particular section within this tutorial, you can do so 
 - [Working With Templates](#working-with-templates)
 - [Template Inheritance](#template-inheritance)
 - [Bootstrap Templates](#bootstrap-templates)
-- [Adding A Navigation Bar](#adding-a-navigation-bar)
-
 ## Update File Structure
 
 By default, Django looks for a `templates` sub-directory in each of our installed apps. Within the `blog` app, let us go ahead and create a `templates` directory, which will contain all our HTML files.
@@ -317,7 +315,7 @@ To create an actual title, we need to update our `views` functions to pass in ti
 # ...
 
 def about(request):
-    return render(request, 'blog/home.html', context, {'title': 'Home'})
+    return render(request, 'blog/about.html', context, {'title': 'About'})
 ```
 
 Back to our browser, you will notice that the titles change dynamically depending on what page we are on. When there is no title for a page, then a default value is used.
@@ -435,6 +433,268 @@ Now, if we reload any of our pages, we should be able to see that significt whit
 ![Bootstrap templates](/02_django/images/03_templates/bootstrap_template.png)
 
 
-## Adding A Navigation Bar
+### Adding A Navigation Bar
 
-Bootstrap offers quite a handful of navbar snippets we can utilize to make a simple navigation bar. Sample navigation bars can be found [here](https://getbootstrap.com/docs/5.2/components/navbar/).
+Bootstrap offers quite a handful of navbar snippets we can utilize to make a simple navigation bar. Sample navigation bars can be found [here](https://getbootstrap.com/docs/5.2/components/navbar/). Below, I have modified my navigation bar to right-align the user login and registration links.
+
+```html
+<!-- blog/templates/blog -->
+
+<!-- Previous code ... -->
+
+<body>
+    <header class="site-header">
+        {% block navbar %}
+            <nav class="navbar navbar-expand-lg bg-steel">
+            <div class="container">
+                <a class="navbar-brand" href="/blog/">Django Blog</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/blog/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="/blog/about">About</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Register</a></li>
+                </ul>
+                </div>
+            </div>
+            </nav>
+        {% endblock navbar %}
+    </header>
+
+    <!-- Previous code ... -->
+
+</body>
+```
+
+### Add A Sidebar
+
+With the navigation bar in place, and the links to the home and about pages working, let us keep updating the structure of our application pages. We will begin by getting rid of the original `div` that contained the page's content.
+
+```html
+<!-- blog/templates/base.html -->
+
+<!-- Previous code ... -->
+
+<body>
+    <!-- Header ... -->
+
+    <main role="main" class="container">
+      <div class="row">
+        <div class="col-md-8">
+          {% block content %}{% endblock %}
+        </div>
+        <div class="col-md-4">
+          <div class="content-section">
+            <h3>Our Sidebar</h3>
+            <p class="text-muted">Add here any information you'd like
+              <ul class="list-group">
+                <li class="list-group-item list-group-item-light">Latest Posts</li>
+                <li class="list-group-item list-group-item-light">Announcements</li>
+                <li class="list-group-item list-group-item-light">Calendars</li>
+                <li class="list-group-item list-group-item-light">etc</li>
+              </ul>
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Previous code ... -->
+</body>
+```
+
+Our unique page's content will be in a column whose size uses Bootstrap's class `col-md-8`. I have added a sidebar section to allow for quick navigations in the blog.
+
+### Adding Custom Styles
+
+Django allows us to create our own styles. This is achieved by adding a CSS file, such as `main.css`, in a `static` directory in our `blog` application. The `static` directory lives in the root directory of our `blog` app.
+
+```python
+(venv)$ mkdir blog/static && cd blog/static
+```
+
+Just like we did with the `templates` directory, we need to create a sub-directory with the same name as our app.
+
+```python
+(venv) blog/static$ mkdir blog && cd blog
+```
+
+This new sub-folder can now have our custom CSS files.
+
+```python
+(venv) blog/static/blog$ touch main.css
+```
+
+Let us add a few custom styles to our `blog` application. 
+
+```css
+/* blog/static/blog/main.css */
+
+body {
+  background: #fafafa;
+  color: #333333;
+  margin-top: 5rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #444444;
+}
+
+ul {
+  margin: 0;
+}
+
+.bg-steel {
+  background-color: #5f788a;
+}
+
+.site-header .navbar-nav .nav-link {
+  color: #cbd5db;
+}
+
+.site-header .navbar-nav .nav-link:hover {
+  color: #ffffff;
+}
+
+.site-header .navbar-nav .nav-link.active {
+  font-weight: 500;
+}
+
+.content-section {
+  background: #ffffff;
+  padding: 10px 20px;
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
+
+.article-title {
+  color: #444444;
+}
+
+a.article-title:hover {
+  color: #428bca;
+  text-decoration: none;
+}
+
+.article-content {
+  white-space: pre-line;
+}
+
+.article-img {
+  height: 65px;
+  width: 65px;
+  margin-right: 16px;
+}
+
+.article-metadata {
+  padding-bottom: 1px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #e3e3e3
+}
+
+.article-metadata a:hover {
+  color: #333;
+  text-decoration: none;
+}
+
+.article-svg {
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+}
+
+.account-img {
+  height: 125px;
+  width: 125px;
+  margin-right: 20px;
+  margin-bottom: 16px;
+}
+
+.account-heading {
+  font-size: 2.5rem;
+}
+```
+
+In order to use the custom styles in our base template, we need to load our static files.
+
+```html
+<!-- blog/templates/blog/base.html -->
+
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+</html>
+```
+
+I have added `{% load static %}` to the top of the `base.html` file. This gives us access to all files in our `static` sub-directory. The next logical step would be to link our base template with the `main.css` file. In HTML, this can be done using the `<link>` element.
+
+```html
+<!-- blog/templates/blog/base.html -->
+
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Previous code ... -->
+        <link rel="stylesheet" type="text/css" href=" {% static 'blog/main.css' %} ">
+    </head>
+
+    <!-- Previous code ... -->
+
+</html>
+```
+
+To load a static file in Django, we generate an absolute URL that links to the exact location of our `main.css` file using `{% static 'blog/main.css' %)`.
+
+### Further Page Improvements
+
+We can improve the appearance of the `home` page a bit more. At the moment, it is not attractive. We have already defined custom styles that includes visual improvements to the home page in `main.css`. We now need to use them by making slight modifications to the `home.html` file.
+
+```html
+<!-- blog/templates/blog/home.html -->
+
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    {% for post in posts %}
+        <article class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <a class="mr-2" href="#"> {{ post.author }} </a>
+                    <small class="text-muted">{{ post.timestamp }}</small>
+                </div>
+                <h2><a class="article-title" href="#"> {{ post.title }} </a></h2>
+                <p class="article-content"> {{ post.content }} </p>
+            </div>
+        </article>
+    {% endfor %}
+{% endblock content %}
+```
+
+Our application now should look a lot nicer. If the changes do not reflect on your browser, stop your server and restart it again. Alternatively, you can do a hard refresh by pressing "Ctrl + Shift + R".
+
+![New look blog](/02_django/images/03_templates/new_look.png)
+
+
+## Improved Links to Views
+
+If you look carefully in our `base.html`, we have linked the base template to the _home_ and _about_  pages by passing in `/blog/` and `/blog/about` respetively. If at any one point we decide that we no longer want to use these links, let us say we now want to use the links `/blog/home/` for our _home_ page and `/blog/about-us` for the _about_ page, we will be forced to manually go into each template file and make those changes. If the application grows and become bigger, the likelihood of us making errors on page links is quite high. To mitigate such a scenario, we can instead point our links to a specific view function rather than the view function's URL.
+
+```html
+<!-- blog/templates/blog/base.html -->
+
+<a class="navbar-brand" href=" {% url 'blog-home' %} ">Django Blog</a>
+```
+
+Above, we have substituted `/blog/` with the name of the view function in `app.urls.py`. Regardless of what URL we want to use, the link to our _home_ page will now be updated automatically. Make use you change every instance where we are linking the base template to its children.
