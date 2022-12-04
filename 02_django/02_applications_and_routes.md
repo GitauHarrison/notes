@@ -1,6 +1,6 @@
 # Applications in Django
 
-The thinking behind Django is that we have a website project, which we have already created in [the previous tutorial](01_getting_started.md), and have multiple apps each doing its own thing. For example, we can have a blog section of the website, which is an app on its own, then we can have a store section which is an app as well. So, a single project can contain multiple apps. In this tutorial, we are going to add a blog app within our project.
+The thinking behind Django is that we have a website project, which we have already created in [the previous tutorial](01_getting_started.md), and have multiple apps each doing its own thing. For example, we can have a blog section of the website, which is an app on its own, then we can have a store section which is an app as well. So, a single project can contain multiple apps. In this tutorial, we are going to add a blog app to our project.
 
 For your reference, if you would like to skip to a particular section in the entire Django tutorial, you can do so by clicking on any of the links below:
 
@@ -62,7 +62,7 @@ You will notice that Django automatically creates a full app for us called `blog
 └── manage.py
 ```
 
-It might be quite intimidating to know that we have a lot of project files to work with right out of the box, but let's start with a few of them to get the hang of it.
+It might be quite intimidating to know that we have a lot of project files to work with right out of the box but let's start with a few of them to get the hang of it.
 
 ### Views
 
@@ -86,7 +86,7 @@ At this point, though, we are not going to use the `render` function. I have use
 
 ### URL Patterns
 
-URL patterns are used to match requested URLS. Django runs through all available patterns in order and retrieves the first one that matches a requested URL. Once one of the URL patterns matches, Django imports and calls the given view function.
+URL patterns are used to match requested URLs. Django runs through all available patterns in order and retrieves the first one that matches a requested URL. Once one of the URL patterns matches, Django imports and calls the given view function.
 
 ### Application URLs
 
@@ -112,7 +112,7 @@ urlpatterns = [
 
 ```
 
-Here, Django queries the `urls` module to look for the variable `urlpatterns`, which is a sequence. It runs through each item in the sequence in order (there is only one at the moment) and stops at the first one that matches the requested URL. The view function `home` is called from the `views` module. I have used the `.` (dot) to denote that both the `views` and the `urls` modules are located in the current app folder called `blog`. The first argument is an empty string to show that it is the home URL. I have also passed the `name` argument in order to assign a name to this pattern. Intentionally, I have named it `blog-home` instead of `home` because as the project grows, I am mostly likely to have multiple `home` functions for each app.
+Here, Django queries the `urls` module to look for the variable `urlpatterns`, which is a sequence. It runs through each item in the sequence in order (there is only one at the moment) and stops at the first one that matches the requested URL. The view function `home` is called from the `views` module. I have used the `.` (dot) to denote that both the `views` and the `urls` modules are located in the current app folder called `blog`. The first argument is an empty string to show that it is the home URL. I have also passed the `name` argument to assign a name to this pattern. Intentionally, I have named it `blog-home` instead of `home` because as the project grows, I am most likely to have multiple `home` functions for each app.
 
 ### Project URLs
 
@@ -133,11 +133,11 @@ urlpatterns = [
 
 ```
 
-Django will check all URL patterns in `blog_app.urls.py` to find any one that matches a request. Since we want to access the home page in our `blog` app, the request http://127.0.0.1:8000/blog will tell Django that it needs to serve the blog app. Thereafter, the application will redirect any further request to `blog.urls.py` for more processing.
+Django will check all URL patterns in `blog_app.urls.py` to find anyone that matches a request. Since we want to access the home page in our `blog` app, the request http://127.0.0.1:8000/blog will tell Django that it needs to serve the blog app. Thereafter, the application will redirect any further request to `blog.urls.py` for more processing.
 
-As a sidenote, URLs in Django do not come with a preceeding slash. All URLS have a forward slash and it is therefore redundant to prepend them. However, Django URLs end with a slash. 
+As a side note, URLs in Django do not come with a preceding slash. All URLs have a forward slash and it is therefore redundant to prepend them. However, Django URLs end with a slash. 
 
-To see the changes, let us start our django server by running:
+To see the changes, let us start our Django server by running:
 
 ```python
 (venv)$ python3 manage.py runserver
@@ -147,7 +147,7 @@ Paste the URL http://127.0.0.1:8000 on the browser to access the application.
 
 ![Blog App](/02_django/images/02_application_and_routes/access_blog_app.gif)
 
-Notice that no page is found once we paste the localhost link on our browser. This is because there is no matching URL for http://127.0.0.1:8000/. Appending `blog` to the URL serves as with the text "Blog home!". If we want the root of our website to be the home page, we need to leave the path to the blog's home page empty. So, instead of `path('blog/' include('blog.urls'))` we will have `path('', include('blog.urls'))`.
+Notice that no page is found once we paste the localhost link on our browser. This is because there is no matching URL for http://127.0.0.1:8000/. Appending `blog` to the URL serves as the text "Blog home!". If we want the root of our website to be the home page, we need to leave the path to the blog's home page empty. So, instead of `path('blog/' include('blog.urls'))` we will have `path('', include('blog.urls'))`.
 
 
 ### Additional Routes
