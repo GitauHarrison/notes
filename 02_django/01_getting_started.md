@@ -22,7 +22,7 @@ This article is broken down into the following subsections:
 
 ## Installation
 
-Before we can use django, we need to install it. Keep in mind that Django requires Python, so if you do not have Python, head over to https://www.python.org/downloads/ to download one for your Operating Sytem. I will be using Ubuntu throughout this tutorial, which comes with Python pre-installed.
+Before we can use Django, we need to install it. Keep in mind that Django requires Python, so if you do not have Python, head over to https://www.python.org/downloads/ to download one for your Operating System. I will be using Ubuntu throughout this tutorial, which comes with Python pre-installed.
 
 ### Prerequisites
 
@@ -41,7 +41,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> 
 ```
 
-My OS currently has Python3.8.10. In your terminal, I will be on VS Code's terminal, create a django folder to get started by running:
+My OS currently has Python3.8.10. In your terminal, I will be on VS Code's terminal, create a Django folder to get started by running:
 
 ```python
 $ mkdir demo_project
@@ -84,7 +84,7 @@ Now, we are ready to install Django. Let us run this command in our active virtu
 
 ![Install django](/02_django/images/01_getting_started/install_django2.png)
 
-Verify that Django has been install by running this command in your terminal:
+Verify that Django has been installed by running this command in your terminal:
 
 ```python
 # Enter into the Python prompt
@@ -133,7 +133,7 @@ This command creates a project called `blog_app` within our current directory. Y
 (venv)$ cd blog_app
 ```
 
-This only navigates us to the new folder, but does not show us the project's structure. Since we want to see this new project's structure, we can do either of the following:
+This only navigates us to the new folder but does not show us the project's structure. Since we want to see this new project's structure, we can do either of the following:
 
 - [Run the `tree` command](#run-the-tree-command)
 - [Use VS Code's file explorer](#vs-code-file-explorer)
@@ -164,7 +164,7 @@ Above, you can see that we are currently in our initial project directory, denot
 
 ### VS Code File Explorer
 
-We can visualize the project' structure using VS Code's file explorer. First, let us open a new VS Code window in our current `blog_app` subdirectory.
+We can visualize the project's structure using VS Code's file explorer. First, let us open a new VS Code window in our current `blog_app` subdirectory.
 
 ```python
 (venv)blog_app $ code .
@@ -191,9 +191,9 @@ Our project structure looks like this
 └── manage.py
 ```
 
-Our `blog_app` project is in a folder called `demo_project`, if you can recall from the start of our tutorial. So, let us start there.
+Our `blog_app` project is in a folder called `demo_project` if you can recall from the start of our tutorial. So, let us start there.
 
-- **demo_project**: The container for our project. It's name is irrelevant to Django.
+- **demo_project**: The container for our project. Its name is irrelevant to Django.
 -  **blog_app**: The directory of the actual project. Its name shall be used to import anything inside of it (for example, `blog_app.urls`)
 - **blog_app/asgi.py**: An entry-point for ASGI-compatible web servers to serve our project.
 - **blog_app/\__init__.py**: An empty file that tells Python that this directory should be considered a Python package.
@@ -201,7 +201,7 @@ Our `blog_app` project is in a folder called `demo_project`, if you can recall f
 - **blog_app/urls.py**: The URL declarations for this Django project.
 -  **blog_app/wsgi.py**: An entry-point for WSGI-compatible web servers to serve our project.
 
-In subsequent tutorials, we shall go into details about the individual files so we have a better and more practical understanding of what each does.
+In subsequent tutorials, we shall go into detail about the individual files so we have a better and more practical understanding of what each does.
 
 
 ## Run The Application
@@ -216,7 +216,7 @@ To start the Django server, run:
 
 ![Run server](/02_django/images/01_getting_started/run_server.png)
 
-We do not have to worry about the warnings in the terminal at this point, because we have not finished setting up the application. What we are interested in at the moment is the localhost URL. It is currently running on port 8000. Paste the link in a new tab on your favourite browser to see the application. 
+We do not have to worry about the warnings in the terminal at this point because we have not finished setting up the application. What we are interested in at the moment is the localhost URL. It is currently running on port 8000. Paste the link in a new tab on your favorite browser to see the application. 
 
 ![Django Live](/02_django/images/01_getting_started/django_live.gif)
 
