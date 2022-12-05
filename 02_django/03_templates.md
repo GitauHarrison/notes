@@ -12,7 +12,7 @@ If you wish to skip to a particular section within this tutorial, you can do so 
 - [Working With Templates](#working-with-templates)
 - [Template Inheritance](#template-inheritance)
 - [Bootstrap Templates](#bootstrap-templates)
-- [Improved Links to View](#improved-links-to-views)
+- [Improved Links to View Functions](#improved-links-to-views)
 
 ## Update File Structure
 
@@ -280,7 +280,7 @@ On our browser, we can see that the three posts have been displayed.
 
 ## Dynamic Titles
 
-Within the `head` element of every HTML structure is the `title` element. As seen in our templates, these elements are used to display the title of each page seen at the top of each tab on a browser. For example, if you are on a _home_ page, then the title seen on the page's tab on a browser would be "Home". If you are on an _about_ page, then the title is likely to be "About". 
+Within the `head` element of every HTML structure, there is the `title` element. As seen in our templates, these elements are used to display the title of each page seen at the top of each tab on a browser. For example, if you are on a _home_ page, then the title seen on the page's tab on a browser would be "Home". If you are on an _about_ page, then the title is likely to be "About". 
 
 ![Page titles](/02_django/images/03_templates/page_titles.png)
 
@@ -329,7 +329,7 @@ Back to our browser, you will notice that the titles change dynamically dependin
 
 Notice that a lot of code in our templates is repetitive. The only part in the templates that are unique to a page is the `body` content. To help make our work easier, especially when dealing with multiple templates, we can use the concept of template inheritance. 
 
-Template Inheritance is the where the base structure of an application is defined in a parent template and the children inherit this structure without redefining it. Child templates instead focus on displaying content that is unique to them. 
+Template Inheritance is when the base structure of an application is defined in a parent template and the children inherit this structure without redefining it. Child templates instead focus on displaying content that is unique to them. 
 
 To achieve this, we can modify the structure of our templates subfolder in the `app` blog to define a `base` template. Let us create a new file called `base.html`.
 
@@ -377,7 +377,7 @@ The block `content` has been used to allow child templates to pass in their uniq
 {% endblock %}
 ```
 
-The child template makes use of the keyword `extends` to inherit the base template. Its content is then wrapped in the block `content` earlier defined in `base.html`. Just like it was done for the `for` loop, a block needs to be closed too. You can optionally choose to say `{% endblock %}` as seen above, or you can say `{% endblock content %}`. 
+A child template makes use of the keyword `extends` to inherit the base template. Its content is then wrapped in the block `content` earlier defined in `base.html`. Just like it has been done for the `for` loop, a block needs to be closed too. You can optionally choose to say `{% endblock %}` as seen above, or you can say `{% endblock content %}`. The latter helps us to remember which block exactly we are ending.
 
 # Bootstrap Templates
 
@@ -415,7 +415,7 @@ The child template makes use of the keyword `extends` to inherit the base templa
 </html>
 ```
 
-This change allows us to use Bootstrap's classes to style our pages and make them more responsive. For example, if we want to a bit of padding and margin to all our page contents, we can wrap the block `content` with the `container` class.
+The bootstrap template above has been modified to use the concept of dynamic templates discussed earlier. This change allows us to use Bootstrap's classes to style our pages and make them more responsive. For example, if we want to add a bit of padding and margin to all our page contents, we can wrap the block `content` with the `container` class.
 
 ```html
 <!-- blog/templates/blog/base.html -->
@@ -430,7 +430,7 @@ This change allows us to use Bootstrap's classes to style our pages and make the
 </body>
 ```
 
-Now, if we reload any of our pages, we should be able to see that significant whitespaces have been created to the left and right of the children templates.
+Now, if we reload any of our pages, we should be able to see that significant whitespaces have been created to the left and the right of the child templates.
 
 ![Bootstrap templates](/02_django/images/03_templates/bootstrap_template.png)
 
@@ -479,7 +479,7 @@ Bootstrap offers quite a handful of navbar snippets we can utilize to make a sim
 
 ### Add A Sidebar
 
-With the navigation bar in place, and the links to the home and about pages working, let us keep updating the structure of our application pages. We will begin by getting rid of the original `div` that contained the page's content.
+With the navigation bar in place, and the links to the _home_ and the _about_ pages working, let us keep updating the structure of our application pages. We will begin by getting rid of the original `div` that contained the page's content.
 
 ```html
 <!-- blog/templates/base.html -->
@@ -514,11 +514,11 @@ With the navigation bar in place, and the links to the home and about pages work
 </body>
 ```
 
-Our unique page's content will be in a column whose size uses Bootstrap's class `col-md-8`. I have added a sidebar section to allow for quick navigation in the blog.
+Our unique page's content will be in a column whose size uses Bootstrap's class `col-md-8`. I have added a sidebar section to allow for quick navigation in the blog. The sidebar column uses the class `col-md-4`. Columns and rows are a powerful mobile-first approach to building web page layouts. If you would like to learn more about Bootstrap's Grid system, read their [layout documentation](https://getbootstrap.com/docs/4.0/layout/grid/).
 
 ### Adding Custom Styles
 
-Django allows us to create our styles. This is achieved by adding a CSS file, such as `main.css`, in a `static` directory in our `blog` application. The `static` directory lives in the root directory of our `blog` app.
+Django allows us to create our styles besides using Bootstrap's. This is achieved by adding a CSS file, such as `main.css`, in a `static` directory in our `blog` application. The `static` directory lives in the root directory of our `blog` app.
 
 ```python
 (venv)$ mkdir blog/static && cd blog/static
@@ -691,7 +691,7 @@ Our application now should look a lot nicer. If the changes do not reflect on yo
 
 ## Improved Links to Views
 
-If you look carefully in our `base.html`, we have linked the base template to the _home_ and _about_  pages by passing in `/blog/` and `/blog/about` respectively. If at any one point we decide that we no longer want to use these links, let us say we now want to use the links `/blog/home/` for our _home_ page and `/blog/about-us` for the _about_ page, we will be forced to manually go into each template file and make those changes. If the application grows and becomes bigger, the likelihood of us making errors on page links is quite high. To mitigate such a scenario, we can instead point our links to a specific view function rather than the view function's URL.
+If you look carefully in our `base.html` file, we have linked the base template to the _home_ and _about_  pages by passing in `/blog/` and `/blog/about` respectively. If at any one point we decide that we no longer want to use these links, let us say we now want to use the links `/blog/home/` for our _home_ page and `/blog/about-us` for the _about_ page, we will be forced to manually go into each template file and make those changes. If the application grows and becomes bigger, the likelihood of us making errors on page links is quite high. To mitigate such a scenario, we can instead point our links to a specific view function rather than the view function's URL.
 
 ```html
 <!-- blog/templates/blog/base.html -->
@@ -699,4 +699,4 @@ If you look carefully in our `base.html`, we have linked the base template to th
 <a class="navbar-brand" href=" {% url 'blog-home' %} ">Django Blog</a>
 ```
 
-Above, we have substituted `/blog/` with the name of the view function in `app.urls.py`. Regardless of what URL we want to use, the link to our _home_ page will now be updated automatically. Make use you change every instance where we are linking the base template to its children.
+Above, we have substituted `/blog/` with the name of the view function as seen in `app.urls.py`. Regardless of what URL we want to use, the link to our _home_ page will now be updated automatically. To complete this article, make sure you change every instance where we are linking the base template to its children.
