@@ -4,28 +4,30 @@
 
 **Psql** is a terminal-based front-end for PostgreSQL. It allows you to issue queries interactively. Once you have connected to the PostgreSQL server, you can begin querying immediately. Besides basic querries, you can also issue certain commands such as `\d` to list all tables in the database, `\c dbname` to connect to another database and `\q` to quit from the postgres shell. You can access a text editor inside `psql` using `\e`. Run `\?` to see what other commands are available for use.
 
-There are two ways you can connect to PostgreSQL:
 
-1. [Using `psql`](/databases/access_postgresql/psql.md) (this article)
-2. [Using SQL client software application and database administration tool](/databases/access_postgresql/dbeaver.md)
+For reference, these are the topics we will be covering in the entire database tutorial:
 
-For reference, these are the topics we will cover in the entire database tutorial:
+1. [Postgres Overview](/databases/00_postgresql_overview.md)
+2. [Install Postgres](/databases/01_install_postgresql.md)
+3. [Access PostgreSQL Using PSQL](/databases/access_postgresql/psql.md) (this article)
+4. [Access PostgreSQL Using DBeaver](/databases/access_postgresql/dbeaver.md)
+5. [How to Secure PostgreSQL](/databases/02_how_to_secure_postgresql.md)
+6. [Getting Started With PostgreSQL](/databases/03_getting_started_with_postgresql.md)
+7. [Sample Flask Project Using PostgreSQL](/databases/project_configure_postgres_in_flask.md)
 
-- [PostgreSQL Overview](/databases/00_postgresql_overview.md)
-- [Install PostgreSQL](/databases/01_install_postgresql.md)
-- [Getting Started with PostgreSQL](/databases/03_getting_started_with_postgresql.md)
+
 
 
 ### Table of Contents
 
-Throughout this article, we will look at how to:
+This article has the following sub-sections. You can click on any of the links below to navigate to a specific section:
 
-1. [Connect to the PostgreSQL Server Using `psql`](#connect-to-the-postgresql-server-using-psql)
-2. [Create Another User](#create-another-user)
-3. [Create A Super User](#create-a-super-user)
-4. [Create User Password](#create-user-password)
-5. [Change User Password](#change-user-password)
-6. [Connect to PostgreSQL As Another User](#connect-to-postgresql-as-another-user)
+- [Connect to the PostgreSQL Server Using `psql`](#connect-to-the-postgresql-server-using-psql)
+- [Create Another User](#create-another-user)
+- [Create A Super User](#create-a-super-user)
+- [Create User Password](#create-user-password)
+- [Change User Password](#change-user-password)
+- [Connect to PostgreSQL As Another User](#connect-to-postgresql-as-another-user)
 
 ## Connect to the PostgreSQL Server Using `psql`
 

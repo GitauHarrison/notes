@@ -2,11 +2,15 @@
 
 Welcome to the PostgreSQL tutorial! This tutorial will walk you through the basics of using PostgreSQL, relational database concepts and the SQL language. The only prerequisite for you to follow along is basic ability to use a computer.
 
-For reference, these are the topics we will cover in the entire database tutorial:
+For reference, these are the topics we will be covering in the entire database tutorial:
 
-- [PostgreSQL Overview](00_postgresql_overview.md) (this article)
-- [Install PostgreSQL](01_install_postgresql.md)
-- [Getting Started with PostgreSQL](03_getting_started_with_postgresql.md)
+1. [Postgres Overview](/databases/00_postgresql_overview.md) (this article)
+2. [Install Postgres](/databases/01_install_postgresql.md)
+3. [Access PostgreSQL Using PSQL](/databases/access_postgresql/psql.md)
+4. [Access PostgreSQL Using DBeaver](/databases/access_postgresql/dbeaver.md)
+5. [How to Secure PostgreSQL](/databases/02_how_to_secure_postgresql.md)
+6. [Getting Started With PostgreSQL](/databases/03_getting_started_with_postgresql.md)
+7. [Sample Flask Project Using PostgreSQL](/databases/project_configure_postgres_in_flask.md)
 
 
 ## What is a Database

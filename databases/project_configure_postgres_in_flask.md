@@ -1,15 +1,16 @@
-# Create A Flask App Using PostgreSQL Database
+# Create A Flask App To Use PostgreSQL Database
 
 You have now decided to use the PostgreSQL database to manage your data. Given all the features that come with it, as discussed in [Postgres Overview](00_postgresql_overview), you may be ready to start using it. Throughout this tutorial, I will show you how to create a password-based user authentication system that utilized the PostgreSQL database.
 
-If you are new to PostgreSQL, I recommend that you start from these tutorials, in their order:
+For reference, these are the topics you can review in the PostgreSQL database series:
 
 1. [Postgres Overview](/databases/00_postgresql_overview.md)
 2. [Install Postgres](/databases/01_install_postgresql.md)
-3. [Access PostgreSQL using `psql`](/databases/access_postgresql/psql.md)
+3. [Access PostgreSQL Using PSQL](/databases/access_postgresql/psql.md)
 4. [Access PostgreSQL Using DBeaver](/databases/access_postgresql/dbeaver.md)
 5. [How to Secure PostgreSQL](/databases/02_how_to_secure_postgresql.md)
 6. [Getting Started With PostgreSQL](/databases/03_getting_started_with_postgresql.md)
+7. [Sample Flask Project Using PostgreSQL](/databases/project_configure_postgres_in_flask.md) (this article)
 
 
 ## Project Overview

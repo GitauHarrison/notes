@@ -1,8 +1,21 @@
-# How to Secure PostgreSQL
+# PostgreSQL Database Access Management
 
 Data safety is at the center of all concerns a company may have. The impact of a data breach can jeopardise the trust customers have on the company. In this article,you will learn how to examine the security of your PostgreSQL deployment.
 
-## Table of Contents
+For reference, these are the topics we will be covering in the entire database tutorial:
+
+1. [Postgres Overview](/databases/00_postgresql_overview.md)
+2. [Install Postgres](/databases/01_install_postgresql.md)
+3. [Access PostgreSQL Using PSQL](/databases/access_postgresql/psql.md)
+4. [Access PostgreSQL Using DBeaver](/databases/access_postgresql/dbeaver.md)
+5. [How to Secure PostgreSQL](/databases/02_how_to_secure_postgresql.md) (this article)
+6. [Getting Started With PostgreSQL](/databases/03_getting_started_with_postgresql.md)
+7. [Sample Flask Project Using PostgreSQL](/databases/project_configure_postgres_in_flask.md)
+
+
+### Table of Contents
+
+This article has the following sub-sections. You can click on any of the links below to navigate to a specific section:
 
 - [Access](#access)
 - [Authentication](#authentication)

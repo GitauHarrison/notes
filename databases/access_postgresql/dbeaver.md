@@ -10,20 +10,20 @@ These are software applications that help users to manage SQL server infrastruct
 
 It is therefore important to choose and have the right tool that can speed up database-related tasks and make you more productive. There are many tools available in the market that can be used to work with a database. To name two, we have [pgAdmin](https://www.pgadmin.org/) and [DBeaver](https://dbeaver.io). I will use DBeaver throughout the subsquent articles as we strive to understand SQL in-depth.
 
-There are two ways you can connect to PostgreSQL:
+For reference, these are the topics we will be covering in the entire database tutorial:
 
-1. [Using `psql`](/databases/access_postgresql/psql.md)
-2. [Using SQL client software application and database administration tool](/databases/access_postgresql/dbeaver.md) (this article)
+1. [Postgres Overview](/databases/00_postgresql_overview.md)
+2. [Install Postgres](/databases/01_install_postgresql.md)
+3. [Access PostgreSQL Using PSQL](/databases/access_postgresql/psql.md)
+4. [Access PostgreSQL Using DBeaver](/databases/access_postgresql/dbeaver.md) (this article)
+5. [How to Secure PostgreSQL](/databases/02_how_to_secure_postgresql.md)
+6. [Getting Started With PostgreSQL](/databases/03_getting_started_with_postgresql.md)
+7. [Sample Flask Project Using PostgreSQL](/databases/project_configure_postgres_in_flask.md)
 
-For reference, these are the topics we will cover in the entire database tutorial:
-
-- [PostgreSQL Overview](/databases/00_postgresql_overview.md)
-- [Install PostgreSQL](/databases/01_install_postgresql.md)
-- [Getting Started with PostgreSQL](/03_databases/getting_started_with_postgresql.md)
 
 ### Table of Contents
 
-Throughout this article, we will look at how to:
+This article has the following sub-sections. You can click on any of the links below to navigate to a specific section:
 
 1. [Install DBeaver](#install-dbeaver)
 

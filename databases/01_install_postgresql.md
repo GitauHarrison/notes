@@ -2,19 +2,23 @@
 
 Now that you have a brief understanding of what a database is, you know the history of PostgreSQL, and are familiar with some of the advantages of using PostgreSQL, you are ready to start using it. We will begin by learning how to install it in our operating system. We will also be using the DBeaver client software to help us get off the ground quickly.
 
-For reference, these are the topics we will cover in the entire database tutorial:
+For reference, these are the topics we will be covering in the entire database tutorial:
 
-- [PostgreSQL Overview](00_postgresql_overview.md)
-- [Install PostgreSQL and DBeaver](01_install_postgresql.md) (this article)
-- [Getting Started with PostgreSQL](03_getting_started_with_postgresql.md)
+1. [Postgres Overview](/databases/00_postgresql_overview.md)
+2. [Install Postgres](/databases/01_install_postgresql.md) (this article)
+3. [Access PostgreSQL Using PSQL](/databases/access_postgresql/psql.md)
+4. [Access PostgreSQL Using DBeaver](/databases/access_postgresql/dbeaver.md)
+5. [How to Secure PostgreSQL](/databases/02_how_to_secure_postgresql.md)
+6. [Getting Started With PostgreSQL](/databases/03_getting_started_with_postgresql.md)
+7. [Sample Flask Project Using PostgreSQL](/databases/project_configure_postgres_in_flask.md)
 
 ### Table of Contents
 
 In this article, we will focus on installing PostgreSQL, creating a connection to it and optionally know how to uninstall it.
 
-1. [Install PostgreSQL in Linux Using the Terminal](#install-postgresql-in-linux-using-the-terminal)
-2. [Create Connection to PostgreSQL](#create-connection-to-postgresql)
-3. [Uninstall PostgreSQL in Linux Using the Terminal](#uninstall-postgresql-in-linux-using-the-terminal)
+- [Install PostgreSQL in Linux Using the Terminal](#install-postgresql-in-linux-using-the-terminal)
+- [Create Connection to PostgreSQL](#create-connection-to-postgresql)
+- [Uninstall PostgreSQL in Linux Using the Terminal](#uninstall-postgresql-in-linux-using-the-terminal)
 
 
 ## Install PostgreSQL in Linux Using the Terminal
