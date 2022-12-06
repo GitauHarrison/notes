@@ -12,7 +12,7 @@ For your reference, if you would like to skip to a particular section in the ent
 
 ### Table of Contents
 
-This article has the following sections:
+This article is broken down into the following subsections:
 
 - [Views](#views)
 - [Application URLs](#application-urls)

@@ -2,9 +2,16 @@
 
 In this tutorial, we are going to learn how to return more complex HTML code. We will also learn how to pass Python variables to these templates. In the [application and routes article](02_applications_and_routes.md), we saw how to return basic text in an HTTP Response. Most templates, though, contain full HTML structures. 
 
+For your reference, if you would like to skip to a particular section in the entire Django tutorial, you can do so by clicking on any of the links below:
+
+- [Django Overview](00_overview.md)
+- [Getting Started With Django](01_getting_started.md)
+- [Applications and routes](02_applications_and_routes.md)
+- [Templates in Django](03_templates.md) (this article)
+
 ### Table of Contents
 
-If you wish to skip to a particular section within this tutorial, you can do so by clicking on any of these links:
+This article is broken down into the following subsections:
 
 - [Update File Structure](#update-file-structure)
 - [Template Configurations](#templates-configurations)
