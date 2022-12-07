@@ -12,6 +12,35 @@ For reference, these are the topics you can review in the PostgreSQL database se
 6. [Getting Started With PostgreSQL](/databases/03_getting_started_with_postgresql.md)
 7. [Sample Flask Project Using PostgreSQL](/databases/project_configure_postgres_in_flask.md) (this article)
 
+### Table of Contents
+
+This article has the following sub-sections. You can click on any of the links below to navigate to a specific section:
+
+- [Project Overview](#project-overview)
+- [Project Structure](#project-structure)
+- [Setting Things Up](#setting-things-up)
+    - [Access Project Directory](#step-1-navigate-to-your-project-directory)
+    - [Create and Activate a Virtual Environment](#step-2-create-a-virtual-environment)
+- [Build The Application](#building-the-application)
+    - [Install Project Dependancies](#step-1-install-project-dependencies)
+    - [Instantiate Project Dependancies](#step-3-register-extensions-in-application-instance)
+    - [Application Configurations](#step-4-configure-the-application)
+    - [Environment Variables](#step-5-create-environment-variables)
+    - [PostgreSQL URL Format](#step-6-postgresql-url-format)
+    - [View Functions](#step-7-add-view-functinos)
+    - [User Model](#step-8-create-user-model)
+    - [Create Database](#step-9-create-the-database)
+    - [Define Forms](#step-10-define-forms)
+    - [Update Templates](#step-11-update-templates)
+    - [Ignore Files](#step-13-ignore-both-the-sensitive-and-the-unnecessary-files)
+    - [Application Entry Point](#step-14-create-an-entry-point)
+    - [Start Flask Server](#step-16-start-the-flask-server)
+- [Configure PostgreSQL Database](#configure-postgresql-database)
+    - [Access PostgreSQL Using PSQL](#step-1-access-postgresql-from-psql)
+    - [Create a New User](#step-2-create-a-new-user)
+    - [Add User Password](#step-4-add-user-password)
+    - [Create A Database](#step-5-create-a-database)
+
 
 ## Project Overview
 
