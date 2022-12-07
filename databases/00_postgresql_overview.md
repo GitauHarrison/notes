@@ -5,7 +5,7 @@ Welcome to the PostgreSQL tutorial! This tutorial will walk you through the basi
 For reference, these are the topics we will be covering in the entire database tutorial:
 
 1. [Postgres Overview](/databases/00_postgresql_overview.md) (this article)
-2. [Install Postgres](/databases/01_install_postgresql.md)
+2. [Install PostgreSQL](/databases/01_install_postgresql.md)
 3. [Access PostgreSQL Using PSQL](/databases/access_postgresql/psql.md)
 4. [Access PostgreSQL Using DBeaver](/databases/access_postgresql/dbeaver.md)
 5. [How to Secure PostgreSQL](/databases/02_how_to_secure_postgresql.md)

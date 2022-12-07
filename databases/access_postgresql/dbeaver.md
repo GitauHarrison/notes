@@ -1,6 +1,8 @@
 # Database Management Tools
 
-These are software applications that help users to manage SQL server infrastructure. They allow users to configure, monitor, manage and administer SQL servers and databases. As a web developer or as a database administrator, you will be dealing with SQL statements to explore the database for various reasons:
+There are multiple ways you can access the PostgreSQL database. I will focus on two ways: (1) [Using the `psql` utility tool](/databases/access_postgresql/psql.md) and (2) [Using a database management tool](/databases/access_postgresql/dbeaver.md). This article is dedicated to learning how to use DBeaver, a database management tool. 
+
+Database management tools are software applications that help users to manage SQL server infrastructure. They allow users to configure, monitor, manage and administer SQL servers and databases. As a web developer or as a database administrator, you will be dealing with SQL statements to explore the database for various reasons:
 
 - Querying the database
 - Build and execute SQL code
@@ -13,7 +15,7 @@ It is therefore important to choose and have the right tool that can speed up da
 For reference, these are the topics we will be covering in the entire database tutorial:
 
 1. [Postgres Overview](/databases/00_postgresql_overview.md)
-2. [Install Postgres](/databases/01_install_postgresql.md)
+2. [Install PostgreSQL](/databases/01_install_postgresql.md)
 3. [Access PostgreSQL Using PSQL](/databases/access_postgresql/psql.md)
 4. [Access PostgreSQL Using DBeaver](/databases/access_postgresql/dbeaver.md) (this article)
 5. [How to Secure PostgreSQL](/databases/02_how_to_secure_postgresql.md)

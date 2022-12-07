@@ -5,7 +5,7 @@ You have now decided to use the PostgreSQL database to manage your data. Given a
 For reference, these are the topics you can review in the PostgreSQL database series:
 
 1. [Postgres Overview](/databases/00_postgresql_overview.md)
-2. [Install Postgres](/databases/01_install_postgresql.md)
+2. [Install PostgreSQL](/databases/01_install_postgresql.md)
 3. [Access PostgreSQL Using PSQL](/databases/access_postgresql/psql.md)
 4. [Access PostgreSQL Using DBeaver](/databases/access_postgresql/dbeaver.md)
 5. [How to Secure PostgreSQL](/databases/02_how_to_secure_postgresql.md)

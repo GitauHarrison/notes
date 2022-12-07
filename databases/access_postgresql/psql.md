@@ -2,13 +2,15 @@
 
 ## Overview
 
+There are multiple ways you can access the PostgreSQL database. I will focus on two ways: (1) [Using the `psql` utility tool](/databases/access_postgresql/psql.md) and (2) [Using a database management tool](/databases/access_postgresql/dbeaver.md). This article is dedicated to learning how to use the `psql` utility tool. 
+
 **Psql** is a terminal-based front-end for PostgreSQL. It allows you to issue queries interactively. Once you have connected to the PostgreSQL server, you can begin querying immediately. Besides basic querries, you can also issue certain commands such as `\d` to list all tables in the database, `\c dbname` to connect to another database and `\q` to quit from the postgres shell. You can access a text editor inside `psql` using `\e`. Run `\?` to see what other commands are available for use.
 
 
 For reference, these are the topics we will be covering in the entire database tutorial:
 
 1. [Postgres Overview](/databases/00_postgresql_overview.md)
-2. [Install Postgres](/databases/01_install_postgresql.md)
+2. [Install PostgreSQL](/databases/01_install_postgresql.md)
 3. [Access PostgreSQL Using PSQL](/databases/access_postgresql/psql.md) (this article)
 4. [Access PostgreSQL Using DBeaver](/databases/access_postgresql/dbeaver.md)
 5. [How to Secure PostgreSQL](/databases/02_how_to_secure_postgresql.md)
