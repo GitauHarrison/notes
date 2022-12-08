@@ -4,8 +4,27 @@ A unit test in Python essentially does two things (1) It runs a fraction or a pa
 
 ```python
 def prime_number(n):
-    return 11
+    return n
 ```
+
+Before we can go any further, these are the other sections in the unit testing reviews. You can click on any of the following links to access additional content:
+
+- [Unit Testing Overview](/unit_testing/unit_testing_overview.md)
+- [Unit Testing In Python](/unit_testing/unit_testing_in_python.md) (this article)
+- [Unit Testing In Flask](/unit_testing/unit_testing_in_flask.md)
+
+
+### Table of Contents
+
+This article is made up of the following subsections. For your reference, you can navigate to any of them directly.
+
+- [Test Runners](#test-runners)
+- [Testing](#testing)
+- [Writing A Test Case](#writing-a-test-case)
+- [Running A Test](#running-a-test)
+- [Test Coverage](#test-coverage)
+- [Code Coverage Exception](#code-coverage-exception)
+
 
 ## Test Runners
 
@@ -22,8 +41,8 @@ Before we can even think of testing this script, we will need to create a file t
 # prime_numbers.py
 
 def prime_number(n):
-    # return 11
-    print(11)
+    # return n
+    print(n)
 
 prime_number(11)
 
