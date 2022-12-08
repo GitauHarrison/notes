@@ -1,6 +1,6 @@
 # Unit Testing in Python
 
-A unit test in Python essentially does two things (1) It runs a fraction or a part of an application and (2) It is verifies that that part works correctly. Let us imagine that we have a very simple script that returns a prime number when called.
+A unit test in Python essentially does two things (1) It runs a fraction or a part of an application and (2) It verifies that that part works correctly. Let us imagine that we have a very simple script that returns a prime number when called.
 
 ```python
 def prime_number(n):
@@ -9,14 +9,14 @@ def prime_number(n):
 
 ## Test Runners
 
-This is unrealistically simple, but anyways, let us go ahead and test the outcome. If we want to test this piece of code, the first thing we need to do is get a test runner. A test runner is a tool that is used to run or execute tests and export results. There are two main test runners in Python. The first is the built-in [unittest](https://docs.python.org/3/library/unittest.html) package from Python, and then there is [pytest](https://docs.pytest.org/en/7.2.x/). You will see me implement a hybrid solution, utilizing both packages. The two aren't vastly different. In fact, _pytest_ is a "enhanced unittest" in that:
+This is unrealistically simple, but anyways, let us go ahead and test the outcome. If we want to test this piece of code, the first thing we need to do is get a test runner. A test runner is a tool that is used to run or execute tests and export results. There are two main test runners in Python. The first is the built-in [unittest](https://docs.python.org/3/library/unittest.html) package from Python, and then there is [pytest](https://docs.pytest.org/en/7.2.x/). You will see me implement a hybrid solution, utilizing both packages. The two aren't vastly different. In fact, _pytest_ is an "enhanced unittest" in that:
 
-- It maintains the object-oriented approach using the `TestCase` class from `unittest` to structure and organize the test units
+- It maintains the object-oriented approach using the `TestCase` class from `unittest` to structure and organizes the test units
 - Assertions are written using the `assert` statement, though _pytest's_ assertions are more verbose when there is a failure.
 
 ## Testing
 
-Before we can even think of testing this script, we will need to create a file to save this work. We can create a sample file called `prime_numbers.py` then modify our code slightly to use the `print()` statement before running it on the terminal. 
+Before we can even think of testing this script, we will need to create a file to save this work. We can create a sample file called `prime_numbers.py` and then modify our code slightly to use the `print()` statement before running it on the terminal. 
 
 ```python
 # prime_numbers.py
@@ -86,10 +86,10 @@ class TestPrimeNumber(unittest.TestCase):
         assert prime_number(num2) == True
 ```
 
-> A testcase is created by subclassing `unittest.TestCase`. The sole test above has been defined with method whose name start with the letters test. This naming convention informs the test runner about which methods represent tests.<br>
+> A testcase is created by subclassing `unittest.TestCase`. The sole test above has been defined with a method whose name starts with the letters test. This naming convention informs the test runner about which methods represent tests.<br>
 > The crux of each test method, in our case we only have one test method, is the call to `assert` to check for an expected result.
 
-This test assumes that the function `prime_number()` returns either `True` or `False`. Our current function uses the print statement and does not return anything. So, I will make some modification to the code to ensure it returns either boolean.
+This test assumes that the function `prime_number()` returns either `True` or `False`. Our current function uses the print statement and does not return anything. So, I will make some modifications to the code to ensure it returns either boolean.
 
 ```python
 # prime_numbers.py
@@ -143,9 +143,9 @@ test_prime_number.py .                                                          
 ======================================= 1 passed in 0.03s  =====================================
 ```
 
-The `pytest` command intelligently knows where to look for to get the test file. As mentioned above, it assumes any file with the word "test" in it, either in the current directory or subdirectories, containes unit tests.
+The `pytest` command intelligently knows where to look to get the test file. As mentioned above, it assumes any file with the word "test" in it, either in the current directory or subdirectories, contains unit tests.
 
-The test passes, as you can see above. But what happends when there is a failure? To deliberately make the test fail, let us update our test file as follows:
+The test passes, as you can see above. But what happens when there is a failure? To deliberately make the test fail, let us update our test file as follows:
 
 ```python
 # test_prime_number.py
@@ -195,12 +195,12 @@ FAILED test_prime_number.py::TestPrimeNumber::test_prime_number - assert True ==
 ===================================== 1 failed in 0.06s ===========================================
 ```
 
-Pytest does a very good job in helping one figure out exactly where the test failed, and provides the expected and actual results for the failed assertion. Above, you can see that the line `assert prime_number(11)` expected `False` though our script returned `True`. This failed test was an experiment, so make sure to return the passing condition.
+Pytest does a very good job of helping one figure out exactly where the test failed and provides the expected and actual results for the failed assertion. Above, you can see that the line `assert prime_number(11)` expected `False` though our script returned `True`. This failed test was an experiment, so make sure to return the passing condition.
 
 
 ## Test Coverage
 
-How can we tell that the test above is good enough? Naturally, we will use our own judgement to determine how much automated tests we need to implement as insurance against possible failures in the future. Thankfully, there is a tool that we can use to help give a better picture of the scope of our tests. This tool is called [coverage](https://coverage.readthedocs.io/en/7.0.0b1/). It excels at noting which part of the code has been executed, then analyzes the source to identify which code could have been executed but was not.
+How can we tell that the test above is good enough? Naturally, we will use our judgment to determine how many automated tests we need to implement as insurance against possible failures in the future. Thankfully, there is a tool that we can use to help give a better picture of the scope of our tests. This tool is called [coverage](https://coverage.readthedocs.io/en/7.0.0b1/). It excels at noting which part of the code has been executed, then analyzes the source to identify which code could have been executed but was not.
 
 There is a plugin for `pytest` called [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/) that supports code coverage in a test run. We need to install it in an active virtual environment too.
 
@@ -233,11 +233,11 @@ TOTAL                11      2    82%
 =================================== 1 passed in 0.07s ===================================
 ```
 
-It is recommend to limit the code coverage to the application module or package which is passed as an argument tot he `--cov` option. It there is no restriction, then the code coverage will apply to all Python processes, making the output very noisy.
+It is recommended to limit the code coverage to the application module or package which is passed as an argument to the `--cov` option. If there is no restriction, then the code coverage will apply to all Python processes, making the output very noisy.
 
-Note that our report has a resounding 82%. However, where is the remaining 18%? Does this mean it is possible we have not written some test for our module?
+Note that our report has a resounding 82%. However, where is the remaining 18%? Does this mean we have not written some tests for our module?
 
-The `pytest-cov` plugin can generate the final report in several formats. The one I have shown above is the most basic format, called `term`, because it is printed in the terminal. A variant to show missing code coverage is `term-missing`. It shows what lines of code were not covered.
+The `pytest-cov` plugin can generate the final report in several formats. The one I have shown above is the most basic format called `term` because it is printed in the terminal. A variant to show missing code coverage is `term-missing`. It shows what lines of code were not covered.
 
 ```python
 (venv)$ pytest --cov=prime_number --cov-report=term-missing
@@ -262,7 +262,7 @@ TOTAL                11      2    82%
 =================================== 1 passed in 0.07s ===================================
 ```
 
-The `term-missing` shows the list of line numbers that did not execute during the test. In the case above, line 17 - 18 in the `prime_number()` function was not covered. This two lines fall under the `else` part of the conditional statement checking for a number greater than 1.
+The `term-missing` shows the list of line numbers that did not execute during the test. In the case above, line 17 - 18 in the `prime_number()` function was not covered. These two lines fall under the `else` part of the conditional statement checking for a number greater than 1.
 
 ```python
 # prime_number.py
@@ -306,7 +306,7 @@ TOTAL                11      2      6      1    82%
 =================================== 1 passed in 0.07s ===================================
 ```
 
-To ensure that our code gets a 100% coverage, I will modify `prime_number()` to factor in if the input value is greater than 1.
+To ensure that our code gets 100% coverage, I will modify `prime_number()` to factor in if the input value is greater than 1.
 
 ```python
 # test_prime_number.py
@@ -326,7 +326,7 @@ class TestPrimeNumber(unittest.TestCase):
 
 ```
 
-Above, I have included a simple condition within the `prime_number()` function to check if the input number is actually creater than 1. To test the coverage, I can re-run the earlier command.
+Above, I have included a simple condition within the `prime_number()` function to check if the input number is greater than 1. To test the coverage, I can re-run the earlier command.
 
 ```python
 (venv)$ pytest --cov=prime_number --cov-report=term-missing --cov-branch
@@ -353,7 +353,7 @@ TOTAL                11      0      6      0   100%
 
 ## Code Coverage Exception
 
-If at any one point you think that a piece of code does not need to be tested, it is possible to make such code lines as exceptions, and make them counted as covered. They will not appear in coverage reports as missing. This can be done using the text `pragma: no cover` to the line or lines in question. 
+If at any one point you think that a piece of code does not need to be tested, it is possible to make such code lines as exceptions and make them counted as covered. They will not appear in coverage reports as missing. This can be done using the text `pragma: no cover` to the line or lines in question. 
 
 ```python
 # prime_number.py
@@ -417,4 +417,4 @@ TOTAL                 9      0      4      0   100%
 =================================== 1 passed in 0.07s ===================================
 ```
 
-Notice that the statements under coverage have now reduced from 11 to 9. The code coverage is 100%. If your script includes `print()` statements, you have the liberty to decide if you want them included into the tests.
+Notice that the statements under coverage have now been reduced from 11 to 9. The code coverage is 100%. If your script includes `print()` statements, you have the liberty to decide if you want them included in the tests.
