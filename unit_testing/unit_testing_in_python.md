@@ -7,7 +7,7 @@ def prime_number(n):
     return n
 ```
 
-Before we can go any further, these are the other sections in the unit testing reviews. You can click on any of the following links to access additional content:
+Before we can go any further, these are the other articles in the unit testing reviews. You can click on any of the following links to access additional content:
 
 - [Unit Testing Overview](/unit_testing/unit_testing_overview.md)
 - [Unit Testing In Python](/unit_testing/unit_testing_in_python.md) (this article)
