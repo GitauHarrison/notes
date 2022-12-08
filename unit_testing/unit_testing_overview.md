@@ -14,7 +14,7 @@ There are three kinds of tests:
 - **Integration test**: They test how two or more modules work together.
 - **Functional test**: This is an end-to-end testing of an application to ensure that everything works as expected. [Selenium](https://www.selenium.dev/) is commonly used here. 
 
-The difference among the mentioned tests is their scope. Notice that unit tests focus on specific part of a system while functional tests narrow down on all components of an application or system, making it the hardest to write. Integration tests fall somewhere in between the two.
+The difference among the mentioned tests is their scope. Notice that unit tests focus a specific part of a system while functional tests narrow down on all components of an application or system, making it the hardest to write. Integration tests fall somewhere in between the two.
 
 ## Table of Contents
 
