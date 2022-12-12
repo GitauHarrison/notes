@@ -172,7 +172,6 @@ To test requests, a web server is typically used. The communication between a we
 ```python
 import os
 os.environ['DATABASE_URL'] = 'sqlite://'
-os.environ['SECRET_KEY'] = 'harry'
 
 from app import app, db
 import unittest
@@ -181,6 +180,7 @@ import unittest
 class TestWebApp(unittest.TestCase):
     def setUp(self):
         self.app = app
+        self.app.config['SECRET_KEY'] = 'harry'
         self.app_ctxt = self.app.app_context()
         self.app_ctxt.push()
         db.create_all()
@@ -206,7 +206,7 @@ class TestWebApp(unittest.TestCase):
 
 The `test_profile_page_redirect()` function sends a GET request to the top-level URL of the application. I have used the flag `follow_redirects` to set that the test client automatically handles the redirect responses. In the application, anonymous access to the profile page automatically redirects the user to the login page. Details of the originating requests is retrieved using the `response.request` attribute.
 
-One thing to note is that the application in review does not use a factory function. As a result, we do not have access to the `config` module as is normally the case when `create_app` is used. This forces us to explicitly add all our configuration variables globally before the test is run and executed.
+One thing to note is that we add our application configuration once a Flask instance has been created. This is also the case in `app/__init__.py` because all configuration values are accessed under a flask instance.
 
 
 ## Testing HTML-Specific Content
@@ -218,7 +218,6 @@ To give context on why you would consider testing for HTML-specific content, the
 
 import os
 os.environ['DATABASE_URL'] = 'sqlite://'
-os.environ['SECRET_KEY'] = 'harry'
 
 from app import app, db
 import unittest
@@ -242,3 +241,53 @@ class TestWebApp(unittest.TestCase):
 
 Above, I am making sure the GET response returns a 200 status code. Then, I extract the HTML response object from `response.get_data()`. By default, the returned object will be of type `bytes`, but as a matter of convinience, I request for its conversion to text. To check if a particular field is present in the form, I use the attribute `name="field-name"`. If you are familiar with HTML, you know that an input field has the format `<input ... name="field-name">`. So, I am utilizing the `name` attribute to verify that indeed the field is present in the login template.
 
+## Testing Form Submission
+
+In the application under review, a user can submit a form under two circumstances (1) During authentication and (2) When making a post. By default, web frameworks enable protecttion against CSRF so that no external agent can submit a form on your behalf, and without you realizing it. This protection is implemented by a hidden field in all web forms that sets a randomly generated CSRF token. During submission, each form field is required to have this token besides the field data, without which the server rejects the submission as invalid.
+
+Let us focus on the login page. I can choose to either disable CSRF protection or extract it during a GET request and add it to the form submission. Either way, the application will accept the form.
+
+```python
+# test_web_app.py
+
+# ...
+
+class TestWebApp(unittest.TestCase):
+    def setUp(self):
+        self.app = app
+        self.app.config['SECRET_KEY'] = 'harry'
+        self.app.config['WTF_CSRF_ENABLED'] = False
+        self.app_ctxt = self.app.app_context()
+        self.app_ctxt.push()
+        db.create_all()
+        self.client = self.app.test_client()
+    
+    # ...
+```
+
+Above, I have decided to take a more pratical approach, which was to disable CSRF protection while running tests. To login a user, you can do the following:
+
+```python
+# test_web_app.py
+
+class TestWebApp(unittest.TestCase):
+    # ...
+
+    def test_user_login(self):
+            response = self.client.post('/login', data={
+                'username': 'harry',
+                'password': 'harry'
+            }, follow_redirects=True)
+            assert response.status_code == 200
+            assert response.request.path == '/login'
+
+            response = self.client.post('/profile', data={
+                'body': 'test post',
+                'author': 'harry'
+            }, follow_redirects=True)
+            assert response.status_code == 200
+            html = response.get_data(as_text=True)
+            assert 'Username: harry' in html
+```
+
+The test starts by sending a POST request to the `login` URL, similar to when you click the submit button on a browser. The form fields data are accepted as a dictionary whose keys must match those of the form field names. Once logged in, the user is to be sent to the `profile` page where the text " Username: 'username' " will be displayed.
