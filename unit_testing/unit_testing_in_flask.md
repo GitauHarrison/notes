@@ -1,6 +1,6 @@
 # Unit Testing in Flask
 
-In this article, I will be using the sample project [Configure Flask To Use PostgreSQL](https://github.com/GitauHarrison/configure-flask-to-use-postgresql) to discus how to write unit tests in a Flask web application. The concepts, though, are universal and can be applied to other frameworks as well.
+In this article, I will be using the sample project [Configure Flask To Use PostgreSQL](https://github.com/GitauHarrison/configure-flask-to-use-postgresql) to discuss how to write unit tests in a Flask web application. The concepts, though, are universal and can be applied to other frameworks as well.
 
 ![Unit testing in flask](/unit_testing/images/unit_testing_in_flask.gif)
 
@@ -25,11 +25,11 @@ The application features the following:
 - [x] The user's data is retrieved to allow them to log in
 - [x] Once logged in, they are redirected to the profile page
 - [x] Useful feedback is provided to the user along the way
-- [x] The profile page can only be accessed by a logged in user
-- [x] The profile page displays the logged in user's username
+- [x] The profile page can only be accessed by a logged-in user
+- [x] The profile page displays the logged-in user's username
 - [x] The profile page features a _post_ form
 - [x] The user can make a post, which would be displayed below the form
-- [x] The logged in user can log themselves out of their accounts
+- [x] The logged in users can log themselves out of their accounts
 - [x] Once logged out, they are redirected to the login page
 
 It is important to know what parts the application you want to build will have so that you can adequately plan for them by creating tests that need to be passed before accepting any changes. Python includes a very useful `unittest` package that makes it easy to write and execute unit tests. In this example, I will be using an "enhanced" test runner called `pytest`.
@@ -42,7 +42,7 @@ Let us begin by creating a `test` module in the top-level directory. This file w
 (venv)$ touch test_web_app.py
 ```
 
-The first test case we are going to look at is to determine the application's instance. A flask application's instance of the project in review is in the variable `app` as seen in `app/__init__.py`. You've seen that `app` is called in almost all other modules, for example, `routes.py` needs this flask instance to create endpoints. If we are going to test every aspect of the application, chances are we will need the flask instance in each test. This will make our work tedious, so we are going start by defining common initialization and destruction tasks in a single place.
+The first test case we are going to look at is to determine the application's instance. A flask application's instance of the project in review is in the variable `app` as seen in `app/__init__.py`. You've seen that `app` is called in almost all other modules, for example, `routes.py` needs this flask instance to create endpoints. If we are going to test every aspect of the application, chances are we will need the flask instance in each test. This will make our work tedious, so we are going to start by defining common initialization and destruction tasks in a single place.
 
 ```python
 # test_web_app.py
@@ -72,9 +72,9 @@ The methods `setUp()` and `tearDown()` are automatically invoked before and afte
 
 The `setUp()` method has been used to create an application instance, which is stored in the `app_ctxt` attribute. This attribute is then used to create an application context, often needed in Flask. 
 
-If you are wondering what an application context is, it used to keep track of the application-level data during requests, commandline activities or other tasks. A Flask application is most likely going to have a `config` module, for example, whose values are needed everywhere in the application, such as the views and CLI commands. 
+If you are wondering what an application context is, it is used to keep track of the application-level data during requests, command-line activities, or other tasks. A Flask application is most likely going to have a `config` module, for example, whose values are needed everywhere in the application, such as the views and CLI commands. 
 
-To ensure that we have access to such, an application context is used. When using blueprints and factory functions, the `current_app` proxy from flask is used to access the application context rather than having to import the `app` instance all the time. Flask automatically pushes an application context when handling requests. All functionality that run during a request, such as views, error handling et cetera, will have access to `current_app`, a proxy to a Flask context. Below is a slight modification of testing an application instance when using a factory function. 
+To ensure that we have access to such, an application context is used. When using blueprints and factory functions, the `current_app` proxy from Flask is used to access the application context rather than having to import the `app` instance all the time. Flask automatically pushes an application context when handling requests. All functionality that runs during a request, such as views, error handling et cetera, will have access to `current_app`, a proxy to a Flask context. Below is a slight modification of testing an application instance when using a factory function. 
 
 ```python
 # test_web_app.py
@@ -100,9 +100,9 @@ class TestWebApp(unittest.TestCase):
         assert current_app == self.app
 ```
 
-The `test_app()` method in the `test`module ensures that `self.app` has been defined, and also either `app` or `current_app` has been set to the application, which should happen when the context is pushed.
+The `test_app()` method in the `test` module ensures that `self.app` has been defined, and also either `app` or `current_app` has been set to the application, which should happen when the context is pushed.
 
-The `tearDown()` method, which runs after every test, is used to undo anything that was done in `setUp()`. So, a pop is implemented on the application context, and resets the two attributes back to `None` so the class returns to its original clean state.
+The `tearDown()` method, which runs after every test, is used to undo anything that was done in `setUp()`. So, a pop is implemented on the application context and resets the two attributes back to `None` so the class returns to its original clean state.
 
 In the terminal, we can run the test and see the coverage.
 
@@ -163,11 +163,11 @@ class TestWebApp(unittest.TestCase):
         assert app == self.app
 ```
 
-Intentionally, I set the in-memory database at the global scope just before all other imports to ensure that by the time the `config` module is imported, this variable is already set correctly. In the `setUp()` method, a call to initialize the in-memory database with empty tables for all models defined in the application is achieved using `db.create_all()`. For this to work, an application context is required, so it needes to be called after the application context has been pushed. It may be technically unnecessary to destroy all tables by calling `db.drop_all()` but anyways, let us just have it there.
+Intentionally, I set the in-memory database at the global scope just before all other imports to ensure that by the time the `config` module is imported, this variable is already set correctly. In the `setUp()` method, a call to initialize the in-memory database with empty tables for all models defined in the application is achieved using `db.create_all()`. For this to work, an application context is required, so it needs to be called after the application context has been pushed. It may be technically unnecessary to destroy all tables by calling `db.drop_all()` but anyways, let us just have it there.
 
 ## Working With a Test Client
 
-To test requests, a web server is typically used. The communication between a web application and a web server is enabled by a Web Server Gateway Interface (WSGI) such as Gunicorn. Following a test-driven approach, where testing comes before building, there is actually no server to use to test such requests. Thankfully, we can use something called a "test client" to inject fake requests into the application for the purposes of testing. This would look like a real request has been sent but there will be no server involved.
+To test requests, a web server is typically used. The communication between a web application and a web server is enabled by a Web Server Gateway Interface (WSGI) such as Gunicorn. Following a test-driven approach, where testing comes before building, there is no server to use to test such requests. Thankfully, we can use something called a "test client" to inject fake requests into the application for testing. This would look like a real request has been sent but there will be no server involved.
 
 ```python
 import os
@@ -204,14 +204,14 @@ class TestWebApp(unittest.TestCase):
 
 ```
 
-The `test_profile_page_redirect()` function sends a GET request to the top-level URL of the application. I have used the flag `follow_redirects` to set that the test client automatically handles the redirect responses. In the application, anonymous access to the profile page automatically redirects the user to the login page. Details of the originating requests is retrieved using the `response.request` attribute.
+The `test_profile_page_redirect()` function sends a GET request to the top-level URL of the application. I have used the flag `follow_redirects` to set that the test client automatically handles the redirect responses. In the application, anonymous access to the profile page automatically redirects the user to the login page. Details of the originating requests are retrieved using the `response.request` attribute.
 
 One thing to note is that we add our application configuration once a Flask instance has been created. This is also the case in `app/__init__.py` because all configuration values are accessed under a flask instance.
 
 
 ## Testing HTML-Specific Content
 
-To give context on why you would consider testing for HTML-specific content, the profile page displays the current user's username. It is possible that given this definite output, we can test if indeed the profile page displays a logged in user's username. In another context, we can verify if a redirect to the login page actually displayed the login form by testing for specific HTML content such as the input fields or the login button. It may not make sense to go all out to test every aspect of a template. A "spot-check" would be sufficient.
+To give context on why you would consider testing for HTML-specific content, the profile page displays the current user's username. It is possible that given this definite output, we can test if indeed the profile page displays a logged-in user's username. In another context, we can verify if a redirect to the login page displayed the login form by testing for specific HTML content such as the input fields or the log in button. It may not make sense to go all out to test every aspect of a template. A "spot-check" would be sufficient.
 
 ```python
 # test_web_app.py
@@ -239,11 +239,11 @@ class TestWebApp(unittest.TestCase):
 
 ```
 
-Above, I am making sure the GET response returns a 200 status code. Then, I extract the HTML response object from `response.get_data()`. By default, the returned object will be of type `bytes`, but as a matter of convinience, I request for its conversion to text. To check if a particular field is present in the form, I use the attribute `name="field-name"`. If you are familiar with HTML, you know that an input field has the format `<input ... name="field-name">`. So, I am utilizing the `name` attribute to verify that indeed the field is present in the login template.
+Above, I am making sure the GET response returns a 200 status code. Then, I extract the HTML response object from `response.get_data()`. By default, the returned object will be of type `bytes`, but as a matter of convenience, I request for its conversion to text. To check if a particular field is present in the form, I use the attribute `name="field-name"`. If you are familiar with HTML, you know that an input field has the format `<input ... name="field-name">`. So, I am utilizing the `name` attribute to verify that indeed the field is present in the login template.
 
 ## Testing Form Submission
 
-In the application under review, a user can submit a form under two circumstances (1) During authentication and (2) When making a post. By default, web frameworks enable protecttion against CSRF so that no external agent can submit a form on your behalf, and without you realizing it. This protection is implemented by a hidden field in all web forms that sets a randomly generated CSRF token. During submission, each form field is required to have this token besides the field data, without which the server rejects the submission as invalid.
+In the application under review, a user can submit a form under two circumstances (1) During authentication and (2) When making a post. By default, web frameworks enable protection against CSRF so that no external agent can submit a form on your behalf, and without you realizing it. This protection is implemented by a hidden field in all web forms that set a randomly generated CSRF token. During submission, each form field is required to have this token beside the field data, without which the server rejects the submission as invalid.
 
 Let us focus on the login page. I can choose to either disable CSRF protection or extract it during a GET request and add it to the form submission. Either way, the application will accept the form.
 
@@ -265,7 +265,7 @@ class TestWebApp(unittest.TestCase):
     # ...
 ```
 
-Above, I have decided to take a more pratical approach, which was to disable CSRF protection while running tests. To login a user, you can do the following:
+Above, I have decided to take a more practical approach, which was to disable CSRF protection while running tests. To log in a user, you can do the following:
 
 ```python
 # test_web_app.py
@@ -290,12 +290,12 @@ class TestWebApp(unittest.TestCase):
         assert 'Username: harry' in html
 ```
 
-The test starts by sending a POST request to the `login` URL, similar to when you click the submit button on a browser. The form fields data are accepted as a dictionary whose keys must match those of the form field names. Once logged in, the user is to be sent to the `profile` page where the text " Username: 'username' " will be displayed.
+The test starts by sending a POST request to the `login` URL, similar to when you click the submit button on a browser. The form field data are accepted as a dictionary whose keys must match those of the form field names. Once logged in, the user is to be sent to the `profile` page where the text " Username: 'username' " will be displayed.
 
 
 ## Test Form Validation
 
-One of the enforced requirements when using the application's forms is to ensure all fields are filled. If a user tries to submit a form whose fields are not entirely filled, then a form validation message appears to remind or inform the user that the field needs to be filled.
+One of the enforced requirements when using the application's forms is to ensure all fields are filled. If a user tries to submit a form whose fields are not filled, then a form validation message appears to remind or inform the user that the field needs to be filled.
 
 ```python
 # test_web_app.py
@@ -321,9 +321,9 @@ Above, the data in `password` does not match that of `confirm_password`, hence, 
 
 ## Test Pages That Require Authentication
 
-It is common that certain pages in a web application are restricted to logged in users. As such, any other user how is anonymous to the application does not have access to these pages. To test these pages, it may make sense to simply disable the login feature, but this will not allow the server to know who the client is. Flask uses the `current_user` variable to know a client, which when disabled causes problems. A natural way to test user authentication is to peform a log in exactly as users do it.
+Commonly, certain pages in a web application are restricted to logged-in users. As such, any other user who is anonymous to the application does not have access to these pages. To test these pages, it may make sense to simply disable the login feature, but this will not allow the server to know who the client is. Flask uses the `current_user` variable to know a client, which when disabled causes problems. A natural way to test user authentication is to perform a log in exactly as users do it.
 
-If we have multiple pages that require user authentication, this means that we will have to repeat the process every time we want to test something in those pages. What I would like to do is to have a user I can login with in the database.
+If we have multiple pages that require user authentication, this means that we will have to repeat the process every time we want to test something on those pages. What I would like to do is to have a user I can log in with in the database.
 
 ```python
 # test_web_app.py
@@ -364,7 +364,7 @@ class TestWebApp(unittest.TestCase):
         db.session.commit()
 ```
 
-As we mentioned above, any method that does not start with `test_` is ignored by the testing framework. This allows us to add any auxillary methods we would need. Once this is done, we need to perform the actual login:
+As we mentioned above, any method that does not start with `test_` is ignored by the testing framework. This allows us to add any auxiliary methods we would need. Once this is done, we need to perform the actual login:
 
 ```python
 # test_web_app.py
@@ -405,4 +405,30 @@ class TestWebApp(unittest.TestCase):
         assert 'Your post has been saved' in html
 ```
 
-We begin by first logging in a user called `harry` by calling `self.login()`. This now allows me to freely issue a form submission for the user posts. Once a post is submitted, the flash message ""Your post has been saved appears at the top of the page, so I test for that. Next, I also test that the actual post by the user is seen in the profile page. At the moment, the profile page should also display the current user's username.
+We begin by first logging in a user called `harry` by calling `self.login()`. This now allows me to freely issue a form submission for the user posts. Once a post is submitted, the flash message "Your post has been saved" appears at the top of the page, so I test for that. Next, I also test that the actual post by the user is seen on the profile page. At the moment, the profile page should also display the current user's username.
+
+At this point, the test should return 100% coverage with all 6 tests passing.
+
+```python
+(venv)$ pytest --cov=test_web_app --cov-report=term-missing --cov-branch
+
+# Output
+
+================================= test session starts ===========================================
+platform linux -- Python 3.8.10, pytest-7.2.0, pluggy-1.0.0
+rootdir: /home/harry/software_development/python/flask/finished_projects/connecting_to_postgresql
+plugins: cov-4.0.0
+collected 6 items
+
+test_web_app.py ......                                                                     [100%]
+
+---------- coverage: platform linux, python 3.8.10-final-0 -----------
+Name              Stmts   Miss Branch BrPart  Cover   Missing
+-------------------------------------------------------------
+test_web_app.py      64      0      0      0   100%
+-------------------------------------------------------------
+TOTAL                64      0      0      0   100%
+
+
+=================================== 6 passed in 2.11s ===========================================
+```
