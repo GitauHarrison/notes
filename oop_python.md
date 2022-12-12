@@ -2,7 +2,7 @@
 
 ![OOP](images/oop/oop.png)
 
-Object Oriented programming (OOP) is a programming paradigm that relies on the concept of classes and objects. It is used to structure a software program into simple, reusable pieces of code blueprints (usually called classes), which are used to create individual instances of objects.
+Object Oriented Programming (OOP) is a programming paradigm that relies on the concept of classes and objects. It is used to structure a software program into simple, reusable pieces of code blueprints (usually called classes), which are used to create individual instances of objects.
 
 #### Table of Contents
 
@@ -19,9 +19,9 @@ Classes can also contain functions, called methods, available only to objects of
 
 Class templates are used as a blueprint to create individual objects. These represent specific examples of the abstract class, like myCar or goldenRetriever. Each object can have unique values to the properties defined in the class.
 
-> If we have a sample class called "Car" that contains all the properties a car must have such as color, brand and model, we can create an instance of a type of car to represent a specific car.
+> If we have a sample class called "Car" that contains all the properties a car must have such as color, brand, and model, we can create an instance of a type of car to represent a specific car.
 >
-> We can then set the value of the properties defined in the class to describe our car, whithout affecting other objects or the class template.
+> We can then set the value of the properties defined in the class to describe our car, without affecting other objects or the class template.
 > 
 > We can reuse this class to represent any number of cars.
 
@@ -111,7 +111,7 @@ print(kiki.career('Teacher'))
 
 | Classes | Objects | Attributes | Methods |
 | ------- | ------- | ---------- | ------- |
-| As we have seen above, classes are essentially blueprints that define abstract ideas of an object. Individual objects are instantiated or created from this blueprint.  | These are instances of a class, created with specific data. You can have multiple objects that use the same class. | These are the features of a class. They define the data that we would want an object to have. The state of an object is defined by the data in the object’s attributes fields. | Methods are used to represent behaviours. They perform actions that might return information about an object. When individual objects are instantiated, these objects can call the methods defined in the class. | 
+| As we have seen above, classes are essentially blueprints that define abstract ideas of an object. Individual objects are instantiated or created from this blueprint.  | These are instances of a class, created with specific data. You can have multiple objects that use the same class. | These are the features of a class. They define the data that we would want an object to have. The state of an object is defined by the data in the object’s attributes fields. | Methods are used to represent behaviors. They perform actions that might return information about an object. When individual objects are instantiated, these objects can call the methods defined in the class. | 
 
 
 ## The Four Principles of Object-oriented Programming
@@ -125,7 +125,7 @@ The four pillars of OOP in python are:
 
 ## Inheritance
 
-This principle allows other classes to acquire the features of other classes. In other words, one class extends its attributes and behaviours to another class. The class in which the basic attributes and behaviours are defined is called the 'parent' class or the 'base' class. The class that inherits (or acquires) the attributes and behaviours of the parent class is called the 'child' class or the 'subclass'. The essence of inheritance is to promote code reusability.
+This principle allows other classes to acquire the features of other classes. In other words, one class extends its attributes and behaviors to another class. The class in which the basic attributes and behaviors are defined is called the 'parent' class or the 'base' class. The class that inherits (or acquires) the attributes and behaviors of the parent class is called the 'child' class or the 'subclass'. The essence of inheritance is to promote code reusability.
 
 
 ```python
@@ -193,7 +193,7 @@ class Child(Parent):
         return f'Child: {self.username}, {self.age}''
 ```
 
-We have modified the `__repr__()` function for the `Child` class to have its own string besides the dynamic `username` and `email` values. The `Child` class has an additional `age` attribute that does not exist in the parent. Let us see how polymorphism works.
+We have modified the `__repr__()` function for the `Child` class to have its string besides the dynamic `username` and `email` values. The `Child` class has an additional `age` attribute that does not exist in the parent. Let us see how polymorphism works.
 
 ```python
 $ python
@@ -207,14 +207,14 @@ Parent: harry
 Child: muthoni, 3
 ```
 
-Notice that the parent's `__repr__()` function has been overriden by the child's. This is because the child defined its own `__repr__()` function. Additionally, the `age` attribute is only present in the child class.
+Notice that the parent's `__repr__()` function has been overridden by the child's. This is because the child defined its own `__repr__()` function. Additionally, the `age` attribute is only present in the child class.
 
 
 ## Encapsulation
 
-This principle promotes the need to hide data. From the word 'encapsulate', we learn that it means to 'enclose something in or as if in a capsule'. Synonyms associated with encapsulate are enclose, encase, confine, envelop etc. I hope you get the idea. 
+This principle promotes the need to hide data. From the word 'encapsulate', we learn that it means to 'enclose something in or as if in a capsule. Synonyms associated with encapsulate are enclosed, encase, confine, envelop, etc. I hope you get the idea. 
 
-The creation of classes is by default encapsulation. This is because we are limiting access to the data from the outside world. This data can only be accessed using the said class. The entire process of encapsulation is also called 'information hiding'. 
+The creation of classes is by default encapsulation. This is because we are limiting access to data from the outside world. This data can only be accessed using the said class. The entire process of encapsulation is also called 'information hiding. 
 
 ```python
 class Parent():
@@ -226,7 +226,7 @@ class Parent():
         return f'Parent: {self.username}'
 ```
 
-In order for us to access any information about a parent, we will have to use the `Parent` class. We will instantiate an object, then use it to access whatever data we want.
+For us to access any information about a parent, we will have to use the `Parent` class. We will instantiate an object, then use it to access whatever data we want.
 
 Besides restricting access to the class data, we can more specifically limit access to individual variables and methods to prevent accidental data modification. Whenever we are working with the class and dealing with sensitive data, providing access to all variables used within the class is not a good choice.
 
@@ -334,7 +334,7 @@ How can we access a private variable? We will look at three ways:
 
 ### Using public methods
 
-Here, we can define an instance method which will have access to the private variable. Remember, we said that a private variable can only be accessed within its own class.
+Here, we can define an instance method that will have access to the private variable. Remember, we said that a private variable can only be accessed within its class.
 
 ```python
 class Parent():
@@ -363,7 +363,7 @@ The method `show_phone()` in an instance method of the `Parent` class. In it, we
 ### Name mangling
 
 
-To 'mangle' means to destroy or to severely damage by tearing or crushing. Other words used to mean mangle include mutilate, crush, disfigure etc. In OOP, name mangling is used to cleverly overcome the restriction of ecapsulation.
+To 'mangle' means to destroy or to severely damage by tearing or crushing. Other words used to mean mangle include mutilate, crush, disfigure, etc. In OOP, name mangling is used to cleverly overcome the restriction of encapsulation.
 
 ```python
 class Parent():
@@ -389,7 +389,7 @@ harry@email.com
 >>> parent._Parent_phone
 123
 ```
-Typically, name mangling involves adding a preceding underscore to a class name then appending the double underscore private variable to it in order to gain access the variable's data. The format used is:
+Typically, name mangling involves adding a preceding underscore to a class name and then appending the double underscore private variable to it to gain access to the variable's data. The format used is:
 
 ```python
 object._classname__privateVariable
@@ -449,7 +449,7 @@ You might be wondering how `phone` has become private yet when defining the clas
 
 ### Setter Method
 
-Now that `phone` is private by the help of our getter method, we can focus on setting its value. A setter method uses a decorator whose name is similar to the getter method, then append the word `setter`. The method name is also similar to the getter method.
+Now that `phone` is private with the help of our getter method, we can focus on setting its value. A setter method uses a decorator whose name is similar to the getter method, then append the word `setter`. The method name is also similar to the getter method.
 
 ```python
 @get_phone.setter
@@ -457,7 +457,7 @@ Now that `phone` is private by the help of our getter method, we can focus on se
         self.__get_phone = phone
 ```
 
-Again, the naming of the setter method is similar to that of the getter method. We know that it is a setter method because (1) it has the `setter` decorator, (2) we are assigning `phone` to `__get_phone`, our getter method. This method takes additional argurments compared to that of the getter method.
+Again, the naming of the setter method is similar to that of the getter method. We know that it is a setter method because (1) it has the `setter` decorator, (2) we are assigning `phone` to `__get_phone`, our getter method. This method takes additional arguments compared to that of the getter method.
 
 In an active Python interpreter, you will notice that the value of `phone` can only be accessed using the getter method which has been set using the setter method. It is only possible to alter the value of `phone` using the `get_phone` setter method. 
 
@@ -484,9 +484,9 @@ The deletion format is `del object.deleterMethod`.
 
 ## Abstraction
 
-Abstraction is used to hide the internal functionality of a process from the users. The users only interact with the basic implementation of the function, but inner working is hidden. For example, we mostly know that to increase the volume of a TV using a remote control, all we need to do is press the "+" button and the volume will go up. We do not know HOW the volume goes up, because that process has been hidden from us.
+Abstraction is used to hide the internal functionality of a process from the users. The users only interact with the basic implementation of the function, but the inner working is hidden. For example, we mostly know that to increase the volume of a TV using a remote control, all we need to do is press the "+" button and the volume will go up. We do not know HOW the volume goes up, because that process has been hidden from us.
 
-In Python, an abstract class can be considered as a blueprint for other classes. It allows one to create a set of methods that MUST be created within any child classes built from the abstract class.
+In Python, an abstract class can be considered a blueprint for other classes. It allows one to create a set of methods that MUST be created within any child classes built from the abstract class.
 
 ```python
 from abc import ABC, abstractmethod
@@ -511,7 +511,7 @@ $ python3
 I am Muthoni
 ```
 
-We begin by first importing the ABC from the Abstract Base Class (ABC) because Python does  not provide abstract classes. ABC works by decorating methods of the base class as abstract. A method becomes abstract when decorated with the keyword `@abstractmethod`. This method MUST then be used by all child classes.
+We begin by first importing the ABC from the Abstract Base Class (ABC) because Python does not provide abstract classes. ABC works by decorating methods of the base class as abstract. A method becomes abstract when decorated with the keyword `@abstractmethod`. This method MUST then be used by all child classes.
 
 In our example above, the `Parent` class defines an abstract method called `about_me` with its own custom `print()` statement. The `Child` class inherits the `Parent` class and overrides the `print()` statement with its own. If the child class tries not to use the defined abstract method, then an error is raised.
 
@@ -538,4 +538,4 @@ $ python3
 >>> child.something_else()
 TypeError: Can't instantiate abstract class Child with abstract methods about_me
 ```
-The `Child` class is required to have its own implememtation of the abstract method.
+The `Child` class is required to have its implementation of the abstract method.
