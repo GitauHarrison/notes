@@ -274,20 +274,135 @@ class TestWebApp(unittest.TestCase):
     # ...
 
     def test_user_login(self):
-            response = self.client.post('/login', data={
-                'username': 'harry',
-                'password': 'harry'
-            }, follow_redirects=True)
-            assert response.status_code == 200
-            assert response.request.path == '/login'
+        response = self.client.post('/login', data={
+            'username': 'harry',
+            'password': 'harry'
+        }, follow_redirects=True)
+        assert response.status_code == 200
+        assert response.request.path == '/profile'
 
-            response = self.client.post('/profile', data={
-                'body': 'test post',
-                'author': 'harry'
-            }, follow_redirects=True)
-            assert response.status_code == 200
-            html = response.get_data(as_text=True)
-            assert 'Username: harry' in html
+        response = self.client.post('/profile', data={
+            'body': 'test post',
+            'author': 'harry'
+        }, follow_redirects=True)
+        assert response.status_code == 200
+        html = response.get_data(as_text=True)
+        assert 'Username: harry' in html
 ```
 
 The test starts by sending a POST request to the `login` URL, similar to when you click the submit button on a browser. The form fields data are accepted as a dictionary whose keys must match those of the form field names. Once logged in, the user is to be sent to the `profile` page where the text " Username: 'username' " will be displayed.
+
+
+## Test Form Validation
+
+One of the enforced requirements when using the application's forms is to ensure all fields are filled. If a user tries to submit a form whose fields are not entirely filled, then a form validation message appears to remind or inform the user that the field needs to be filled.
+
+```python
+# test_web_app.py
+
+# ...
+
+class TestWebApp(unittest.TestCase):
+    # ...
+
+    def test_password_mismatched_password(self):
+            response = self.client.post('/register', data={
+                'username': 'harry',
+                'password': '12345',
+                'confirm_password': '1234'
+            })
+            assert response.status_code == 200
+            html = response.get_data(as_text=True)
+            assert "Field must be equal to password." in html
+```
+
+Above, the data in `password` does not match that of `confirm_password`, hence, we test if this form validation feature works by checking of the text "Field must be equal to password." is displayed.
+
+
+## Test Pages That Require Authentication
+
+It is common that certain pages in a web application are restricted to logged in users. As such, any other user how is anonymous to the application does not have access to these pages. To test these pages, it may make sense to simply disable the login feature, but this will not allow the server to know who the client is. Flask uses the `current_user` variable to know a client, which when disabled causes problems. A natural way to test user authentication is to peform a log in exactly as users do it.
+
+If we have multiple pages that require user authentication, this means that we will have to repeat the process every time we want to test something in those pages. What I would like to do is to have a user I can login with in the database.
+
+```python
+# test_web_app.py
+
+# ...
+
+class TestWebApp(unittest.TestCase):
+    def setUp(self):
+        self.app = app
+        self.app.config['SECRET_KEY'] = 'harry'
+        self.app.config['WTF_CSRF_ENABLED'] = False
+        self.app_ctxt = self.app.app_context()
+        self.app_ctxt.push()
+        db.create_all()                             # < --- update
+        self.populate_db()
+        self.client = self.app.test_client()
+
+    # ...
+
+```
+
+I have used the method `populate_db()` in `setUp()` to ensure that every time a test is run, this user is logged in. The method definition is as follows:
+
+```python
+# test_web_app.py
+
+# ... 
+from app.models import User
+
+
+class TestWebApp(unittest.TestCase):
+    # ...
+
+    def populate_db(self):
+        user = User(username='harry')
+        user.set_password('harry')
+        db.session.add(user)
+        db.session.commit()
+```
+
+As we mentioned above, any method that does not start with `test_` is ignored by the testing framework. This allows us to add any auxillary methods we would need. Once this is done, we need to perform the actual login:
+
+```python
+# test_web_app.py
+
+# ...
+
+class TestWebApp(unittest.TestCase):
+    # ...
+
+    def login(self):
+        self.client.post('/login', data={
+            'username': 'harry',
+            'password': 'harry'
+        })
+```
+
+The `login()` method is a helper method we are going to call in each test that requires a user to be logged in so we do not have to repeat this over and over again.
+
+The `test_user_login()` function above presumes that the profile page can be anonymously accessed. Now, if we add `@login_required` to the `profile()` view function, we need a user who is logged in so that we can test whether they can make a post.
+
+```python
+# test_web_app.py
+
+# ...
+
+class TestWebApp(unittest.TestCase):
+    # ...
+
+    def test_user_post(self):
+        self.login()
+        response = self.client.post('/', data{
+            'body': 'Test post'
+        }, follow_redirects=True)
+        assert reponse.status_code == 200
+        html = response.get_data(as_text=True)
+        assert 'Username: harry' in html
+        assert 'Test post' in html
+        assert 'Your post has been saved' in html
+```
+
+We begin by first logging in a user called `harry` by calling `self.login()`. This now allows me to freely issue a form submission for the user posts. Once a post is submitted, the flash message ""Your post has been saved appears at the top of the page, so I test for that. Next, I also test that the actual post by the user is seen in the profile page. At the moment, the profile page should also display the current user's username.
