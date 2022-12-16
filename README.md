@@ -3,7 +3,7 @@
 This repository holds all the notes of the things I have learnt. Anyone else can use it to learn the very same things. 
 
 ## Flask-focused Articles
-
+- [Getting started with Flask](https://github.com/GitauHarrison/getting-started-with-flask)
 1. [How to deploy to Heroku](deploy_to_heroku.md)
 2. [How to use GitHub SSH](github_ssh.md)
 3. [How to Set up `elasticsearch`](how_to_set_up_elasticsearch.md)
@@ -51,16 +51,16 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 
 ## Django Articles
 
-1. [Getting Started with Django](/02_django/01_getting_started.md)
+- [Getting Started with Django](/02_django/01_getting_started.md)
 
 ## Java Articles
 
-1. [Getting Started With Java](/03_java/01_getting_started_with_java.md)
+- [Getting Started With Java](/03_java/01_getting_started_with_java.md)
 
 ## General Articles
 
-1. [Getting started with the Windows Subsystem for Linux](non_technical_articles/wsl.md)
-2. [Integer conversion to binary using Python](non_technical_articles/convert_integers_to_binary_using_python.md)
+- [Getting started with the Windows Subsystem for Linux](non_technical_articles/wsl.md)
+- [Integer conversion to binary using Python](non_technical_articles/convert_integers_to_binary_using_python.md)
 
 ## Flask Demo Projects
 
