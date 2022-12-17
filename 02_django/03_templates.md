@@ -8,6 +8,8 @@ For your reference, if you would like to skip to a particular section in the ent
 - [Getting Started With Django](01_getting_started.md)
 - [Applications and routes](02_applications_and_routes.md)
 - [Templates in Django](03_templates.md) (this article)
+- [Admin Page](04_admin_page.md)
+- [Databases and Migrations](05_database_and_migrations.md) 
 
 ### Table of Contents
 
@@ -386,7 +388,7 @@ The block `content` has been used to allow child templates to pass in their uniq
 
 A child template makes use of the keyword `extends` to inherit the base template. Its content is then wrapped in the block `content` earlier defined in `base.html`. Just like it has been done for the `for` loop, a block needs to be closed too. You can optionally choose to say `{% endblock %}` as seen above, or you can say `{% endblock content %}`. The latter helps us to remember which block exactly we are ending.
 
-# Bootstrap Templates
+## Bootstrap Templates
 
 [Bootstrap](https://getbootstrap.com/) is a powerful, feature-packed frontend kit that allows us to not only prototype but also to build to production quickly. If we navigate to the [Bootstrap documentation](https://getbootstrap.com/docs/5.2/getting-started/introduction/), we can see how to get started. We will copy the sample template and use it in our `base.html` file.
 

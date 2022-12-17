@@ -20,9 +20,17 @@ Django is partly opinionated and partly unopinionated. It provides a set of comp
 
 Flask, on contrast, does not provide components or preferred ways of handling a task. It is intentionally referred to as a micro-framework because it only provides the core functionality to run an application. Anything beyond that is achieved by the help of extensions that support the framework.
 
-### Table of Contents
+## Table of Contents
+
+Welcome to the Gently Introduction to Django. Below are the sections in the series whose aim is to help you get started with Django. Intentionally, we are going to learn how to build a Django project together so that you can get a hands-on experience on how to navigate this new Python framework.
 
 - [Django Overview](01_getting_started.md) (this article)
 - [Getting Started With Django](01_getting_started.md)
 - [Applications and routes](02_applications_and_routes.md)
 - [Templates in Django](03_templates.md)
+- [Admin Page](04_admin_page.md)
+- [Databases and Migrations](05_database_and_migrations.md) 
+
+The project we are going to work on together will be a `blog` app as seen below.
+
+![Blog App Demo Project](/02_django/images/demo_blog_app.png)
