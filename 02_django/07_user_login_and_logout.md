@@ -17,7 +17,12 @@ For your reference, if you would like to skip to a particular section in the ent
 
 This article is broken down into the following subsections:
 
-- [Create A User App](#create-a-user-app)
+- [Add Login and Logout URLs](#add-login-and-logout-urls)
+- [Update Login and Logout Templates](#update-login-and-logout-templates)
+- [Specify Templates Django Should Use](#specify-templates-django-should-use)
+- [Handling Login Redirect](#handling-login-redirect)
+- [Protecting Pages](#protecting-pages)
+- [Further Updates](#further-updates)
 
 
 ## Add Login and Logout URLs
