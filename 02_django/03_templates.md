@@ -11,6 +11,7 @@ For your reference, if you would like to skip to a particular section in the ent
 - [Admin Page](04_admin_page.md)
 - [Databases and Migrations](05_database_and_migrations.md) 
 - [User Registration](06_user_registration.md)
+- [User Login and Logout](07_user_login_and_logout.md)
 
 ### Table of Contents
 

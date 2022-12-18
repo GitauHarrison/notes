@@ -31,6 +31,7 @@ Welcome to the Gently Introduction to Django. Below are the sections in the seri
 - [Admin Page](04_admin_page.md)
 - [Databases and Migrations](05_database_and_migrations.md) 
 - [User Registration](06_user_registration.md)
+- [User Login and Logout](07_user_login_and_logout.md)
 
 The project we are going to work on together will be a `blog` app as seen below.
 
