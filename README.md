@@ -4,6 +4,9 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 
 ## Flask-focused Articles
 - [Getting started with Flask](https://github.com/GitauHarrison/getting-started-with-flask)
+
+    ### Tailwind CSS in Flask
+    - [Getting Started](/tailwindcss/getting_started_tailwindcss.md/)
 1. [How to deploy to Heroku](deploy_to_heroku.md)
 2. [How to use GitHub SSH](github_ssh.md)
 3. [How to Set up `elasticsearch`](how_to_set_up_elasticsearch.md)
@@ -62,9 +65,14 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 - [Getting started with the Windows Subsystem for Linux](non_technical_articles/wsl.md)
 - [Integer conversion to binary using Python](non_technical_articles/convert_integers_to_binary_using_python.md)
 
-    #### Africa's Talking API
+    ### Africa's Talking API
 
     - [Airtime API](/africas_talking/at_airtime.md)
+
+    ### MPesa
+
+    - [Lipa Na MPesa API](/mpesa/lipa_na_mpesa.md)
+
 
 ## Flask Demo Projects
 
