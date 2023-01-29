@@ -1,4 +1,4 @@
-# Getting Started With Tailwind CSS
+# Getting Started With Tailwind CSS In Flask
 
 ![Tailwindcss](/images/tailwindcss/getting_started/tailwindcss.png)
 
