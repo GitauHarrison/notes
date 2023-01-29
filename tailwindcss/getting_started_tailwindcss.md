@@ -2,19 +2,23 @@
 
 ![Tailwindcss](/images/tailwindcss/getting_started/tailwindcss.png)
 
-[Tailwind CSS](https://tailwindcss.com/) is a utility-first CSS framework. To better understand it, we can contrast it with other popular frameworks such as [Bootstrap](https://getbootstrap.com/) or [Materialize CSS](https://materializecss.com/). These other frameworks come with predifined components, but Tailwind CSS does not. Instead, it operates on a lower level and provides us with a set of CSS helper classes. Using these classes, we can rapidly create custom (unopinionated) design with ease.
+[Tailwind CSS](https://tailwindcss.com/) is a utility-first CSS framework. To better understand it, we can contrast it with other popular frameworks such as [Bootstrap](https://getbootstrap.com/) or [Materialize CSS](https://materializecss.com/). These other frameworks come with predefined components, but Tailwind CSS does not. Instead, it operates on a lower level and provides us with a set of CSS helper classes. Using these classes, we can rapidly create a custom (unopinionated) design with ease.
 
 > Tailwind CSS is used to rapidly build modern websites without ever leaving your HTML.
 
-In this article, I am going to show you how to quickly set up Tailwind CSS to give your Flask website a distinctive look and feel.There are two approaches we shall see:
+
+### Table of Contents
+
+In this article, I am going to show you how to quickly set up Tailwind CSS to give your Flask website a distinctive look and feel. There are two approaches we shall see:
 
 - [Adding Tailwind CSS Link In The `head` Element](#quickly-mess-around-with-tailwind-css)
 - [Recommend Way To Set Up Tailwind CSS](#recommended-way-to-set-up-tailwind-css)
+- [Sample Flask Project Using Tailwind CSS](#sample-flask-project-using-tailwind-css)
 
 
 ## Quickly Mess Around With Tailwind CSS
 
-The easiest way to start messing around with Tailwind CSS is include the link below in your HTML file:
+The easiest way to start messing around with Tailwind CSS is to include the link below in your HTML file:
 
 ```html
 <head>
@@ -39,7 +43,7 @@ project_folder
                             | --- main.css
 ```
 
-Do you have to go this far to get started with Tailwind CSS? Definitely not! You can easily create a single HTML file (`index.html`) and go live with it. However, is an attempt to show how you can do the same in Flask. This file can be created in the terminal using:
+Do you have to go this far to get started with Tailwind CSS, creating a full Flask project? No, not really! You can easily create a single HTML file (`index.html`) and go live with it. However, is an attempt to show how you can do the same in Flask. This file can be created in the terminal using:
 
 ```python
 $ app/templates/touch index.html
@@ -68,11 +72,11 @@ We can then update it as below:
 </html>
 ```
 
-You will have this being displayed.
+You will have this displayed.
 
 ![Getting started](/images/tailwindcss/getting_started/getting_started.png)
 
-Nothing special, right? Not really. Notice that the font size of the `<h1>` and the `<p>` tags are all the same! This is not a mistake, but by design. Tailwind CSS resets all the styles to their most basic level so that all elements begin from a state that is well known. Typically, you would need to use [Eric Meyer's Reset CSS](https://meyerweb.com/eric/tools/css/reset/) to achieve the same. We don't have to do the same in Tailwind CSS.
+Nothing special, right? Not really. Notice that the font size of the `<h1>` and the `<p>` tags are all the same! This is not a mistake but by design. Tailwind CSS resets all the styles to their most basic level so that all elements begin from a well-known state. Typically, you would need to use [Eric Meyer's Reset CSS](https://meyerweb.com/eric/tools/css/reset/) to achieve the same. We don't have to do the same in Tailwind CSS.
 
 Let us start applying some styles the Tailwind CSS way:
 
@@ -141,7 +145,7 @@ In the code above, we have set a different root size depending on the viewport. 
 - 16px * 2.6
 - 12px * 2.6
 
-Note that it is always a bad idea to set the font size to `px` primarily because it overides a user's browser setting. Ideally, you'd want to use `%` or avoid setting the root size explictly. 
+Note that it is always a bad idea to set the font size to `px` primarily because it overrides a user's browser setting. Ideally, you'd want to use `%` or avoid setting the root size explicitly. 
 
 Back to Tailwind CSS, we can optionally provide more customization using the following classes:
 
@@ -189,9 +193,9 @@ If we'd want to add some hover effects, then we can do so as follows:
 </div>
 ```
 
-The `hover:` prefex is one of the state modifiers used to apply conditional styles. Now, if you hover your mouse on top of the button, you will notice the slight change in style.
+The `hover:` prefix is one of the state modifiers used to apply conditional styles. Now, if you hover your mouse on top of the button, you will notice a slight change in style.
 
-What you quickly notice is that the `html` file quickly gets long. To help with visibility, I have broken the classes as seen above to show all the styles in one glance of the eye. It is one of the critisim of using Tailwind CSS. Arguable, it is no different than using inline styles. 
+What you quickly notice is that the `html` file quickly gets long. To help with visibility, I have broken the classes as seen above to show all the styles in one glance of the eye. It is one of the criticisms of using Tailwind CSS. Arguably, it is no different than using inline styles. 
 
 ```html
 <p style="color:blue; font-size:46px;">
@@ -225,7 +229,7 @@ In your `index.html` file, include the file as follows:
 
 ## Recommended Way To Set Up Tailwind CSS
 
-The approach we have used above can quickly see that the file become big. In production, this is not recommended. You do not want to have an unsually large file in your production deployment of a website. Tailwind CSS can be installed as a plugin for the [PostCSS](https://tailwindcss.com/docs/installation/using-postcss) CSS transformation tool used to optimize the CSS file to include only classes we'd want to use. These are the things we will do to install Tailwind CSS the recommended way:
+The approach we have used above can quickly see that the file become big. In production, this is not recommended. You do not want to have an unusually large file in your production deployment of a website. Tailwind CSS can be installed as a plugin for the [PostCSS](https://tailwindcss.com/docs/installation/using-postcss) CSS transformation tool used to optimize the CSS file to include only classes we'd want to use. These are the things we will do to install Tailwind CSS in the recommended way:
 
 - [Install Node.js and `npm`](#install-nodejs-and-npm)
 - [Update Flask Project Structure](#update-flask-project-structure)
@@ -305,7 +309,7 @@ The only change we have made here is to add a `src/` sub-folder to the `static` 
 @tailwind utilities;
 ```
 
-The `styles.css` file contains preprocessor directives which essentially past a lot of utility CSS classes during compile time. The resulting CSS from this process is what we shall used to link to our flask templates for styling. The `css/main.css` is the dumpsite of the process. This is where Tailwind CSS utility classes will go.
+The `styles.css` file contains preprocessor directives which essentially pass a lot of utility CSS classes during compile time. The resulting CSS from this process is what we shall use to link to our flask templates for styling. The `css/main.css` is the dumpsite of the process. This is where Tailwind CSS utility classes will go.
 
 
 ### Install Tailwind CSS in Flask
@@ -316,7 +320,7 @@ In the terminal, let us run:
 $ npm install -d tailwindcss postcss autoprefixer
 ```
 
-This installs `tailwindcss` and its peer dependancies using `npm`. The project structure will be modified as below:
+This installs `tailwindcss` and its peer dependencies using `npm`. The project structure will be modified as below:
 
 ```python
 project_folder
@@ -419,7 +423,7 @@ Done in 258ms.
 This generates the preprocessors directives. In the event you have an error in your tailwind configuration files, you will see the soft warning shown in the terminal. Follow it to rectify the error. Above, the command runs without any errors.
 
 
-### Simplied Build Process
+### Simplified Build Process
 
 Now, we will need to run the `npx tailwindcss - i ...` command everytime we add CSS to our HTML files to see the changes. The best practice here would be to make the above command a script that will rebuild the CSS without the need to run the CSS build process code every time.
 
@@ -439,13 +443,13 @@ Now, we will need to run the `npx tailwindcss - i ...` command everytime we add 
 
 ```
 
-Now, in the termail, all I need to do is to run:
+Now, in the terminal, all I need to do is to run:
 
 ```python
 $ npm run create-css
 ```
 
-This command eliminates the need to runthe CSS build process everytime after changing the code in a HTML file.
+This command eliminates the need to run the CSS build process every time after changing the code in an HTML file.
 
 
 ## Sample Flask Project Using Tailwind CSS
@@ -536,6 +540,6 @@ A departure from what we did earlier, by adding a `<link>` element linked to Tai
 {% endblock %}
 ```
 
-`index.html` inherits the `base.html` file using the keyword `extends`. It then goes ahead to define its own template. Below, see a very responsive page built using Tailwind CSS in Flask.
+`index.html` inherits the `base.html` file using the keyword `extends`. It then goes ahead to define its template. Below, see a very responsive page built using Tailwind CSS in Flask.
 
 ![Tailwind flask](/images/tailwindcss/getting_started/tailwind_flask.gif)
