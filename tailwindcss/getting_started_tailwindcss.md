@@ -32,7 +32,7 @@ Let us begin by creating a simple HTML file called `index.html` in our Flask app
 project_folder
     | --- main.py
     | --- .flaskenv
-    | requirements.txt
+    | --- requirements.txt
     | --- app/
            | --- routes.py
            | --- __init__.py
@@ -43,7 +43,7 @@ project_folder
                             | --- main.css
 ```
 
-Do you have to go this far to get started with Tailwind CSS, creating a full Flask project? No, not really! You can easily create a single HTML file (`index.html`) and go live with it. However, is an attempt to show how you can do the same in Flask. This file can be created in the terminal using:
+Do you have to go this far to get started with Tailwind CSS, creating a full Flask project? No, not really! You can easily create a single HTML file (`index.html`) and go live with it. However, this is an attempt to show how you can do the same in Flask. This file can be created in the terminal using:
 
 ```python
 $ app/templates/touch index.html
@@ -115,7 +115,7 @@ This is not a Tailwind CSS style, but a standard CSS technique relative to its p
 ![Vertical margins](/images/tailwindcss/getting_started/margin_top_bottom.png)
 
 
-The size if the margin is 1/4 rem units. A class of `m-1` sets the margin to `0.25rem` while `m-4` sets it to `1rem`. If you are coming across the `rem` unit, it is important to note that this measurement is based on the font size of the `<html>` element, which is the root element. For most browsers, the default value is `16px.` There is also the `em` unit of measurement. `em` values are relative to the closest parent element. 
+The size of the margin is 1/4 rem units. A class of `m-1` sets the margin to `0.25rem` while `m-4` sets it to `1rem`. If you are coming across the `rem` unit, it is important to note that this measurement is based on the font size of the `<html>` element, which is the root element. For most browsers, the default value is `16px.` There is also the `em` unit of measurement. `em` values are relative to the closest parent element. 
 
 To better understand the `rem` unit, consider this:
 
@@ -195,7 +195,7 @@ If we'd want to add some hover effects, then we can do so as follows:
 
 The `hover:` prefix is one of the state modifiers used to apply conditional styles. Now, if you hover your mouse on top of the button, you will notice a slight change in style.
 
-What you quickly notice is that the `html` file quickly gets long. To help with visibility, I have broken the classes as seen above to show all the styles in one glance of the eye. It is one of the criticisms of using Tailwind CSS. Arguably, it is no different than using inline styles. 
+What you will notice is that the `html` file quickly gets long. To help with visibility, I have broken the classes as seen above to show all the styles in one glance of the eye. It is one of the criticisms of using Tailwind CSS. Arguably, it is no different than using inline styles. 
 
 ```html
 <p style="color:blue; font-size:46px;">
