@@ -12,8 +12,8 @@
 In this article, I am going to show you how to quickly set up Tailwind CSS to give your Flask website a distinctive look and feel. There are two approaches we shall see:
 
 - [Adding Tailwind CSS Link In The `head` Element](#quickly-mess-around-with-tailwind-css)
-- [Recommend Way To Set Up Tailwind CSS](#recommended-way-to-set-up-tailwind-css)
-- [Sample Flask Project Using Tailwind CSS](#sample-flask-project-using-tailwind-css)
+- [Recommended Way To Set Up Tailwind CSS](#recommended-way-to-set-up-tailwind-css)
+- [Sample Flask Project Using Tailwind CSS](#sample-flask-project-using-tailwind-css) (bonus)
 
 
 ## Quickly Mess Around With Tailwind CSS
@@ -229,7 +229,7 @@ In your `index.html` file, include the file as follows:
 
 ## Recommended Way To Set Up Tailwind CSS
 
-The approach we have used above can quickly see that the file become big. In production, this is not recommended. You do not want to have an unusually large file in your production deployment of a website. Tailwind CSS can be installed as a plugin for the [PostCSS](https://tailwindcss.com/docs/installation/using-postcss) CSS transformation tool used to optimize the CSS file to include only classes we'd want to use. These are the things we will do to install Tailwind CSS in the recommended way:
+The approach we have used above can quickly see that the file becomes big. In production, this is not recommended. You do not want to have an unusually large file in your production deployment of a website. Tailwind CSS can be installed as a plugin for the [PostCSS](https://tailwindcss.com/docs/installation/using-postcss) CSS transformation tool used to optimize the CSS file to include only classes we'd want to use. These are the things we will do to install Tailwind CSS in the recommended way:
 
 - [Install Node.js and `npm`](#install-nodejs-and-npm)
 - [Update Flask Project Structure](#update-flask-project-structure)
@@ -240,7 +240,7 @@ The approach we have used above can quickly see that the file become big. In pro
 - [Simplied Build Process](#simplied-build-process)
 
 
-### Install Node.js and npm
+### Install Node.js and npm (using APT)
 
 To install Tailwind CSS in your Ubuntu machine, you will need to use `npm` or `yarn`, depending on what you have in your system. NPM comes in conjunction with Node.js, so ensure you have that installed too if you don't have it.
 
@@ -258,6 +258,8 @@ $ npm -v && nodejs -v
 9.3.1
 v19.5.0
 ```
+
+### Install Node.js and npm (from source)
 
 Alternatively, you may want to install them from the source. Run the following command as a user with `sudo` privileges to download and execute the NodeSource installation script :
 
@@ -371,7 +373,7 @@ project_folder
     | --- app/    
 ```
 
-Remember, [PostCSS](https://postcss.org/) is used to build optimized CSS file for a website that only includes the classes we that we use.
+Remember, [PostCSS](https://postcss.org/) is used to build optimized CSS file for a website that only includes the classes that we want to use.
 
 
 ### Configure Tailwind CSS
@@ -420,12 +422,12 @@ Rebuilding...
 Done in 258ms.
 ```
 
-This generates the preprocessors directives. In the event you have an error in your tailwind configuration files, you will see the soft warning shown in the terminal. Follow it to rectify the error. Above, the command runs without any errors.
+This generates the preprocessors directives. In the event you have an error in your tailwind configuration files, you will see a soft warning shown in the terminal. Follow it to rectify the error. Above, the command runs without any errors.
 
 
 ### Simplified Build Process
 
-Now, we will need to run the `npx tailwindcss - i ...` command everytime we add CSS to our HTML files to see the changes. The best practice here would be to make the above command a script that will rebuild the CSS without the need to run the CSS build process code every time.
+Now, we will need to run the `npx tailwindcss - i ...` command (shown above) everytime we add CSS to our HTML files to see the changes. The best practice here would be to make the above command a script that will rebuild the CSS without the need to run the CSS build process code every time.
 
 ```json
 // package.json
@@ -498,7 +500,7 @@ I will begin by creating a base template with styles I want to be applied across
 
 ```
 
-A departure from what we did earlier, by adding a `<link>` element linked to Tailwind CSS's style file, here we are using our custom `main.css` file containing dumped styles from the preprocessor directives. This file will act as a base file, a parent, whose children shall inherit.
+A departure from what we did earlier, by adding a `<link>` element linked to Tailwind CSS's style file, here we are using our custom `main.css` file containing dumped styles from the preprocessor directives. This file (`index.html`) will act as a base file, a parent, whose children shall inherit from.
 
 ```html
 <!-- templates/index.html -->
