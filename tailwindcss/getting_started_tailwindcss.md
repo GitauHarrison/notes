@@ -231,7 +231,8 @@ In your `index.html` file, include the file as follows:
 
 The approach we have used above can quickly see that the file becomes big. In production, this is not recommended. You do not want to have an unusually large file in your production deployment of a website. Tailwind CSS can be installed as a plugin for the [PostCSS](https://tailwindcss.com/docs/installation/using-postcss) CSS transformation tool used to optimize the CSS file to include only classes we'd want to use. These are the things we will do to install Tailwind CSS in the recommended way:
 
-- [Install Node.js and `npm`](#install-nodejs-and-npm)
+- [Install Node.js and `npm` (using APT)](#install-nodejs-and-npm-using-apt)
+- [Install Node.js and `npm` (from source)](#install-nodejs-and-npm-from-source)
 - [Update Flask Project Structure](#update-flask-project-structure)
 - [Install Tailwind CSS in Flask](#install-tailwind-css-in-flask)
 - [Configure PostCSS](#configure-postcss)
