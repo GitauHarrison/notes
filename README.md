@@ -58,7 +58,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 
 ## Java Articles
 
-- [Getting Started With Java](/03_java/01_getting_started_with_java.md)
+- [Getting Started With Java](03_java/00_overview.md)
 
 ## General Articles
 

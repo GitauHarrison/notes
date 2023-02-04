@@ -1,4 +1,6 @@
-# Getting Started With Java
+# Installation And Quickstart
+
+![Installation and quickstart](images/01_instatallation_quickstart/overview.png)
 
 To build things using Java, you need the Java Development Kit (JDK). It is one of the three core technology packages used in Java programming. The other two are the Java Virtual Machine (JVM) and the Java Runtime Environment (JRE).
 
@@ -19,7 +21,7 @@ To build things using Java, you need the Java Development Kit (JDK). It is one o
 
 I will show you how to install the open-source JDK (OpenJDK) from Amazon called the [Amazon Corretto](https://aws.amazon.com/corretto/?filtered-posts.sort-by=item.additionalFields.createdDate&filtered-posts.sort-order=desc). As of this writing, I will be showing you how to download [Amazon Corretto 17](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html).
 
-![Amazon Corretto JDK](/03_java/images/getting_started/download_jdk.png)
+![Amazon Corretto JDK](images/01_instatallation_quickstart/download_jdk.png)
 
 You can choose to either use the terminal commands to download the JDK or you can click on the highlighted link to download directly from the site. Ensure that you download the file to a location you want, say in the home directory, for example.
 
@@ -121,21 +123,21 @@ When working with Java Projects, VS Code does not offer core support the way Int
 
 At this point, you should already have the [Extension pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) installed. To create a Java Project, open VS Code.
 
-![Open VS Code](/03_java/images/getting_started/open_vs_code.png)
+![Open VS Code](images/01_instatallation_quickstart/open_vs_code.png)
 
 Select on "File Explorer" to access the "Create Java Project" button. Click on it. 
 
-![No build tools](/03_java/images/getting_started/no_build_tools.png)
+![No build tools](images/01_instatallation_quickstart/no_build_tools.png)
 
 Select the "No build tools" option. This will open the location you want to create your project. Choose an appropriate location in your system. 
 
-![Name project](/03_java/images/getting_started/create_project.png)
+![Name project](images/01_instatallation_quickstart/create_project.png)
 
 Once you have selected a location, give your project a name as seen in the input box. Press "Enter" to confirm.
 
-![Java Project](/03_java/images/getting_started/java_project.png)
+![Java Project](images/01_instatallation_quickstart/java_project.png)
 
-Notice that the project comes with a structure already. In the example above, I have already clicked on the `App.java` file. You can do the same. To run it, you can press the "play" button on the top-right, or `f5`. Alternatively, you can right-click on the file to access the command "Run Java". Select it and you will see the text "Hello World" displayed on the terminal.
+Notice that the project comes with a structure already. In the example above, I have already clicked on the `App.java` file. You can do the same. To run it, you can press the **"play"** button on the top-right, or `f5`. Alternatively, you can **right-click on the file to access the command "Run Java"**. Select it and you will see the text "Hello World" displayed on the terminal.
 
 ## Changing the Default JDK
 
@@ -143,10 +145,10 @@ You may notice that when you run the script above, the default JDK 11 is used in
 
 
 - Click on "Java Projects" at the bottom left of the VS Code's sidebar to access `...` more actions option.
-![More Actions](/03_java/images/getting_started/more_actions.png)
+![More Actions](images/01_instatallation_quickstart/more_actions.png)
 
 - Click on "Configure Java Runtime".
-![Java Version](/03_java/images/getting_started/java_version.png)
+![Java Version](images/01_instatallation_quickstart/java_version.png)
     - My VS Code is already configured to use Corretto 17, but by default, the version number may be 11. This is different from our installation efforts above. To change it to version 17, or whatever version you may have, we need to modify VS Code's configurations to point to Corretto 17.
 
 - Get the path to Amazon Corretto. From your home directory, list the available JVMs:
@@ -166,9 +168,9 @@ You may notice that when you run the script above, the default JDK 11 is used in
     ```
     - The path we want is `/usr/lib/jvm/java-17-amazon-corretto`.
 - Open `settings.json` from the command pallette in VS Code by pressing "Ctrl + Shift + P".
-![User setting VS Code](/03_java/images/getting_started/user_settings.png)
+![User setting VS Code](images/01_instatallation_quickstart/user_settings.png)
 - Add the path to Amazon Corretto to the file
-![Add path](/03_java/images/getting_started/add_path.png)
+![Add path](images/01_instatallation_quickstart/add_path.png)
 - The path is:
     ```json
     "java.jdt.ls.java.home": "/usr/lib/jvm/java-17-amazon-corretto/"
