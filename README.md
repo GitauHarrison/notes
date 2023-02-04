@@ -64,6 +64,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 
 - [Getting started with the Windows Subsystem for Linux](non_technical_articles/wsl.md)
 - [Integer conversion to binary using Python](non_technical_articles/convert_integers_to_binary_using_python.md)
+- [Sum Repetitive Column Data in SQLAlchemy](sum_column_data_in_sql.md)
 
     ### Africa's Talking API
 
