@@ -67,14 +67,14 @@ from sqlalchemy import func
 @app.route('/customer-contribution')
 def customer_contribution():
     contributions = db.session.query(
-        Contribution.name, func.sum(
-            Contribution.contribution)).group_by(Contribution.name).all()
+        Contribution.customer_id, func.sum(
+            Contribution.contribution)).group_by(Contribution.customer_id).all()
     return render_template('customer_data.html', contributions=contributions)
 ```
 
 SQLAchemy provides the `func` namespace that is used to invoke SQL functions. In our case above, we want to invoke the `sum` function and apply it to all customer contributions. So, what is going on here? If you remember from above, it is a customer's name that keeps appearing multiple times. This customer can, and certainly does, make multiple contributions. 
 
-We begin by specifying this `name` column from the `Contribution` model as `Contribution.name`. This is possible because both models are related as specified by the `relationship` method found in the `Customer` model. Using `func`, we invoke the `sum` method on the `contribution` column of the `Contribution` model. Intentionally, this adds all data in the `contribution` column. But before we can finish, we want to ensure that the addition applies only to the said customer whose name keeps appearing multiple times. Therefore, we combine his contribution by using `group_by(Contribution.name)`. What we have so far is the total contribution of a single customer. The `.all()` method is applied to return all customers in the database. In the end, we will have a list with customers' data such as `[('Gitau', 100), ('Njeri', 2200), ('Muthoni', 400)]`. This list is passed to the templates as a variable called `contributions`.
+We begin by specifying this `name` column from the `Contribution` model as `Contribution.customer_id`. This is possible because both models are related as specified by the `relationship` method found in the `Customer` model. Using `func`, we invoke the `sum` method on the `contribution` column of the `Contribution` model. Intentionally, this adds all data in the `contribution` column. But before we can finish, we want to ensure that the addition applies only to the said customer whose name keeps appearing multiple times. Therefore, we combine his contribution by using `group_by(Contribution.customer_id)`. What we have so far is the total contribution of a single customer. The `.all()` method is applied to return all customers in the database. In the end, we will have a list with customers' data such as `[('Gitau', 100), ('Njeri', 2200), ('Muthoni', 400)]`. This list is passed to the templates as a variable called `contributions`.
 
 
 ## Display The Data
@@ -96,7 +96,7 @@ We can display an individual customer's data on an HTML template as follows:
             {% for contribution in contributions %}
                 {% if contribution %}
                     <tr>
-                        <td>{{ contribution.name }}</td>
+                        <td>{{ contribution.customer.name }}</td>
                         <td>{{ contribution[1] }}</td>
                     </tr>
                 {% endif %}
@@ -106,4 +106,4 @@ We can display an individual customer's data on an HTML template as follows:
 </div>
 ```
 
-We loop through the `contributions` list to access the individual data we want. The Jinja2 templating engine allows for the use of double curly braces `{{  }}` to pass in dynamic data (data that can change). Remember, the customer's name can be gotten from `{{ contribution.name }}`. His total contribution is not found in the database, so we can use an index to access the sum. The conditional `if` statement has been used to check if there is data in our query. If none exists, then nothing will be shown.
+We loop through the `contributions` list to access the individual data we want. The Jinja2 templating engine allows for the use of double curly braces `{{  }}` to pass in dynamic data (data that can change). Remember, the customer's name can be gotten from `{{ contribution.customer.name }}`. His total contribution is not found in the database, so we can use an index to access the sum. The conditional `if` statement has been used to check if there is data in our query. If none exists, then nothing will be shown.
