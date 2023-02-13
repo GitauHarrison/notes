@@ -86,7 +86,7 @@ The Java [`main`](#main) method is the entry point for executing a Java program.
 
 ### `public`
 
-This is an access modifier. It gives intructions on the type of access available in the `main` method. `public` allows the JRE (Java Runtime Environment) access to execute the `main` method. To see it in action, let us try to remove it from the `main` method:
+This is an access modifier. It gives intructions on the type of access available in the `main` method. `public` allows the `main` method to b **globally accessible**. A non-public `main` method cannot be executed by any program To see it in action, let us try to remove it from the `main` method:
 
 ![Remove public keyword](images/02_getting_started/public_missing.png)
 
@@ -95,7 +95,7 @@ Notice VS Code throws the error `Error: Main method not found. Please define the
 
 ### `static`
 
-When we run a Java program for the first time, there is no object of the class that is present. We, therefore, need  to use `static` to instruct JVM to lod the class into memory and then call `main` without creating an instance of that class.
+When we run a Java program for the first time, there is no object of the class that is present. We, therefore, need  to use `static` to instruct JVM to load the class into memory and then call `main` without creating an instance of that class.
 
 ![Missing static](images/02_getting_started/missing_static.png)
 
