@@ -73,7 +73,7 @@ You can choose to continue with the popped up VS Code window or work with your p
 
 To run it, I can either click the **Play** icon at the top-right of the window or right-click inside the `App.java` file. 
 
-![Run code](images/02_getting_started/run.png)
+![Run code](images/02_getting_started/run2.png)
 
 Either way, you should see the text "Hello, world!" displayed on your terminal. More from VS Code's [Java Tutorial](https://code.visualstudio.com/docs/java/java-tutorial).
 
