@@ -84,7 +84,7 @@ The [flask articles above](#flask-focused-articles) are great, though I think th
 | Bold YouTube Video Downloader | Easily download videos from YouTube to local machine | [byvd on gitHub](https://github.com/GitauHarrison/youtube-video-downloader) | [byvd on YouTube](https://www.youtube.com/watch?v=GEYWpVBGsM0) | [byvd on Render](https://bold-youtube-video-downloader.onrender.com/) |
 | Mbeca Ciaku | A data visualization app for personal finances | [Mbeca Ciaku on GitHub](https://github.com/GitauHarrison/mbeca-ciaku) | [Mbeca Ciaku on YouTube](https://www.youtube.com/watch?v=qzvHaOdsNsU) | [Mbeca Ciaku on Render](https://mbeca-ciaku.onrender.com/) |
 | Newsletter App | Pre-launch interest registration| [Newsletter App on GitHub]() (private) | [Newsletter App on YouTube]() (n/a) | [Newsletter App on Linode](https://www.bolderlearner.com) |
-| eLearning App | An online learning platform for students| [eLearning App on GitHub]() (in progress) | [eLearning App on YouTube]() (in progress) | [eLearning App Live Link]() (in progress) |
+| eLearning App | An online learning platform for students| [eLearning App on GitHub](https://github.com/GitauHarrison/somaSOMA-online-school-using-flask) | eLearning App on YouTube (n/a) | [eLearning App Live Link](https://somasoma.onrender.com/) |
 
 
 ## Django Demo Projects
