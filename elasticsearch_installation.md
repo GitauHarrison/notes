@@ -88,7 +88,45 @@ Now, you can start elasticsearch:
 $ sudo systemctl start elasticsearch.service
 ```
 
-At this point, elasticsearch will start everytime you reboot your system. To test your set up and installation, run this command on your terminal:
+You may encounter the following error after running the command above:
+
+```python
+Job for elasticsearch.service failed because a fatal signal was delivered to the control process.
+See "systemctl status elasticsearch.service" and "journalctl -xe" for details.
+```
+
+What this means is that we are unable to connect to the elastic search service. A quick run of the command `systemctl status elasticsearch.service` in the terminal will show:
+
+```python
+● elasticsearch.service - Elasticsearch
+     Loaded: loaded (/lib/systemd/system/elasticsearch.service; enabled; vendor preset: enabled)
+     Active: failed (Result: signal) since Thu 2023-04-20 11:41:55 EAT; 3min 6s ago
+       Docs: https://www.elastic.co
+    Process: 84416 ExecStart=/usr/share/elasticsearch/bin/systemd-entrypoint -p ${PID_DIR}/elasticsearch.pid>
+   Main PID: 84416 (code=killed, signal=KILL)
+
+Apr 20 11:41:50 harry systemd[1]: Starting Elasticsearch...
+Apr 20 11:41:55 harry systemd[1]: elasticsearch.service: Main process exited, code=killed, status=9/KILL
+Apr 20 11:41:55 harry systemd[1]: elasticsearch.service: Failed with result 'signal'.
+Apr 20 11:41:55 harry systemd[1]: Failed to start Elasticsearch.
+lines 1-11/11 (END)
+```
+
+Alternatively, you can run `journalctl -xe` on the terminal to see:
+
+```python
+-- 
+-- The job identifier is 5858 and the job result is failed.
+Apr 20 11:42:01 harry CRON[84787]: pam_unix(cron:session): session opened for user harry by (uid=0)
+Apr 20 11:42:01 harry CRON[84790]: (harry) CMD (cd /home/harry/software_development/personal/python/flask/current_projects/sample_elearning_app && venv/bin/flask se>
+Apr 20 11:42:01 harry CRON[84787]: (CRON) info (No MTA installed, discarding output)
+Apr 20 11:42:01 harry CRON[84787]: pam_unix(cron:session): session closed for user harry
+Apr 20 11:43:01 harry CRON[85736]: pam_unix(cron:session): session opened for user harry by (uid=0)
+
+# ...
+```
+
+If you followed the installation steps correctly, you may need to restart your machine to fix this error. At this point, elasticsearch will start everytime you reboot your system. To test your set up and installation, run this command on your terminal:
 ```python
 (venv)$ curl localhost:9200
 ```
