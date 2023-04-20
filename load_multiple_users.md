@@ -1,6 +1,6 @@
 # Load Users in Different Database Tables in a Flask Application
 
-[Working with multiple databases in flask](joined_table_inheritance.md)
+_This article features my early struggles in understanding how to work with multiple database users. Once I learnt how to [work with joined table inheritance](joined_table_inheritance.md), I appreciated the support SQLAlchemy provides to solve this. Anyways, if you would like to read more on where I begun from, continue reading._
 
 Imagine you have a database table of students and another database table of teachers. Let us imagine again that the application we are interested in building should be able to load all the students and all the teachers, separately. How do you go about it? 
 
