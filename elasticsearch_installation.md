@@ -130,7 +130,11 @@ If you followed the installation steps correctly, you may need to restart your m
 ```python
 (venv)$ curl localhost:9200
 ```
-You should be able to see JSON formatted data displayed in your terminal. Alternatively, paste http://localhost:9200/ to youre browser's address bar. JSON data will be dumped on your screen.
+You should be able to see JSON-formatted data displayed in your terminal. Alternatively, paste http://localhost:9200/ to youre browser's address bar. JSON data will be dumped on your screen. 
+
+If you are curious what JSON is, it stands for JavaScript Object Notation. It is a standardized format that is commonly used to transfer data as text over a network. It is used by a lot of APIs and databases, and it is very easy for both humans and machines to read. JSON is more like Python dictionaries with key/value pairs. 
+
+The process of encoding data into JSON format (dict to JSON) is called **Serialization**. Often the function `json.dumps(dict_object)` does this. The process of converting JSON back to native objects such dicts is called **Deserialization** using `json.loads(object)`.
 
 ## Testing
 Create a virtual environment and install `elasticsearch` in this environment:
