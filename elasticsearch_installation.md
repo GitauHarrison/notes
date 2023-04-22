@@ -155,3 +155,41 @@ Start your interpreter:
 # Output
 {'_index': 'my_index', '_type': '_doc', '_id': '1', '_version': 2, 'result': 'updated', '_shards': {'total': 2, 'successful': 1, 'failed': 0}, '_seq_no': 1, '_primary_term': 1}
 ```
+
+As from version 8 of elasticsearch, you may see the warming `<console>:1: ElasticsearchWarning: Elasticsearch built-in security features are not enabled. Without authentication, your cluster could be accessible to anyone. See https://www.elastic.co/guide/en/elasticsearch/reference/7.17/security-minimal-setup.html to enable security.` Elasticsearch security features are not enabled by default. These features are free, but require configuration changes to enable them. This means that users don’t have to provide credentials and can get full access to the cluster. Network connections are also not encrypted. To protect your data, it is strongly encourage you to enable the Elasticsearch security features. 
+
+How do you enable this feature? In Ubuntu, you will need to locate the file `elasticsearch.yml`. Run this to find it:
+
+```python
+sudo nano /etc/elasticsearch/elasticsearch.yml
+```
+
+Scroll down to the line that reads network.host
+
+```python
+# ---------------------------------- Network -----------------------------------
+#
+# By default Elasticsearch is only accessible on localhost. Set a different
+# address here to expose this node on the network:
+#
+# network.host: 192.168.0.1
+network.host: localhost
+#
+# By default Elasticsearch listens for HTTP traffic on the first free port it
+# finds starting at 9200. Set a specific HTTP port here:
+#
+http.port: 9200
+#
+# For more information, consult the network module documentation.
+#
+```
+
+Above, I have commented `network.host: 192.168.0.1` and added a new line `network.host: localhost`. Additionally, I have `http.port: 9200` to ensure the port used by elasticsearch is `9200`.
+
+Scroll down further to the security section and add this line:
+
+```python
+xpack.security.enabled: true
+```
+
+Prese Ctrl + X, then Enter on your keyboard to save the changes. Restart `elasticsearch`.
