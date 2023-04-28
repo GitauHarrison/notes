@@ -9,7 +9,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
     - [Getting Started](/tailwindcss/getting_started_tailwindcss.md/)
 1. [How to deploy to Heroku](deploy_to_heroku.md)
 2. [How to use GitHub SSH](github_ssh.md)
-3. [How to Set up `elasticsearch`](how_to_set_up_elasticsearch.md)
+3. [Install `elasticsearch` in localhost](search/install_elasticsearch_localhost.md)
 4. [How to use Stripe for payment](how_to_use_stripe_for_payment.md)
 5. [How to install and configure `git`](install_git.md)
 6. [How to download and install vagrant](vagrant_how_to_download_and_install.md)

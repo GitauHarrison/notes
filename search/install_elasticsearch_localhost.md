@@ -1,8 +1,12 @@
-# Install Elasticsearch in Ubuntu 20.04
+# Install Elasticsearch in Ubuntu 20.04 In Localhost
 
 Since support for full-text search is not standardized like relational database are, there are several open-source full-text engines. Examples include [Sphinx](http://sphinxsearch.com/), [Apache Solr](https://lucene.apache.org/solr/), [Elasticsearch](https://www.elastic.co/elasticsearch/) among others. Thankfully, all these engines can work within a Flask application due to the fact that Flask is not opinionated. Using search capabilities of one of the relational databases would be great but since SQLAlchemy does not support this functionality, we will have to content with learning how to handle the searching with raw SQL statement. 
 
-We can intentionally choose to use any of the full-text search engines to do the job for us. I will show you how you can install Elasticsearch and perform basic searches.
+We can intentionally choose to use any of the full-text search engines to do the job for us. I will show you how you can install Elasticsearch and perform basic searches. If you would like to check out other articles on Elasticsearch, you can click on any of the links below:
+
+- [Install Elasticsearch in Ubuntu 20.04 In Localhost](install_elasticsearch_localhost.md) (this article)
+- [Install And Configure ElasticSearch In A Live Linux Server](install_elasticsearch_linode.md)
+- [Implement Search Functionality In Your Flask App](implement_elasticseach.md)
 
 You probably are aware that `pip` allows us to install Python packages, and, therefore, it would make so much obvious sense to simply install `elasticsearch` by running:
 
