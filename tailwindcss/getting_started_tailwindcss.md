@@ -306,7 +306,7 @@ project_folder
 The only change we have made here is to add a `src/` sub-folder to the `static` directory. We then need to update `src/input.css` with the following:
 
 ```css
-/* styles.css */
+/* src/input.css */
 
 @tailwind base;
 @tailwind components;
@@ -339,6 +339,25 @@ project_folder
 
 There is a new folder called **node_modules** that has been added. `package-lock.json` and `package.json` files have also been added to the root folder.
 
+We will also need to create a `tailwind.config.js` file by running this command:
+
+```python
+$ npx tailwindcss init
+```
+
+`tailwind.config.js` will be created in the root directory and will be pre-populated with the following:
+
+```js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+
 
 ### Configure PostCSS
 
@@ -361,36 +380,9 @@ module.exports = {
 }
 ```
 
-Your final project structure should be as follows:
-
-```python
-project_folder
-    | --- node_modules/     
-    | --- package-lock.json 
-    | --- package.json      
-    | --- postcss.config.js  # < --- new
-    | --- main.py
-    | --- .flaskenv
-    | --- requirements.txt
-    | --- app/    
-```
-
-Remember, [PostCSS](https://postcss.org/) is used to build optimized CSS file for a website that only includes the classes that we want to use.
-
-
-### Configure Tailwind CSS
-
-Next, we need to create a `tailwindcss` configuration file. Run the command below in your root terminal:
-
-```python
-$ npx tailwindcss init
-```
-
-`tailwind.config.js` file will be added to the root folder of the project. We need to configure the template files here:
+Return to your `tailwind.config.js` file and configure the path to your templates:
 
 ```js
-// tailwind.config.js
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -401,7 +393,6 @@ module.exports = {
   },
   plugins: [],
 }
-
 ```
 
 We have added the path to our templates within the `content` list following the [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern.
@@ -409,13 +400,30 @@ We have added the path to our templates within the `content` list following the 
 - `**` has been used to match zero or more directories found in `templates`
 - `*` has been used to match any file with a `.html` extension.
 
+Your final project structure should be as follows:
+
+```python
+project_folder
+    | --- node_modules/     
+    | --- package-lock.json 
+    | --- package.json      
+    | --- tailwind.config.js  # < --- new
+    | --- postcss.config.js   # < --- new
+    | --- main.py
+    | --- .flaskenv
+    | --- requirements.txt
+    | --- app/    
+```
+
+Remember, [PostCSS](https://postcss.org/) is used to build optimized CSS file for a website that only includes the classes that we want to use.
+
 
 ### Start the Build Process
 
 In the project's root terminal, let us run this:
 
 ```python
-$ npx tailwindcss -i app/static/src/styles.css -o app/static/css/main.css --watch
+$ npx tailwindcss -i app/static/src/input.css -o app/static/css/main.css --watch
 
 # Output
 
@@ -429,7 +437,7 @@ This generates the preprocessors directives. In the event you have an error in y
 
 ### Simplified Build Process
 
-Now, we will need to run the `npx tailwindcss - i ...` command (shown above) everytime we add CSS to our HTML files to see the changes. The best practice here would be to make the above command a script that will rebuild the CSS without the need to run the CSS build process code every time.
+Now, we will need to run the `npx tailwindcss -i ...` command (shown above) everytime we add CSS to our HTML files to see the changes. The best practice here would be to make the above command a script that will rebuild the CSS without the need to run the CSS build process code every time.
 
 ```json
 // package.json
@@ -441,7 +449,7 @@ Now, we will need to run the `npx tailwindcss - i ...` command (shown above) eve
     "tailwindcss": "^3.2.4"
   },
   "scripts": {
-    "create-css": "npx tailwindcss - app/static/src/styles.css -o app/static/css/main.css --watch"
+    "create-css": "npx tailwindcss -i app/static/src/input.css -o app/static/css/main.css --watch"
   }
 }
 
@@ -488,9 +496,9 @@ I will begin by creating a base template with styles I want to be applied across
     <body>
         <!-- Contents of all our pages will go here -->
         {% block content %}
-        <div class="container mx-auto">
-            {% block app_content %}{% endblock %}
-        </div>
+          <div class="container mx-auto">
+              {% block app_content %}{% endblock %}
+          </div>
         {% endblock %}
 
         <!-- All scripts will go here -->
@@ -502,7 +510,7 @@ I will begin by creating a base template with styles I want to be applied across
 
 ```
 
-A departure from what we did earlier, by adding a `<link>` element linked to Tailwind CSS's style file, here we are using our custom `main.css` file containing dumped styles from the preprocessor directives. This file (`index.html`) will act as a base file, a parent, whose children shall inherit from.
+This file (`base.html`) will act as a base file, a parent, from who children shall inherit.
 
 ```html
 <!-- templates/index.html -->
