@@ -46,7 +46,7 @@ If you do not have java, you can install the default JDK by:
 $ sudo apt install openjdk-8-jre-headless 
 ```
 
-Run `java --version` to check that `Java` is installed.
+Run `java -version` to check that `Java` is installed.
 
 Then next step would be to allow access to our repositories via HTTPS. Therefore, let us install an APT transport package:
 
