@@ -300,10 +300,10 @@ project_folder
                     | --- css/
                             | --- main.css
                     | --- src/
-                            | --- styles.css
+                            | --- input.css
 ```
 
-The only change we have made here is to add a `src/` sub-folder to the `static` directory. We then need to update `src/styles.css` with the following:
+The only change we have made here is to add a `src/` sub-folder to the `static` directory. We then need to update `src/input.css` with the following:
 
 ```css
 /* styles.css */
@@ -313,7 +313,7 @@ The only change we have made here is to add a `src/` sub-folder to the `static` 
 @tailwind utilities;
 ```
 
-The `styles.css` file contains preprocessor directives which essentially pass a lot of utility CSS classes during compile time. The resulting CSS from this process is what we shall use to link to our flask templates for styling. The `css/main.css` is the dumpsite of the process. This is where Tailwind CSS utility classes will go.
+The `input.css` file contains preprocessor directives which essentially pass a lot of utility CSS classes during compile time. The resulting CSS from this process is what we shall use to link to our flask templates for styling. The `css/main.css` is the dumpsite of the process. This is where Tailwind CSS utility classes will go.
 
 
 ### Install Tailwind CSS in Flask
