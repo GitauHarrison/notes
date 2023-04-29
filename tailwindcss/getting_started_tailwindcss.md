@@ -115,7 +115,7 @@ This is not a Tailwind CSS style, but a standard CSS technique relative to its p
 ![Vertical margins](/images/tailwindcss/getting_started/margin_top_bottom.png)
 
 
-The size of the margin is 1/4 rem units. A class of `m-1` sets the margin to `0.25rem` while `m-4` sets it to `1rem`. If you are coming across the `rem` unit, it is important to note that this measurement is based on the font size of the `<html>` element, which is the root element. For most browsers, the default value is `16px.` There is also the `em` unit of measurement. `em` values are relative to the closest parent element. 
+The size of the margin is 1/4 rem units. A class of `m-1` sets the margin to `0.25rem` while `m-4` sets it to `1rem`. If you are coming across the `rem` unit for the first time, it is important to note that this measurement is based on the font size of the `<html>` element, which is the root element. For most browsers, the default value is `16px.` There is also the `em` unit of measurement. `em` values are relative to the closest parent element. 
 
 To better understand the `rem` unit, consider this:
 
@@ -139,7 +139,7 @@ h1 {
 }
 ```
 
-In the code above, we have set a different root size depending on the viewport. The `h1` will scale as follows:
+In the code above, we have set a different root size depending on the viewport of a device. The `h1` will scale as follows:
 
 - 20px * 2.6
 - 16px * 2.6
@@ -198,6 +198,7 @@ The `hover:` prefix is one of the state modifiers used to apply conditional styl
 What you will notice is that the `html` file quickly gets long. To help with visibility, I have broken the classes as seen above to show all the styles in one glance of the eye. It is one of the criticisms of using Tailwind CSS. Arguably, it is no different than using inline styles. 
 
 ```html
+<!-- Inline HTML style -->
 <p style="color:blue; font-size:46px;">
     I'm a big, blue, <strong>strong</strong> paragraph
 </p>
@@ -206,7 +207,7 @@ What you will notice is that the `html` file quickly gets long. To help with vis
 To manage this growing list of classes, you may choose to import or include a button-specific HTML file that defines a button. This way, you do not need to write the styles multiple times.
 
 ```html
-<!-- _button.html -->
+<!-- Create a file called _button.html -->
 
 <button class="my-2 px-4 py-2
                border-2 border-yellow-500 rounded-md
@@ -218,7 +219,7 @@ To manage this growing list of classes, you may choose to import or include a bu
 In your `index.html` file, include the file as follows:
 
 ```html
-<!-- index.html -->
+<!-- Include this file in your index.html file -->
 
 <div class="container mx-auto my-4 p-4 border border-red-500">
     ...
