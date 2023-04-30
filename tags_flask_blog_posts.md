@@ -17,7 +17,7 @@ Tags are a simple classification system that can be used in a blog post. A tag c
 - [Working With A Database](#working-with-a-database)
     - [Database Configuration](#database-configuration)
     - [Define Your Models](#define-your-models)
-    - [Create An Association Table](#create-an-association-table)
+    - [Understading The Association Table](#understading-the-association-table)
     - [Apply Your Changes](#apply-your-changes)
 - [Filtering Data Using Tags](#filtering-data-using-tags)
     - [Add Tags To Your Blog Post](#add-tags-to-your-blog-post)
@@ -564,7 +564,7 @@ The `posts` variable contains a list of dummy user data I have hard-coded. It is
             <tr>
               <td>
                 <strong>{{ post.title }}</strong> <br>
-                {{ post.author.username }} said: <br>
+                <strong>{{ post.author.username }}</strong> said: <br>
                 {{ post.body }} <br>
                 {% for tag in post.tags %}
                   {{ tag }} | 
@@ -579,7 +579,7 @@ The `posts` variable contains a list of dummy user data I have hard-coded. It is
 {% endblock %}
 
 ```
-The Jinja2 templating engine allows us to loop through the `posts` variable to access a user's details, including what they said and their associated tags. Notice that for me to attach relevant tags to each post, I have to loop through the list of each posts' tags as `post.tags`. `tags` is the key used to access the list of tags in each post.
+The Jinja2 templating engine allows us to loop through the `posts` variable, just like we would in Python, to access a user's details, including what they said and their associated tags. Notice that for me to attach relevant tags to each post, I have to loop through the list of each post's tags as `post.tags`. `tags` is the key used to access the list of tags in each post.
 
 ![Display users' posts](/images/tags/display_user_data.png)
 
@@ -588,21 +588,386 @@ In case you are wondering what `email` is used for, it will come in handy later 
 
 ## Working With A Database
 
+Databases allow for the persistence of data through storage. Besides, relational databases have ways to help us interact with the data as we please. In this article, I will be using the SQLite database. It is so easy to set it up and is especially ideal for the scope of our project.
+
+Instead of using raw SQL commands, we will using classes, methods and objects to define and interact with SQLite, thanks to SQLAlchemy, a very popular Object Relational Mapper (ORM). Flask-sqlalchemy is a flask-friendly wrapper we shall be utilizing for the database. We will also need flask-migrate extension to help manage the actual creation and application of changes to a database schema. Let us begin by install both in our active virtual environemnt.
+
+```python
+(venv)$ pip3 install flask-sqlalchemy flask-migrate
+```
+
+Thereafter, we will need to register these two extensions with our application's instance as follows.
+
+```python
+# app/__init__.py: Create migrate and db objects
+
+from flask import Flask
+from flask_bootstrap import Bootstrap
+from config import Config
+from flask_moment import Moment
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+
+
+app = Flask(__name__)
+app.config.from_object(Config)
+
+bootstrap = Bootstrap(app)
+moment = Moment(app)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db, render_as_batch=True)
+
+
+from app import routes, models, errors
+
+```
+
+Notice that `models` has been imported at the bottom of the file. `render_as_batch=True` allows for us to do migrations when moving data to a new table, thereby overcoming the typical SQLite error `No support for ALTER of constraints in SQLite dialect`.
+
 
 ### Database Configuration
+
+Our database also needs to be configured, just as we did for the web form. In particular, Flask expects the variable `DATABASE_URL` to be set, pointing to the location of the database.
+
+```python
+# config.py: Database configurations
+
+import os
+from dotenv import load_dotenv
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, '.env'))
+
+
+class Config(object):
+    # Web form
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-cannot-guess'
+
+    # Database
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+        'sqlite:///' + os.path.join(os.path.dirname(__file__), 'app.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # Pagination
+    POSTS_PER_PAGE = 5
+
+```
+
+`basedir` allows for the creation of the database in the root folder of the project. In the event the value of DATABASE_URL is not found, we fallback to using the disk-based SQLite database appropriately named `app.db`. This database file will also be located in the application's root directory. Setting SQLALCHEMY_TRACK_MODIFICATIONS to `False`, we disable Flask-sqlalchemy's feature where we constantly get signals about changes to the database. POSTS_PER_PAGE will be used to limit the number of posts we want displayed in each web page number. 
 
 
 ### Define Your Models
 
+Finally, we can define our models that will be used to create the database. From our web form, we want to capture a user's `username`, `email`, `title`, `body` and `tags`. These fields help us know what columns we would want to have in the schema of our database.
 
-### Create An Association Table
+```python
+# app/models.py: Define database models
+
+from app import db
+from datetime import datetime
+from hashlib import md5
+
+
+tags_table = db.Table(
+    'tags_association',
+    db.Column('post_id', db.ForeignKey('post.id'), primary_key=True),
+    db.Column('tag_id', db.ForeignKey('tag.id'), primary_key=True),
+)
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64))
+    email = db.Column(db.String(64))
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
+
+    def __repr__(self):
+        return f'User: {self.username}'
+
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, size)
+
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(64))
+    body = db.Column(db.String(140))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    tags = db.relationship(
+        'Tag',
+        secondary=tags_table,
+        backref=db.backref('posts', lazy='dynamic'))
+
+    def __repr__(self):
+        return f'Post {self.title}'
+
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return f'Tag: {self.name}'
+
+```
+
+There are three models with self-explanatory fields. These are `User` to store a user's personal data, `Post` stores what they said and the `Tag` is to be used to save tags posted by a user with each blog post. As mentioned earlier, a user's email comes in handly when we want to generate an avatar for each user. The `avatar()` method uses the [Gravatar](https://en.gravatar.com/) service to generate an avatar based on a user's email address. 
+
+
+### Understading The Association Table
+
+The most important models are the `Post` and the `Tag` models. A post can have many tags, and a single tag can belong to many posts. In SQLAlchemy jargon, we call this a many-to-many relationship. This kind of relationship is typically defined using an association table. Think of it as a middle table, not really a true database table, linking the many side of the blogs to the many side of the tags. All this table does is to get the `id`s of each side of the relationship as foreign key constraints. Using the `id` of each table is recommended since this value is unique for each entry, thereby preventing persistence of duplicate rows.
+
+```python
+# app/models: The association table
+
+tags_table = db.Table(
+    'tags_association',
+    db.Column('post_id', db.ForeignKey('post.id'), primary_key=True),
+    db.Column('tag_id', db.ForeignKey('tag.id'), primary_key=True),
+)
+
+```
+
+We begin by giving the table a name, in our case it is called `tags_association`, then we create two columns each with the `id`s of tables in the relationship. Notice how they both are `primary_keys`.
+
+As soon as the association table is correctly assembled, the last bit is to add a relationship between the two models. I have added the `tags` relationship to the `Post` model. 
+
+```python
+# app/models.py: Relationship between tables
+
+class Post(db.Model):
+    # ...
+
+    tags = db.relationship(
+        'Tag',
+        secondary=tags_table,
+        backref=db.backref('posts', lazy='dynamic'), lazy='dynamic')
+
+```
+
+- `Tag` is the right-side entity of the relationship while the `Post` model is the left side.
+- `secondary` configures the association table that is used for this relationship.
+- `backref` defines how the relationship will be accessed from the right-side entity. 
+    - From the left-side, the relationship will be called `tags`
+    - From the right-side, the relationship will be called `posts`
+- `lazy` is the execution mode for this query. A mode of `dynamic` sets up the query not to run until specifically requested
+    - The first `lazy` applies to the first side of the relationship, the `Tag`.
+    - The second `lazy` applies to the left side of the relationship, the `Post`.
 
 
 ### Apply Your Changes
 
+The changes to the datbase now need to recorded in a new database migration. In your terminal run these commands to apply the changes:
+
+```python
+(venv)$ flask db init                    # Create a migration folder in the root directory
+(venv)$ flask db migrate -m 'all tables' # Create migration version, appropriately called 'all tables'
+(venv)$ flask db upgrade                 # Apply the changes
+```
+
+The `flask` command should be run from the root directory, so ensure that you are in your project's root directory.
+
 
 ## Filtering Data Using Tags
 
+Before we can access any data, we will need to make changes to our `index()` view function which handles the `PostForm` and the disply of all user posts. At the moment, we have dummy data that we have been using for demonstration purposes. It is time we allow a user to use the web form to post data.
+
+```python
+# app/routes.py: User data
+
+from flask import render_template, flash, url_for, redirect, request
+from app.forms import PostForm
+from app.models import User, Post, Tag
+from app import app, db
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+def index():
+    form = PostForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        post = Post(title=form.title.data, body=form.body.data, author=user)
+        # Loop through the tags entries in the form, then add each to a post's tags list
+        for tag in form.tags.data:
+            post.tags.append(Tag(name=tag)) # tags is the relationship seen in Post model
+        db.session.add(user)
+        db.session.add(post)
+        db.commit()
+        flash('Post saved.')
+        return redirect(url_for('index'))
+
+    # List all user posts based on when they were posted
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.timestamp.desc()).paginate(
+        page=page, per_page=app.config['POSTS_PER_PAGE'], error_out=False)
+
+    # Get number of user posts
+    num_posts = len(Post.query.all())
+
+    # Pagination
+    next_url = url_for('index', page=posts.next_num) \
+        if posts.has_next else None
+    prev_url = url_for('index', page=posts.prev_num) \
+        if posts.has_prev else None
+
+    return render_template(
+        'index.html',
+        title='Post Something',
+        form=form,
+        posts=posts,
+        num_posts=num_posts,
+        next_url=next_url,
+        prev_url=prev_url)
+
+```
+
+To associate a post to a user, we pass `author=user`. This will be useful especially when we want to relate a post to a user. All the variables are passed to the templates for further processing.
+
+
 ### Add Tags To Your Blog Post
 
+With the variables accessible from the `index.html` template, we can not display each user's post and the related tags.
+
+```html
+<!-- templates/index.html: Display user posts -->
+
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+<div class="row text-center">
+  <div class="col-md-12">
+    <h1>{{ title }}</h1>
+    <p>
+      Use the form below to post something and add tags to your post. 
+      Currently, there are {{ num_posts }} posts.
+    </p>
+  </div>
+</div>
+  <div class="row">
+      <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <!-- Form -->
+            <p> {{ wtf.quick_form(form) }} </p>
+            <!-- End -->
+        </div>
+      <div class="col-md-4"></div>
+  </div>
+  <div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+      {% for post in posts %}
+        <table class="table table-hover">
+            <tr>
+              <td>
+                <strong>{{ post.title }}</strong> <br>
+                <strong>{{ post.author.username }}</strong> said: <br>
+                {{ post.body }} <br>
+                {% for tag in post.tags %}
+                  {{ tag.name }} | 
+                {% endfor %}
+              </td>
+            </tr>
+        </table>
+      {% endfor %}
+    </div>
+    <div class="col-3"></div>
+  </div>
+{% endblock %}
+
+```
+
+We begin by looping through the contents of `posts` to retrieve individual data as `post`. We can then get data related to each post such as the title as `post.title`.  As we saw in the `index()` view function, to access each tag related to a post, we have to loop through `post.tags` to get a tag's name. This is what gets displayed to the end user. Head over to your `index` page in your browser, post some things to seen the update.
+
+![Post with tags](/images/tags/post_with_tags.png)
+
+
 ### View Blog Posts Based On Select Tags
+
+Finally, it is time to know what blog posts are associated with each tag. When a user clicks on a tag, they should be redirected to another page with relevant blog posts. First, let us begin by defining a view function that will redirect us to relevant tag posts.
+
+```python
+# app/routes.py: Tag view function
+
+# ...
+
+@app.route('/tag: <name>')
+def tag(name):
+    page = request.args.get('page', 1, type=int)
+    tags = Tag.query.filter_by(name=name).order_by(
+        Tag.timestamp.desc()).paginate(
+            page=page, per_page=app.config['POSTS_PER_PAGE'], error_out=False)
+
+    # Pagination
+    next_url = url_for('tag', name=name, page=tags.next_num) \
+        if tags.has_next else None
+    prev_url = url_for('tag', name=name, page=tags.prev_num) \
+        if tags.has_prev else None
+
+    return render_template(
+        'tags.html',
+        title=f'Posts Related To {name}',
+        tags=tags.items,
+        next_url=next_url,
+        prev_url=prev_url)
+
+```
+We get all the tags from the `Tag` model in a descending order of when they were posted. This is what gets passed to the `tag.html` template. To ensure that a tag redirects us to list of its post, we will need to add a link to the actual tag.
+
+```html
+<!-- templates/index.html: Add link to a tag's posts -->
+
+{% for tag in post.tags %}
+    <a href="{{ url_for('tag', name=tag.name) }}" target="_blank">{{ tag.name }}</a> | 
+{% endfor %}
+```
+
+This ensures that the relevant posts are to be shown once a tag is clicked. Finally, let us update the `tags.html` template with the layout of how we want each post to appear.
+
+```html
+<!-- templates/tags.html: Display posts associated with a tag -->
+
+{% extends 'base.html' %}
+
+{% block app_content %}
+  <div class="row text-center">
+    <div class="col-md-12">
+      <h1>{{ title }}</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+      {% for tag in tags %}
+        {% for post in tag.posts %}
+          <table class="table table-hover">
+              <tr>
+                <td width="70px">
+                  <img src="{{ post.author.avatar(36) }}" alt="{{ post.author.username }}">
+                </td>
+                <td>                
+                  <strong>{{ post.title }}</strong> <br>
+                  <strong>{{ post.author.username }}</strong> said {{ moment(post.timestamp).fromNow() }}: <br>
+                  {{ post.body }} <br>
+                </td>
+              </tr>
+          </table>
+        {% endfor %}
+      {% endfor %}
+    </div>
+    <div class="col-3"></div>
+  </div>
+{% endblock %}
+```
+First, we loop through all tags. Once each tag is accessible, we use the `posts` backref to access the posts related to each tag. Remember we said that the backref called `posts` is to be used to access entities in the right side of the relationship, which in this case is a post. We then loop through all relevant posts associated with select tags to get the details of the post.
+
+![Posts by tags](/images/tags/posts_by_tags.gif)
+
+That is it. In your next blog project, you can consider adding tags to each blog post.
