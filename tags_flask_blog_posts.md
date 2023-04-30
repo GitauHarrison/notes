@@ -2,7 +2,7 @@
 
 ![Tags Overview Image](images/tags/tags_overview.png)
 
-Tags are a simple classification system that can be used in a blog post. A tag can be applied to multiple blog posts and, similary, multiple blog posts can be related to one another outside their category. For example, a blog may have a tag called "Flask". People interested in reading posts related to "Flask" only can click on this link and they will find relevant posts. This article shows how to build the project from scratch. However, if you would like to skip to the Tags section, you can begin from [Working With A Database](#working-with-a-database). 
+Tags are a simple classification system that can be used in a blog post. A tag can be applied to multiple blog posts and, similarly, multiple blog posts can be related to one another outside their category. For example, a blog may have a tag called "Flask". People interested in reading posts related to "Flask" only can click on this link and they will find relevant posts. This article shows how to build the tag system project from scratch. However, if you would like to skip to the Tags section, you can begin from [Working With A Database](#working-with-a-database). 
 
 ### Table Of Contents
 
@@ -17,7 +17,7 @@ Tags are a simple classification system that can be used in a blog post. A tag c
 - [Working With A Database](#working-with-a-database)
     - [Database Configuration](#database-configuration)
     - [Define Your Models](#define-your-models)
-    - [Understading The Association Table](#understading-the-association-table)
+    - [Understanding The Association Table](#understanding-the-association-table)
     - [Apply Your Changes](#apply-your-changes)
 - [Filtering Data Using Tags](#filtering-data-using-tags)
     - [Add Tags To Your Blog Post](#add-tags-to-your-blog-post)
@@ -35,7 +35,7 @@ Before you can begin implementing this feature, you will need the following:
 
 ## Building The Initial GUI Project
 
-If you are on Ubuntu or any of Linux distributions, you do not have to worry about having Python in your machine. It comes with it right out of the box. However, if you are on Windows, you may need to check it first, and install it if you do not have it. The most recommended way to develop this application on Windows is by using the [Windows Subsystem for Linux](https://github.com/GitauHarrison/notes/blob/master/non_technical_articles/wsl.md).
+If you are on Ubuntu or any of the Linux distributions, you do not have to worry about having Python on your machine. It comes with it right out of the box. However, if you are on Windows, you may need to check it first and install it if you do not have it. The most recommended way to develop this application on Windows is by using the [Windows Subsystem for Linux](https://github.com/GitauHarrison/notes/blob/master/non_technical_articles/wsl.md).
 
 The completed project can be found in the GitHub repository [tags for your blog posts in flask](https://github.com/GitauHarrison/tags-for-your-blog-posts-in-flask). The project in the repository uses Tailwind CSS rather than Bootstrap.
 
@@ -65,7 +65,7 @@ folder
                         | --- tags.html
 ```
 
-Following the principle of _seperation of concerns_, each application's function will be classified in a module of its own. You can use your text editor's GUI to create the project's structure, or Linux commands in your terminal. An example is `touch main.py` which creates an empty file called `main.py`.
+Following the principle of _separation of concerns_, each application's function will be classified in a module of its own. You can use your text editor's GUI to create the project's structure, or Linux commands in your terminal. An example is `touch main.py` which creates an empty file called `main.py`.
 
 
 ### Start The Flask Server
@@ -84,11 +84,11 @@ The first command used `venv` to create a virtual environment called `venv` (you
 
 What is a virtual environment and why use it? 
 
-> "A virtual environment is a Python environment such that the Python interpreter, libraries and scripts installed into it are isolated from those installed in other virtual environments, and (by default) any libraries installed in a “system” Python, i.e., one which is installed as part of your operating system"
+> "A virtual environment is a Python environment such that the Python interpreter, libraries, and scripts installed into it are isolated from those installed in other virtual environments, and (by default) any libraries installed in a “system” Python, i.e., one which is installed as part of your operating system"
 
-Imagine a scenario where you installed Flask V1 to your global Python library. Later on, there is an update to Flask and you end up installing Flask V2 which may be having some breaking changes. When you try to run your intial project with Flask V2, both of which are present in your global Python environment, you are most likely to get all sorts of errors.
+Imagine a scenario where you installed Flask V1 to your global Python library. Later on, there is an update to Flask and you end up installing Flask V2 which may be having some breaking changes. When you try to run your initial project with Flask V2, both of which are present in your global Python environment, you are most likely to get all sorts of errors.
 
-A virtual environment is used to isolate the needs of one project from another and also helps to decluster our global Python environemnt. This way, we are able to run applications smoothly. An alternative method of working with virtual environments is by using [virtualenvwrapper](virtualenvwrapper_setup.md). It is an enhancement to the way we can work with virtual environements. For instance, the command `mkvirtualenv venv` not only creates but activates a virtual environemnt called `venv` for us.
+A virtual environment is used to isolate the needs of one project from another and also helps to declutter our global Python environment. This way, we can run applications smoothly. An alternative method of working with virtual environments is by using [virtualenvwrapper](virtualenvwrapper_setup.md). It is an enhancement to the way we can work with virtual environments. For instance, the command `mkvirtualenv venv` not only creates but activates a virtual environment called `venv` for us.
 
 With the virtual environment active, we can install the following packages:
 
@@ -125,7 +125,7 @@ def index():
 
 ```
 
-Above, we want the string "Hello, world!" to be returned when we navigate to either `/` or `/index` URLs. The Flask server expects certain environment variables to be set before serving the relevant content. To make our work easier, we will define all environment variables in `.flaskenv`. These variables are needed prior to the Flask server starting.
+Above, we want the string "Hello, world!" to be returned when we navigate to either `/` or `/index` URLs. The Flask server expects certain environment variables to be set before serving the relevant content. To make our work easier, we will define all environment variables in `.flaskenv`. These variables are needed before the Flask server starting.
 
 ```python
 FLASK_APP=main.py
@@ -133,7 +133,7 @@ FLASK_ENV=development
 FLASK_DEBUG=True
 ```
 
-The Flask server will need to know where to start from. Remember, we created a Flask instance in `__init__.py`. This file is used as an instance to the application. We need to find a way to point to this file. Let us update the `main.py` file so that it can act as an entry-point file by pointing to the application's instance.
+The Flask server will need to know where to start. Remember, we created a Flask instance in `__init__.py`. This file is used as an instance of the application. We need to find a way to point to this file. Let us update the `main.py` file so that it can act as an entry-point file by pointing to the application's instance.
 
 ```python
 # main.py
@@ -189,9 +189,9 @@ class PostForm(FlaskForm):
 
 ```
 
-The form above is called a `PostForm()`. It has the `username`, `email`, `title` `body` and `tags` field. The `tags` field used `SelectMultipleField` to allow for the selection of more than one user input.
+The form above is called a `PostForm()`. It has the `username`, `email`, `title` `body`, and `tags` field. The `tags` field used `SelectMultipleField` to allow for the selection of more than one user input.
 
-To ensure that this form gets displayed, we will need to update our `index.html` file. We have another file called `base.html` which we can use to define styles and layouts we want applied and reused across all other templates, hence the name "base". Let us first begin my defining these reusable styles and layouts.
+To ensure that this form gets displayed, we will need to update our `index.html` file. We have another file called `base.html` which we can use to define styles and layouts we want to be applied and reused across all other templates, hence the name "base". Let us first begin by defining these reusable styles and layouts.
 
 ```html
 <!-- templates/base.html -->
@@ -241,7 +241,7 @@ To ensure that this form gets displayed, we will need to update our `index.html`
 
 ```
 
-I have added a "flash" message which will be useful in letting a user know of the status of an action they have taken. Blocks have been used to layout the different reusable pats of the application. The block `app_content` will be used by child templates to define their own template-specific content. We can display our web form in `index.html`.
+I have added a "flash" message which will be useful in letting a user know of the status of an action they have taken. Blocks have been used to lay out the different reusable parts of the application. The block `app_content` will be used by child templates to define their template-specific content. We can display our web form in `index.html`.
 
 ```html
 <!-- templates/index.html -->
@@ -307,7 +307,7 @@ I have added a "flash" message which will be useful in letting a user know of th
 
 ```
 
-The templates currently defines Bootstrap-specific styling that we have not yet intialized. We will do so in the [Facelift](#facelift) below. To see these templates, we have to render them. This is usually done in the `routes` module.
+The templates currently define Bootstrap-specific styling that we have not yet initialized. We will do so in the [Facelift](#facelift) below. To see these templates, we have to render them. This is usually done in the `routes` module.
 
 ```python
 # app/routes: Render the post form
@@ -327,14 +327,14 @@ def index():
 
 ```
 
-The only change made is the use of `render_template()` function from Flask. This function takes the template name, a form variable and an optional template title.
+The only change made is the use of `render_template()` function from Flask. This function takes the template name, a form variable, and an optional template title.
 
 
 ### Web Form Configuration
 
-Web forms are a very sensitive building block of any web application. Users use it to post data, some of which is personal such as passwords and credit card details. Given the sensitivity of a web form, Flask expects us to set a SECRET_KEY. This key will be used by the web form to protect it from a nasty attack called Cross Site Request Forgery (CSRF). Without it, we will get a `RuntimeError: A secret key is required to use CSRF.` 
+Web forms are a very sensitive building block of any web application. Users use it to post data, some of which are personal such as passwords and credit card details. Given the sensitivity of a web form, Flask expects us to set a SECRET_KEY. This key will be used by the web form to protect it from a nasty attack called Cross-Site Request Forgery (CSRF). Without it, we will get a `RuntimeError: A secret key is required to use CSRF.` 
 
-We have a module called `config`. We shall be using it to define the application's configureation. Let us head over to the `config.py` file and update it with the following changes:
+We have a module called `config`. We shall be using it to define the application's configuration. Let us head over to the `config.py` file and update it with the following changes:
 
 ```python
 # config.py: Define application configurations
@@ -347,7 +347,7 @@ class Config(object):
 
 ```
 
-We need to ensure that the application is able to read these configuration. We, therefore, will register this module in the application's instance.
+We need to ensure that the application can read this configuration. We, therefore, will register this module in the application's instance.
 
 ```python
 # app/__init__.py: Register configurations
@@ -588,9 +588,9 @@ In case you are wondering what `email` is used for, it will come in handy later 
 
 ## Working With A Database
 
-Databases allow for the persistence of data through storage. Besides, relational databases have ways to help us interact with the data as we please. In this article, I will be using the SQLite database. It is so easy to set it up and is especially ideal for the scope of our project.
+Databases allow for the persistence of data through storage. Besides, relational databases have ways to help us interact with the data the way we want. In this article, I will be using the SQLite database. It is so easy to set it up and is especially ideal for the scope of our project.
 
-Instead of using raw SQL commands, we will using classes, methods and objects to define and interact with SQLite, thanks to SQLAlchemy, a very popular Object Relational Mapper (ORM). Flask-sqlalchemy is a flask-friendly wrapper we shall be utilizing for the database. We will also need flask-migrate extension to help manage the actual creation and application of changes to a database schema. Let us begin by install both in our active virtual environemnt.
+Instead of using raw SQL commands, we will be using classes, methods, and objects to define and interact with SQLite, thanks to SQLAlchemy, a very popular Object Relational Mapper (ORM). Flask-sqlalchemy is a flask-friendly wrapper we shall utilize for the database. We will also need flask-migrate extension to help manage the actual creation and application of changes to a database schema. Let us begin by installing both in our active virtual environment.
 
 ```python
 (venv)$ pip3 install flask-sqlalchemy flask-migrate
@@ -622,7 +622,7 @@ from app import routes, models, errors
 
 ```
 
-Notice that `models` has been imported at the bottom of the file. `render_as_batch=True` allows for us to do migrations when moving data to a new table, thereby overcoming the typical SQLite error `No support for ALTER of constraints in SQLite dialect`.
+Notice that `models` has been imported at the bottom of the file. `render_as_batch=True` allows us to do migrations when moving data to a new table, thereby overcoming the typical SQLite error `No support for ALTER of constraints in SQLite dialect`.
 
 
 ### Database Configuration
@@ -653,12 +653,12 @@ class Config(object):
 
 ```
 
-`basedir` allows for the creation of the database in the root folder of the project. In the event the value of DATABASE_URL is not found, we fallback to using the disk-based SQLite database appropriately named `app.db`. This database file will also be located in the application's root directory. Setting SQLALCHEMY_TRACK_MODIFICATIONS to `False`, we disable Flask-sqlalchemy's feature where we constantly get signals about changes to the database. POSTS_PER_PAGE will be used to limit the number of posts we want displayed in each web page number. 
+`basedir` allows for the creation of the database in the root folder of the project. In the event the value of DATABASE_URL is not found, we fall back to using the disk-based SQLite database appropriately named `app.db`. This database file will also be located in the application's root directory. Setting SQLALCHEMY_TRACK_MODIFICATIONS to `False`, we disable Flask-sqlalchemy's feature where we constantly get signals about changes to the database. POSTS_PER_PAGE will be used to limit the number of posts we want to be displayed on each web page number. 
 
 
 ### Define Your Models
 
-Finally, we can define our models that will be used to create the database. From our web form, we want to capture a user's `username`, `email`, `title`, `body` and `tags`. These fields help us know what columns we would want to have in the schema of our database.
+Finally, we can define the models that will be used to create the database. From our web form, we want to capture a user's `username`, `email`, `title`, `body`, and `tags`. These fields help us know what columns we would want to have in the schema of our database.
 
 ```python
 # app/models.py: Define database models
@@ -717,12 +717,12 @@ class Tag(db.Model):
 
 ```
 
-There are three models with self-explanatory fields. These are `User` to store a user's personal data, `Post` stores what they said and the `Tag` is to be used to save tags posted by a user with each blog post. As mentioned earlier, a user's email comes in handly when we want to generate an avatar for each user. The `avatar()` method uses the [Gravatar](https://en.gravatar.com/) service to generate an avatar based on a user's email address. 
+There are three models with self-explanatory fields. These are `User` used to store a user's data, `Post` stores what they said and the `Tag` is to be used to save tags posted by a user with each blog post. As mentioned earlier, a user's email comes in handy when we want to generate an avatar for each user. The `avatar()` method uses the [Gravatar](https://en.gravatar.com/) service to generate an avatar based on a user's email address. 
 
 
-### Understading The Association Table
+### Understanding The Association Table
 
-The most important models are the `Post` and the `Tag` models. A post can have many tags, and a single tag can belong to many posts. In SQLAlchemy jargon, we call this a many-to-many relationship. This kind of relationship is typically defined using an association table. Think of it as a middle table, not really a true database table, linking the many side of the blogs to the many side of the tags. All this table does is to get the `id`s of each side of the relationship as foreign key constraints. Using the `id` of each table is recommended since this value is unique for each entry, thereby preventing persistence of duplicate rows.
+The most important models are the `Post` and the `Tag` models. A post can have many tags, and a single tag can belong to many posts. In SQLAlchemy jargon, we call this a many-to-many relationship. This kind of relationship is typically defined using an association table. Think of it as a middle table, not really a true database table, linking the many side of the blogs to the many side of the tags. All this table does is to get the `id`s of each side of the relationship as foreign key constraints. Using the `id` of each table is recommended since this value is unique for each entry, thereby preventing the persistence of duplicate rows.
 
 ```python
 # app/models: The association table
@@ -755,8 +755,8 @@ class Post(db.Model):
 - `Tag` is the right-side entity of the relationship while the `Post` model is the left side.
 - `secondary` configures the association table that is used for this relationship.
 - `backref` defines how the relationship will be accessed from the right-side entity. 
-    - From the left-side, the relationship will be called `tags`
-    - From the right-side, the relationship will be called `posts`
+    - From the left side, the relationship will be called `tags`
+    - From the right side, the relationship will be called `posts`
 - `lazy` is the execution mode for this query. A mode of `dynamic` sets up the query not to run until specifically requested
     - The first `lazy` applies to the first side of the relationship, the `Tag`.
     - The second `lazy` applies to the left side of the relationship, the `Post`.
@@ -764,7 +764,7 @@ class Post(db.Model):
 
 ### Apply Your Changes
 
-The changes to the datbase now need to recorded in a new database migration. In your terminal run these commands to apply the changes:
+The changes to the database now need to be recorded in a new database migration. In your terminal run these commands to apply the changes:
 
 ```python
 (venv)$ flask db init                    # Create a migration folder in the root directory
@@ -777,7 +777,7 @@ The `flask` command should be run from the root directory, so ensure that you ar
 
 ## Filtering Data Using Tags
 
-Before we can access any data, we will need to make changes to our `index()` view function which handles the `PostForm` and the disply of all user posts. At the moment, we have dummy data that we have been using for demonstration purposes. It is time we allow a user to use the web form to post data.
+Before we can access any data, we will need to make changes to our `index()` view function which handles the `PostForm` and the display of all user posts. At the moment, we have dummy data that we have been using for demonstration purposes. It is time we allow a user to use the web form to post data.
 
 ```python
 # app/routes.py: User data
@@ -861,30 +861,51 @@ With the variables accessible from the `index.html` template, we can not display
       <div class="col-md-4"></div>
   </div>
   <div class="row">
-    <div class="col-3"></div>
-    <div class="col-6">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
       {% for post in posts %}
         <table class="table table-hover">
             <tr>
-              <td>
+              <td width="70px">
+                <img src="{{ post.author.avatar(36) }}" alt="{{ post.author.username }}">
+              </td>
+              <td>                
                 <strong>{{ post.title }}</strong> <br>
-                <strong>{{ post.author.username }}</strong> said: <br>
+                <strong>{{ post.author.username }}</strong> said {{ moment(post.timestamp).fromNow() }}: <br>
                 {{ post.body }} <br>
                 {% for tag in post.tags %}
-                  {{ tag.name }} | 
+                  <a href="{{ url_for('tag', name=tag.name) }}" target="_blank">{{ tag.name }}</a> | 
                 {% endfor %}
               </td>
             </tr>
         </table>
       {% endfor %}
     </div>
-    <div class="col-3"></div>
+    <div class="col-md-3"></div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif %}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span> Newer posts
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    Older posts <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    </div>
   </div>
 {% endblock %}
 
 ```
 
-We begin by looping through the contents of `posts` to retrieve individual data as `post`. We can then get data related to each post such as the title as `post.title`.  As we saw in the `index()` view function, to access each tag related to a post, we have to loop through `post.tags` to get a tag's name. This is what gets displayed to the end user. Head over to your `index` page in your browser, post some things to seen the update.
+We begin by looping through the contents of `posts` to retrieve individual data as `post`. We can then get data related to each post such as the title as `post.title`.  As we saw in the `index()` view function, to access each tag related to a post, we have to loop through `post.tags` to get a tag's name. This is what gets displayed to the end user. Head over to your `index` page in your browser, and post some things to see the update.
 
 ![Post with tags](/images/tags/post_with_tags.png)
 
@@ -919,10 +940,10 @@ def tag(name):
         prev_url=prev_url)
 
 ```
-We get all the tags from the `Tag` model in a descending order of when they were posted. This is what gets passed to the `tag.html` template. To ensure that a tag redirects us to list of its post, we will need to add a link to the actual tag.
+We get all the tags from the `Tag` model in descending order of when they were posted. This is what gets passed to the `tag.html` template. To ensure that a tag redirects us to a list of its post, we will need to add a link to the actual tag.
 
 ```html
-<!-- templates/index.html: Add link to a tag's posts -->
+<!-- templates/index.html: Add a link to a tag's posts -->
 
 {% for tag in post.tags %}
     <a href="{{ url_for('tag', name=tag.name) }}" target="_blank">{{ tag.name }}</a> | 
@@ -937,14 +958,17 @@ This ensures that the relevant posts are to be shown once a tag is clicked. Fina
 {% extends 'base.html' %}
 
 {% block app_content %}
+{% extends 'base.html' %}
+
+{% block app_content %}
   <div class="row text-center">
     <div class="col-md-12">
       <h1>{{ title }}</h1>
     </div>
   </div>
   <div class="row">
-    <div class="col-3"></div>
-    <div class="col-6">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
       {% for tag in tags %}
         {% for post in tag.posts %}
           <table class="table table-hover">
@@ -962,11 +986,29 @@ This ensures that the relevant posts are to be shown once a tag is clicked. Fina
         {% endfor %}
       {% endfor %}
     </div>
-    <div class="col-3"></div>
+    <div class="col-md-3"></div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif %}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span> Newer posts
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    Older posts <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    </div>
   </div>
 {% endblock %}
 ```
-First, we loop through all tags. Once each tag is accessible, we use the `posts` backref to access the posts related to each tag. Remember we said that the backref called `posts` is to be used to access entities in the right side of the relationship, which in this case is a post. We then loop through all relevant posts associated with select tags to get the details of the post.
+First, we loop through all tags. Once each tag is accessible, we use the `posts` backref to access the posts related to each tag. Remember we said that the backref called `posts` is to be used to access entities on the right side of the relationship, which in this case is a post. We then loop through all relevant posts associated with select tags to get the details of the post.
 
 ![Posts by tags](/images/tags/posts_by_tags.gif)
 
