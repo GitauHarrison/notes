@@ -2,7 +2,7 @@
 
 ![Tags Overview Image](images/tags/tags_overview.png)
 
-Tags are a simple classification system that can be used in a blog post. A tag can be applied to multiple blog posts and similary multiple blog posts can be related to one another outside their category. For example, a blog may have a tag called "Flask". People interested in reading posts related to "Flask" only can click on this link and they will find relevant posts.
+Tags are a simple classification system that can be used in a blog post. A tag can be applied to multiple blog posts and, similary, multiple blog posts can be related to one another outside their category. For example, a blog may have a tag called "Flask". People interested in reading posts related to "Flask" only can click on this link and they will find relevant posts. This article shows how to build the project from scratch. However, if you would like to skip to the Tags section, you can begin from [Working With A Database](#working-with-a-database). 
 
 ### Table Of Contents
 
@@ -37,10 +37,12 @@ Before you can begin implementing this feature, you will need the following:
 
 If you are on Ubuntu or any of Linux distributions, you do not have to worry about having Python in your machine. It comes with it right out of the box. However, if you are on Windows, you may need to check it first, and install it if you do not have it. The most recommended way to develop this application on Windows is by using the [Windows Subsystem for Linux](https://github.com/GitauHarrison/notes/blob/master/non_technical_articles/wsl.md).
 
+The completed project can be found in the GitHub repository [tags for your blog posts in flask](https://github.com/GitauHarrison/tags-for-your-blog-posts-in-flask). The project in the repository uses Tailwind CSS rather than Bootstrap.
+
 
 ### Project Structure
 
-Let us utilize this project while building the application:
+Let us utilize this project structure while building the application:
 
 ```python
 folder
@@ -86,7 +88,7 @@ What is a virtual environment and why use it?
 
 Imagine a scenario where you installed Flask V1 to your global Python library. Later on, there is an update to Flask and you end up installing Flask V2 which may be having some breaking changes. When you try to run your intial project with Flask V2, both of which are present in your global Python environment, you are most likely to get all sorts of errors.
 
-A virtual environment is used to isolate the needs of one project from another and also helps to uncluster our global Python environemnt. This way, we are able to run applications smoothly. An alternative method of working with virtual environments is by using [virtualenvwrapper](virtualenvwrapper_setup.md). It is an enhancement to the way we can work with virtual environements. For instance, the command `mkvirtualenv venv` not only creates but activates a virtual environemnt called `venv` for us.
+A virtual environment is used to isolate the needs of one project from another and also helps to decluster our global Python environemnt. This way, we are able to run applications smoothly. An alternative method of working with virtual environments is by using [virtualenvwrapper](virtualenvwrapper_setup.md). It is an enhancement to the way we can work with virtual environements. For instance, the command `mkvirtualenv venv` not only creates but activates a virtual environemnt called `venv` for us.
 
 With the virtual environment active, we can install the following packages:
 
@@ -119,11 +121,11 @@ from app import app
 @app.route('/')
 @app.route('/index')
 def index():
-    return 'Hello, world'
+    return 'Hello, world!'
 
 ```
 
-The Flask server expects certain environment variables to be set before serving the relevant content. To make our work easier, we will define all need environment variables in `.flaskenv`. These variables are needed prior to the Flask server starting.
+Above, we want the string "Hello, world!" to be returned when we navigate to either `/` or `/index` URLs. The Flask server expects certain environment variables to be set before serving the relevant content. To make our work easier, we will define all environment variables in `.flaskenv`. These variables are needed prior to the Flask server starting.
 
 ```python
 FLASK_APP=main.py
@@ -486,11 +488,102 @@ The base template now has some proper style and the navigation bar seem a lot mo
 {% endblock %}
 
 ```
-Bootstrap provides the `quick_form()` function to quickly display a form with all its fields. 
+Bootstrap provides the `quick_form()` function to quickly display a form with all its fields. All that is needed from us is to pass the `form` variable (or whatever else you called it) to it.
 
 ![Facelift](/images/tags/facelift.png)
 
 ### Display User Data
+
+We can utilize some dummy post data to test how each user's post will look like. 
+
+```python
+# app/routes.py: Render user post
+
+from flask import render_template
+from app.forms import PostForm
+from app import app
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+def index():
+    form = PostForm()
+    posts = [
+        {
+            'author': {'username': 'Muthoni', 'email': 'muthoni@email.com'},
+            'title': 'Hair',
+            'body': 'I love my long hair',
+            'tags': ['fashion', 'grooming']
+        },
+        {
+            'author': {'username': 'gitau', 'email': 'gitau@email.com'},
+            'title': 'Vienna',
+            'body': 'I\'d love to be in the city of Vienna some day. I will.',
+            'tags': ['travel', 'workout']
+        }
+    ]
+    return render_template(
+        'index.html',
+        title='Post Something',
+        form=form,
+        posts=posts)
+
+```
+
+The `posts` variable contains a list of dummy user data I have hard-coded. It is passed to the templates so that individual data can be accessed.
+
+```html
+<!-- templates/index.html: Display user post -->
+
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+<div class="row text-center">
+  <div class="col-md-12">
+    <h1>{{ title }}</h1>
+    <p>
+      Use the form below to post something and add tags to your post. 
+      Currently, there are {{ num_posts }} posts.
+    </p>
+  </div>
+</div>
+  <div class="row">
+      <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <!-- Form -->
+            <p> {{ wtf.quick_form(form) }} </p>
+            <!-- End -->
+        </div>
+      <div class="col-md-4"></div>
+  </div>
+  <div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+      {% for post in posts %}
+        <table class="table table-hover">
+            <tr>
+              <td>
+                <strong>{{ post.title }}</strong> <br>
+                {{ post.author.username }} said: <br>
+                {{ post.body }} <br>
+                {% for tag in post.tags %}
+                  {{ tag }} | 
+                {% endfor %}
+              </td>
+            </tr>
+        </table>
+      {% endfor %}
+    </div>
+    <div class="col-3"></div>
+  </div>
+{% endblock %}
+
+```
+The Jinja2 templating engine allows us to loop through the `posts` variable to access a user's details, including what they said and their associated tags. Notice that for me to attach relevant tags to each post, I have to loop through the list of each posts' tags as `post.tags`. `tags` is the key used to access the list of tags in each post.
+
+![Display users' posts](/images/tags/display_user_data.png)
+
+In case you are wondering what `email` is used for, it will come in handy later when we want to associate an avatar with each user's post. We will generate an avatar for each user based on their email addresses.
 
 
 ## Working With A Database
