@@ -1,6 +1,6 @@
 # Install Elasticsearch in Ubuntu 20.04 In Localhost
 
-Since support for full-text search is not standardized like relational database are, there are several open-source full-text engines. Examples include [Sphinx](http://sphinxsearch.com/), [Apache Solr](https://lucene.apache.org/solr/), [Elasticsearch](https://www.elastic.co/elasticsearch/) among others. Thankfully, all these engines can work within a Flask application due to the fact that Flask is not opinionated. Using search capabilities of one of the relational databases would be great but since SQLAlchemy does not support this functionality, we will have to content with learning how to handle the searching with raw SQL statement. 
+Since support for full-text search is not standardized like relational databases are, there are several open-source full-text engines. Examples include [Sphinx](http://sphinxsearch.com/), [Apache Solr](https://lucene.apache.org/solr/), [Elasticsearch](https://www.elastic.co/elasticsearch/) among others. Thankfully, all these engines can work within a Flask application since Flask is not opinionated. Using the search capabilities of one of the relational databases would be great but since SQLAlchemy does not support this functionality, we will have to contend with learning how to handle the searching with raw SQL statements. 
 
 We can intentionally choose to use any of the full-text search engines to do the job for us. I will show you how you can install Elasticsearch and perform basic searches. If you would like to check out other articles on Elasticsearch, you can click on any of the links below:
 
@@ -45,7 +45,7 @@ We have created an instance of the class `Elasticsearch` and passed a connection
 ```python
 >>> es.index(index='test_index', id=1, body={'test': 'this is the first test'})
 ```
-Elasticsearch works with data in JSON format. We have written an object with the field `text` to an index called `test_index`. When you press `Enter` on your keyboard, you will get a `ConnectionError`. Your attempts to connect to the service fails. 
+Elasticsearch works with data in JSON format. We have written an object with the field `text` to an index called `test_index`. When you press `Enter` on your keyboard, you will get a `ConnectionError`. Your attempts to connect to the service fail. 
 
 `pip3 install elasticsearch` only installs a Python client which is used for communication between your Python script and the existing Elasticsearch cluster. The assumption is that the cluster is currently running on  `localhost` with the default elasticsearch port `9200`.
 
@@ -68,7 +68,7 @@ $ sudo apt install openjdk-8-jre-headless
 
 Run `java -version` to check that `Java` is installed.
 
-Then next step would be to allow access to our repositories via HTTPS. Therefore, let us install an APT transport package:
+The next step would be to allow access to our repositories via HTTPS. Therefore, let us install an APT transport package:
 
 ```python
 $ sudo apt install apt-transport-https
@@ -169,20 +169,20 @@ network.host: 127.0.0.1
 http.port: 9200
 ```
 
-Elasticsearch is now enabled to allow connections from localhost and to also listen to port `9200`. If you run `journalctl -xe`, you may notice that the error comes from memory issues. To fix this memory issue, we need to devot some memory to the Elasticsearch main service. Elasticsearch is a JVM application and it, therefore, utilizes memory devoted to the JVM (32-bit or 64-bit). The memory used by JVM usually consist of:
+Elasticsearch is now enabled to allow connections from localhost and to also listen to port `9200`. If you run `journalctl -xe`, you may notice that the error comes from memory issues. To fix this memory issue, we need to devote some memory to the Elasticsearch main service. Elasticsearch is a JVM application and it, therefore, utilizes memory devoted to the JVM (32-bit or 64-bit). The memory used by JVM usually consists of:
 
 - **Heap space** (configured via -Xms and -Xmx)
 - **Internal JVM** (usually tens of Mb)
 - OS-dependent memory features like **memory-mapped files**.
 
-Elasticsearch mostly depends on the **heap memory** whose setting is done _manually_ by passing `-Xms` and `-Xmx` (heap space) option to the JVM running the Elasticsearch service. To do this, open `./jvm.options` file:
+Elasticsearch mostly depends on the **heap memory** whose setting is done _manually_ by passing `-Xms` and `-Xmx` (heap space) options to the JVM running the Elasticsearch service. To do this, open `./jvm.options` file:
 
 ```python
 $ sudo nano /etc/elasticsearch/jvm.options
 ```
 
-> `Xms` represents the initial size of total heap space
-`Xmx` represents the maximum size of total heap space
+> `Xms` represents the initial size of the total heap space
+`Xmx` represents the maximum size of the total heap space
 
 In the opened JVM Configuration file, uncomment the value of `-Xms` and `-Xmx`. My current machine has 8GB RAM. The default values are `-Xms4g` and `-Xmx4g`.  As you modify these values, ensure that they are no more than 50% of your physical RAM.
 
@@ -224,8 +224,8 @@ In the opened JVM Configuration file, uncomment the value of `-Xms` and `-Xmx`. 
 # RAM >= 8 GB
 # -----------------
 
-Decide how much heap space you want to allocated Elasticsearch
-For better performance, you can allocated higher based on available resources
+Decide how much heap space you want to allocate Elasticsearch
+For better performance, you can allocate higher based on available resources
 ```
 Ensure that the value of `-Xms` and `-Xmx` are equal.
 
@@ -263,16 +263,16 @@ $ sudo systemctl start elasticsearch.service
 $ sudo systemctl status elasticsearch.service
 ```
 
-If you followed the installation steps correctly, you may need to restart your machine.To test your set up and installation, run this command on your terminal:
+If you followed the installation steps correctly, you may need to restart your machine. To test your setup and installation, run this command on your terminal:
 
 ```python
 (venv)$ curl localhost:9200
 ```
 You should be able to see JSON-formatted data displayed in your terminal. Alternatively, paste http://localhost:9200/ to your browser's address bar. JSON data will be dumped on your screen. 
 
-If you are curious what JSON is, it stands for JavaScript Object Notation. It is a standardized format that is commonly used to transfer data as text over a network. It is used by a lot of APIs and databases, and it is very easy for both humans and machines to read. JSON is more like Python dictionaries with key/value pairs. 
+If you are curious about what JSON is, it stands for JavaScript Object Notation. It is a standardized format that is commonly used to transfer data as text over a network. It is used by a lot of APIs and databases, and it is very easy for both humans and machines to read. JSON is more like Python dictionaries with key/value pairs. 
 
-The process of encoding data into JSON format (dict to JSON) is called **Serialization**. Often the function `json.dumps(dict_object)` does this. The process of converting JSON back to native objects such dicts is called **Deserialization** using `json.loads(object)`.
+The process of encoding data into JSON format (dict to JSON) is called **Serialization**. Often the function `json.dumps(dict_object)` does this. The process of converting JSON back to native objects such as dicts is called **Deserialization** using `json.loads(object)`.
 
 ## Testing
 
@@ -297,12 +297,12 @@ Start your interpreter:
 
 ## Basic Security
 
-As from version 8 of elasticsearch, you may see the warming 
+As from version 8 of Elasticsearch, you may see the warming 
 ```python
 <console>:1: ElasticsearchWarning: Elasticsearch built-in security features are not enabled. Without authentication, your cluster could be accessible to anyone. See https://www.elastic.co/guide/en/elasticsearch/reference/7.17/security-minimal-setup.html to enable security.
 ```
 
-Elasticsearch security features are not enabled by default. These features are free, but require configuration changes to enable them. This means that users don’t have to provide credentials and can get full access to the cluster of nodes. Network connections are also not encrypted. To protect your data, it is strongly encourage you to enable the Elasticsearch security features. 
+Elasticsearch security features are not enabled by default. These features are free but require configuration changes to enable them. This means that users don’t have to provide credentials and can get full access to the cluster of nodes. Network connections are also not encrypted. To protect your data, it is strongly encouraged you enable the Elasticsearch security features. 
 
 
 ### Enable Security
@@ -340,21 +340,21 @@ If you restart the Elasticsearch service and run `curl localhost:9200` on your t
 {"error":{"root_cause":[{"type":"security_exception","reason":"missing authentication credentials for REST request [/]","header":{"WWW-Authenticate":"Basic realm=\"security\" charset=\"UTF-8\""}}],"type":"security_exception","reason":"missing authentication credentials for REST request [/]","header":{"WWW-Authenticate":"Basic realm=\"security\" charset=\"UTF-8\""}},"status":401}
 ```
 
-Alternatively, if you paste `localhost:9200` in your browser, you will notice a pop up asking for a username and password. Since we do not know what these credentials are, if we press "Cancel" or if we close the prompt, we will get the `missing authentication credentials for REST request` error seen above.
+Alternatively, if you paste `localhost:9200` in your browser, you will notice a pop-up asking for a username and password. Since we do not know what these credentials are, if we press "Cancel" or if we close the prompt, we will get the `missing authentication credentials for REST request` error seen above.
 
-Surprised? Hadn't we run `curl localhost:9200` earlier and we got some JSON data back? No, it should not be a surprise. We have just enabled security on our cluster and usage is dependant on user authenication now.
+Surprised? Hadn't we run `curl localhost:9200` earlier and got some JSON data back? No, it should not be a surprise. We have just enabled security on our cluster and usage is dependent on user authentication now.
 
 
 ### Create Passwords For Built-in Users
 
-To communicate with the cluster, you must configure a username for the [built-in users](https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html). All requests that do not have a user name and a password will be rejected. To index documents, users much have write access.
+To communicate with the cluster, you must configure a username for the [built-in users](https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html). All requests that do not have a username and a password will be rejected. To index documents, users must have write access.
 
 - Access the `elasticsearch/` folder:
 
    ```python
    $ cd /usr/share/elasticsearch/
    ```
-- In this folder, we can set passwods for built-in users by running:
+- In this folder, we can set passwords for built-in users by running:
 
    ```python
    # -------------------
@@ -371,12 +371,12 @@ To communicate with the cluster, you must configure a username for the [built-in
 
    $ sudo bin/elasticsearch-setup-passwords interactive
    ```
-   - The `auto` parameter outputs randomly-generated passwords to the console that you can change later if necessary.
-   - The `interactive` parameter allows you to set your own passwords
+   - The `auto` parameter outputs randomly generated passwords to the console that you can change later if necessary.
+   - The `interactive` parameter allows you to set your passwords
 
-I used `interactive` so I can set my own password. You will be taken through a series of users for whom you will set a password. One of the users is `elastic`. Now that I know a user, and I have a password for this user, I can access the Elasticsearch service. Paste localhost:9200 on your browser and key in your user credentials. You should be able to see some JSON data dumped on the screen.
+I used `interactive` so I can set my password. You will be taken through a series of users for whom you will set a password. One of the users is `elastic`. Now that I know a user, and I have a password for this user, I can access the Elasticsearch service. Paste localhost:9200 on your browser and key in your user credentials. You should be able to see some JSON data dumped on the screen.
 
-In your terminal, where there is no popup, you will need to use the formart below to access Elasticsearch:
+In your terminal, where there is no popup, you will need to use the format below to access Elasticsearch:
 
 ```python
 $ curl 'http://usernameWithWriteAccess:password@localhost:9200'
@@ -411,7 +411,7 @@ $ cd /usr/share/elasticsearch/bin
 $ sudo ./elasticsearch-users user add test_user - p test_user_password -r test_user_role
 ```
 
-You will notice a warning telling you of available users and roles, but for now we will ignore this. The command above will create a user called `test_user` whose password is `test_user_password` of role `test_user_role`. To list the users you have created, run:
+You will notice a warning telling you of available users and roles, but for now, we will ignore this. The command above will create a user called `test_user` whose password is `test_user_password` of role `test_user_role`. To list the users you have created, run:
 
 ```python
 # /usr/share/elasticsearch/bin: List available users
