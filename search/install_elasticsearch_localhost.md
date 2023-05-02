@@ -9,7 +9,7 @@ We can intentionally choose to use any of the full-text search engines to do the
 - [Implement Search Functionality In Your Flask App](implement_elasticseach.md)
 
 
-### Table Of Content
+### Table Of Contents
 
 - [Overview](#overview)
 - [Install Necessary Packages](#install-necessary-packages)
@@ -297,7 +297,7 @@ Start your interpreter:
 
 ## Basic Security
 
-As from version 8 of Elasticsearch, you may see the warming 
+As from version 8 of Elasticsearch, you may see the warning below:
 ```python
 <console>:1: ElasticsearchWarning: Elasticsearch built-in security features are not enabled. Without authentication, your cluster could be accessible to anyone. See https://www.elastic.co/guide/en/elasticsearch/reference/7.17/security-minimal-setup.html to enable security.
 ```
@@ -321,7 +321,7 @@ How do you enable this feature? In Ubuntu, you will need to locate the file `ela
    $ sudo nano /etc/elasticsearch/elasticsearch.yml
    ```
 
-- Scroll down to the line that reads network.host
+- Scroll down to the line that reads network.host and add `xpack.security.enabled: true`.
 
    ```python
    # /etc/elasticsearch/elasticsearch.yml: Enable security
@@ -332,7 +332,7 @@ How do you enable this feature? In Ubuntu, you will need to locate the file `ela
    #
    ```
 
-- Press Ctrl + X, then Enter on your keyboard to save the changes.
+- Press Ctrl + X, type "Y", then Enter on your keyboard to save the changes.
 
 If you restart the Elasticsearch service and run `curl localhost:9200` on your terminal, you will see this error:
 
@@ -374,7 +374,7 @@ To communicate with the cluster, you must configure a username for the [built-in
    - The `auto` parameter outputs randomly generated passwords to the console that you can change later if necessary.
    - The `interactive` parameter allows you to set your passwords
 
-I used `interactive` so I can set my password. You will be taken through a series of users for whom you will set a password. One of the users is `elastic`. Now that I know a user, and I have a password for this user, I can access the Elasticsearch service. Paste localhost:9200 on your browser and key in your user credentials. You should be able to see some JSON data dumped on the screen.
+I used `interactive` so I can set my password. You will be taken through a series of users for whom you will set a password. One of the users is `elastic`. Now that I know a user, and I have a password for this user, I can access the Elasticsearch service. Paste `localhost:9200` on your browser and key in your user credentials. You should be able to see some JSON data dumped on the screen.
 
 In your terminal, where there is no popup, you will need to use the format below to access Elasticsearch:
 
@@ -397,7 +397,7 @@ $ cd /usr/share/elasticsearch/
 $ cd bin
 
 # You will see a list of available files that you can run against.
-# See the elasticsearch documenation for more information.
+# See the elasticsearch documentation for more information.
 ```
 
 ### Create Users And Their Passwords And Assign Roles
@@ -408,7 +408,7 @@ To create custom users, run:
 $ cd /usr/share/elasticsearch/bin
 
 # As su
-$ sudo ./elasticsearch-users user add test_user - p test_user_password -r test_user_role
+$ sudo ./elasticsearch-users useradd test_user -p test_user_password -r test_user_role
 ```
 
 You will notice a warning telling you of available users and roles, but for now, we will ignore this. The command above will create a user called `test_user` whose password is `test_user_password` of role `test_user_role`. To list the users you have created, run:
