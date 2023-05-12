@@ -6,7 +6,7 @@ Is it any different configuring your app on [Linode](https://linode.gvw92c.net/1
 - [Install And Configure ElasticSearch In A Live Linux Server](install_elasticsearch_linode.md) (this article)
 - [Implement Search Functionality In Your Flask App](implement_elasticseach.md)
 
-The good news is that there is not much of a difference between setting up your live Linux server and your localhost. I recommend that you check out the [installation guide for setting up elasticsearch in your localhost](install_elasticsearch_localhost.md) before proceeding. 
+The good news is that there is not much of a difference between setting up your live Linux server and your localhost. I recommend that you check out the [installation guide for setting up Elasticsearch in your localhost](install_elasticsearch_localhost.md) before proceeding. 
 
 Once you have installed Elasticsearch, you would want to update its configuration file to include your network host.
 
@@ -65,4 +65,4 @@ Remember to update `ELASTICSEARCH_URL` in `/etc/your_app_config.json` file (this
 }
 ```
 
-Notice that I am using `http` and not `https`. At this stage, I have not been able to enable the use of `https` since using it throws the SSL Error. To ensure that the server is working correctly, you can issue a `Model.reindex()` command in your shell to update the indces used by the service before testing the search feature.
+Notice that I am using `http` and not `https`. At this stage, I have not been able to enable the use of `https` since using it throws the SSL Error. To ensure that the server is working correctly, you can issue a `Model.reindex()` command in your shell to update the indices used by the service before testing the search feature.
