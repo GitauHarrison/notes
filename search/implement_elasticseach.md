@@ -143,5 +143,76 @@ The response from the `es.search()` call is a Python dictionary whose results ar
     }
 ```
 
-The results query returned one document with a non-perfect score. A perfect score is 1. The returned document is the one that contains our search word. Typically, if there are more than one document, the one with the highest score is the one that contains almost the exact words searched for.
+The results query returned one document with a non-perfect score. A perfect score is 1. The returned document is the one that contains our search word. Typically, if there is more than one document, the one with the highest score is the one that contains almost the exact words searched for. Those that partially contain the words would be returned but with a lower score. To delete an index, you can run:
+
+```python
+>>> es.indices.delete('test')
+```
+
+## Configure Elasticsearch
+
+Like with other configurations, the connection URL for Elasticsearch is going to be sourced form an environemnt variable. 
+
+```python
+# config.py: Configure Elasticsearch
+
+class Config(object):
+    # ...
+
+    ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')
+```
+
+If this variable is not defined, we are going to set it to `None` and use it as a signal to disconnect Elasticsearch. In certain situations, say during unit testing, we may not necessarily need Elasticsearch to run, and therefore, disabling it may come in handy. To instatiate this variable, we will need to update the `.env` file as follows:
+
+```python
+# .env: Elasticsearch URL
+
+ELASTICSEARCH_URL=http:localhost:9200
+```
+
+The challenge with working with Elasticsearch is that it is not wrapped by a Flask extension, and cannot be initalized in a global scope as many other extensions. The only way to access this variable is through `app.config` which becomes available once a Flask context is created.
+
+If you are not working with a factory function, then there is not much to do here since your application's instance will have access to the `config` module:
+
+```python
+#app/__init__.py: Access configurations
+
+from flask import Flask
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from config import Config
+from flask_bootstrap import Bootstrap
+from flask_moment import Moment
+
+
+app = Flask(__name__)
+app.config.from_object(Config)      # < --- access environment variables
+
+# Variables on a global scope
+db = SQLAlchemy(app)
+migrate = Migrate(app, db, render_as_batch=True)
+bootstrap = Bootstrap(app)
+moment = Moment(app)
+
+
+from app import routes, models
+
+```
+
+However, if you are using blueprints and a factory function, Elasticsearch configurations will only be accessbile once `create_app()` function has been invoked.
+
+```python
+# app/__init__.py: Elasticsearch with a factory function
+
+# ...
+from elasticsearch import Elasticsearch
+# ...
+
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+
+    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
+        if app.config['app.config['ELASTICSEARCH_URL']'] else None
+```
 
