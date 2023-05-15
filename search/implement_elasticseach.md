@@ -112,8 +112,36 @@ Above, we have written two documents with the index `test` each with a field cal
 >>> es.search(index='test', body={'query': {'match': {'text': 'test'}}})
 ```
 
-The response from `es.search()` call is a Python dictionary whose results are:
+The response from the `es.search()` call is a Python dictionary whose results are:
 
 ```python
-
+{
+    'took': 16, 
+    'timed_out': False, 
+    '_shards': {
+        'total': 1, 
+        'successful': 1, 
+        'skipped': 0, 
+        'failed': 0
+        }, 
+    'hits': {
+        'total': {
+            'value': 1, 
+            'relation': 'eq'
+            }, 
+        'max_score': 0.6548753, 
+        'hits': [
+                {
+                    '_index': 'test', 
+                    '_type': '_doc', 
+                    '_id': '2', 
+                    '_score': 0.6548753, 
+                    '_source': {'text': 'this is another test'}
+                }
+            ]
+        }
+    }
 ```
+
+The results query returned one document with a non-perfect score. A perfect score is 1. The returned document is the one that contains our search word. Typically, if there are more than one document, the one with the highest score is the one that contains almost the exact words searched for.
+
