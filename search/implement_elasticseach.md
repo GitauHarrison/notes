@@ -159,7 +159,7 @@ Like with other configurations, the connection URL for Elasticsearch is going to
 class Config(object):
     # ...
 
-    ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')
+    ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL') or None
 ```
 
 If this variable is not defined, we are going to set it to `None` and use it as a signal to disconnect Elasticsearch. In certain situations, say during unit testing, we may not necessarily need Elasticsearch to run, and therefore, disabling it may come in handy. To instatiate this variable, we will need to update the `.env` file as follows:
@@ -172,34 +172,26 @@ ELASTICSEARCH_URL=http:localhost:9200
 
 The challenge with working with Elasticsearch is that it is not wrapped by a Flask extension, and cannot be initalized in a global scope as many other extensions. The only way to access this variable is through `app.config` which becomes available once a Flask context is created.
 
-If you are not working with a factory function, then there is not much to do here since your application's instance will have access to the `config` module:
 
 ```python
 #app/__init__.py: Access configurations
 
-from flask import Flask
-from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
-from config import Config
-from flask_bootstrap import Bootstrap
-from flask_moment import Moment
+# ... 
+from elasticsearch import Elasticsearch
 
 
 app = Flask(__name__)
-app.config.from_object(Config)      # < --- access environment variables
+app.config.from_object(Config)
 
-# Variables on a global scope
-db = SQLAlchemy(app)
-migrate = Migrate(app, db, render_as_batch=True)
-bootstrap = Bootstrap(app)
-moment = Moment(app)
+# Access value from the config module
+app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
+    if app.config['ELASTICSEARCH_URL'] else None
 
-
-from app import routes, models
+# ...
 
 ```
 
-However, if you are using blueprints and a factory function, Elasticsearch configurations will only be accessbile once `create_app()` function has been invoked.
+If you are using blueprints and a factory function, Elasticsearch configurations will only be accessbile once `create_app()` function has been invoked.
 
 ```python
 # app/__init__.py: Elasticsearch with a factory function
@@ -216,3 +208,111 @@ def create_app(config_class=Config):
         if app.config['app.config['ELASTICSEARCH_URL']'] else None
 ```
 
+## Generic Implementation Of Search Functionality
+
+The assumption here is that we are not going to limit ourselves to one model when searching. The search functionality is going to be open in the sense that any model can be used in the search query. Also, it is best not to limit ourselves to only Elasticsearch for this functionality. There are a handful powerful other search engines that we can use. Our implementation is going to be one that is open to possible switch to another search engine. 
+
+The first attempted to get this rolling is to indentify what model and what fields in this model we would like to index. How can this be done? Well, we can define an attribute called `__searchable__` which lists all the fields we would need included in the index.
+
+```python
+# app/modes.py: Identify model and fields to be indexed
+
+# ...
+
+
+class Post(db.Model):
+    __searchable__ = ['body']
+    # ...
+```
+
+Next, we can define all indexing, deletion and querying of a model in a `search` module following _the principal of separation of concerns_. 
+
+```python
+# app/search: Implement search functionality
+
+from app import app
+
+'''
+If using factory function, you can import the current_app from flask as:
+
+from flask import current_app
+
+Then replace every instances of `app.` with `curent_app.`
+'''
+
+def add_to_index(index, model):
+    # Check if elasticsearch is configured; if not return nothing
+    if not app.elasticsearch:
+        return
+    payload = {}
+    # Add the fields to be searched to a payload after looping through 
+    # the selected fields of the model
+    for field in model.__searchable__:
+        payload[field] = getattr(model, field)
+    app.elasticsearch.index(index=index, id=model.id, body=payload)
+
+```
+
+To ensure that the search functionality runs even when Elasticsearch has not been configured, we begin by checking if there is any configurations set, without which we return nothing. This is only a matter of convinience. If the configurations are set, then we loop through the fields listed in `__searchable__` and pass those as payloads to a document's body whose ID is that of the model (uniquely convinient) and an index we can appropriately choose for ourselves (you will see this later). 
+
+In the context above, all data in the `body` field of the `Post` model will be added as a document that can be searched. Refer to the section [Understanding Elasticsearch](#understanding-elasticsearch) to see how documents can be added to an index prior to a search query. Using the same ID for SQLAlchemy and Elasticsearch is super convinient when running searches since we can link the two databases. 
+
+
+```python
+# app/search: Delete an index
+
+# ...
+
+def remove_from_index(index, model):
+    if not app.elasticsearch:
+        return
+    app.elasticsearch.delete(index=index, id=model.id)
+
+```
+
+The `elasticsearch.delete()` function is to be used to delete a document based on its ID, which is conviniently similar in both databases.
+
+```python
+# app/search.py: Query function
+
+# ...
+
+def query_index(index, query, page, per_page):
+    if not app.elasticsearch:
+        return [], 0
+    search = app.elasticsearch.search(
+        index=index,
+        body={'query': {'multi_match': {'query': query, 'fields': ['*']}},
+              'from': (page - 1) * per_page,
+              'size': per_page})
+    ids = [int(hit['_id']) for hit in search['hits']['hits']]
+    return ids, search['hits']['total']['value']
+
+```
+
+The `query_index` function takes an index name together with the query to search for along with pagination controls. Unlike [before](#understanding-elasticsearch) where you saw the use of `match`, above, we are using `multi-match` which can search across multiple fields. The use of `*` in the key `fields` basically tells Elasticsearch to took in all fields. 
+
+Unfortunately, Elasticsearch does not provide a nice pagination control as is the case with SQLAlchemy. The implementation implements a custom logic to add pagination. The re `return` statement returns two items, (1) A list of IDs from the search results and (2) the total number of results. Refer to the search results of the [Understanding Elasticsearch](#understanding-elasticsearch) section to learn more.
+
+Let us test our work on a Flask shell:
+
+```python
+(venv)$ flask shell
+
+>>> from app.search import add_to_index, remove_from_index, query_index
+>>> for post in Post.query.all():
+        add_to_index('posts', post)
+>>> query_index('posts', 'test one three the', 1, 20)
+([5, 1, 6, 9, 10, 2, 3, 7, 8], 9)
+>>> query_index('posts', 'test one three the', 1, 5)
+([5, 1, 6, 9, 10], 9)
+>>> query_index('posts', 'test one three the', 2, 5)
+([2, 3, 7, 8], 9)
+>>> query_index('posts', 'test one three the', 3, 5)
+([], 9)
+```
+Our query returned a total of 9 results. When we asked for page 1 with 20 items, we got all 9 items. The following examples have been used to show pagination the way we know from SQLAlchemy. After experimenting, we can delete the `posts` index as follows:
+
+```python
+>>> app.elasticsearch.indices.delete('posts')
+```
