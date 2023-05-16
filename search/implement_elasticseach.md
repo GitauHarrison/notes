@@ -347,4 +347,36 @@ class SearchableMixin(object):
 
 The `search()` function uses a class method to associate it with a given class rather than a particular instance. Instead of using `self` as is normally the case with a class, notice how I use the `cls` to make it clear that this method receives a class and not an instance as its first argument. Once it is attached to a model, say the `Post` model, the search method will be invocked as `Post.search()` without needing an actual instance of the class `Post`.
 
-To begin, you will notice that the `cls.__tablename__` is passed to `query_index` as the index name. This is going to be a convention such that the names assigned by SQLAlchemy to a model shall be used as the index name.
+To begin, you will notice that the `cls.__tablename__` is passed to `query_index` as the index name. This is going to be a convention such that the names assigned by SQLAlchemy to a model shall be used as the index name. The returned query is a **series of positional elements** (rather than a list) and their total number. We have used `case` from SQLAlchemy to retrieve the list of objects by their IDs in the order they were given. This is so because Elasticsearch returns a sorted query from more to less relevant.
+
+> The CASE construct in SQL is a conditional object that acts somewhat analogously to an “if/then” construct in other languages. It returns an instance of `Case`. `case()` in its usual form is passed a series of “when” constructs, that is, a list of conditions and results as tuples:
+
+```python
+from sqlalchemy import case
+
+stmt = select(users_table).\
+        where(
+            case(
+                (users_table.c.name == 'wendy', 'W'),
+                (users_table.c.name == 'jack', 'J'),
+                else_='E'
+            )
+        )
+```
+
+We loop through the list of IDs to retrieve their positions, which is what we pass to the `when` dictionary. Prior to Flask-SQLAlchemy V3.0.2, the `case()` method took a list rather than a dictionary. Instead of returning a series of positional elements, we'd get a list of objects by their IDs.
+
+
+```python
+class SearchableMixin(object):
+    @classmethod
+    def search(cls, expression, page, per_page):
+        # ...
+        when = []
+        for i in range(len(ids)):
+            when.append((ids[i], i))
+        # ...
+```
+
+The latest version of Flask-sqlalchemy will return the error `sqlalchemy.exc.ArgumentError: The "whens" argument to case(), when referring to a sequence of items, is now passed as a series of positional elements, rather than as a list.` if a list is used.
+
