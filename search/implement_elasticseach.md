@@ -311,8 +311,40 @@ Let us test our work on a Flask shell:
 >>> query_index('posts', 'test one three the', 3, 5)
 ([], 9)
 ```
-Our query returned a total of 9 results. When we asked for page 1 with 20 items, we got all 9 items. The following examples have been used to show pagination the way we know from SQLAlchemy. After experimenting, we can delete the `posts` index as follows:
+Our query returned a total of 9 results. When we asked for page 1 with 20 items, we got all 9 items. The subsequent examples have been used to show pagination the way we know from SQLAlchemy. After experimenting, we can delete the `posts` index as follows:
 
 ```python
 >>> app.elasticsearch.indices.delete('posts')
 ```
+
+## Combining The Search Functionality With SQLAlchemy
+
+What we saw above is fantastic, but it is less than ideal. The search results should return the actual model(s) instead of IDs. With models, we can pass them to the templates for rendering. So, we need to find a way to replace the IDs with the actual models. Another obvious problem from our example above is that we have to explicitly issue an indexing call so that posts can be added or removed. A more convinient way would be for the application to automatically trigger such calls as soon as there is a change made to the SQLAlchemy database.
+
+### SearchableMixin Class
+
+We are going to utilize a _mixin_ class to solve the two-mentioned challenges of our prior example. A _mixin_ class provides method implementation for reuse by multiple related child classes but is not considered a base class itself. The _SearchableMixin_ class is going to act as a link between SQLAlchemy and Elasticsearch databases to automatically manage associated full-text search index.
+
+```python
+# app/models.py: SearchableMixin class
+
+# ...
+from app.search import add_to_index, remove_from_index, query_index
+
+
+class SearchableMixin(object):
+    @classmethod
+    def search(cls, expression, page, per_page):
+        ids, total = query_index(cls.__tablename__, expression, page, per_page):
+        if total == 0:
+            return cls.query.filter_by(id=0), 0
+        when = {}
+        for i in range(len(ids)):
+            when[ids[i]] = i
+        return cls.query.filter(cls.id.in_(ids)).order_by(
+            db.case(when, value=cls.id)), total
+```
+
+The `search()` function uses a class method to associate it with a given class rather than a particular instance. Instead of using `self` as is normally the case with a class, notice how I use the `cls` to make it clear that this method receives a class and not an instance as its first argument. Once it is attached to a model, say the `Post` model, the search method will be invocked as `Post.search()` without needing an actual instance of the class `Post`.
+
+To begin, you will notice that the `cls.__tablename__` is passed to `query_index` as the index name. This is going to be a convention such that the names assigned by SQLAlchemy to a model shall be used as the index name.
