@@ -462,3 +462,176 @@ And to search, we can do:
 >>> query.all()
 [Post: test comment, Post: Another one test for you, Post: Why the diss, Post: Japan the great country, Post: I am the greatest, Post: Two of the tests were not done well, Post: There has got to be the best way around it]
 ```
+
+
+## Define The Search Form
+
+Everthing we have done so far has been through the terminal. To complete this feature, we now need to provide a more user-friendly form that will allow users to search for posts in the application. Common across web browsers, search results uses the `q` argument in the URL. For example, to search for `gitauharrison` on the browser, the search URL pointing to the results would look like `https://www.google.com/search?q=gitauharrison`. Let us begin by defining such a form:
+
+```python
+# app/forms.py: Search form
+from flask import request
+
+# ...
+
+class SearchForm(FlaskForm):
+    q = StringField(
+        'Search',
+        validators=[DataRequired()],
+        render_kw={'placeholder': 'Search ...'})
+
+    def __init__(self, *args, **kwargs):
+        if 'formdata' not in kwargs:
+            kwargs['formdata'] = request.args
+        if 'meta' not in kwargs:
+            kwargs['meta'] = {'csrf': False}
+        super(SearchForm, self).__init__(*args, **kwargs)
+```
+
+A deviation from how you may be working with forms, a search form typically sends a `GET` request rather than a `POST` request. We have a constructor function called `__init__()` which provides the `formdata` and the `meta` arguments. If you are not aware, `formdata` is where Flask gets its form submissions. A `POST` request would use `request.form` while a `GET` request uses `request.args`.
+
+By default, all forms have CSRF protection enabled. However, for clickable search links to work, this feature needs to be disabled hence why we are setting `meta` to `{'csrf': False}`. This tells Flask-wtf to bypass all csrf validation for this form.
+
+Curious that this form lacks a submit button? Well, since it is a text field, a simple press of the **Enter** key on the keyboard will submit a user's input. That is whey we do not necessarily need a submit button.
+
+
+## Access The Search Form Before Each Request
+
+In this application, we are going to put the search form in the navigation bar, meaning it will be located in the `base.html` file and appear across all other templates. To avoid possible duplication of code where we have to instantiate the `SearchForm` object in each route and pass it to relevant templates, we can use the `before_request` handler.
+
+```python
+# app/routes.py: Instatiating the search form before each request
+
+from flask import g
+from app.forms import SearchForm
+
+
+@app.before_request
+def before_request():
+    g.search_form = SearchForm()
+```
+
+Flask provides the `g` object. It is a variable that acts as storage. Data stored in this variable can persist through the life of request. What will happen is that when a call to this handler ends and Flask invokes the view function responsible of rendering the search form, the `g` object will remain unchanged and still have the form attached to it. 
+
+Note that the `g` variable is specific to each request. If your application is serving multiple requests to clients (browsers), you can rely on this object to provide private storage for each request. You do not have to worry about one client's data being similar to data requestd by another client.
+
+## Display The Search Form
+
+This form is going to be in the re-usable navigation bar. 
+
+```html
+<!-- app/templates/base.html: Display the search form -->
+
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href=" {{ url_for('index') }} ">Add Search Feature</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">            
+            <ul class="nav navbar-nav navbar-right">
+
+                <!-- Search form -->
+                {% if g.search_form %}
+                    <form class="navbar-form navbar-left" action="{{ url_for('search') }}" method="get">
+                        <div class="form-group">
+                            {{ g.search_form.q(size=20, class_='form-control') }}
+                        </div>
+                    </form>
+                {% endif %}
+                <!-- End of the search form -->
+
+            </ul>                       
+        </div>
+    </div>
+</nav>
+```
+
+The display of the form is conveniently limited to only when the `g.search_form` has been defined. This prevents pages such as the error pages from having this. Notice that the request method is `GET` and that that the view function to handle this request is specifically `search`. Typically, we would leave this blank so that the default URL handles this.
+
+
+## Render The Search Form
+
+To complete the last functionality, we now need to define the `search()` view function that will handle of search form submissions. 
+
+```python
+#app/search.py: Search view function
+
+@app.route('/search')
+def search():
+    if not g.search_form.validate():
+        return redirect(url_for('index'))
+    page = request.args.get('page', 1, type=int)
+    posts, total = Post.search(
+        g.search_form.q.data, page, app.config['POSTS_PER_PAGE'])
+    next_url = url_for('search', q=g.search_form.q.data, page=page + 1) \
+        if total > page * app.config['POSTS_PER_PAGE'] else None
+    prev_url = url_for('search', q=g.search_form.q.data, page=page - 1) \
+        if page > 1 else None
+    return render_template(
+        'search.html',
+        title='Search',
+        total=total,
+        posts=posts,
+        next_url=next_url,
+        prev_url=prev_url)
+```
+
+The `form.validate()` has been used to primarily validate field values without checking how the data was submitted. Remember, our search form lacks the submit button. The function `form.validate_on_submit()` cannot be used here because it is ideal for `POST` requests where it validates field data upon submission.
+
+Pagination is cleverly handled using the number of pages available depending on the outcome of the search results. Remember, Elasticsearch does not have inbuilt pagination like SQLAlchemy does. The `search.html` template will then look like this:
+
+```html
+<!-- app/templates/search.html: Display search results -->
+
+{% extends 'base.html' %}
+
+{% block app_context %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="text-center">{{ title }} ({{ total }})</h1>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- User posts -->
+                <table class="table table-hover">
+                    {% for post in posts %}
+                        <tr>
+                            <td width="70px"><img src="{{ post.author.avatar(35) }}" /></td>
+                            <td><strong>{{ post.author.username }}</strong> said {{ moment(post.timestamp).fromNow() }}: <br> {{ post.body }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                <!-- End of listing user posts -->
+
+                <!-- Pagination -->
+                <nav aria-label="...">
+                    <ul class="pager">
+                        <li class="previous{% if not prev_url %} disabled{% endif %}">
+                            <a href="{{ prev_url or '#' }}">
+                                <span aria-hidden="true">&larr;</span> Previous results
+                            </a>
+                        </li>
+                        <li class="next{% if not next_url %} disabled{% endif %}">
+                            <a href="{{ next_url or '#' }}">
+                                Next results <span aria-hidden="true">&rarr;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End of pagination -->
+            </div>
+        </div>
+    </div>  
+</div>
+{% endblock %}
+```
+
+You should see this:
+
+![Search results](/images/elasticsearch/search_results.png)
