@@ -1,6 +1,6 @@
 # Implement Search Functionality In Your Flask App
 
-[Elasticsearch](https://www.elastic.co/what-is/elasticsearch) may mean different things to different people, depending on their level of familiarity with the technology. At its core, Elasticsearch is largely a distributed open-source search and analytics engine for all types of data built on Apache Lucene and developed in Java, using NoSQL, meaning it stores data in unstructured way and that we cannot use SQL to query it. It is at the heart of the ELK Stack (Elasticsearch, Kibana and Logtash) such that it has become synonymous with the name of the stack itself. 
+[Elasticsearch](https://www.elastic.co/what-is/elasticsearch) may mean different things to different people, depending on their level of familiarity with the technology. At its core, Elasticsearch is largely a distributed open-source search and analytics engine for all types of data built on Apache Lucene and developed in Java, using NoSQL, meaning it stores data in an unstructured way and that we cannot use SQL to query it. It is at the heart of the ELK Stack (Elasticsearch, Kibana, and Logtash) such that it has become synonymous with the name of the stack itself. 
 
 The following are other sections in the Elasticsearch series. You can click on any of the links to learn more:
 
@@ -8,7 +8,7 @@ The following are other sections in the Elasticsearch series. You can click on a
 - [Install And Configure ElasticSearch In A Live Linux Server](install_elasticsearch_linode.md)
 - [Implement Search Functionality In Your Flask App](implement_elasticseach.md) (this article)
 
-As you learnt in the [installation guide](install_elasticsearch_localhost.md), support for full text search is not standardized like relational databases are. Also, the fact that SQLAlchemy does not natively support the search functionality, we have to contend with the fact that we need to manually do this ourselves.
+As you learned in the [installation guide](install_elasticsearch_localhost.md), support for full-text search is not standardized like relational databases are. Also, the fact that SQLAlchemy does not natively support the search functionality, we have to contend with the fact that we need to manually do this ourselves.
 
 ### Table of Contents
 
@@ -33,11 +33,11 @@ As you learnt in the [installation guide](install_elasticsearch_localhost.md), s
 
 ## Overview
 
-From the [Testing](install_elasticsearch_localhost.md#testing) section in the Localhost installation guide, you saw how to index a document and get corresponding JSON data back. However, you may be curious to understand how everything actually works. The [Elasticsearch documenation](https://www.elastic.co/what-is/elasticsearch) does a good job of trying to explain how indexing and parsing works. Let us cover some basic concepts of how it organizes data and its backend components.
+From the [Testing](install_elasticsearch_localhost.md#testing) section in the Localhost installation guide, you saw how to index a document and get corresponding JSON data back. However, you may be curious to understand how everything works. The [Elasticsearch documentation](https://www.elastic.co/what-is/elasticsearch) does a good job of trying to explain how indexing and parsing work. Let us cover some basic concepts of how it organizes data and its backend components.
 
 ### Documents
 
-They are the basic unit of JSON data that can be indexed in Elasticsearch. If you have interacted with rows in relational databases, a document is more less like a row object. Each document has a unique ID and a given data type.
+They are the basic unit of JSON data that can be indexed in Elasticsearch. If you have interacted with rows in relational databases, a document is more or less like a row object. Each document has a unique ID and a given data type.
 
 ```python
 body={'test': 'this is the first test'}
@@ -57,25 +57,25 @@ Elasticsearch uses a data structure called an inverted index that supports very 
 
 ![Inverted index](/images/elasticsearch/inverted_index.png)
 
-The inverted index does not really store items directly, but it instead splits each documents up into individual search terms and then maps each term to the documents they occur in. By using inverted indices, Elasticsearch can quickly find best matches for full-text searches from even large data sets.
+The inverted index does not really store items directly, but it instead splits each document up into individual search terms and then maps each term to the documents they occur in. By using inverted indices, Elasticsearch can quickly find the best matches for full-text searches from even large data sets.
 
-When performing full-text searches, we are actually querying an inverted index and not the JSON documents that we defined when indexing the documents. A cluster can have at least one inverted index. That’s because there will be an inverted index for each full-text field per index. So if you have an index containing documents that contain five full-text fields, you will have five inverted indices.
+When performing full-text searches, we are querying an inverted index and not the JSON documents that we defined when indexing the documents. A cluster can have at least one inverted index. That’s because there will be an inverted index for each full-text field per index. So if you have an index containing documents that contain five full-text fields, you will have five inverted indices.
 
 ### Cluster
 
-A cluster is a group of one or more node instances that are connected together. The effectiveness of Elasticsearch is in the distribution of tasks to each node in the cluster.
+A cluster is a group of one or more node instances that are connected. The effectiveness of Elasticsearch is in the distribution of tasks to each node in the cluster.
 
 ### Nodes
 
 A node is a single server that participates in the indexing and search capabilities of a cluster. 
 
-- **Master node**: Responsible for cluster-wide operations such as creating and deleting an index and adding or remove a node
-- **Data node**: Stores data and executes data related operations such as search and aggregation
+- **Master node**: Responsible for cluster-wide operations such as creating and deleting an index and adding or removing a node
+- **Data node**: Stores data and executes data-related operations such as search and aggregation
 - **Client node**: Forwards cluster requests to **master** and **data** nodes
 
 ### Shards
 
-It is possible to subdivide an index into multiple pieces called shards. Each shard is a full-functional and independent index that can be hosted on any node. By distributing documents across many shards and distributing those shards across multiple nodes, Elasticsearch is able to protect against hardware failures and increase query capacities as nodes are added to a cluster. 
+It is possible to subdivide an index into multiple pieces called shards. Each shard is a full-functional and independent index that can be hosted on any node. By distributing documents across many shards and distributing those shards across multiple nodes, Elasticsearch can protect against hardware failures and increase query capacities as nodes are added to a cluster. 
 
 ## Build A Simple Flask App
 
@@ -86,14 +86,14 @@ We are going to search data generated by users in an app. We, therefore, need to
 The key things that your application will need to have are:
 - A model or models used to store user data (`Post` model has been used in the sample project)
 - A form that allows users to post something
-- A page that displayes all the data users posted in the app
+- A page that displays all the data users posted in the app
 
-Your navigation bar does not necessarily need to have a search form as seen in the image above. In a section below, we will learn how to add one such that it will available across all web pages of the app.
+Your navigation bar does not necessarily need to have a search form as seen in the image above. In a subsequent section below, we will learn how to add one such that it will available across all web pages of the app.
 
 
 ## Understanding Elasticsearch
 
-In the [localhost installation guide](install_elasticsearch_localhost.md), you learnt how to install and configure Elasticsearch. We will need the Python client library while managing it, so make sure you install it in your virtual environment too:
+In the [localhost installation guide](install_elasticsearch_localhost.md), you learned how to install and configure Elasticsearch. We will need the Python client library while managing it, so make sure you install it in your virtual environment too:
 
 ```python
 (venv)$ pip3 install elasticsearch && pip3 freeze > requirements.txt
@@ -152,7 +152,7 @@ The response from the `es.search()` call is a Python dictionary whose results ar
     }
 ```
 
-The results query returned one document with a non-perfect score. A perfect score is 1. The returned document is the one that contains our search word. Typically, if there is more than one document, the one with the highest score is the one that contains almost the exact words searched for. Those that partially contain the words would be returned but with a lower score. To delete an index, you can run:
+The results query returned one document with a non-perfect score. A perfect score is 1. The returned document is the one that contains our search words. Typically, if there is more than one document, the one with the highest score is the one that contains almost the exact words searched for. Those that partially contain the words would be returned but with a lower score. To delete an index, you can run:
 
 ```python
 >>> es.indices.delete('test')
@@ -160,7 +160,7 @@ The results query returned one document with a non-perfect score. A perfect scor
 
 ## Configure Elasticsearch
 
-Like with other configurations, the connection URL for Elasticsearch is going to be sourced form an environemnt variable. 
+Like with other configurations, the connection URL for Elasticsearch is going to be sourced from an environment variable. 
 
 ```python
 # config.py: Configure Elasticsearch
@@ -171,7 +171,7 @@ class Config(object):
     ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL') or None
 ```
 
-If this variable is not defined, we are going to set it to `None` and use it as a signal to disconnect Elasticsearch. In certain situations, say during unit testing, we may not necessarily need Elasticsearch to run, and therefore, disabling it may come in handy. To instatiate this variable, we will need to update the `.env` file as follows:
+If this variable is not defined, we are going to set it to `None` and use it as a signal to disconnect Elasticsearch. In certain situations, say during unit testing, we may not necessarily need Elasticsearch to run, and therefore, disabling it may come in handy. To instantiate this variable, we will need to update the `.env` file as follows:
 
 ```python
 # .env: Elasticsearch URL
@@ -179,7 +179,7 @@ If this variable is not defined, we are going to set it to `None` and use it as 
 ELASTICSEARCH_URL=http:localhost:9200
 ```
 
-The challenge with working with Elasticsearch is that it is not wrapped by a Flask extension, and cannot be initalized in a global scope as many other extensions. The only way to access this variable is through `app.config` which becomes available once a Flask context is created.
+The challenge with working with Elasticsearch is that it is not wrapped by a Flask extension, and cannot be initialized in a global scope as many other extensions. The only way to access this variable is through `app.config` which becomes available once a Flask context is created.
 
 
 ```python
@@ -200,7 +200,7 @@ app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
 
 ```
 
-If you are using blueprints and a factory function, Elasticsearch configurations will only be accessbile once `create_app()` function has been invoked.
+If you are using blueprints and a factory function, Elasticsearch configurations will only be accessible once `create_app()` function has been invoked.
 
 ```python
 # app/__init__.py: Elasticsearch with a factory function
@@ -219,9 +219,9 @@ def create_app(config_class=Config):
 
 ## Generic Implementation Of Search Functionality
 
-The assumption here is that we are not going to limit ourselves to one model when searching. The search functionality is going to be open in the sense that any model can be used in the search query. Also, it is best not to limit ourselves to only Elasticsearch for this functionality. There are a handful powerful other search engines that we can use. Our implementation is going to be one that is open to possible switch to another search engine. 
+The assumption here is that we are not going to limit ourselves to one model when searching. The search functionality is going to be open in the sense that any model can be used in the search query. Also, it is best not to limit ourselves to only Elasticsearch for this functionality. There are a handful of powerful other search engines that we can use. Our implementation is going to be open to a possible switch to another search engine. 
 
-The first attempted to get this rolling is to indentify what model and what fields in this model we would like to index. How can this be done? Well, we can define an attribute called `__searchable__` which lists all the fields we would need included in the index.
+The first attempt to get this rolling is to identify what model and what fields in this model we would like to index. How can this be done? Well, we can define an attribute called `__searchable__` which lists all the fields we would need to be included in the index.
 
 ```python
 # app/modes.py: Identify model and fields to be indexed
@@ -234,7 +234,7 @@ class Post(db.Model):
     # ...
 ```
 
-Next, we can define all indexing, deletion and querying of a model in a `search` module following _the principal of separation of concerns_. 
+Next, we can define all indexing, deletion, and querying of a model in a `search` module following _the principle of separation of concerns_. 
 
 ```python
 # app/search: Implement search functionality
@@ -242,11 +242,11 @@ Next, we can define all indexing, deletion and querying of a model in a `search`
 from app import app
 
 '''
-If using factory function, you can import the current_app from flask as:
+If using the factory function, you can import the current_app from Flask as:
 
 from flask import current_app
 
-Then replace every instances of `app.` with `curent_app.`
+Then replace every instance of `app.` with `curent_app.`
 '''
 
 def add_to_index(index, model):
@@ -262,9 +262,9 @@ def add_to_index(index, model):
 
 ```
 
-To ensure that the search functionality runs even when Elasticsearch has not been configured, we begin by checking if there is any configurations set, without which we return nothing. This is only a matter of convinience. If the configurations are set, then we loop through the fields listed in `__searchable__` and pass those as payloads to a document's body whose ID is that of the model (uniquely convinient) and an index we can appropriately choose for ourselves (you will see this later). 
+To ensure that the search functionality runs even when Elasticsearch has not been configured, we begin by checking if there are any configurations set, without which we return nothing. This is only a matter of convenience. If the configurations are set, then we loop through the fields listed in `__searchable__` and pass those as payloads to a document's body whose ID is that of the model (uniquely convenient) and an index we can appropriately choose for ourselves (you will see this later). 
 
-In the context above, all data in the `body` field of the `Post` model will be added as a document that can be searched. Refer to the section [Understanding Elasticsearch](#understanding-elasticsearch) to see how documents can be added to an index prior to a search query. Using the same ID for SQLAlchemy and Elasticsearch is super convinient when running searches since we can link the two databases. 
+In the context above, all data in the `body` field of the `Post` model will be added as a document that can be searched. Refer to the section [Understanding Elasticsearch](#understanding-elasticsearch) to see how documents can be added to an index before a search query. Using the same ID for SQLAlchemy and Elasticsearch is super convenient when running searches since we can link the two databases. 
 
 
 ```python
@@ -279,7 +279,7 @@ def remove_from_index(index, model):
 
 ```
 
-The `elasticsearch.delete()` function is to be used to delete a document based on its ID, which is conviniently similar in both databases.
+The `elasticsearch.delete()` function is to be used to delete a document based on its ID, which is conveniently similar in both databases.
 
 ```python
 # app/search.py: Query function
@@ -299,9 +299,9 @@ def query_index(index, query, page, per_page):
 
 ```
 
-The `query_index` function takes an index name together with the query to search for along with pagination controls. Unlike [before](#understanding-elasticsearch) where you saw the use of `match`, above, we are using `multi-match` which can search across multiple fields. The use of `*` in the key `fields` basically tells Elasticsearch to took in all fields. 
+The `query_index` function takes an index name together with the query to search for along with pagination controls. Unlike [before](#understanding-elasticsearch) where you saw the use of `match`, above, we are using `multi-match` which can search across multiple fields. The use of `*` in the key `fields` basically tells Elasticsearch to look in all fields. 
 
-Unfortunately, Elasticsearch does not provide a nice pagination control as is the case with SQLAlchemy. The implementation implements a custom logic to add pagination. The re `return` statement returns two items, (1) A list of IDs from the search results and (2) the total number of results. Refer to the search results of the [Understanding Elasticsearch](#understanding-elasticsearch) section to learn more.
+Unfortunately, Elasticsearch does not provide a nice pagination control as is the case with SQLAlchemy. The implementation implements a custom logic to add pagination. The `return` statement returns two items, (1) A list of IDs from the search results and (2) the total number of results. Refer to the search results of the [Understanding Elasticsearch](#understanding-elasticsearch) section to learn more.
 
 Let us test our work on a Flask shell:
 
@@ -328,11 +328,11 @@ Our query returned a total of 9 results. When we asked for page 1 with 20 items,
 
 ## Combining The Search Functionality With SQLAlchemy
 
-What we saw above is fantastic, but it is less than ideal. The search results should return the actual model(s) instead of IDs. With models, we can pass them to the templates for rendering. So, we need to find a way to replace the IDs with the actual models. Another obvious problem from our example above is that we have to explicitly issue an indexing call so that posts can be added or removed. A more convinient way would be for the application to automatically trigger such calls as soon as there is a change made to the SQLAlchemy database.
+What we saw above is fantastic, but it is less than ideal. The search results should return the actual model(s) instead of IDs. With models, we can pass them to the templates for rendering. So, we need to find a way to replace the IDs with the actual models. Another obvious problem from our example above is that we have to explicitly issue an indexing call so that posts can be added or removed. A more convenient way would be for the application to automatically trigger such calls as soon as there is a change made to the SQLAlchemy database.
 
 ### SearchableMixin Class
 
-We are going to utilize a _mixin_ class to solve the two-mentioned challenges of our prior example. A _mixin_ class provides method implementation for reuse by multiple related child classes but is not considered a base class itself. The _SearchableMixin_ class is going to act as a link between SQLAlchemy and Elasticsearch databases to automatically manage associated full-text search index.
+We are going to utilize a _mixin_ class to solve the two-mentioned challenges of our prior example. A _mixin_ class provides method implementation for reuse by multiple related child classes but is not considered a base class itself. The _SearchableMixin_ class is going to act as a link between SQLAlchemy and Elasticsearch databases to automatically manage the associated full-text search index.
 
 ```python
 # app/models.py: SearchableMixin class
@@ -354,7 +354,7 @@ class SearchableMixin(object):
             db.case(when, value=cls.id)), total
 ```
 
-The `search()` function uses a class method to associate it with a given class rather than a particular instance. Instead of using `self` as is normally the case with a class, notice how I use the `cls` to make it clear that this method receives a class and not an instance as its first argument. Once it is attached to a model, say the `Post` model, the search method will be invocked as `Post.search()` without needing an actual instance of the class `Post`.
+The `search()` function uses a class method to associate it with a given class rather than a particular instance. Instead of using `self` as is normally the case with a class, notice how I use the `cls` to make it clear that this method receives a class and not an instance as its first argument. Once it is attached to a model, say the `Post` model, the search method will be invoked as `Post.search()` without needing an actual instance of the class `Post`.
 
 To begin, you will notice that the `cls.__tablename__` is passed to `query_index` as the index name. This is going to be a convention such that the names assigned by SQLAlchemy to a model shall be used as the index name. The returned query is a **series of positional elements** (rather than a list) and their total number. We have used `case` from SQLAlchemy to retrieve the list of objects by their IDs in the order they were given. This is so because Elasticsearch returns a sorted query from more to less relevant.
 
@@ -373,7 +373,7 @@ stmt = select(users_table).\
         )
 ```
 
-We loop through the list of IDs to retrieve their positions, which is what we pass to the `when` dictionary. Prior to Flask-SQLAlchemy V3.0.2, the `case()` method took a list rather than a dictionary. Instead of returning a series of positional elements, we'd get a list of objects by their IDs.
+We loop through the list of IDs to retrieve their positions, which is what we pass to the `when` dictionary. Before Flask-SQLAlchemy V3.0.2, the `case()` method took a list rather than a dictionary. Instead of returning a series of positional elements, we'd get a list of objects by their IDs.
 
 
 ```python
@@ -419,11 +419,11 @@ class SearchableMixin(object):
         session._changes = None
 ```
 
-Just before a session is committed, the `before_commit()` handler will allow us to check what object has been added, modified or deleted through `session.new`, `session.dirty` and `session.delete` respectively. These objects are not going to be available anymore after a commit is made. `session._changes` dictionary allows us to save the objects and have them survive a commit since we shall be using them to update the Elasticsearch index. 
+Just before a session is committed, the `before_commit()` handler will allow us to check what object has been added, modified, or deleted through `session.new`, `session.dirty` and `session.delete` respectively. These objects are not going to be available anymore after a commit is made. `session._changes` dictionary allows us to save the objects and have them survive a commit since we shall be using them to update the Elasticsearch index. 
 
-As soon as a session has been successfully committed, this is the proper time to make changes on the Elasticsearch side of things using `after_commit()`. We begin by iterating over what has been added, modified or deleted and make corresponding calls to the indexing functions in the `search` module for objects with `SearchableMixin`.
+As soon as a session has been successfully committed, this is the proper time to make changes on the Elasticsearch side of things using `after_commit()`. We begin by iterating over what has been added, modified, or deleted and make corresponding calls to the indexing functions in the `search` module for objects with `SearchableMixin`.
 
-We can include a simple `reindex()` helper method that can allow us to refresh an index with all the data in the relational side. You may experience instances where you have to manually update the Elasticsearch index to ensure the latest changes are effected. 
+We can include a simple `reindex()` helper method that can allow us to refresh an index with all the data on the relational side. You may experience instances where you have to manually update the Elasticsearch index to ensure the latest changes are applied. 
 
 ```python
 class SearchabelMixin(object):
@@ -435,7 +435,7 @@ class SearchabelMixin(object):
             add_to_index(cls.__tablename__, obj)
 ```
 
-Given that `reindex` is a class method, you can run `Model.reindex()` to update the Elasticsearh index. Finally, to ensure that SQLAlchemy listens to database changes events, we can call the function `db.event.listen()` from SQLAlchemy. This function serves to call `before_commit` and `after_commit` methods before and after each commit respectively. 
+Given that `reindex` is a class method, you can run `Model.reindex()` to update the Elasticsearch index. Finally, to ensure that SQLAlchemy listens to database change events, we can call the function `db.event.listen()` from SQLAlchemy. This function serves to call `before_commit` and `after_commit` methods before and after each commit respectively. 
 
 ```python
 # app/models.py: Listen to database changes
@@ -456,7 +456,7 @@ class Post(SearchableMixin, db.Model):
     # ...
 ```
 
-With this minor change to the `Post` model, we can maintain a full text-search for posts. Let us begin by initializing all the index from the posts currently in the database:
+With this minor change to the `Post` model, we can maintain a full text search for posts. Let us begin by initializing all the indexes from the posts currently in the database:
 
 ```python
 >>> Post.reindex()
@@ -475,7 +475,7 @@ And to search, we can do:
 
 ## Define The Search Form
 
-Everthing we have done so far has been through the terminal. To complete this feature, we now need to provide a more user-friendly form that will allow users to search for posts in the application. Common across web browsers, search results uses the `q` argument in the URL. For example, to search for `gitauharrison` on the browser, the search URL pointing to the results would look like `https://www.google.com/search?q=gitauharrison`. Let us begin by defining such a form:
+Everything we have done so far has been through the terminal. To complete this feature, we now need to provide a more user-friendly form that will allow users to search for posts in the application. Common across web browsers, search results use the `q` argument in the URL. For example, to search for `gitauharrison` on the browser, the search URL pointing to the results would look like `https://www.google.com/search?q=gitauharrison`. Let us begin by defining such a form:
 
 ```python
 # app/forms.py: Search form
@@ -501,7 +501,7 @@ A deviation from how you may be working with forms, a search form typically send
 
 By default, all forms have CSRF protection enabled. However, for clickable search links to work, this feature needs to be disabled hence why we are setting `meta` to `{'csrf': False}`. This tells Flask-wtf to bypass all csrf validation for this form.
 
-Curious that this form lacks a submit button? Well, since it is a text field, a simple press of the **Enter** key on the keyboard will submit a user's input. That is whey we do not necessarily need a submit button.
+Curious that this form lacks a submit button? Well, since it is a text field, a simple press of the **Enter** key on the keyboard will submit a user's input. That is why we do not necessarily need a submit button.
 
 
 ## Access The Search Form Before Each Request
@@ -509,7 +509,7 @@ Curious that this form lacks a submit button? Well, since it is a text field, a 
 In this application, we are going to put the search form in the navigation bar, meaning it will be located in the `base.html` file and appear across all other templates. To avoid possible duplication of code where we have to instantiate the `SearchForm` object in each route and pass it to relevant templates, we can use the `before_request` handler.
 
 ```python
-# app/routes.py: Instatiating the search form before each request
+# app/routes.py: Instantiating the search form before each request
 
 from flask import g
 from app.forms import SearchForm
@@ -520,13 +520,13 @@ def before_request():
     g.search_form = SearchForm()
 ```
 
-Flask provides the `g` object. It is a variable that acts as storage. Data stored in this variable can persist through the life of request. What will happen is that when a call to this handler ends and Flask invokes the view function responsible of rendering the search form, the `g` object will remain unchanged and still have the form attached to it. 
+Flask provides the `g` object. It is a variable that acts as storage. Data stored in this variable can persist through the life of a request. What will happen is that when a call to this handler ends and Flask invokes the view function responsible for rendering the search form, the `g` object will remain unchanged and still have the form attached to it. 
 
-Note that the `g` variable is specific to each request. If your application is serving multiple requests to clients (browsers), you can rely on this object to provide private storage for each request. You do not have to worry about one client's data being similar to data requestd by another client.
+Note that the `g` variable is specific to each request. If your application is serving multiple requests to clients (browsers), you can rely on this object to provide private storage for each request. You do not have to worry about one client's data being similar to data requested by another client.
 
 ## Display The Search Form
 
-This form is going to be in the re-usable navigation bar. 
+This form is going to be in the reusable navigation bar. 
 
 ```html
 <!-- app/templates/base.html: Display the search form -->
@@ -561,12 +561,12 @@ This form is going to be in the re-usable navigation bar.
 </nav>
 ```
 
-The display of the form is conveniently limited to only when the `g.search_form` has been defined. This prevents pages such as the error pages from having this. Notice that the request method is `GET` and that that the view function to handle this request is specifically `search`. Typically, we would leave this blank so that the default URL handles this.
+The display of the form is conveniently limited to only when the `g.search_form` has been defined. This prevents pages such as the error pages from having this. Notice that the request method is `GET` and that the view function to handle this request is specifically `search`. Typically, we would leave this blank so that the default URL handles this.
 
 
 ## Render The Search Form
 
-To complete the last functionality, we now need to define the `search()` view function that will handle of search form submissions. 
+To complete the last functionality, we now need to define the `search()` view function that will handle search form submissions. 
 
 ```python
 #app/search.py: Search view function
@@ -593,7 +593,7 @@ def search():
 
 The `form.validate()` has been used to primarily validate field values without checking how the data was submitted. Remember, our search form lacks the submit button. The function `form.validate_on_submit()` cannot be used here because it is ideal for `POST` requests where it validates field data upon submission.
 
-Pagination is cleverly handled using the number of pages available depending on the outcome of the search results. Remember, Elasticsearch does not have inbuilt pagination like SQLAlchemy does. The `search.html` template will then look like this:
+Pagination is cleverly handled using the number of pages available depending on the outcome of the search results. Remember, Elasticsearch does not have inbuilt pagination as SQLAlchemy does. The `search.html` template will then look like this:
 
 ```html
 <!-- app/templates/search.html: Display search results -->
