@@ -380,3 +380,85 @@ class SearchableMixin(object):
 
 The latest version of Flask-sqlalchemy will return the error `sqlalchemy.exc.ArgumentError: The "whens" argument to case(), when referring to a sequence of items, is now passed as a series of positional elements, rather than as a list.` if a list is used.
 
+To trigger changes from the SQLAlchemy database such as before and after a commit is made, we can define class methods for each.
+
+```python
+# app/models.py: Before and after commit
+
+class SearchableMixin(object):
+    # ...
+
+    @classmethod
+    def before_commit(cls, session):
+        session._changes = {
+            'add': list(session.new),
+            'update': list(session.dirty),
+            'delete': list(session.deleted)
+        }
+    
+    @classmethod
+    def after_commit(cls, session):
+        for obj in session._changes['add']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['update']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['delete']:
+            if isinstance(obj, SearchableMixin):
+                remove_from_index(obj.__tablename__, obj)
+        session._changes = None
+```
+
+Just before a session is committed, the `before_commit()` handler will allow us to check what object has been added, modified or deleted through `session.new`, `session.dirty` and `session.delete` respectively. These objects are not going to be available anymore after a commit is made. `session._changes` dictionary allows us to save the objects and have them survive a commit since we shall be using them to update the Elasticsearch index. 
+
+As soon as a session has been successfully committed, this is the proper time to make changes on the Elasticsearch side of things using `after_commit()`. We begin by iterating over what has been added, modified or deleted and make corresponding calls to the indexing functions in the `search` module for objects with `SearchableMixin`.
+
+We can include a simple `reindex()` helper method that can allow us to refresh an index with all the data in the relational side. You may experience instances where you have to manually update the Elasticsearch index to ensure the latest changes are effected. 
+
+```python
+class SearchabelMixin(object):
+    # ...
+
+    @classmethod
+    def reindex(cls):
+        for obj in cls.query:
+            add_to_index(cls.__tablename__, obj)
+```
+
+Given that `reindex` is a class method, you can run `Model.reindex()` to update the Elasticsearh index. Finally, to ensure that SQLAlchemy listens to database changes events, we can call the function `db.event.listen()` from SQLAlchemy. This function serves to call `before_commit` and `after_commit` methods before and after each commit respectively. 
+
+```python
+# app/models.py: Listen to database changes
+
+class SearchableMixin(object):
+    # ...
+
+db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)
+db.event.listen(db.session, 'after_commit', SearchableMixin.after_commit)
+```
+
+To ensure that `SearchableMixin` is fully incorporated into a model, we can pass it as a class argument to the select model as follows:
+
+```python
+# app/models.py: Integrate SearchableMixin into a model
+
+class Post(SearchableMixin, db.Model):
+    # ...
+```
+
+With this minor change to the `Post` model, we can maintain a full text-search for posts. Let us begin by initializing all the index from the posts currently in the database:
+
+```python
+>>> Post.reindex()
+```
+
+And to search, we can do:
+
+```python
+>>> query, total = Post.search('test the Japan', 1, 20)
+>>> total
+7
+>>> query.all()
+[Post: test comment, Post: Another one test for you, Post: Why the diss, Post: Japan the great country, Post: I am the greatest, Post: Two of the tests were not done well, Post: There has got to be the best way around it]
+```
