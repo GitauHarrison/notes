@@ -20,6 +20,15 @@ As you learnt in the [installation guide](install_elasticsearch_localhost.md), s
     - [Nodes](#nodes)
     - [Shards](#shards)
 - [Build A Simple Flask App](#build-a-simple-flask-app)
+- [Understanding Elasticsearch](#understanding-elasticsearch)
+- [Configure Elasticsearch](#configure-elasticsearch)
+- [Generic Implementation Of Search Functionality](#generic-implementation-of-search-functionality)
+- [Combining The Search Functionality With SQLAlchemy](#combining-the-search-functionality-with-sqlalchemy)
+    - [SearchableMixin Class](#searchablemixin-class)
+- [Define The Search Form](#define-the-search-form)
+- [Access The Search Form Before Each Request](#access-the-search-form-before-each-request)
+- [Display The Search Form](#display-the-search-form)
+- [Render The Search Form](#render-the-search-form)
 
 
 ## Overview
