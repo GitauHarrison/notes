@@ -1,6 +1,6 @@
 # All Notes
 
-This repository holds all the notes of the things I have learnt. Anyone else can use it to learn the very same things. 
+This repository holds all the notes of the things I have learnt. You can use it for your benefit.
 
 ## Flask-focused Articles
 - [Getting started with Flask](https://github.com/GitauHarrison/getting-started-with-flask)
@@ -52,6 +52,7 @@ This repository holds all the notes of the things I have learnt. Anyone else can
 42. [Email verification using SendGrid, Verify and Flask](/twilio_sendgrid/04_email_verification.md)
 43. [Unit Testing](/unit_testing/unit_testing_overview.md)
 44. [Add Tags To Your Flask Blog Posts](tags_flask_blog_posts.md)
+45. [APIs in Flask](/api_flask/00_overview.md)
 
 ## Django Articles
 
