@@ -1,6 +1,8 @@
 # Resource Representations
 
-The first aspect we need to decide on when implementing an API is the representation of its resources. In this chapter, the API we are building is going to work with users and posts. So, we will need to decide what the representation of user resources and post resources are going to be.
+The first aspect we need to decide on when implementing an API is the representation of its resources. In this chapter, the API we are building is going to work with users and posts. So, we will need to decide what the representation of user resources and post resources are going to be. 
+
+Browse the completed code on [GitHub](https://github.com/GitauHarrison/api_in_flask/tree/v4.0.0-resource-representations).
 
 For your reference, these are the topics in our discussion:
 
@@ -55,7 +57,7 @@ The `_links` section represents the hypermedia principle of REST. If you recall,
 ## Serialization and Deserialization Setup Of The User Object
 
 
-JSON is text or string. It is especially ideal when working with objects that you want to convert into a string or strings that you want to convert to an object. Such an object will be written as a string using the JavaScript Object Notation. The process of converting an object to a string is called **serialization** whereas the inverse (string -> object) is called **deserialization**.
+JSON is text or string. It is especially ideal when working with a string or strings that you want to convert to an object. Such an object will be written as a string using the JavaScript Object Notation. The process of converting an object to a string is called **serialization** whereas the inverse (string -> object) is called **deserialization**.
 
 The nice thing about the JSON format is that it can easily be converted to a Python dictionary or list. Python provides the standard library `json` to take care of serialization and deserialization. The first thing that we are going to do is to retrieve a user object as a Python dictionary.
 
