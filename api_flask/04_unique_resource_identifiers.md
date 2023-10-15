@@ -49,7 +49,7 @@ def get_user(id):
     return jsonify(User.query.get_or_404(id).to_dict())
 ```
 
-The view function `get_user()` receives a dynamic `id` argument that is used to return a `User` object if it exists. The variant `get_or_404()` method will abort the requests and return a 404 error to the client instead of `None` if the object does not exist. The advantage of `get_or_404()` over `get_()` is that it removes the need to check the result of the query, thereby simplifying the logic in view functions.
+The view function `get_user()` receives a dynamic `id` argument that is used to return a `User` object if it exists. The variant `get_or_404()` method will abort the requests and return a 404 error to the client instead of `None` if the object does not exist. The advantage of `get_or_404()` over `get()` is that it removes the need to check the result of the query, thereby simplifying the logic in view functions.
 
 You will notice that if you provide a large `id` value, the 404 error will be returned, but in HTML format. Later, we will learn how to return the 404 error in JSON format.
 

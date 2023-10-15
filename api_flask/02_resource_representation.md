@@ -150,7 +150,7 @@ A mixin class provides a way to extend the functionality of classes without the 
 
 class EatMixin:
     def favourite_meal(self):
-        print('I like pork and rice.')
+        print('But, I like pork and rice.\n\n')
 
 
 class Human:
@@ -169,18 +169,24 @@ class Parent(Human, EatMixin):
 
 child = Child()
 child.school('Nairobi Homeschool', 'Fries and Soda')
+child.favourite_meal()
 
 worker = Parent()
 worker.work('United Nations, Nairobi', 'beans and potatoes')
+worker.favourite_meal()
 
 # -----
 # Output
 # -----
 
-These are my favorite meals: 
+These are my favourite meals: 
 
 At  Nairobi Homeschool we are served  Fries and Soda
+But, I like pork and rice.
+
+
 At  United Nations, Nairobi we eat  beans and potatoes
+But, I like pork and rice.
 ```
 
 We have defined a mixin class called `EatMixin` that provides the `favourite_meal()` method. The base `Human` class, together with the `EatMixin` class, are inherited by `Child` and `Parent` classes, giving them the ability to tell us what their favorite meals are at school and work. The mixin class here serves to provide additional behavior in other classes.
