@@ -18,6 +18,8 @@ For your reference, these are the topics in our discussion:
 
 ### Table Of Content
 
+This article is broken down into the following subsections:
+
 - [Error Representation](#error-representation)
 - [Error Response](#error-response)
 - [Bad Request Error](#bad-request-error)

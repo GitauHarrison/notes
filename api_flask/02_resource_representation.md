@@ -17,10 +17,12 @@ For your reference, these are the topics in our discussion:
 
 ### Table Of Content
 
+This article is broken down into the following subsections:
+
 - [Overview](#overview)
 - [Serialization and Deserialization Setup Of The User Object](#serialization-and-deserialization-setup-of-the-user-object)
 - [Representing Collections Of Users](#representing-collections-of-users)
-    - [Understanding Python Mixin](#understanding-python-mixin)
+    - [Understanding The Python Mixin Class](#understanding-the-python-mixin-class)
     - [PaginatedAPIMixin Class](#paginatedapimixin-class)
 - [Serialization and Deserialization Setup Of The Post Object](#serialization-and-deserialization-setup-of-the-post-object)
 - [Representing Collections Of Posts](#representing-collections-of-posts)
@@ -139,7 +141,7 @@ The representation shown above returns a single resource. What about when we wan
 Above, `items` is a list of user resources, each defined in the previous section. The `_meta` section includes metadata for the collection that the client might find useful in presenting pagination controls to the user. The `_links` section defines relevant links including a link to the collection itself, and the previous and next page links, also to help the client paginate the listing.
 
 
-### Understanding Python Mixin
+### Understanding The Python Mixin Class
 
 A mixin class provides a way to extend the functionality of classes without the need for traditional inheritance. It offers a specific set of behaviors or functionality that can be easily incorporated into other classes. It focuses on providing additional features that can be combined with multiple classes. Let us see the example below:
 
@@ -230,7 +232,7 @@ We are not going to have any routes that require a client to return a list of us
 
 ## Serialization and Deserialization Setup Of The Post Object
 
-Just like we did with the `User` object, we also need to extend the functionality that helps us to work with the Python representation of the `Post` object. If you recall, we began by converting a `User` object to a Python dictionary, which would later be converted to JSON. We also considered the reverse direction where we receive a user request and need to convert that into a `User` object. We need to do the same for the `Post` object too.
+Just like we did with the `User` object, we also need to extend the functionality that helps us to work with the Python representation of the `Post` object. If you recall, we began by converting a `User` object to a Python dictionary, which would later be converted to JSON. We also considered the reverse direction where we receive a client request and need to convert that into a `User` object. We need to do the same for the `Post` object too.
 
 ```python
 # app/models.py: Python representation of the Post object
@@ -269,7 +271,7 @@ class Post(db.Model):
 
 ## Representing Collections Of Posts
 
-The `PaginatedAPIMIxin` is so generic that it allows us to implement the same class on the `Post` model. To get a paginated response, we will need to return a list of post resources and the relevant pagination controls such as the current page of posts, the number of posts on a page, the total number of post pages, the total number of posts and the links to the next or previous pages. Ensure you add the `PaginatedAPIMIxin` to the `Post` model as follows:
+The `PaginatedAPIMIxin` is so generic that it allows us to implement the same class on the `Post` model. To get a paginated response, we will need to return a list of post resources and the relevant pagination controls such as the current page of posts, the number of posts on a page, the total number of post pages, the total number of posts and the links to the next or previous pages. Ensure you inherit the `PaginatedAPIMIxin` class to the `Post` model as follows:
 
 ```python
 # app/models.py: Representing a paginated response of a collection of post objects

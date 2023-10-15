@@ -15,6 +15,8 @@ For your reference, these are the topics in our discussion:
 
 ### Table Of Content
 
+This article is broken down into the following subsections:
+
 - [Overview](#overview)
 - [Create An API Blueprint](#create-an-api-blueprint)
     - [Users Resources](#users-resources)
