@@ -21,6 +21,11 @@ For your reference, these are the topics in our discussion:
 This article is broken down into the following subsections:
 
 - [Overview](#overview)
+- [Working With Tokens](#working-with-tokens)
+- [Token Requests](#token-requests)
+- [Protecting API Endpoints With Tokens](#protecting-api-endpoints-with-tokens)
+- [Revoking Tokens](#revoking-tokens)
+
 
 
 ## Overview
