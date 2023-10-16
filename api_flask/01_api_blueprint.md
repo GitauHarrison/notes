@@ -49,7 +49,7 @@ Create a new file called `__init__.py` in the new directory:
 Update this new file with the following initialization:
 
 ```python
-# app/__init__.py: Initialize the API blueprint
+# app/api/__init__.py: Initialize the API blueprint
 
 from flask import Blueprint
 
