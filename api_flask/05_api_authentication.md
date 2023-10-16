@@ -78,9 +78,9 @@ The `get_token()` method generates a very random token for the user. Before a ne
 
 Intentionally, we have created a `revoke_token()` method to improve security. Should we want to revoke a token immediately instead of relying on the expiration feature only, we can do so by invoking this function.
 
-The static `check_token()` method verifies a token before returning a user. Should the token be invalid or expired, it will return `None`, otherwise, it would return he actual user.
+The static `check_token()` method verifies a token before returning a user. Should the token be invalid or expired, it will return `None`.
 
-Since these changes update the schema of the `User` model, we need to generate a new database migration and upgrade it:
+Since these changes update the schema of the `User` model, we need to generate a new migration and upgrade the database:
 
 ```python
 (venv)$ flask db migrate -m 'user tokens'
@@ -89,13 +89,13 @@ Since these changes update the schema of the `User` model, we need to generate a
 
 ## Token Requests
 
-The real power of APIs is that any client, be it a smartphone or a single-page application can interact with a backend. Therefore, when developing APIs, we have to consider that our clients are not always going to be web browsers. When these specialized clients need to access API services, they begin by requesting a token (which is similar to logging in in web browsers). To implement the token authentication mechanism, we can use the [Flask-HTTPAuth](https://flask-httpauth.readthedocs.io/) package:
+The real power of APIs is that any client, be it a smartphone or a single-page application, can interact with a backend. Therefore, when developing APIs, we have to consider that our clients are not always going to be web browsers. When these specialized clients need to access API services, they begin by requesting a token (which is similar to logging in in web browsers). To implement the token authentication mechanism, we can use the [Flask-HTTPAuth](https://flask-httpauth.readthedocs.io/) package:
 
 ```python
 (venv)$ pip3 install flask-httpauth
 ```
 
-There are different API authentication mechanisms that Flask-HTTPAuth supports. In this article, we shall use the [HTTP Basic Authentication (BA)](https://en.wikipedia.org/wiki/Basic_access_authentication) mechanism in which the client sends the user credentials in a standard [Authorization](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) HTTP header (you may want to check out [Digest Access Authentication](https://en.wikipedia.org/wiki/Digest_access_authentication)). For your information, the HTTP BA transaction requires a client to provide a user's username and password when making a request. The syntax of such an HTTP request header is going to be:
+There are different API authentication mechanisms that Flask-HTTPAuth supports. In this article, we shall use the [HTTP Basic Authentication (BA)](https://en.wikipedia.org/wiki/Basic_access_authentication) mechanism in which the client sends the user credentials in a standard [Authorization](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) HTTP header (you may want to check out [Digest Access Authentication](https://en.wikipedia.org/wiki/Digest_access_authentication) too). For your information, the HTTP BA transaction requires a client to provide a user's username and password when making a request. The syntax of such an HTTP request header is going to be:
 
 ```http
 Authorization: <auth-scheme> <authorization-parameters>
@@ -207,7 +207,7 @@ The status code has changed to 200 which is the status code for a successful req
 
 ## Protecting API Endpoints With Tokens
 
-With token generation in place, we can now verify these tokens in our endpoints. How can token verification happen? Flask-HTTPAuth can handle this for us using the `HTTPTokeAuth` class.
+With token generation in place, we can now verify these tokens in our endpoints. How can token verification happen? Flask-HTTPAuth can handle this for us using the `HTTPTokenAuth` class.
 
 ```python
 from flask_httpauth import HTTPTokenAuth
@@ -234,7 +234,7 @@ Flask-HTTPAuth uses the `verify_token` decorated function to verify a token. Bes
 To protect endpoints with tokens, we can use the `@token_auth.login_required` decorator as follows:
 
 ```python
-# app/api/routes.py: Project endpoints with token authentication
+# app/api/routes.py: Protect endpoints with token authentication
 
 from app.api.auth import token_auth
 
