@@ -51,7 +51,7 @@ def get_user(id):
 
 The view function `get_user()` receives a dynamic `id` argument that is used to return a `User` object if it exists. The variant `get_or_404()` method will abort the requests and return a 404 error to the client instead of `None` if the object does not exist. The advantage of `get_or_404()` over `get()` is that it removes the need to check the result of the query, thereby simplifying the logic in view functions.
 
-You will notice that if you provide a large `id` value, the 404 error will be returned, but in HTML format. Later, we will learn how to return the 404 error in JSON format.
+You will notice that if you provide a large `id` value, the 404 error will be returned, but in HTML format. [Later](/api_flask/06_api_friendly_error_messages.md), we will learn how to return the 404 error in JSON format.
 
 We begin by first getting a Python dictionary representation of the selected `User` object and then use Flask's `jsonify()` function to convert the dictionary to JSON format to return to the client. The same can be applied to a `Post` object.
 
@@ -328,11 +328,11 @@ def create_user():
 
 ```
 
-Flask provides the `get_json()` method to extact JSON from a request and return a Python dictionary or `None` if JSON data is not found in the request. In the event `None` is returned, this will cause an error in the API. To ensure that we always get a dictionary, we provide the fallback `{}` such that the new data expression is `get_json() or {}`.
+Flask provides the `get_json()` method to extract JSON from a request and return a Python dictionary or `None` if JSON data is not found in the request. In the event `None` is returned, this will cause an error in the API. To ensure that we always get a dictionary, we provide the fallback `{}` such that the new data expression is `get_json() or {}`.
 
-To register a new user, we make user we got all the information by checking if the mandatory three fields have been included (the `about_me` field is not mandatory). Also, we make sure that the data being submitted does not exist in the `User` table (meaning they are being used by another user). Should any of those checks fail, we provide an informative error message to the client. 
+To register a new user, we make sure we got all the information by checking if the mandatory three fields have been included (the `about_me` field is not mandatory). Also, we make sure that the data being submitted does not exist in the `User` table (meaning they are being used by another user). Should any of those checks fail, we provide an informative error message to the client. 
 
-Once all validations are passed, we can now register a new user. The argument `new_user` is set to True to allow for the password which was not part of the user representation.
+Once all validations are passed, we can now register a new user. The argument `new_user` is set to True to allow for the addition of the password which originally was not part of the user representation.
 
 We, then, need to return this user's response so the `to_dict()` returns the payload. The status code for a payload that creates a new resource or entity is 201. The HTTP protocol requires that a 201 response includes a `Location` header that is set to the URL of the new resource.
 
@@ -341,7 +341,7 @@ Below, let us see how we can register a new user from the command-line using HTT
 ```python
 # Remember to remove the \ (it has been used to visually break the line)
 
-(venv)$ http POST http://localhost:5000/api/users usename=muthoni \
+(venv)$ http POST http://localhost:5000/api/users username=muthoni \
   password=muthoni123 email=muthoni@email.com \
   "about_me=I am learning what APIs are."
 
