@@ -45,9 +45,9 @@ Postman workspaces enable you to organize and work together on API projects with
 
 ## Create A Collection
 
-The essence of using a collection is to group related Postman requests to keep our workspace organized. We are going to test the endpoints of our chat application. It, therefore, makes sense to group all the requests we will be testing into a collection. All requests made in Postman will typically show up under your History tab on the left sidebar of your application.
+The essence of using a collection is to group related Postman requests to keep our workspace organized. We are going to test the endpoints of our chat application. It, therefore, makes sense to group all the requests we will be testing into a collection. All requests made in Postman will typically show up under your History tab on the left sidebar of your application. While that is okay for a small number of endpoints, things can quickly get out of hand and become disorganized when we rely on the History of where we have been.
 
-First, let us begin by creating a workspace.
+First, let us begin by creating a collection.
 
 ![Create collection](/images/apis_in_flask/create_collection.png)
 
@@ -92,7 +92,7 @@ Let us begin by creating our collection's variables.
 
 ![Acess collecton variables](/images/apis_in_flask/access_collection_variables.png)
 
-Let us begin by creating our first variable `base_url`.
+Our first variable will be `base_url`.
 
 ![Base url variable](/images/apis_in_flask/base_url_variable.png)
 
@@ -124,7 +124,7 @@ Finally, let's update the body of the JSON with the key-value pairs of our colle
 
 ![Create user through endpoint](/images/apis_in_flask/create_user_through_endpoint.png)
 
-You will notice that a new entity has been created for you. Postman provides us with a pretty printed output of the 201 Created response.
+You will notice that a new entity will be created for you. Postman provides us with a pretty printed output of the 201 Created response.
 
 
 ### Generating Tokens
