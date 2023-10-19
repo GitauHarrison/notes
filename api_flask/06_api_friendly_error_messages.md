@@ -2,7 +2,7 @@
 
 While creating [unique resource identifiers](/api_flask/04_unique_resource_identifiers.md#retrieve-a-user-and-a-post) for users and posts, we noticed that if we try to query the backend for a user who does not exist in the database, say the `id` of the last user is `3` and we query for `id=4`, the error response was a 404 Not Found error in HTML format. The nice thing about APIs is that such errors can be overridden with JSON versions in the API blueprint. However, some errors handled by Flask still go through the error handlers that are globally registered for the application, and they continue to be HTML.
 
-Browse the completed code on [GitHub](https://github.com/GitauHarrison/api_in_flask/tree/v8.0.0-api-friendly-error-responses).
+Browse the completed code on [GitHub](https://github.com/GitauHarrison/api_in_flask/tree/v8.0.0-api-friendly-error-response).
 
 For your reference, these are the topics in our discussion:
 
