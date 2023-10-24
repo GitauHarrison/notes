@@ -1,6 +1,16 @@
 # Create Twilio SendGrid Account
 
 
+If you would like to check out other parts of the Twilio SendGrid series, you can find them below:
+
+- [SendGrid Overview](twilio_sendgrid/00_overview.md)
+- [Create A Twilio SendGrid Account](twilio_sendgrid/01_create_acccount.md)
+- [Send Emails Using Twilio SendGrid](twilio_sendgrid/02_send_emails_using_sendgrid.md)
+- [Receive Emails Using Twilio SendGrid](twilio_sendgrid/03_receive_emails_using_sendgrid.md)
+- [Verify An Email Address Using Twilio Sendgrid](twilio_sendgrid/04_email_verification.md)
+
+Is it your first time implementing email support in your Flask app? [Start here](/email_support_in_flask.md).
+
 ## Create Account
 
 To configure an email verification solution, you have to connect your Twilio and SendGrid accounts. [Click here to create a free account](https://signup.sendgrid.com/), which allows you to send up to 100 emails per day.

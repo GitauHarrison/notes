@@ -4,6 +4,27 @@ Many circumstances might require you to add email support to your application. I
 
 The completed project can be found on [GitHub](https://github.com/GitauHarrison/how-to-add-email-support-in-a-flask-app/). 
 
+If you would like to learn more about how to use a real email server especially in production, you can check out the Twilio SendGrid series below:
+
+- [SendGrid Overview](twilio_sendgrid/00_overview.md)
+- [Create A Twilio SendGrid Account](twilio_sendgrid/01_create_acccount.md)
+- [Send Emails Using Twilio SendGrid](twilio_sendgrid/02_send_emails_using_sendgrid.md)
+- [Receive Emails Using Twilio SendGrid](twilio_sendgrid/03_receive_emails_using_sendgrid.md)
+- [Verify An Email Address Using Twilio Sendgrid](twilio_sendgrid/04_email_verification.md)
+
+
+### Table Of Content
+
+- [Configure Flask-Mail](#configure-flask-mail)
+- [Add Email Server Details](#add-email-server-details)
+- [Using Flask-Mail](#using-flask-mail)
+- [Defining A Simple Email Framework](#defining-a-simple-email-framework)
+- [Request A Password Reset](#request-a-password-reset)
+- [Generating Password Reset Tokens](#generating-password-reset-tokens)
+- [Sending Password Reset Email](#sending-password-reset-email)
+- [Resetting A User's Password](#resetting-a-users-password)
+- [Asynchronous Emails](#asynchronous-emails)
+
 
 ## Configure Flask-Mail
 

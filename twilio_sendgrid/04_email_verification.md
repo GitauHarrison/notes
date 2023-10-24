@@ -1,8 +1,17 @@
 # Email Verification Using SendGrid, Verify, and Flask
 
-When you search for how to send emails in Flask, you will come across a ton of content on how to do so. Below, you will learn how to utilize Twilio SendGrid to send emails from a flask application.
+When you search for how to send emails in Flask, you will come across a ton of content on how to do so. Below, you will learn how to utilize Twilio SendGrid to send emails from a flask application. One possible use case for sending emails is when you want to enforce the authenticity of user emails in your application. A user who keys in their email address will be required to prove that they have access to the email by retrieving a token sent to their inbox.
 
-One possible use case for sending emails is when you want to enforce the authenticity of user emails in your application. A user who keys in their email address will be required to prove that they have access to the email by retrieving a token sent to their inbox.
+If you would like to check out other parts of the Twilio SendGrid series, you can find them below:
+
+- [SendGrid Overview](twilio_sendgrid/00_overview.md)
+- [Create A Twilio SendGrid Account](twilio_sendgrid/01_create_acccount.md)
+- [Send Emails Using Twilio SendGrid](twilio_sendgrid/02_send_emails_using_sendgrid.md)
+- [Receive Emails Using Twilio SendGrid](twilio_sendgrid/03_receive_emails_using_sendgrid.md)
+- [Verify An Email Address Using Twilio Sendgrid](twilio_sendgrid/04_email_verification.md)
+
+Is it your first time implementing email support in your Flask app? [Start here](/email_support_in_flask.md).
+
 
 ### Table of Contents
 
