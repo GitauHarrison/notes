@@ -90,7 +90,7 @@ class User(UserMixin, db.Model):
 
 The `include_email` flag has been used to determine if that field should be included in the representation or not. It will be shown to a user who requests their data.
 
-For the date and time fields, we have used the [ISO 8601]() format which Python's `datetime` can generate using the `isoformat()` method. But because we are using native `datetime` objects that are UTC and do not have timezone recorded in their state, we have added the `Z` at the end, which is ISO 8601's timezone code for UTC.
+For the date and time fields, we have used the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format which Python's `datetime` can generate using the `isoformat()` method. But because we are using native `datetime` objects that are UTC and do not have timezone recorded in their state, we have added the `Z` at the end, which is ISO 8601's timezone code for UTC.
 
 The `to_dict()` method converts a user object to a Python dictionary, which will then be converted to JSON. We can also parse through a client's representation in a request and convert it to a `User` object.
 
