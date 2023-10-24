@@ -4,7 +4,7 @@ Many circumstances might require you to add email support to your application. I
 
 The completed project can be found on [GitHub](https://github.com/GitauHarrison/how-to-add-email-support-in-a-flask-app/). 
 
-If you would like to learn more about how to use a real email server especially in production, you can check out the Twilio SendGrid series below:
+If you would like to learn more about how to use a real email server, especially in production, you can check out the Twilio SendGrid series below:
 
 - [SendGrid Overview](twilio_sendgrid/00_overview.md)
 - [Create A Twilio SendGrid Account](twilio_sendgrid/01_create_acccount.md)
@@ -200,7 +200,7 @@ Should the user be logged in to their account, there is no need to reset their p
 
 One of the things we need to pay attention to when sending links that have the potential to alter a user's account is security. For example, we have to make sure that the password reset link is sent to a user who truly owns the account. Additionally, we can ensure that we provide a time window during which this user needs to update their account. After this window, the link sent to them will expire and become unusable at which point they will need to generate another one.
 
-The links are going to be provisioned with a token, and this token will be validated before allowing the password change, as proof that the user that requested the email has access to the email address on the account. A very popular token standard for this type of process is the JSON Web Token or JWT. Let us see how it works:
+The links are going to be provisioned with a token, and this token will be validated before allowing the password change, as proof that the user who requested the email has access to the email address on the account. A very popular token standard for this type of process is the JSON Web Token or JWT. Let us see how it works:
 
 ```python
 (venv)$ flask shell
