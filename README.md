@@ -52,6 +52,7 @@ This repository holds all the notes of the things I have learnt. You can use it 
 43. [Unit Testing](/unit_testing/unit_testing_overview.md)
 44. [Add Tags To Your Flask Blog Posts](tags_flask_blog_posts.md)
 45. [APIs in Flask](/api_flask/00_overview.md)
+46. [API Testing Using API Fairy](/api_flask/08_api_testing_documentation_using_api_fairy.md)
 
 ## Django Articles
 

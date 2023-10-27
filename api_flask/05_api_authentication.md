@@ -14,6 +14,7 @@ For your reference, these are the topics in our discussion:
 - [API Authentication](05_api_authentication.md) (this article)
 - [API-friendly Error Messages](06_api_friendly_error_messages.md)
 - [API Testing Using Postman](07_api_testing_postman.md)
+- [API Testing And Documentation Using API Fairy](08_api_testing_documentation_using_api_fairy.md)
 
 
 ### Table Of Content

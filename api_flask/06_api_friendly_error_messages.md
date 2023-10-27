@@ -14,6 +14,7 @@ For your reference, these are the topics in our discussion:
 - [API Authentication](05_api_authentication.md)
 - [API-friendly Error Messages](06_api_friendly_error_messages.md) (this article)
 - [API Testing Using Postman](07_api_testing_postman.md)
+- [API Testing And Documentation Using API Fairy](08_api_testing_documentation_using_api_fairy.md)
 
 
 The REST architecture guides that a client and server need to agree on the format that information will be transacted, which in the context of modern APIs is JSON. There is also the option to provide more formats through _content negotiations_ where the parties involved mention the formats they accept through a request's header.
