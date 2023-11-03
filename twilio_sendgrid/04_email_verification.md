@@ -10,7 +10,7 @@ If you would like to check out other parts of the Twilio SendGrid series, you ca
 - [Receive Emails Using Twilio SendGrid](/twilio_sendgrid/03_receive_emails_using_sendgrid.md)
 - [Verify An Email Address Using Twilio Sendgrid](/twilio_sendgrid/04_email_verification.md) (this article)
 
-Is it your first time implementing email support in your Flask app? [Start here](/email_support_in_flask.md).
+Is it your first time implementing email support in your Flask app? Start [here](/email_support_in_flask.md).
 
 
 ### Table of Contents
