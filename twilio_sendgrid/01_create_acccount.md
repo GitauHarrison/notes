@@ -1,7 +1,7 @@
 # Create Twilio SendGrid Account
 
 
-Is it your first time implementing email support in your Flask app? Start [here](/email_support_in_flask.md). If not, check out the other parts of the Twilio SendGrid series below:
+Is it your first time implementing email support in your Flask app? If so, start [here](/email_support_in_flask.md). If not, check out the other parts of the Twilio SendGrid series below:
 
 - [SendGrid Overview](/twilio_sendgrid/00_overview.md)
 - [Create A Twilio SendGrid Account](/twilio_sendgrid/01_create_acccount.md) (this article)
@@ -51,4 +51,4 @@ You will be required to include your contact information.
 
 ![Create Sender](/images/sendgrid/create_account/create_sender.png)
 
-Click create to create your sender. An verification email will be sent to your inbox. Once verified, you are all set.
+Click **Create** to create your sender. An verification email will be sent to your inbox. Once verified, you are all set.
