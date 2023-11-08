@@ -1,8 +1,8 @@
 # Send Emails Using Twilio SendGrid
 
-Setting up an email service for your application is always difficult. You can choose to set everything up yourself or use a third party email service. The most ideal approach, all factors considered, is always to favour the simplicity of a dedicated email service. 
+Setting up an email service for your application is always difficult. You can choose to set everything up yourself or use a third-party email service. The most ideal approach, all factors considered, is always to favor the simplicity of a dedicated email service. 
 
-In the tutorial [Email Support In Flask](/email_support_in_flask.md), we went over how you can use the Flask-Mail extension to set an email infrastructure for your application. In this article, you will learn how to integrate Twilio SendGrid in a similar application. 
+In the tutorial [Email Support In Flask](/email_support_in_flask.md), we went over how you can use the Flask-Mail extension to set an email infrastructure for your application. In this article, you will learn how to integrate Twilio SendGrid into a similar application. 
 
 ## Requiremets
 
@@ -21,7 +21,7 @@ Then, click on the blue "Create API" button.
 
 ![Create API Key](/images/sendgrid/send_emails/create_api_key.png)
 
-Fill in the details and select "Full Access" for permissions. This will allow you to perform all email sending functions.
+Fill in the details and select "Full Access" for permissions. This will allow you to perform all email-sending functions.
 
 ![Name API Key](/images/sendgrid/send_emails/name_api_key.png)
 
