@@ -96,3 +96,30 @@ Click on "Verify A Single Sender".
 
 ![Verify A Single Sender](/images/sendgrid/send_emails/verify_a_single_sender.png)
 
+You will be redirected to a new page where you can create your sender. Once done, click "Create".
+
+![Create new sender](/images/sendgrid/send_emails/create_new_sender.png)
+
+This sender's email address, once verified, should be used as the `MAIL_DEFAULT_SENDER` value in `.env`.
+
+
+## Sending Email
+
+To illustrate how to send an email in your Flask app, we will use the terminal. Activate the shell by running `flask shell`:
+
+```python
+(venv)$ flask shell
+```
+
+And now, to send an email, we can do the following:
+
+```python
+>>> from flask_mail import Message
+>>> from app import mail
+>>> msg = Message("[Test] My Subject", recipients=["myemail@example.com"])
+>>> msg.body = "This is a text body"
+>>> msg.html = "<p>This is an HTML body</p>"
+>>> mail.send(msg)
+```
+
+That is it! Check your inbox for a new mail. Hope everything went well. If you would like to learn how to use a graphical user interface to send an email using SendGrid, learn how to do that [here](/email_support_in_flask.md#sending-password-reset-email).
